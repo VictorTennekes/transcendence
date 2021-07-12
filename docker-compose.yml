@@ -1,0 +1,17 @@
+version: '3'
+services:
+    nodejs-server:
+        build: ./descendence
+        ports:
+            - "4200:4200"
+        container_name: node-api
+    database:
+        image: "postgres"
+        ports:
+            - "5432:5432"
+        env_file:
+            - ./postgres/database.env
+        volumes:
+            - database-data:/var/lib/postgresql/data/
+volumes:
+    database-data:
