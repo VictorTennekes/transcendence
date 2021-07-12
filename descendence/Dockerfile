@@ -10,8 +10,9 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json .
 
 # install required npm packages
-RUN npm install -g npm@7.19.1
-RUN npm install -g @angular/cli@7.3.9
+RUN npm install -g npm@6.14.13
+RUN npm install
+RUN npm install -g @angular/cli@12.1.1
 
 # copy app
 COPY . .
