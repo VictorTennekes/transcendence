@@ -1,0 +1,4 @@
+make the 'username', 'password' and 'database' fields in ormconfig less hardcoded.
+fix a bunch of warnings in npm install
+use 'nestjs/config' for environment variables
+find a way to minimize code duplication in DTO
