@@ -1,0 +1,16 @@
+const observable = new Observable( (subscriber) => {
+  const id = setInterval(() => {
+    subscriber.next('hi')
+  }, 1000);
+});
+
+'observable' is an object of type Observable
+
+the Observable constructor takes a callback function
+the callback function is defined to take a 'subscriber', 
+	the 'id' variable is the return value (IntervalID) of setInterval
+		setInterval(function, interval_in_ms, [param1, param2, .. ] ) is called with a callback function
+			that takes nothing, calls subscriber.next('hi), starting after 1 second, repeating every 1 seconds
+
+
+

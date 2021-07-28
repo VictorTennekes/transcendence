@@ -1,0 +1,19 @@
+Observable - an object that takes a 'subscribe' function as its constructor
+observable.subscribe(observer) creates a Subscription, which contains the execution of the subscribe function on the observer
+
+the observer should contain:
+next(x) - mandatory
+error(x)
+complete(x)
+
+the 'subscribe' function should generate next(), error(), complete() events
+
+
+------------------------
+
+start new angular project
+
+generate a library (auth) - mini-app that lives in the 'projects' folder
+the library's module file can be imported by the App
+
+generate a service (auth) that lives inside the Auth library

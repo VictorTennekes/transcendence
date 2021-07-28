@@ -1,0 +1,25 @@
+index.html contains this line:
+
+<body>
+  <app-root></app-root>
+</body>
+
+@Component decorator defines the following:
+	'selector' - the tag used to refer to this component
+	'template' - the html code containing references to the css and component variables,functions
+	'style' - the css code containing the markdown of the html attributes
+
+'app-root' is defined as the 'selector' of the @Component decorator of the AppComponent class
+
+@NgModule decorator defines the following:
+	'declarations' - children of the module, components that live in the scope and can import from the listed imports
+	'imports' - other modules that can be imported by components of this module
+	'providers' - classes that can be listed as constructor parameters of a component, these classes are then provided to the components automatically
+	'bootstrap' - when the module is bootstrapped, these components are also bootstrapped.
+
+the AppComponent is listed as a member (declaration) of the AppModule, and also added as part of the bootstrap.
+
+then finally in main.ts we bootstrap AppModule:
+platformBrowserDynamic().bootstrapModule(AppModule).catch(err => console.error(err));
+
+bootstrap is een vage term; 'Bootstrapping is a technique of initializing or loading our Angular application'

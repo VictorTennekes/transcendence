@@ -1,0 +1,13 @@
+Interceptors are methods that are applied before a Request is send to the back-end, and after receiving the response from the server\
+(basically a pipe with extra functionality)
+
+We can create an Interceptor that adds the Authentication token to the request (if it exists) before sending it to the backend API
+
+We then bundle all our interceptors (this is to keep it modular in case we add more interceptors) in a InterceptorProvider
+
+export const InterceptorProvider = [
+	{ provide: HTTP_INTERCEPTORS, useClass: NameInterceptor, multi: true },
+	{ ... }
+]
+
+
