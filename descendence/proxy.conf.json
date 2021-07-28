@@ -1,0 +1,12 @@
+{
+	"/user/*": {
+		"target": "http://localhost:3000/user",
+		"secure": false,
+		"pathRewrite": {
+			"^/user/*": ""
+		},
+		"changeOrigin": true
+	},
+	"changeOrigin": true,
+	"logLevel": "debug"
+}
