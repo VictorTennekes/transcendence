@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UsePipes, ValidationPipe, Req, Request, Query, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UsePipes, ValidationPipe, Req, Query, Logger, UseInterceptors, Options, Header, Redirect, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDTO } from './dto/user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { LocalStrategy } from './42auth.strategy';
+import { AuthGuard } from '@nestjs/passport';
+import { ConfigService } from '@nestjs/config';
+import { Request, Response } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -12,59 +15,30 @@ export class UserController {
 		private readonly userService: UserService,
 		private readonly authService: LocalStrategy
 	) {}
-
+		
 	@UsePipes(new ValidationPipe())
 	@Post('register')
 	register(@Body() createUserDto: CreateUserDto) {
 		return this.userService.create(createUserDto);
 	}
-
-	@Get()
-	findAll() {
-		return this.userService.findAll();
+	
+	@Get('home')
+	@UseGuards(AuthGuard('42'))
+	@Header('Content-Type', 'application/json')
+	async auth(@Req() req: Request, @Res() res: Response): Promise<void> {
+		console.log("user data:", req.user);
+		if (!req.user) {
+			res.redirect(`http://localhost:4200/home?loginstatus=failed`);
+			return;
+		}
+		
+		res.redirect(`http://localhost:4200/home?loginstatus=success`);
+		return ;
 	}
-
-	@Get(':id')
-	findOne(@Param('id') id: string) {
-		return this.userService.findOne(+id);
-	}
-
-	@Patch(':id')
-	update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-		return this.userService.update(+id, updateUserDto);
-	}
-
-	@Delete(':id')
-	remove(@Param('id') id: string) {
-		return this.userService.remove(+id);
-	}
-
 	@Post('login')
-	async login(@Body() loginUserDto: LoginUserDto)
+	async login(@Body() loginDetails: LoginUserDto)
 	{
-		return await this.userService.login(loginUserDto);
-	}
-
-	//home/1234 <- parameter
-	//home?code=1234 <- query
-	@Get('home')
-	async authAccepted(@Query('code') code: string) {
-		// const payload = await this.authService.validate(code as "");
-		void (code);
-		Logger.log('accepted');
-		return ("");
-	}
-
-	@Get('home')
-	async authDenied(@Query('error') error: string, @Query('error_description') description: string) {
-		Logger.log('rip');
-		return ("");
-	}
-
-	@Get('home')
-	defaultHome()
-	{
-		Logger.log('DEFAULT FALLBACK');
-		return ("");
+		console.log(loginDetails.intra_name);
+		return await this.userService.login(loginDetails);
 	}
 }

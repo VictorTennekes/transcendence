@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { UserService } from '../services/user.service';
 
 @Component({
 	selector: 'app-home',
@@ -9,21 +10,16 @@ import { Observable } from 'rxjs';
 })
 export class HomeComponent implements OnInit {
 	
-	constructor( private readonly http: HttpClient) { }
+	public user = {'email':'nobody@unknown.com'};
+	constructor( private userService: UserService) { }
 
 	ngOnInit(): void {
 		// window.location.href = "http://localhost:3000/user/home";
 	}
-	async onClick() : Promise<any> {
-		// console.log('Clicked');
-		let request_headers = new HttpHeaders();
-		// .set('Content-Type', 'text/plain')
-		// .set('Access-Control-Allow-Origin', 'http://localhost:3000')
-		// .set('Access-Control-Allow-Methods','GET, POST, PATCH, PUT, DELETE, OPTIONS')
-		// .set('Access-Control-Allow-Headers','Origin, Content-Type, X-Auth-Token');
-	
-		console.log(request_headers);
-		const body = this.http.get('/user/home', { headers: request_headers});
-		body.subscribe((event) => {console.log(event)});
+	onClick() : void {
+		this.userService.get().subscribe((data: any) => {
+			console.log(data);
+			this.user = data;
+		})
 	}
 }

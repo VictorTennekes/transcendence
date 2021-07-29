@@ -16,6 +16,7 @@ index.html contains this line:
 	'imports' - other modules that can be imported by components of this module
 	'providers' - classes that can be listed as constructor parameters of a component, these classes are then provided to the components automatically
 	'bootstrap' - when the module is bootstrapped, these components are also bootstrapped.
+	'exports' - mark components as export, so they become available when the module is imported into another module.
 
 the AppComponent is listed as a member (declaration) of the AppModule, and also added as part of the bootstrap.
 

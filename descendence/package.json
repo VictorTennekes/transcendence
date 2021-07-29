@@ -19,6 +19,10 @@
 		"@angular/platform-browser-dynamic": "~12.1.0-",
 		"@angular/router": "~12.1.0-",
 		"ajv": "^6.12.6",
+		"cors": "^2.8.5",
+		"express": "^4.17.1",
+		"express-session": "^1.17.2",
+		"request": "^2.88.2",
 		"rxjs": "~6.6.0",
 		"tslib": "^2.2.0",
 		"zone.js": "~0.11.4"
