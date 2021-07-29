@@ -10,10 +10,10 @@ import { Repository } from "typeorm";
 export class chatService {
     constructor(@InjectRepository(chatEntity) private readonly repo: Repository<chatEntity>) {}
 
-    async getChatById(id: string): Promise<chatDTO> {
+    async getChatById(uuid: string): Promise<chatDTO> {
         const item = await this.repo.findOne({
-            where: { id }
-        })
+            where: {id: uuid}
+        });
         if (!item) {
             throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
         }
@@ -23,6 +23,7 @@ export class chatService {
         }
         return toPromise(ret);
     }
+
     async createNewChat(newChat: newChatDTO): Promise<chatDTO> {
         const { name } = newChat;
         const item: chatEntity = await this.repo.create({
