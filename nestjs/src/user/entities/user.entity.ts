@@ -12,8 +12,4 @@ export class UserEntity {
 	@Column( { length: '50'} )
 	@IsNotEmpty()
 	display_name: string;
-
-	@IsNotEmpty()
-	@Column()
-	password: string;
 }

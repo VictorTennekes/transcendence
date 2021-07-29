@@ -1,4 +1,4 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConnectionOptions } from 'typeorm';
 import { AppController } from './app.controller';
@@ -15,7 +15,13 @@ export class AppModule {
 			module: AppModule,
 			imports: [
 				UserModule,
-				TypeOrmModule.forRoot(connOptions)],
+				TypeOrmModule.forRoot(connOptions),
+			],
 		};
 	}
+	// configure(consumer: MiddlewareConsumer) {
+	// 	consumer
+	// 	.apply(CorsMiddleware)
+	// 	.forRoutes({ path: '*', method: RequestMethod.ALL});
+	// }
 }

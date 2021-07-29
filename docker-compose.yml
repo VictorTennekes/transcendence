@@ -1,10 +1,10 @@
 version: '3'
 services:
-    nodejs-server:
-        build: ./descendence
-        ports:
-            - "4200:4200"
-        container_name: node-api
+    # nodejs-server:
+    #     build: ./descendence
+    #     ports:
+    #         - "4200:4200"
+    #     container_name: node-api
     database:
         image: "postgres"
         ports:
@@ -24,5 +24,6 @@ services:
         volumes:
             - ./nestjs:/usr/src/app
             - /usr/src/app/node_modules
+#probably needs fixing, data is gone when the container exits
 volumes:
     database-data:

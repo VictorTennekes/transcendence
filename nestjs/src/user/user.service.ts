@@ -19,9 +19,9 @@ export class UserService {
 	//needs to be async to call 'await' on instructions
 	// Prenk
 	async create(createUserDto: CreateUserDto): Promise<UserDTO> {
-		const {intra_name, password} = createUserDto;
+		const {intra_name } = createUserDto;
 		const display_name = intra_name;
-		const user: UserEntity = this.userRepository.create({ intra_name, password, display_name,});
+		const user: UserEntity = this.userRepository.create({ intra_name, display_name,});
 		await this.userRepository.save(user);
 		return (toPromise<UserDTO>(user as UserDTO));
 	}
@@ -44,17 +44,19 @@ export class UserService {
 
 	async login(loginInformation: LoginUserDto): Promise<LoginStatus> {
 		const intra_name = loginInformation.intra_name;
-		const user: UserEntity = await this.userRepository.findOne({ where: { intra_name, }});
+		let user: UserEntity = await this.userRepository.findOne({ where: { intra_name, }});
 		
-		let status: LoginStatus = {
-			succes: true,
-			code: 'OK'
-		};
+		console.log('')
 
-		// const passwordMatch: Boolean = await comparePasswords(loginInformation.password, user.password);
-		if (!user || user.password != loginInformation.password)
-			throw new HttpException('Invalid Credentials', HttpStatus.UNAUTHORIZED);
-
-		return (toPromise<LoginStatus>(status));
+		if (!user)
+		{
+			user = await this.create(loginInformation);
+			this.userRepository.save(user);
+			console.log(`CREATED USER ${intra_name}`);
+		}
+		else {
+			console.log(`FOUND EXISTING USER ${intra_name}`);
+		}
+		return ({succes: true});
 	}
 }

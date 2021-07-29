@@ -4,7 +4,7 @@ import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './42auth.strategy';
+import { LocalStrategy as FortyTwoStrategy } from './42auth.strategy';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
@@ -13,11 +13,11 @@ import { ConfigModule } from '@nestjs/config';
 		ConfigModule,
 		TypeOrmModule.forFeature([UserEntity]),
 		PassportModule.register({
-			defaultStrategy: 'passport-42',
-			property: 'authentication',
-			session: false,
+			defaultStrategy: '42',
+			property: 'user',
+			session: true,
 		}),
 	],
-	providers: [UserService, LocalStrategy]
+	providers: [UserService, FortyTwoStrategy]
 })
 export class UserModule {}
