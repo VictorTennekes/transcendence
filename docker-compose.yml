@@ -24,5 +24,6 @@ services:
         volumes:
             - ./nestjs:/usr/src/app
             - /usr/src/app/node_modules
+#probably needs fixing, data is gone when the container exits
 volumes:
     database-data:
