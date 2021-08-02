@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import passport from 'passport';
 import { ConnectionOptions } from 'tls';
 import { AppModule } from './app.module';
 import { getDbConnectionOptions, runDbMigrations } from './shared/utils';

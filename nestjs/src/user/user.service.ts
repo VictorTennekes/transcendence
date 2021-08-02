@@ -18,8 +18,21 @@ export class UserService {
 
 	//needs to be async to call 'await' on instructions
 	// Prenk
-	async create(createUserDto: CreateUserDto): Promise<UserDTO> {
-		const {intra_name } = createUserDto;
+
+	async findOrCreateByLogin(login: string) {
+		let user = await this.findOne(login);
+		if (!user) {
+			user = await this.create(login)
+			console.log(`CREATED USER ${login}`);
+		}
+		else {
+			console.log(`FOUND EXISTING USER ${login}`);
+		}
+		return (user);
+	}
+
+	async create(login: string) {
+		const intra_name = login;
 		const display_name = intra_name;
 		const user: UserEntity = this.userRepository.create({ intra_name, display_name,});
 		await this.userRepository.save(user);
@@ -30,8 +43,9 @@ export class UserService {
 		return `This action returns all user`;
 	}
 	
-	findOne(id: number) {
-		return `This action returns a #${id} user`;
+	findOne(login: string) {
+		const intra_name = login;
+		return this.userRepository.findOne({where: { intra_name }});
 	}
 	
 	update(id: number, updateUserDto: UpdateUserDto) {
@@ -50,7 +64,7 @@ export class UserService {
 
 		if (!user)
 		{
-			user = await this.create(loginInformation);
+			user = await this.create(loginInformation.intra_name);
 			this.userRepository.save(user);
 			console.log(`CREATED USER ${intra_name}`);
 		}
