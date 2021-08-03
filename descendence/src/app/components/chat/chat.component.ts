@@ -24,7 +24,7 @@ export class ChatComponent implements OnInit {
       console.log(this.messageForm);
       this.action.emit({
           type: 'send-message',
-          payload: this.messageForm
+        payload: this.messageForm
       });
       this.messageForm.reset();
     }
