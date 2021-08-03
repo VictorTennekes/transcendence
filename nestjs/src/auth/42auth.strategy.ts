@@ -1,20 +1,18 @@
 import { Strategy } from 'passport-42';
-import { AuthModuleOptions, PassportStrategy } from '@nestjs/passport';
-import { HttpException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-// import { AuthService } from './auth.service';
+import { PassportStrategy } from '@nestjs/passport';
+import { Injectable, Logger, Request, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { toPromise } from '@shared/utils';
-import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 import { AuthService } from './auth.service';
 
 @Injectable()
 export class FortyTwoStrategy extends PassportStrategy(Strategy) {
 	constructor(
-		private options: AuthModuleOptions,
 		private readonly authService: AuthService,
 		private config: ConfigService
 	) {
 		super({
+//			passReqToCallback: true, //to be able to pass @Request req to `validate`
 			clientID: config.get('ID'),
 			clientSecret: config.get('SECRET'),
 			callbackURL: config.get('CALLBACK_URL'),
@@ -31,6 +29,4 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy) {
 		const user = await this.authService.validateUser(profile.intraName);
 		return (user);
 	}
-	public successRedirect: string = this.options['successRedirect'];
-	public failureRedirect: string = this.options['failureRedirect'];
 }
