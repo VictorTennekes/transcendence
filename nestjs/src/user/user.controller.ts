@@ -20,6 +20,7 @@ export class UserController {
 	// }
 
 	@Post('login')
+//	@UsePipes(new ValidationPipe())
 	async login(@Body() loginDetails: LoginUserDto)
 	{
 		console.log(loginDetails.intra_name);

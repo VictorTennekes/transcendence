@@ -9,15 +9,14 @@ import { UserDTO } from './dto/user.dto';
 import { UserEntity } from './entities/user.entity';
 import { LoginStatus } from './interfaces/login-status.interface';
 
+//everything related to getting/modifying/updating entries in the 'user_entity' table is done by this.
+
 @Injectable()
 export class UserService {
 	constructor(
 		@InjectRepository(UserEntity)
 		private readonly userRepository: Repository<UserEntity>
 	) {}
-
-	//needs to be async to call 'await' on instructions
-	// Prenk
 
 	async findOrCreateByLogin(login: string) {
 		let user = await this.findOne(login);
@@ -36,7 +35,7 @@ export class UserService {
 		const display_name = intra_name;
 		const user: UserEntity = this.userRepository.create({ intra_name, display_name,});
 		await this.userRepository.save(user);
-		return (toPromise<UserDTO>(user as UserDTO));
+		return (user);
 	}
 
 	findAll() {
@@ -47,30 +46,10 @@ export class UserService {
 		const intra_name = login;
 		return this.userRepository.findOne({where: { intra_name }});
 	}
-	
-	update(id: number, updateUserDto: UpdateUserDto) {
-		return `This action updates a #${id} user`;
-	}
-	
-	remove(id: number) {
-		return `This action removes a #${id} user`;
-	}
 
 	async login(loginInformation: LoginUserDto): Promise<LoginStatus> {
 		const intra_name = loginInformation.intra_name;
-		let user: UserEntity = await this.userRepository.findOne({ where: { intra_name, }});
-		
-		console.log('')
-
-		if (!user)
-		{
-			user = await this.create(loginInformation.intra_name);
-			this.userRepository.save(user);
-			console.log(`CREATED USER ${intra_name}`);
-		}
-		else {
-			console.log(`FOUND EXISTING USER ${intra_name}`);
-		}
+		const user = await this.findOrCreateByLogin(intra_name);
 		return ({succes: true});
 	}
 }

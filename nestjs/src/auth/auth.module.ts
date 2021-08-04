@@ -1,5 +1,6 @@
 import { Module, Session } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
 import { UserModule } from '@user/user.module';
 import { FortyTwoStrategy } from './42auth.strategy';
 import { AuthController } from './auth.controller';

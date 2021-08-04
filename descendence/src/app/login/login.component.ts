@@ -27,6 +27,7 @@ export class LoginComponent implements OnInit {
 		this.loginForm = this.formBuilder.group({
 			username: ['login', Validators.required]
 		});
+		this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/'; 
 	}
 
 	get form() {
@@ -36,8 +37,13 @@ export class LoginComponent implements OnInit {
 	submit()
 	{
 		this.submitted = true;
-		const login = this.loginForm.controls.username.value;
+		const login = this.form.username.value;
 		console.log(`Login = ${login}`);
-		document.location.href = "api/auth/redirect";
+		this.http.post("api/user/login", { intra_name: login }).pipe(first()).subscribe((data) => {
+			this.error = '';
+			this.router.navigate([this.returnUrl]);
+		}, (error) => {
+			this.error = error;
+		});
 	}
 }

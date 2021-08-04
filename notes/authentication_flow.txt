@@ -1,0 +1,29 @@
+deserialize - every request
+super.logIn() -> serializeUser()
+super.canActivate() -> Strategy::validate()
+
+
+link to auth:
+	deserializeUser() -> empty
+	LoginGuard
+		AuthGuard('42').canActivate() -> false
+	redirect to api.intra.42.fr
+		authorize / decline -> redirect to callbackURL
+	authorized:
+		LoginGuard
+			AuthGuard('42').canActivate() -> true
+			Strategy::validate() -> fetch user from db
+			super.logIn() -> serializeUser() -> save user data to session
+	declined:
+		LoginGuard
+			AuthGuard('42').canActivate() -> throw UnauthorizedException
+			UseFilter(UnauthorizedFilter) -> redirect to login page
+
+
+link to protected page:
+	deserializeUser() -> user data from session
+	AuthenticatedGuard() -> return (!!req.session.user)
+	true:
+		access route
+	false:
+		UseFilter(UnauthorizedFilter) -> redirect to login page

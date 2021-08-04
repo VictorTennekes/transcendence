@@ -1,22 +1,12 @@
-import { DynamicModule, MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConnectionOptions } from 'typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-import { AuthService } from './auth/auth.service';
-import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
-import { Passport } from 'passport';
-import { NestSessionOptions, SessionModule } from 'nestjs-session';
-import { PassportModule } from '@nestjs/passport';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserService } from '@user/user.service';
 import 'dotenv/config';
 
 @Module({
-	controllers: [ AppController, AuthController ],
-	providers: [ AppService ],
+	controllers: [],
+	providers: [],
 	imports: [
 		TypeOrmModule.forRootAsync({
 			imports: [ConfigModule],

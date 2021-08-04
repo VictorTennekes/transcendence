@@ -9,9 +9,10 @@ import { ConfigModule } from '@nestjs/config';
 	controllers: [UserController],
 	imports: [
 		ConfigModule,
+		//Makes the UserEntity Repository available in the current scope.
 		TypeOrmModule.forFeature([UserEntity]),
 	],
 	providers: [UserService],
-	exports: [UserService]
+	exports: [UserService] //if we need to use UserService outside of the UserModule (which we do, in AuthService)
 })
 export class UserModule {}

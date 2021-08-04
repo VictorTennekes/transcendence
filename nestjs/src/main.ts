@@ -2,16 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { getDbConnectionOptions, runDbMigrations } from './shared/utils';
 import * as passport from 'passport';
-
-passport.serializeUser((user, done) => {
-	console.log("SERIALIZING");
-	done(null, user);
-});
-
-passport.deserializeUser((user, done) => {
-	console.log("DESERIALIZING");
-	done(null, user);
-});
+import * as session from 'express-session';
 
 import 'dotenv/config';
 
@@ -24,35 +15,31 @@ const postgresConnection =
 	database: process.env.POSTGRES_DB
 };
 
-var pg = require('pg')
-, session = require('express-session')
-, pgSession = require('connect-pg-simple')(session);
+const postgresSession = require('connect-pg-simple')(session);
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 
-	// app.use(
-	// 	session({
-	// 		secret: 'fixme',
-	// 		resave: false,
-	// 		saveUninitialized: false
-	// 	})
-	// );
+	//initialize and use the session middleware, providing 'connect-pg-simple' as store
 	app.use(session({
 		cookie: {
 			maxAge: 24 * 7 * 60 * 60 * 1000 // 1 week,
 		},
-		rolling: true, //reset the maxAge of the cookie on every response, keep-alive sort of way
+		rolling: true, //reset the maxAge of the cookie on every response
 		secret: 'fixme',
-		store: new pgSession({
+		store: new postgresSession({
 			tableName: 'session',
 			conObject: postgresConnection
 		}),
 		saveUninitialized: true,
 		resave: true,
 	}));
+
+	//initialize passport to use SessionSerializer and save it into 'request.session'
 	app.use(passport.initialize());
 	app.use(passport.session());
+
+	//integrate changes to the structure of entities into the database
 	await runDbMigrations();
 	await app.listen(3000);
 }

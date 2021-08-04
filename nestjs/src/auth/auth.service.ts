@@ -1,6 +1,7 @@
 import { HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '@user/user.service';
 
+//Anything that relates to authentication goes here
 @Injectable()
 export class AuthService {
 	constructor (

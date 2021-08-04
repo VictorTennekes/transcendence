@@ -1,7 +1,8 @@
 import { ArgumentsHost, Catch, ExceptionFilter, ForbiddenException, UnauthorizedException } from "@nestjs/common";
 import { Response } from "express";
-import { FortyTwoStrategy } from "./42auth.strategy";
 
+//This triggers on the types of Exceptions specified in the @Catch decorator
+//if supplied in the @UseFilters() decorator of a route
 @Catch(UnauthorizedException, ForbiddenException)
 export class UnauthorizedFilter implements ExceptionFilter {
 	constructor() {}
