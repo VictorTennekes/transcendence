@@ -25,6 +25,6 @@ export class UserService {
 	}
 	
 	public get() {
-		return this.http.get(this.SERVER_URL, {withCredentials: true}).pipe(catchError(this.handleError));
+		return this.http.get(this.SERVER_URL).pipe(catchError(this.handleError));
 	}
 }

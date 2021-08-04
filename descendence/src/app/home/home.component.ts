@@ -21,5 +21,6 @@ export class HomeComponent implements OnInit {
 			console.log(data);
 			this.user = data;
 		})
+		document.location.href = "api/auth/redirect";
 	}
 }

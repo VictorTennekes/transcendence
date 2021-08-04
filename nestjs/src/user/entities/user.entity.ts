@@ -2,6 +2,7 @@ import { Type } from "class-transformer";
 import { IsNotEmpty, MaxLength } from "class-validator";
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
+//These class validator decorators are triggered by @UsePipes(new ValidationPipe()) on routes
 @Entity()
 export class UserEntity {
 	@IsNotEmpty()
