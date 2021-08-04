@@ -25,19 +25,4 @@ import 'dotenv/config';
 		AuthModule
 	]
 })
-export class AppModule {
-	static forRoot(connOptions: ConnectionOptions): DynamicModule {
-		return {
-			module: AppModule,
-			imports: [
-				UserModule,
-				TypeOrmModule.forRoot(connOptions),
-			],
-		};
-	}
-	// configure(consumer: MiddlewareConsumer) {
-	// 	consumer
-	// 	.apply(CorsMiddleware)
-	// 	.forRoutes({ path: '*', method: RequestMethod.ALL});
-	// }
-}
+export class AppModule { }

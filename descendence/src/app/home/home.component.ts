@@ -17,10 +17,6 @@ export class HomeComponent implements OnInit {
 		// window.location.href = "http://localhost:3000/user/home";
 	}
 	onClick() : void {
-		this.userService.get().subscribe((data: any) => {
-			console.log(data);
-			this.user = data;
-		})
 		document.location.href = "api/auth/redirect";
 	}
 }
