@@ -11,6 +11,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ChatComponent } from './components/chat/chat.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
 	declarations: [
@@ -26,7 +27,8 @@ import { MatInputModule } from '@angular/material/input';
 		HttpClientModule,
 		ReactiveFormsModule,
 		BrowserAnimationsModule,
-        MatInputModule
+        MatInputModule,
+        MatListModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]

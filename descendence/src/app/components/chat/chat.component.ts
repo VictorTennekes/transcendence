@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { DoAction } from './action';
 import { ChatService } from './chat.service';
-import { Message } from './message.model';
+import { Message, retMessage } from './message.model';
 
 @Component({
   selector: 'app-chat',
@@ -11,18 +11,24 @@ import { Message } from './message.model';
   providers: [ChatService]
 })
 export class ChatComponent implements OnInit {
-   
+
     constructor(
         private formBuilder: FormBuilder,
         private chatService: ChatService
     ) { }
+    messages: retMessage[] = []
     messageForm = this.formBuilder.group({
         message: "",
     });
     @Output() public action: EventEmitter<DoAction> = new EventEmitter();
 
-  ngOnInit(): void {
-  }
+    ngOnInit(): void {
+        this.chatService.getMessages().subscribe(
+            (response) => this.messages = response,
+            (error) => console.log(error)
+        );
+    }
+
   public onSubmit() {
       console.log("submitting");
       console.log(this.messageForm);

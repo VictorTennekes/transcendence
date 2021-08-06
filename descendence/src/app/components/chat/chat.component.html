@@ -1,4 +1,13 @@
 
+<mat-list>
+    <mat-list-item *ngFor="let message of messages">
+      <img matListAvatar src="..." alt="...">
+      <h3 matLine> {{message.owner}} </h3>
+      <p matLine>
+        <span class="demo-2"> -- {{message.message}} </span>
+      </p>
+    </mat-list-item>
+</mat-list>
 <form [formGroup]="messageForm" (ngSubmit)="onSubmit()" (keyup.enter)="onSubmit()" class="example-form">
     <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Message</mat-label>

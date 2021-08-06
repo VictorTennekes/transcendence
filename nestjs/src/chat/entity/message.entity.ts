@@ -1,6 +1,6 @@
 import { ConfigModule } from "@nestjs/config";
 import { Column, CreateDateColumn, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
-//table should be called message history?
+
 @Entity('message')
 export class MessageEntity {
     @PrimaryGeneratedColumn("uuid")

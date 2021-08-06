@@ -58,4 +58,10 @@ export class chatService {
         }
         return toPromise(ret);
     }
+    
+    async getAllMessages(): Promise<MessageDTO[]> {
+        Logger.log("got into my service");
+        return await this.msgRepo.find();
+    }
+
 }
