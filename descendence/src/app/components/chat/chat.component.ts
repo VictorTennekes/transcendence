@@ -1,16 +1,20 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { DoAction } from './action';
+import { ChatService } from './chat.service';
+import { Message } from './message.model';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.scss']
+  styleUrls: ['./chat.component.scss'],
+  providers: [ChatService]
 })
 export class ChatComponent implements OnInit {
-
+   
     constructor(
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private chatService: ChatService
     ) { }
     messageForm = this.formBuilder.group({
         message: "",
@@ -22,11 +26,15 @@ export class ChatComponent implements OnInit {
   public onSubmit() {
       console.log("submitting");
       console.log(this.messageForm);
-      this.action.emit({
-          type: 'send-message',
-        payload: this.messageForm
-      });
+      console.log(this.messageForm.controls['message'].value)
+      const msg: Message = {
+          owner: "jsaariko",
+          message: this.messageForm.controls['message'].value
+      }
+      this.chatService.create(msg).subscribe(
+        (response) => console.log(response),
+        (error) => console.log(error)
+      );
       this.messageForm.reset();
     }
-
 }

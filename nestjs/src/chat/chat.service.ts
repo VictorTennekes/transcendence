@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { toPromise } from "@shared/utils";
 import { chatDTO } from "@chat/dto/chat.dto";
 import { newChatDTO } from "@chat/dto/newChat.dto";
@@ -43,6 +43,8 @@ export class chatService {
 
     async createNewMessage(newMessage: newMessageDTO): Promise<newMessageDTO> {
         const {owner, message} = newMessage;
+        Logger.log(newMessage.owner);
+        Logger.log(newMessage.message);
         const item: MessageEntity = await this.msgRepo.create({
             owner,
             message

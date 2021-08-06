@@ -22,7 +22,10 @@ export class ChatController {
 
     @Post("send")
     async createNewMessage(@Body() newMessage: newMessageDTO): Promise<newMessageDTO> {
-        return await this.createNewMessage(newMessage);
+        Logger.log("chat controller nest");
+        Logger.log(newMessage.message);
+        Logger.log(newMessage.owner);
+        return await this.service.createNewMessage(newMessage);
     }
     
 }

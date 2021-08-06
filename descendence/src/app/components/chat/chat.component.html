@@ -1,4 +1,5 @@
-<form [formGroup]="messageForm" (ngSubmit)="onSubmit()" class="example-form">
+
+<form [formGroup]="messageForm" (ngSubmit)="onSubmit()" (keyup.enter)="onSubmit()" class="example-form">
     <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Message</mat-label>
         <textarea formControlName="message" matInput placeholder="Ex. Hi!"></textarea>
@@ -6,4 +7,3 @@
     <button class="button" type="submit">Send</button>
 </form>
 <p>chat works!</p>
-<!-- TODO: connect to api -->
