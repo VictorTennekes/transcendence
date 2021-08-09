@@ -19,11 +19,13 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy) {
 			profileFields: {
 				'intraName': 'login',
 				'displayName' : 'displayname'
-			}
+			},
+			passReqToCallback: true
 		});
 	}
 	//already authenticated by OAuth2
-	async validate(accessToken: string, refreshToken: string, profile): Promise<any> {
+	async validate(request, accessToken: string, refreshToken: string, profile): Promise<any> {
+		profile = profile ?? request.user;
 		if (!profile)
 			return (null);
 		console.log("FortyTwoStrategy::validate()");

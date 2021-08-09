@@ -22,10 +22,10 @@ export class AuthController {
 	@Get('redirect_success')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	authorized(@Req() req) {
+	authorized(@Req() req, @Res() res) {
 
-		return ("AUTHENTICATED :O");
-//		res.redirect('http://localhost:4200/success');
+//		return ("AUTHENTICATED :O");
+		res.redirect('http://localhost:4200/success');
 	}
 	
 	//requests without authorization header get sent here (by UnauthorizedFilter)
