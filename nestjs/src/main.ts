@@ -32,7 +32,7 @@ async function bootstrap() {
 		connection: postgresConnection,
 	});
 	
-	knex.schema.hasTable('session').then(exists => {
+	const sessionStore = await knex.schema.hasTable('session').then(exists => {
 		if (exists) return;
 		return new Promise((resolve, reject) => {
 			const schemaFilePath = path.join('node_modules', 'connect-pg-simple', 'table.sql');
@@ -48,21 +48,21 @@ async function bootstrap() {
 		});
 	}).then(() => {
 		// Session table ready.
-		const sessionStore = new postgresSession({
+		return new postgresSession({
 			conObject: postgresConnection,
 		});
-		app.use(session({
-			cookie: {
-				maxAge: 24 * 7 * 60 * 60 * 1000 // 1 week,
-			},
-			rolling: true, //reset the maxAge of the cookie on every response
-			secret: 'fixme',
-			store: sessionStore,
-			saveUninitialized: true,
-			resave: true,
-		}));
 	});
 
+	app.use(session({
+		cookie: {
+			maxAge: 24 * 7 * 60 * 60 * 1000 // 1 week,
+		},
+		rolling: true, //reset the maxAge of the cookie on every response
+		secret: 'fixme',
+		store: sessionStore,
+		saveUninitialized: true,
+		resave: true,
+	}));
 	//initialize passport to use SessionSerializer and save it into 'request.session'
 	app.use(passport.initialize());
 	app.use(passport.session());
