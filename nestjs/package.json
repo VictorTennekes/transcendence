@@ -39,6 +39,7 @@
     "connect-pg-simple": "^6.2.1",
     "create-nestjs-middleware-module": "^0.1.0",
     "express-session": "^1.17.2",
+    "knex": "^0.21.21",
     "nestjs-session": "^1.0.1",
     "passport": "^0.4.1",
     "passport-42": "^1.2.6",

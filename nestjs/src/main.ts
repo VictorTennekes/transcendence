@@ -22,19 +22,46 @@ async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 
 	//initialize and use the session middleware, providing 'connect-pg-simple' as store
-	app.use(session({
-		cookie: {
-			maxAge: 24 * 7 * 60 * 60 * 1000 // 1 week,
-		},
-		rolling: true, //reset the maxAge of the cookie on every response
-		secret: 'fixme',
-		store: new postgresSession({
-			tableName: 'session',
-			conObject: postgresConnection
-		}),
-		saveUninitialized: true,
-		resave: true,
-	}));
+
+	const fs = require('fs');
+	const path = require('path');
+	
+	
+	const knex = require('knex')({
+		client: 'pg',
+		connection: postgresConnection,
+	});
+	
+	knex.schema.hasTable('session').then(exists => {
+		if (exists) return;
+		return new Promise((resolve, reject) => {
+			const schemaFilePath = path.join('node_modules', 'connect-pg-simple', 'table.sql');
+			fs.readFile(schemaFilePath, (error, contents) => {
+				if (error) {
+					return reject(error);
+				}
+				const sql = contents.toString();
+				knex.raw(sql).then((query) => {
+					resolve(query);
+				}).catch(reject);
+			});
+		});
+	}).then(() => {
+		// Session table ready.
+		const sessionStore = new postgresSession({
+			conObject: postgresConnection,
+		});
+		app.use(session({
+			cookie: {
+				maxAge: 24 * 7 * 60 * 60 * 1000 // 1 week,
+			},
+			rolling: true, //reset the maxAge of the cookie on every response
+			secret: 'fixme',
+			store: sessionStore,
+			saveUninitialized: true,
+			resave: true,
+		}));
+	});
 
 	//initialize passport to use SessionSerializer and save it into 'request.session'
 	app.use(passport.initialize());
