@@ -1,0 +1,13 @@
+frontend -> refer to backend api '/auth/42'
+
+'/auth/42' is guarded by passport, will send the user to the authentication page, and redirect to callbackURL with a temporary code attached
+the callbackURL is guarded by the same strategy, but will now get an accessToken in exchange for the code, once that's done, the following happens:
+
+- the 'validate' function from the strategy is called, allowing us to fetch the user's information from the database.
+  Once this function finishes, the returned Object is attached to the Request as 'user' (request.user)
+
+When using 'session' and 'initialize':
+- the 'serializeUser' function is called, allowing us to save some data in the 'sess' column of the session stored in the 'session' table of the database
+  Once this function finishes, the returned Object is attached to the Request as 'session.passport' (request.session.passport)
+
+Then finally our route is accessed, in which we have access to the cookie and the user object

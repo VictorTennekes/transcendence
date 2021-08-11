@@ -6,6 +6,8 @@ services:
         ports:
             - "4200:4200"
         container_name: node-api
+        depends_on:
+            - nestjs
         volumes:
             - ./descendence:/usr/src/app
     database:
@@ -18,6 +20,8 @@ services:
             - database-data:/var/lib/postgresql/data/
         container_name: database
     nestjs:
+        depends_on:
+            - database
         container_name: nestjs
         image: nestjs:1.0.0
         build: ./nestjs
@@ -27,5 +31,6 @@ services:
         volumes:
             - ./nestjs:/usr/src/app
             - /usr/src/app/node_modules
+#probably needs fixing, data is gone when the container exits
 volumes:
     database-data:
