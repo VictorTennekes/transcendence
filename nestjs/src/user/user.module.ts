@@ -3,21 +3,16 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
-import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy as FortyTwoStrategy } from './42auth.strategy';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
 	controllers: [UserController],
 	imports: [
 		ConfigModule,
+		//Makes the UserEntity Repository available in the current scope.
 		TypeOrmModule.forFeature([UserEntity]),
-		PassportModule.register({
-			defaultStrategy: '42',
-			property: 'user',
-			session: true,
-		}),
 	],
-	providers: [UserService, FortyTwoStrategy]
+	providers: [UserService],
+	exports: [UserService] //if we need to use UserService outside of the UserModule (which we do, in AuthService)
 })
 export class UserModule {}

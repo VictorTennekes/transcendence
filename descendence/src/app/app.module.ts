@@ -12,14 +12,16 @@ import { ChatComponent } from './components/chat/chat.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { FailComponent } from './fail/fail.component';
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		HomeComponent,
 		MasterComponent,
-  LoginComponent,
-  ChatComponent
+        ChatComponent,
+		LoginComponent,
+		FailComponent,
 	],
 	imports: [
 		BrowserModule,

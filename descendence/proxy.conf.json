@@ -1,13 +1,13 @@
 {
 	"/api/*": {
-		"target": "http://localhost:3000/",
+		"target": "http://nestjs:3000/",
 		"secure": false,
 		"pathRewrite": {
 			"^/api/*": ""
 		}
 	},
 	"/user/*": {
-		"target": "http://localhost:3000/user",
+		"target": "http://nestjs:3000/user",
 		"secure": false,
 		"pathRewrite": {
 			"^/user/*": ""

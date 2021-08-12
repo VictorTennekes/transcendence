@@ -1,0 +1,7 @@
+1. make sure the container is running
+2. run `docker exec -it database bash` - this connects to the container named 'database' and starts bash
+3. once inside the container, run `psql -d database -U admin` - this tells postgres to connect to the database `database` with the role `admin`
+
+to show all tables, run `\dt`
+to show the columns of a specific table, run `\d TABLE_NAME`
+to show all entries of a table, run `SELECT * FROM TABLE_NAME`
