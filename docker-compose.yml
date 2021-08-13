@@ -1,10 +1,12 @@
 version: '3'
 services:
-    # nodejs-server:
-    #     build: ./descendence
-    #     ports:
-    #         - "4200:4200"
-    #     container_name: node-api
+    nodejs-server:
+        build: ./descendence
+        ports:
+            - "4200:4200"
+        container_name: node-api
+        volumes:
+            - ./descendence:/usr/src/app
     database:
         image: "postgres"
         ports:

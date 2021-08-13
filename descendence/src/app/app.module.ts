@@ -9,6 +9,8 @@ import { MasterComponent } from './master/master.component';
 import { LoginComponent } from './login/login.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FailComponent } from './fail/fail.component';
+import { CookieModule } from 'ngx-cookie';
+import { LoginGuard } from './login.guard';
 
 @NgModule({
 	declarations: [
@@ -19,12 +21,13 @@ import { FailComponent } from './fail/fail.component';
 		FailComponent
 	],
 	imports: [
+		CookieModule.forRoot(),
 		BrowserModule,
 		AppRoutingModule,
 		HttpClientModule,
 		ReactiveFormsModule
 	],
-	providers: [],
+	providers: [ ],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }

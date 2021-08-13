@@ -24,7 +24,10 @@ async function bootstrap() {
 	//initialize and use the session middleware, providing 'connect-pg-simple' as store
 	app.use(session({
 		cookie: {
-			maxAge: 24 * 7 * 60 * 60 * 1000 // 1 week,
+			maxAge: 24 * 7 * 60 * 60 * 1000, // 1 week,
+			httpOnly: false,
+			secure: false,
+			sameSite: 'strict'
 		},
 		rolling: true, //reset the maxAge of the cookie on every response
 		secret: 'fixme',
