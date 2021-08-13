@@ -14,12 +14,12 @@ export class ChatController {
         // const item = await this.service.getChatById(uuid);
         // return toPromise(item);
     // }
-    @Post()
-    async createNewChat(@Body() newChat: newChatDTO): Promise<chatDTO> {
-        return await this.service.createNewChat(newChat);
-    }
+    // @Post()
+    // async createNewChat(@Body() newChat: newChatDTO): Promise<chatDTO> {
+        // return await this.service.createNewChat(newChat);
+    // }
 
-    @Post("send")
+    @Post()
     async createNewMessage(@Body() newMessage: newMessageDTO): Promise<newMessageDTO> {
         Logger.log("chat controller nest");
         Logger.log(newMessage.message);
@@ -27,9 +27,8 @@ export class ChatController {
         return await this.service.createNewMessage(newMessage);
     }
 
-    @Get('msg')
+    @Get()
     async getAllMessages(): Promise<MessageDTO[]> {
-        Logger.log("here");
         return await this.service.getAllMessages();
     }
     
