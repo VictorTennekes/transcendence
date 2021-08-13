@@ -6,7 +6,7 @@ import { toPromise } from '@shared/utils';
 import { MessageDTO } from '@chat/dto/message.dto';
 import { newMessageDTO } from '@chat/dto/newMessage.dto';
 
-@Controller('api/chat')
+@Controller('chat')
 export class ChatController {
     constructor(private readonly service: chatService) {}
     // @Get(":id")
