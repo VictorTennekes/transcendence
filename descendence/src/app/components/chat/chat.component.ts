@@ -1,5 +1,5 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { DoAction } from './action';
 import { ChatService } from './chat.service';
 import { newMsg, retMessage } from './message.model';
@@ -11,10 +11,13 @@ import { newMsg, retMessage } from './message.model';
     providers: [ChatService]
   })
   export class ChatComponent implements OnInit {
-      constructor(
+        // @Input() data: any;
+
+        constructor(
           private formBuilder: FormBuilder,
           private chatService: ChatService
       ) { }
+      
       messages: retMessage[] = [];
         messageForm = this.formBuilder.group({
           message: "",

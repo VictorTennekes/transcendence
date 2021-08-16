@@ -6,6 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { MasterComponent } from './master/master.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { MatInputModule } from '@angular/material/input'
+import { SearchComponent } from './components/search/search.component';
 
 const routes: Routes = [
 	{
@@ -30,7 +31,7 @@ const routes: Routes = [
 	},
     {
 		path: 'chat',
-		component: ChatComponent
+		component: SearchComponent
 	}
 ];
 

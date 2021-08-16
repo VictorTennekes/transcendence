@@ -13,12 +13,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { FailComponent } from './fail/fail.component';
+import { SearchComponent } from './components/search/search.component';
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		HomeComponent,
 		MasterComponent,
+        SearchComponent,
         ChatComponent,
 		LoginComponent,
 		FailComponent,

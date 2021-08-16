@@ -1,4 +1,3 @@
-
 <mat-list>
     <mat-list-item *ngFor="let message of messages">
       <img matListAvatar src="..." alt="...">
@@ -8,7 +7,7 @@
       </p>
     </mat-list-item>
 </mat-list>
-<form [formGroup]="messageForm" (ngSubmit)="onSubmit()" (keyup.enter)="onSubmit()" class="example-form">
+<form [formGroup]="messageForm" (ngSubmit)="onSubmit()" class="example-form">
     <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Message</mat-label>
         <textarea formControlName="message" matInput placeholder="Ex. Hi!"></textarea>
