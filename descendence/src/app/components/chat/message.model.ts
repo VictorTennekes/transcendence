@@ -1,6 +1,5 @@
-export class Message {
-    constructor(public owner: string,
-                public message: string) {}
+export class newMsg {
+    constructor(public message: string) {}
 }
 
 export class retMessage {

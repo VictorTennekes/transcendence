@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Message, retMessage } from "./message.model";
+import { newMsg, retMessage } from "./message.model";
 import { Observable } from "rxjs";
 
 @Injectable()
@@ -8,8 +8,9 @@ export class ChatService {
     private url = 'api/chat';
     constructor(private http: HttpClient) {}
 
-    public create(msg: Message): Observable<Message> {
-        return this.http.post<Message>(this.url, msg);
+    public create(msg: newMsg): Observable<retMessage> {
+        console.log(msg.message);
+        return this.http.post<retMessage>(this.url, msg);
     }
 
     public getMessages(): Observable<retMessage[]> {

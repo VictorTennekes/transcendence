@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Logger, Req } from "@nestjs/common";
 import { toPromise } from "@shared/utils";
 import { chatDTO } from "@chat/dto/chat.dto";
 import { newChatDTO } from "@chat/dto/newChat.dto";
@@ -8,6 +8,7 @@ import { Repository } from "typeorm";
 import { MessageDTO } from "@chat/dto/message.dto";
 import { newMessageDTO } from "@chat/dto/newMessage.dto";
 import { MessageEntity } from "@chat/entity/message.entity";
+import { SessionSerializer } from "src/auth/session.serializer";
 
 @Injectable()
 export class chatService {
@@ -41,7 +42,9 @@ export class chatService {
         return toPromise(ret);
     }
 
-    async createNewMessage(newMessage: newMessageDTO): Promise<newMessageDTO> {
+    async createNewMessage(newMessage: newMessageDTO): Promise<MessageDTO> {
+        // this.session.deserializeUser();
+
         const {owner, message} = newMessage;
         Logger.log(newMessage.owner);
         Logger.log(newMessage.message);
