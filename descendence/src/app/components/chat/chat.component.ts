@@ -17,20 +17,32 @@ import { newMsg, retMessage } from './message.model';
           private formBuilder: FormBuilder,
           private chatService: ChatService
       ) { }
-      
+      displayComponent: boolean = false;
       messages: retMessage[] = [];
         messageForm = this.formBuilder.group({
           message: "",
         });
-  
-      ngOnInit(): void {
-          this.chatService.getMessages().subscribe(
-              (response) => this.messages = response,
-              (error) => console.log(error)
-          );
+
+        @Input()
+        chatId: string = "";
+ 
+        ngOnInit(): void {
+
       }
-  
+ 
+      ngOnChanges() {
+          if (this.chatId != "") {
+            this.displayComponent = true;
+            this.chatService.getMessages().subscribe(
+                (response) => this.messages = response,
+                (error) => console.log(error)
+            );
+          }
+          
+      }
+
     public onSubmit() {
+
         console.log("submitting");
         console.log(this.messageForm);
         console.log(this.messageForm.controls['message'].value)

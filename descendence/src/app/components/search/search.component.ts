@@ -5,7 +5,7 @@ import { ChatComponent } from "../chat/chat.component";
 import { chatModel } from "../chat/message.model";
 
 @Component({
-    selector: 'app-chat',
+    selector: 'chat-search',
     templateUrl: './search.component.html',
     styleUrls: ['./search.component.scss'],
     providers: [ChatComponent]
@@ -35,6 +35,8 @@ import { chatModel } from "../chat/message.model";
         private http: HttpClient) {}
 
 
+    public chatId: string = "";
+
     userForm = this.formBuilder.group({
         userName: ""
     })
@@ -61,7 +63,6 @@ import { chatModel } from "../chat/message.model";
         this.view.createComponent(componentFactory);
         // const componentRef = viewContainerRef.createComponent<ChatComponent>(this.chat);
     }
-
     public submitUser() {
         const newChat: chatModel = {
             name: '',
@@ -69,13 +70,13 @@ import { chatModel } from "../chat/message.model";
         }
         let findUser: string = 'api/chat/find/' + this.userForm.controls['userName'].value;
         this.http.get<chatModel>(findUser).subscribe(
-            (response) => console.log(response),
+            (response) => this.chatId = response.user,
             (error) => this.http.post<chatModel>('api/chat/new', newChat).subscribe(
-                (response) => console.log(response),
+                (response) => this.chatId = response.user,
                 (error) => console.log(error)
             )
         )
-        this.loadComponent();
+        // this.loadComponent();
     }
 
 }
