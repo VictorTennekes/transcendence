@@ -24,20 +24,39 @@ export class chatService {
         }
         const ret: chatDTO = {
             id: item.id,
-            name: item.name
+            name: item.name,
+            user: item.user
+        }
+        return toPromise(ret);
+    }
+
+    async getChatByUser(username: string): Promise<chatDTO> {
+        
+        const item = await this.repo.findOne({
+            where: {user: username}
+        });
+        if (!item) {
+            throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
+        }
+        const ret: chatDTO = {
+            id: item.id,
+            name: item.name,
+            user: item.user
         }
         return toPromise(ret);
     }
 
     async createNewChat(newChat: newChatDTO): Promise<chatDTO> {
-        const { name } = newChat;
+        const { name, user } = newChat;
         const item: chatEntity = await this.repo.create({
-            name
+            name,
+            user
         });
         await this.repo.save(item);
         const ret: chatDTO = {
             id: item.id,
-            name: item.name
+            name: item.name,
+            user: item.user
         }
         return toPromise(ret);
     }

@@ -8,3 +8,10 @@ export class retMessage {
                 public owner: string,
                 public message: string) {}
 }
+
+export class chatModel {
+    constructor(
+        public name: string,
+        public user: string
+    ) {}
+}

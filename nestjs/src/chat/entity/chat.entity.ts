@@ -9,10 +9,13 @@ export class chatEntity {
     @Column()
     name: string;
 
+    @Column()
+    user: string;
+
     // @ManyToMany(type => UserEntity) @JoinTable()
     // owners: UserEntity[];
 
-    @OneToMany(type => MessageEntity, message => message.chat)
-    messages: MessageEntity[];
+    // @OneToMany(type => MessageEntity, message => message.chat)
+    // messages: MessageEntity[];
 
 }

@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
 
 @Injectable()
 export class ChatService {
-    private url = 'api/chat';
+    private url = 'api/chat/msg';
     constructor(private http: HttpClient) {}
 
     public create(msg: newMsg): Observable<retMessage> {

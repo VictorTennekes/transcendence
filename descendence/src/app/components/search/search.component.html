@@ -1,15 +1,29 @@
-<form class="example-form">
+<!-- <form class="example-form"> -->
+<form [formGroup]="userForm" (ngSubmit)="submitUser()" class="example-form">
     <mat-form-field class="example-full-width" appearance="fill">
-      <mat-label>Email</mat-label>
-      <input type="email" matInput [formControl]="findUserFormControl" placeholder="Ex. pat@example.com">
-      <mat-error *ngIf="findUserFormControl.hasError('email') && !findUserFormControl.hasError('required')">
-        Please enter a valid email address
-      </mat-error>
-      <mat-error *ngIf="findUserFormControl.hasError('required')">
-        Email is <strong>required</strong>
-      </mat-error>
+        <mat-label>User name</mat-label>
+        <textarea formControlName="userName" matInput></textarea>
     </mat-form-field>
+    <button class="button" type="submit">Send</button>
 </form>
+
+    <!-- <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>intra name</mat-label>
+      <input type="text" name="userName" matInput [formControl]="searchUserForm" >
+      <mat-error *ngIf="searchUserForm.hasError('invalid') && !searchUserForm.hasError('required')">
+        Not a valid user
+      </mat-error>
+      <mat-error *ngIf="searchUserForm.hasError('required')">
+        user is <strong>required</strong>
+      </mat-error>
+      <mat-error *ngIf="searchUserForm.hasError('email') && !searchUserForm.hasError('required')">
+        Not a valid user
+      </mat-error>
+      <mat-error *ngIf="searchUserForm.hasError('required')">
+        user is <strong>required</strong>
+      </mat-error> -->
+    <!-- </mat-form-field> -->
+<!-- </form> -->
 <template #viewContainer></template>
 <!-- <ng-template adHost></ng-template> -->
   
