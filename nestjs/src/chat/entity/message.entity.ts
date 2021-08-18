@@ -6,10 +6,13 @@ import { chatEntity } from "@chat/entity/chat.entity";
 export class MessageEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
+
     @CreateDateColumn()
     time: Date;
+
     @Column()
-    owner: string; // user_id?
+    owner: string; // TODO: userEntity
+
     @Column()
     message: string;
 

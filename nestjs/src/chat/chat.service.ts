@@ -32,41 +32,12 @@ export class chatService {
         return toPromise(ret);
     }
 
-    // async getChatByUser(username: string): Promise<chatDTO> {
-        
-    //     const item = await this.repo.findOne({
-    //         where: {user: username}
-    //     });
-    //     if (!item) {
-    //         throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
-    //     }
-    //     const ret: chatDTO = {
-    //         id: item.id,
-    //         name: item.name,
-    //         users: item.users,
-    //         messages: item.messages
-    //     }
-    //     return toPromise(ret);
-    // }
-
     async getChatByUser(user: UserDTO): Promise<chatDTO> {
         Logger.log("getting chat by user");
-        // const item = await this.repo.findOne({
-            // where: {users: user}
-        // });
-        // const item = await this.repo.findOne({
-
-        // })
-
         const item = await this.repo
             .createQueryBuilder("chat")
             .leftJoinAndSelect("chat.users", "users")
             .getOne();
-        // const item = await this.repo.createQueryBuilder("chat")
-        // .innerJoinAndSelect("foo.parent", "parent")
-        // .where("parent.name = :name", { name })
-        // .getOne()
-
         //TODO: find chat by two users, looked up user and user that looked up the other user
         Logger.log("got chat by user");
         if (!item) {
@@ -103,8 +74,6 @@ export class chatService {
     }
 
     async createNewMessage(newMessage: newMessageDTO): Promise<MessageDTO> {
-        // this.session.deserializeUser();
-
         const {owner, message, chat} = newMessage;
         Logger.log(newMessage.owner);
         Logger.log(newMessage.message);
@@ -129,14 +98,6 @@ export class chatService {
     }
 
     async getMessagesFromChat(id: string): Promise<MessageDTO[]> {
-        // const chat: Promise<chatDTO> = this.getChatById(id);
-        //TODO: this exception should fall through anyway
-        // Logger.log(chat);
-       // return (chat.messages);
-        // const messages: messageDTO[] = await this.repo.find({
-            // where: {id: id},
-            // select: ["messages"]
-        // })
         Logger.log(`id: ${id}`);
         const item = await this.msgRepo.find({
             where: {chat: id},

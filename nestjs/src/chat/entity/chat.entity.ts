@@ -14,9 +14,6 @@ export class chatEntity {
     @JoinTable()
     users: UserEntity[];
 
-    // @ManyToMany(type => UserEntity) @JoinTable()
-    // owners: UserEntity[];
-
     @OneToMany(type => MessageEntity, message => message.chat)
     messages: MessageEntity[];
 
