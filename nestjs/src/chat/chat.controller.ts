@@ -37,7 +37,8 @@ export class ChatController {
         //or create a session for random user with login
         let msg: newMessageDTO = {
             owner: req.session.passport.user.intra_name,
-            message: newMessage.message
+            message: newMessage.message,
+            chat: newMessage.chat
         };
         Logger.log("chat controller nest");
         Logger.log(msg.message);
@@ -45,9 +46,13 @@ export class ChatController {
         return await this.service.createNewMessage(msg);
     }
 
-    @Get('msg')
-    async getAllMessages(): Promise<MessageDTO[]> {
-        return await this.service.getAllMessages();
+    // @Get('msg')
+    // async getAllMessages(): Promise<MessageDTO[]> {
+        // return await this.service.getAllMessages();
+    // }
+    @Get('msg/:id')
+    async getMessagesFromChat(@Param("id") id: string): Promise<MessageDTO[]> {
+        return await this.service.getMessagesFromChat(id);
     }
     
 }

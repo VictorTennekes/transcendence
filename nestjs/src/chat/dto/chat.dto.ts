@@ -5,5 +5,5 @@ export class chatDTO {
     id: string;
     name: string;
     user: string;
-    // messages: MessageDTO[];
+    messages: MessageDTO[];
 }

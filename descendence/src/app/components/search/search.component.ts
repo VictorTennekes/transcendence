@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Component, ComponentFactory, ComponentFactoryResolver, Input, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { ChatComponent } from "../chat/chat.component";
-import { chatModel } from "../chat/message.model";
+import { chatModel, createChatModel } from "../chat/message.model";
 
 @Component({
     selector: 'chat-search',
@@ -11,29 +11,11 @@ import { chatModel } from "../chat/message.model";
     providers: [ChatComponent]
   })
   export class SearchComponent implements OnInit {
-    // @Input() comp: ChatComponent[] = [];
 
-    // @ViewChild(AdDirective, {static: true}) adHost!: AdDirective;
-    @ViewChild('viewContainer', {read: ViewContainerRef, static: true}) view!: ViewContainerRef;
-
-    // export class ParentComponent implements OnInit {
-        // @ViewChild('viewContainer', read: ViewContainerRef) viewContainer: ViewContainerRef;
-    //   constructor(private resolver: ComponentFactoryResolver) {}
-    //   }
-      
-    // userName: string = "";
-
-    
-
-    // findUserFormControl = new FormControl('', [
-    //     Validators.required,
-    //     Validators.email,
-    // ]);
-
-    constructor(private componentFactoryResolver: ComponentFactoryResolver,
+    constructor(
         private formBuilder: FormBuilder,
-        private http: HttpClient) {}
-
+        private http: HttpClient
+        ) {}
 
     public chatId: string = "";
 
@@ -45,38 +27,18 @@ import { chatModel } from "../chat/message.model";
 
     }
 
-    // ngAfterViewInit() {
-        // this.loadComponent();
-    // }
-
-    ngAfterContentInit() {
-        // this.loadComponent();
-    }
-
-    loadComponent() {
-        // const adItem = this.comp[0];
-        // const componentFactory = this.componentFactoryResolver.resolveComponentFactory(ChatComponent.component);
-        // const viewContainerRef = this.adHost.viewContainerRef;
-        console.log("loading component");
-        this.view.clear();
-        const componentFactory = this.componentFactoryResolver.resolveComponentFactory(ChatComponent);
-        this.view.createComponent(componentFactory);
-        // const componentRef = viewContainerRef.createComponent<ChatComponent>(this.chat);
-    }
     public submitUser() {
-        const newChat: chatModel = {
+        const newChat: createChatModel = {
             name: '',
             user: this.userForm.controls['userName'].value
         }
         let findUser: string = 'api/chat/find/' + this.userForm.controls['userName'].value;
         this.http.get<chatModel>(findUser).subscribe(
-            (response) => this.chatId = response.user,
+            (response) => this.chatId = response.id,
             (error) => this.http.post<chatModel>('api/chat/new', newChat).subscribe(
-                (response) => this.chatId = response.user,
+                (response) => this.chatId = response.id,
                 (error) => console.log(error)
             )
         )
-        // this.loadComponent();
     }
-
 }

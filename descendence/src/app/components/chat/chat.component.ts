@@ -11,42 +11,40 @@ import { newMsg, retMessage } from './message.model';
     providers: [ChatService]
   })
   export class ChatComponent implements OnInit {
-        // @Input() data: any;
 
-        constructor(
+    constructor(
           private formBuilder: FormBuilder,
           private chatService: ChatService
       ) { }
-      displayComponent: boolean = false;
-      messages: retMessage[] = [];
+    @Input()
+    chatId: string = "";
+
+    displayComponent: boolean = false;
+    messages: retMessage[] = [];
         messageForm = this.formBuilder.group({
-          message: "",
-        });
+        message: "",
+    });
 
-        @Input()
-        chatId: string = "";
+    ngOnInit(): void {
+    }
  
-        ngOnInit(): void {
-
-      }
- 
-      ngOnChanges() {
-          if (this.chatId != "") {
+    ngOnChanges() {
+        if (this.chatId != "") {
             this.displayComponent = true;
-            this.chatService.getMessages().subscribe(
+            console.log("chatId: ", this.chatId);
+            this.chatService.getMessages(this.chatId).subscribe(
                 (response) => this.messages = response,
                 (error) => console.log(error)
             );
-          }
-          
-      }
+        }
+    }
 
     public onSubmit() {
-
         console.log("submitting");
         console.log(this.messageForm);
         console.log(this.messageForm.controls['message'].value)
         const msg: newMsg = {
+            chat: this.chatId,
             message: this.messageForm.controls['message'].value
         }
         this.chatService.create(msg).subscribe(

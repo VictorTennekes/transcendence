@@ -25,7 +25,8 @@ export class chatService {
         const ret: chatDTO = {
             id: item.id,
             name: item.name,
-            user: item.user
+            user: item.user,
+            messages: item.messages
         }
         return toPromise(ret);
     }
@@ -41,7 +42,8 @@ export class chatService {
         const ret: chatDTO = {
             id: item.id,
             name: item.name,
-            user: item.user
+            user: item.user,
+            messages: item.messages
         }
         return toPromise(ret);
     }
@@ -56,7 +58,8 @@ export class chatService {
         const ret: chatDTO = {
             id: item.id,
             name: item.name,
-            user: item.user
+            user: item.user,
+            messages: item.messages
         }
         return toPromise(ret);
     }
@@ -64,19 +67,21 @@ export class chatService {
     async createNewMessage(newMessage: newMessageDTO): Promise<MessageDTO> {
         // this.session.deserializeUser();
 
-        const {owner, message} = newMessage;
+        const {owner, message, chat} = newMessage;
         Logger.log(newMessage.owner);
         Logger.log(newMessage.message);
         const item: MessageEntity = await this.msgRepo.create({
             owner,
-            message
+            message,
+            chat,
         });
         await this.msgRepo.save(item);
         const ret: MessageDTO = {
             id: item.id,
             time: item.time,
             owner: item.owner,
-            message: item.message
+            message: item.message,
+            chat: item.chat
         }
         return toPromise(ret);
     }
@@ -85,4 +90,22 @@ export class chatService {
         return await this.msgRepo.find();
     }
 
+    async getMessagesFromChat(id: string): Promise<MessageDTO[]> {
+        // const chat: Promise<chatDTO> = this.getChatById(id);
+        //TODO: this exception should fall through anyway
+        // Logger.log(chat);
+       // return (chat.messages);
+        // const messages: messageDTO[] = await this.repo.find({
+            // where: {id: id},
+            // select: ["messages"]
+        // })
+        Logger.log(`id: ${id}`);
+        const item = await this.msgRepo.find({
+            where: {chat: id},
+        });
+        if (!item) {
+            throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
+        }
+        return item;
+    }
 }
