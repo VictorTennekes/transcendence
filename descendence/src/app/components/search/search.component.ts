@@ -41,8 +41,8 @@ import { chatModel, createChatModel } from "../chat/message.model";
                     console.log("user not found");
                 } else {
                     this.http.post<chatModel>('api/chat/new', newChat).subscribe(
-                    (response) => this.chatId = response.id,
-                    (error) => console.log(error)
+                        (response) => this.chatId = response.id,
+                        (error) => console.log(error)
                     );
                 }
             }

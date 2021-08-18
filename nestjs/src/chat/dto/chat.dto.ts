@@ -4,6 +4,6 @@ import { MessageDTO } from "./message.dto";
 export class chatDTO {
     id: string;
     name: string;
-    user: string;
+    users: UserDTO[];
     messages: MessageDTO[];
 }

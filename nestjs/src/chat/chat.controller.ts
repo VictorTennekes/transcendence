@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Param, ParseUUIDPipe, Post, UseGuards, Req, HttpException, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, ParseUUIDPipe, Post, UseGuards, Req, HttpException, HttpStatus, UseFilters } from '@nestjs/common';
 import { chatService } from '@chat/chat.service';
 import { chatDTO } from '@chat/dto/chat.dto';
 import { newChatDTO } from '@chat/dto/newChat.dto';
@@ -7,6 +7,9 @@ import { MessageDTO } from '@chat/dto/message.dto';
 import { MsgDTO, newMessageDTO } from '@chat/dto/newMessage.dto';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
 import { UserService } from '@user/user.service';
+import { UserDTO } from '@user/dto/user.dto';
+import { UserEntity } from '@user/entities/user.entity';
+import { UnauthorizedFilter } from 'src/auth/unauthorized.filter';
 
 @Controller('chat')
 export class ChatController {
@@ -18,11 +21,15 @@ export class ChatController {
     //     return toPromise(item);
     // }
     @Get("find/:user")
+    @UseGuards(AuthenticatedGuard)
+    @UseFilters(UnauthorizedFilter)
     async getChatById(@Param("user") username: string): Promise<chatDTO> {
         Logger.log(`Finding user ${username}`);
-        if (await this.userService.findOne(username)) {
+        const user = await this.userService.findOne(username);
+        if (user) {
             Logger.log("found user");
-            return await this.service.getChatByUser(username);
+            // return await this.service.getChatByUser(username);
+            return await this.service.getChatByUser(user);
         } else {
             Logger.log("can't find user");
             throw new HttpException("No user by name " + username, HttpStatus.NOT_FOUND);

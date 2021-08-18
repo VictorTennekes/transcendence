@@ -6,11 +6,13 @@ import { MessageEntity } from "./message.entity";
 export class chatEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
+
     @Column()
     name: string;
 
-    @Column()
-    user: string;
+    @ManyToMany(type => UserEntity, user => user.chats)
+    @JoinTable()
+    users: UserEntity[];
 
     // @ManyToMany(type => UserEntity) @JoinTable()
     // owners: UserEntity[];

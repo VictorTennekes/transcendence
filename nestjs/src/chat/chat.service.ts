@@ -9,6 +9,7 @@ import { MessageDTO } from "@chat/dto/message.dto";
 import { newMessageDTO } from "@chat/dto/newMessage.dto";
 import { MessageEntity } from "@chat/entity/message.entity";
 import { SessionSerializer } from "src/auth/session.serializer";
+import { UserDTO } from "@user/dto/user.dto";
 
 @Injectable()
 export class chatService {
@@ -25,40 +26,77 @@ export class chatService {
         const ret: chatDTO = {
             id: item.id,
             name: item.name,
-            user: item.user,
+            users: item.users,
             messages: item.messages
         }
         return toPromise(ret);
     }
 
-    async getChatByUser(username: string): Promise<chatDTO> {
+    // async getChatByUser(username: string): Promise<chatDTO> {
         
-        const item = await this.repo.findOne({
-            where: {user: username}
-        });
+    //     const item = await this.repo.findOne({
+    //         where: {user: username}
+    //     });
+    //     if (!item) {
+    //         throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
+    //     }
+    //     const ret: chatDTO = {
+    //         id: item.id,
+    //         name: item.name,
+    //         users: item.users,
+    //         messages: item.messages
+    //     }
+    //     return toPromise(ret);
+    // }
+
+    async getChatByUser(user: UserDTO): Promise<chatDTO> {
+        Logger.log("getting chat by user");
+        // const item = await this.repo.findOne({
+            // where: {users: user}
+        // });
+        // const item = await this.repo.findOne({
+
+        // })
+
+        const item = await this.repo
+            .createQueryBuilder("chat")
+            .leftJoinAndSelect("chat.users", "users")
+            .getOne();
+        // const item = await this.repo.createQueryBuilder("chat")
+        // .innerJoinAndSelect("foo.parent", "parent")
+        // .where("parent.name = :name", { name })
+        // .getOne()
+
+        //TODO: find chat by two users, looked up user and user that looked up the other user
+        Logger.log("got chat by user");
         if (!item) {
             throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
         }
         const ret: chatDTO = {
             id: item.id,
             name: item.name,
-            user: item.user,
+            users: item.users,
             messages: item.messages
         }
+        Logger.log(`chat users: ${item.users}`)
         return toPromise(ret);
+
     }
 
     async createNewChat(newChat: newChatDTO): Promise<chatDTO> {
-        const { name, user } = newChat;
+        const { name, users } = newChat;
+        Logger.log("creating a new chat");
         const item: chatEntity = await this.repo.create({
             name,
-            user
+            users
         });
+        Logger.log("about to save new chat");
         await this.repo.save(item);
+        Logger.log("successfully saved new chat");
         const ret: chatDTO = {
             id: item.id,
             name: item.name,
-            user: item.user,
+            users: item.users,
             messages: item.messages
         }
         return toPromise(ret);
