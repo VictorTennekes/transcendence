@@ -6,11 +6,11 @@ export class newMsg {
 
 export class retMessage {
     constructor(
-                public chat: string,
-                public id: string,
-                public time: Date,
-                public owner: string,
-                public message: string) {}
+        public chat: string,
+        public id: string,
+        public time: Date,
+        public owner: string,
+        public message: string) {}
 }
 
 export class chatModel {

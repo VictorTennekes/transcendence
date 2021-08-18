@@ -1,6 +1,5 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { DoAction } from './action';
+import { Component, OnInit, Input } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { ChatService } from './chat.service';
 import { newMsg, retMessage } from './message.model';
 
