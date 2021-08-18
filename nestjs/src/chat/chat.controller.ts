@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Param, ParseUUIDPipe, Post, UseGuards, Req } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, ParseUUIDPipe, Post, UseGuards, Req, HttpException, HttpStatus } from '@nestjs/common';
 import { chatService } from '@chat/chat.service';
 import { chatDTO } from '@chat/dto/chat.dto';
 import { newChatDTO } from '@chat/dto/newChat.dto';
@@ -6,10 +6,12 @@ import { toPromise } from '@shared/utils';
 import { MessageDTO } from '@chat/dto/message.dto';
 import { MsgDTO, newMessageDTO } from '@chat/dto/newMessage.dto';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
+import { UserService } from '@user/user.service';
 
 @Controller('chat')
 export class ChatController {
-    constructor(private readonly service: chatService) {}
+    constructor(private readonly service: chatService,
+                private readonly userService: UserService) {}
     // @Get(":id")
     // async getChatById(@Param("id", new ParseUUIDPipe()) uuid: string): Promise<chatDTO> {
     //     const item = await this.service.getChatById(uuid);
@@ -18,7 +20,13 @@ export class ChatController {
     @Get("find/:user")
     async getChatById(@Param("user") username: string): Promise<chatDTO> {
         Logger.log(`Finding user ${username}`);
-        return await this.service.getChatByUser(username);
+        if (await this.userService.findOne(username)) {
+            Logger.log("found user");
+            return await this.service.getChatByUser(username);
+        } else {
+            Logger.log("can't find user");
+            throw new HttpException("No user by name " + username, HttpStatus.NOT_FOUND);
+        }
     }
     @Post('new')
     async createNewChat(@Body() newChat: chatDTO, @Req() req): Promise<chatDTO> {
