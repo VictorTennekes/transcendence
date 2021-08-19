@@ -34,12 +34,16 @@ import { chatModel, createChatModel } from "../chat/message.model";
         }
         let findUser: string = 'api/chat/find/' + this.userForm.controls['userName'].value;
         this.http.get<chatModel>(findUser).subscribe(
-            (response) => this.chatId = response.id,
+            (response) => {
+                this.chatId = response.id;
+                console.log("found existing chat");
+            },
             (error) => {
                 console.log(error);
                 if (error.error.statusCode === 404) {
                     console.log("user not found");
                 } else {
+                    console.log("creating new chat");
                     this.http.post<chatModel>('api/chat/new', newChat).subscribe(
                         (response) => this.chatId = response.id,
                         (error) => console.log(error)

@@ -10,7 +10,7 @@ export class chatEntity {
     @Column()
     name: string;
 
-    @ManyToMany(type => UserEntity, user => user.chats)
+    @ManyToMany(type => UserEntity, {cascade: true})
     @JoinTable()
     users: UserEntity[];
 

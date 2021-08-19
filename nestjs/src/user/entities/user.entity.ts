@@ -14,9 +14,4 @@ export class UserEntity {
 	@Column( { length: '50'} )
 	@IsNotEmpty()
 	display_name: string;
-
-    @ManyToMany(type => chatEntity, chat => chat.users)
-    @JoinTable()
-    chats: chatEntity[];
-
 }

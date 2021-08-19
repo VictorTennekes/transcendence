@@ -8,7 +8,6 @@ import { Repository } from "typeorm";
 import { MessageDTO } from "@chat/dto/message.dto";
 import { newMessageDTO } from "@chat/dto/newMessage.dto";
 import { MessageEntity } from "@chat/entity/message.entity";
-import { SessionSerializer } from "src/auth/session.serializer";
 import { UserDTO } from "@user/dto/user.dto";
 
 @Injectable()
@@ -32,17 +31,18 @@ export class chatService {
         return toPromise(ret);
     }
 
-    async getChatByUser(user: UserDTO): Promise<chatDTO> {
+    async getChatByUsers(users: UserDTO[]): Promise<chatDTO> {
         Logger.log("getting chat by user");
         const item = await this.repo
-            .createQueryBuilder("chat")
-            .leftJoinAndSelect("chat.users", "users")
-            .getOne();
-        //TODO: find chat by two users, looked up user and user that looked up the other user
+                .createQueryBuilder("chat")
+                .innerJoinAndSelect("chat.users", "users")
+                .where("users.intra_name = :username", { username: [users[0].intra_name, users[1].intra_name] })
+                .getOne()
         Logger.log("got chat by user");
         if (!item) {
             throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
         }
+        Logger.log(`chat id: ${item.id}`);
         const ret: chatDTO = {
             id: item.id,
             name: item.name,
@@ -55,15 +55,12 @@ export class chatService {
     }
 
     async createNewChat(newChat: newChatDTO): Promise<chatDTO> {
-        const { name, users } = newChat;
         Logger.log("creating a new chat");
-        const item: chatEntity = await this.repo.create({
-            name,
-            users
+        let item: chatEntity = await this.repo.create({
+            name: newChat.name,
+            users: newChat.users
         });
-        Logger.log("about to save new chat");
-        await this.repo.save(item);
-        Logger.log("successfully saved new chat");
+        item = await this.repo.save(item);
         const ret: chatDTO = {
             id: item.id,
             name: item.name,
