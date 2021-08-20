@@ -1,29 +1,29 @@
-export class newMsg {
-    constructor(
-        public chat: string,
-        public message: string) {}
+
+export interface userModel {
+    intra_name: string;
+    display_name: string;
 }
 
-export class retMessage {
-    constructor(
-        public chat: string,
-        public id: string,
-        public time: Date,
-        public owner: string,
-        public message: string) {}
+export interface newMsg {
+    chat: string;
+    message: string;
 }
 
-export class chatModel {
-    constructor(
-        public id: string,
-        public name: string,
-        public user: string
-    ) {}
+export interface retMessage {
+    chat: string;
+    id: string;
+    time: Date;
+    owner: userModel;
+    message: string;
 }
 
-export class createChatModel {
-    constructor(
-        public name: string,
-        public user: string
-    ) {}
+export interface chatModel {
+    id: string,
+    name: string,
+    user: string
+}
+
+export interface createChatModel {
+    name: string,
+    user: string
 }
