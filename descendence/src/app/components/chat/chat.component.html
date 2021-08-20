@@ -2,7 +2,7 @@
 <mat-list>
     <mat-list-item *ngFor="let message of messages">
       <img matListAvatar src="..." alt="...">
-      <h3 matLine> {{message.owner}} </h3>
+      <h3 matLine> {{message.owner.display_name}} </h3>
       <p matLine>
         <span class="demo-2"> -- {{message.message}} </span>
       </p>

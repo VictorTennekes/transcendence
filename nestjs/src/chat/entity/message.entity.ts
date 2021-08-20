@@ -12,12 +12,7 @@ export class MessageEntity {
     @CreateDateColumn()
     time: Date;
 
-    // @Column()
-    // owner: string; // TODO: userEntity
-    // @Column()
-    // owner: UserEntity;
-
-    @OneToMany(type => UserEntity, user => user.intra_name, {cascade: true})
+    @ManyToOne(type => UserEntity, user => user.intra_name, {cascade: true})
     @JoinColumn()
     owner: UserEntity;
 
