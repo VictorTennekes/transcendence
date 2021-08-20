@@ -22,15 +22,11 @@ const postgresSession = require('connect-pg-simple')(session);
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 
-	//initialize and use the session middleware, providing 'connect-pg-simple' as store
-
-//	app.use(cookieParser);
-
 	const fs = require('fs');
 	const path = require('path');
 	
 	await runDbMigrations();
-
+	
 	const knex = require('knex')({
 		client: 'pg',
 		connection: postgresConnection,
@@ -56,8 +52,8 @@ async function bootstrap() {
 			conObject: postgresConnection,
 		});
 	});
-	// const sessionStore = new postgresSession({conObject: postgresConnection});
-
+	
+	//initialize and use the session middleware, providing 'connect-pg-simple' as store
 	app.use(session({
 		cookie: {
 			maxAge: 24 * 7 * 60 * 60 * 1000, // 1 week,

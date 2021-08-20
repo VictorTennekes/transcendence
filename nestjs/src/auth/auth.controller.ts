@@ -17,22 +17,11 @@ export class AuthController {
 	@UseGuards(LoginGuard)
 	@UseFilters(UnauthorizedFilter)
 	async login(@Req() req, @Res() res: Response) {
-		//		res.set('Set-Cookie', `sid=${req.session["cookie"]}`);
-		res.redirect('/auth/redirect_success');
-	}
-	
-	//subsequent visits will have the authorization header appended
-	@Get('redirect_success')
-	@UseGuards(AuthenticatedGuard)
-	@UseFilters(UnauthorizedFilter)
-	authorized(@Req() req, @Res() res) {
-
-//		return ("AUTHENTICATED :O");
 		res.redirect('http://localhost:4200/');
 	}
 	
 	//requests without authorization header get sent here (by UnauthorizedFilter)
-	@Get('redirect_failure')
+	@Get('unauthorized')
 	unauthorized(@Req() req, @Res() res) {
 		res.redirect('http://localhost:4200/');
 	}
@@ -41,7 +30,6 @@ export class AuthController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	logout(@Req() req) {
-//		console.table(JSON.stringify(req.cookies));
 		req.session.destroy();
 	}
 }
