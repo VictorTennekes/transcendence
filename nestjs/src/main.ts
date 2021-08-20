@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { getDbConnectionOptions, runDbMigrations } from './shared/utils';
 import * as passport from 'passport';
 import * as session from 'express-session';
+import * as cookieParser from 'cookie-parser';
 
 import 'dotenv/config';
 
@@ -23,10 +24,13 @@ async function bootstrap() {
 
 	//initialize and use the session middleware, providing 'connect-pg-simple' as store
 
+//	app.use(cookieParser);
+
 	const fs = require('fs');
 	const path = require('path');
 	
-	
+	await runDbMigrations();
+
 	const knex = require('knex')({
 		client: 'pg',
 		connection: postgresConnection,
@@ -52,6 +56,7 @@ async function bootstrap() {
 			conObject: postgresConnection,
 		});
 	});
+	// const sessionStore = new postgresSession({conObject: postgresConnection});
 
 	app.use(session({
 		cookie: {
@@ -61,9 +66,9 @@ async function bootstrap() {
 			sameSite: 'strict'
 		},
 		rolling: true, //reset the maxAge of the cookie on every response
-		secret: 'fixme',
+		secret: 'fixme', //FIXME change this
 		store: sessionStore,
-		saveUninitialized: true,
+		saveUninitialized: false,
 		resave: true,
 	}));
 	//initialize passport to use SessionSerializer and save it into 'request.session'
@@ -71,7 +76,6 @@ async function bootstrap() {
 	app.use(passport.session());
 
 	//integrate changes to the structure of entities into the database
-	await runDbMigrations();
 	await app.listen(3000);
 }
 

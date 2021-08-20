@@ -30,6 +30,18 @@ export class UserService {
 		return (user);
 	}
 
+	async update(login: string, changedData: any) {
+		console.log(`data: ${changedData}`);
+		let user = await this.findOne(login);
+		//validate that displayName is unique (?)
+		user = await this.userRepository.save({
+			...user,
+			...changedData
+		});
+		//handle errors thrown by 'save' for possible uniqueness issues.
+		console.log(`updated user: ${JSON.stringify(user)}`);
+	}
+
 	async create(login: string) {
 		const intra_name = login;
 		const display_name = intra_name;
@@ -37,14 +49,9 @@ export class UserService {
 		await this.userRepository.save(user);
 		return (user);
 	}
-
-	findAll() {
-		return `This action returns all user`;
-	}
 	
-	findOne(login: string) {
-		const intra_name = login;
-		return this.userRepository.findOne({where: { intra_name }});
+	async findOne(login: string) {
+		return await this.userRepository.findOne({where: { intra_name: login }});
 	}
 
 	async login(loginInformation: LoginUserDto): Promise<LoginStatus> {

@@ -10,7 +10,10 @@ export class UserEntity {
 	intra_name: string;
 
 	@MaxLength(50)
-	@Column( { length: '50'} )
+	@Column({
+		type: "varchar",
+		length: '50'
+	})
 	@IsNotEmpty()
 	display_name: string;
 }

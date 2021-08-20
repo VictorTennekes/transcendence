@@ -1,13 +1,16 @@
 import { Controller, Get, Logger, Post, Req, Res, Session, UseFilters, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
+import { AuthService } from './auth.service';
 import { AuthenticatedGuard } from './authenticated.guard';
 import { LoginGuard } from './login.guard';
 import { UnauthorizedFilter } from './unauthorized.filter';
 
 @Controller('auth')
 export class AuthController {
-	constructor() {}
+	constructor(
+		private readonly authService: AuthService
+	) {}
 
 	//when first logging in, navigate user here
 	@Get('redirect')
@@ -32,5 +35,13 @@ export class AuthController {
 	@Get('redirect_failure')
 	unauthorized(@Req() req, @Res() res) {
 		res.redirect('http://localhost:4200/');
+	}
+
+	@Get('logout')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	logout(@Req() req) {
+//		console.table(JSON.stringify(req.cookies));
+		req.session.destroy();
 	}
 }

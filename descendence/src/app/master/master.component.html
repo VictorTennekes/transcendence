@@ -1,1 +1,35 @@
-<div>succesful auth!</div>
+<div class="SiteContent">
+	<div class="LeftContainer">
+		<button class=LogoContainer>
+			<p>PONG</p>
+		</button>
+		<div class=NavContainer>
+			<button class="NavItem">
+				<div class="IconBackground">
+				</div>
+				<a routerLink="users">Users</a>
+			</button>
+			<button class="NavItem">
+				<div class="IconBackground">
+				</div>
+				<a routerLink="">Play</a>
+			</button>
+		</div>
+		<button (click)="logOut()" type="button" class="NavItem" id="logout-button">
+			<div class="IconBackground">
+			</div>
+			<p>Log out</p>
+		</button>
+	</div>
+
+	<div class="ViewContainer">
+		<router-outlet></router-outlet>
+	</div>
+
+	<div class="RightContainer">
+		<app-user></app-user>
+		<button class="NavItem">
+			<p>Chat</p>
+		</button>
+	</div>
+</div>

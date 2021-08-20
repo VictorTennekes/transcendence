@@ -1,11 +1,17 @@
 import { HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from '@user/user.service';
+import { Repository } from 'typeorm';
+import { SessionEntity } from './entity/session.entity';
+import { SessionSerializer } from './session.serializer';
 
 //Anything that relates to authentication goes here
 @Injectable()
 export class AuthService {
 	constructor (
-		private readonly userService: UserService
+		private readonly userService: UserService,
+		@InjectRepository(SessionEntity)
+		private readonly sessionRepository: Repository<SessionEntity>
 	) {}
 
 	async validateUser (login: string): Promise<any> {

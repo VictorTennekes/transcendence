@@ -11,11 +11,13 @@ export class SessionSerializer extends PassportSerializer
 	}
 
 	serializeUser(user: any, done: (err: any, id?: any) => void): void {
+		//store only the intra_name;
 		console.log(`Serializing: ${JSON.stringify(user)}`);
 		done(null, user);
 	}
 
 	deserializeUser(payload: any, done: (err: any, id?: any) => void): void {
+		//fetch the user from the database, using the intra_name;
 		console.log(`Deserializing: ${JSON.stringify(payload)}`);
 		done(null, payload);
 	}

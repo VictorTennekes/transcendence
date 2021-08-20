@@ -1,4 +1,9 @@
+import { HttpClient, HttpRequest } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import "@fontsource/fredoka-one";
+import { CookieService } from 'ngx-cookie';
+import { UserService } from '../user.service';
 
 @Component({
 	selector: 'app-master',
@@ -7,10 +12,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MasterComponent implements OnInit {
 	
-	constructor() { }
+	constructor(
+		private readonly router: Router,
+		private userService: UserService,
+		private cookies: CookieService,
+	) { }
 	
-	ngOnInit(): void {
-		console.log("MASTER");
+	ngOnInit(): void { }
+
+	logOut(): void {
+		this.userService.logout().subscribe(() => {});
+		this.cookies.remove('connect.sid');
+		this.router.navigate(['home']);
 	}
-	
 }

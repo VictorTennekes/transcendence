@@ -34,7 +34,10 @@
 							"src/assets"
 						],
 						"styles": [
-							"src/styles.scss"
+							"src/styles.scss",
+							"./node_modules/@fontsource/fredoka-one/index.css",
+							"./node_modules/@fontsource/poppins/index.css",
+							"./node_modules/@fontsource/poppins/600.css"
 						],
 						"scripts": []
 					},

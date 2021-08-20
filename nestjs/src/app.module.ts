@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CookieParserMiddleware } from '@nest-middlewares/cookie-parser';
 import 'dotenv/config';
 
 @Module({
@@ -18,7 +19,7 @@ import 'dotenv/config';
 				password: configService.get('POSTGRES_PASSWORD'),
 				database: configService.get('POSTGRES_DB'),
 				autoLoadEntities: true,
-				synchronize: true,
+				synchronize: true, //TODO: fix this, not for production
 			}),
 			inject: [ConfigService]
 		}),
