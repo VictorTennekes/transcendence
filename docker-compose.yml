@@ -10,6 +10,7 @@ services:
             - nestjs
         volumes:
             - ./descendence:/usr/src/app
+            - node_modules:/usr/src/app/node_modules
     database:
         image: "postgres"
         ports:
@@ -34,3 +35,4 @@ services:
 #probably needs fixing, data is gone when the container exits
 volumes:
     database-data:
+    node_modules:
