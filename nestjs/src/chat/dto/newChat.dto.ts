@@ -1,5 +1,5 @@
 import { OmitType } from "@nestjs/mapped-types";
-import { chatDTO } from "@chat/dto/chat.dto";
+import { ChatDTO } from "@chat/dto/chat.dto";
 
-export class newChatDTO extends OmitType(chatDTO, ['id'] as const) {
+export class NewChatDTO extends OmitType(ChatDTO, ['id'] as const) {
 }

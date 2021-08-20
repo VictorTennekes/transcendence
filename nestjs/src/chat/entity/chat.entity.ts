@@ -3,18 +3,18 @@ import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, PrimaryGe
 import { MessageEntity } from "./message.entity";
 
 @Entity('chat')
-export class chatEntity {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
-
-    @Column()
-    name: string;
-
-    @ManyToMany(type => UserEntity, user => user.chats)
-    @JoinTable()
-    users: UserEntity[];
-
-    @OneToMany(type => MessageEntity, message => message.chat)
-    messages: MessageEntity[];
-
+export class ChatEntity {
+	@PrimaryGeneratedColumn("uuid")
+	id: string;
+	
+	@Column()
+	name: string;
+	
+	@ManyToMany(type => UserEntity, user => user.chats)
+	@JoinTable()
+	users: UserEntity[];
+	
+	@OneToMany(type => MessageEntity, message => message.chat)
+	messages: MessageEntity[];
+	
 }

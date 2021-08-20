@@ -2,7 +2,6 @@ version: '3'
 services:
     nodejs-server:
         build: ./descendence
-        command: npm run debug
         ports:
             - "4200:4200"
         container_name: node-api
@@ -25,7 +24,6 @@ services:
         container_name: nestjs
         image: nestjs:1.0.0
         build: ./nestjs
-        command: npm run start:debug
         ports:
             - 3000:3000
         volumes:
