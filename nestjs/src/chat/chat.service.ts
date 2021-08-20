@@ -32,14 +32,64 @@ export class chatService {
     }
 
     async getChatByUsers(users: UserDTO[]): Promise<chatDTO> {
-        Logger.log("getting chat by user");
-        const item = await this.repo
+        Logger.log(`getting chat by user ${users[0].intra_name} ${users[1].intra_name}`);
+
+        const items = await this.repo
                 .createQueryBuilder("chat")
                 .innerJoinAndSelect("chat.users", "users")
-                .where("users.intra_name = :username", { username: [users[0].intra_name, users[1].intra_name] })
-                .getOne()
+                .getMany();
+
+        // const qb = await this.repo
+        // .createQueryBuilder('chat')
+        // .innerJoin('chat.users', 'userGroup', 'userGroup.id IN (:...groupIds)', { users }); 
+       
+        
+
+
         Logger.log("got chat by user");
+        let item;
+        for (let i = 0; i < items.length; i++) {
+            Logger.log(`${JSON.stringify(items[i])}`);
+            let count = 0;
+        
+            
+
+            for (let j = 0; j < users.length; j++) {
+                // Logger.log(items[i].users);
+                Logger.log(`Looking for user: ${users[j].intra_name}`);
+                // this.roles.findIndex(role=> role.name === 'ADMIN')
+                Logger.log(JSON.stringify(items[i].users))
+                Logger.log(items[i].users.findIndex(user => user.intra_name == users[j].intra_name));
+
+
+                function userExists(username) {
+                    return items[i].users.some(function(el) {
+                        return el.intra_name === username;
+                    });
+                }
+
+
+                // if (items[i].users.findIndex(user => user.intra_name === users[j].intra_name)) {
+
+                if (userExists(users[j].intra_name)) {
+
+
+                // }
+                // if (items[i].users.includes(users[j])) {
+                    Logger.log(`found ${count} === ${users.length}`);
+                    count++;
+                }
+                if (count == users.length) {
+                    item = items[i];
+                    Logger.log(`item: ${JSON.stringify(item)}`);
+                    Logger.log(`items[i]: ${JSON.stringify(items[i])}`);
+                    Logger.log(`hereee`);
+                    break;
+                }
+            }
+        }
         if (!item) {
+            Logger.log("can't find chat");
             throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
         }
         Logger.log(`chat id: ${item.id}`);
