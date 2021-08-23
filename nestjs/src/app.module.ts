@@ -23,9 +23,8 @@ import 'dotenv/config';
 			}),
 			inject: [ConfigService]
 		}),
-        ChatModule,
+		ChatModule,
 		AuthModule
 	]
 })
 export class AppModule { }
-

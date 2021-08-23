@@ -1,17 +1,13 @@
-import { Body, Controller, Get, Logger, Param, ParseUUIDPipe, Post, UseGuards, Req, HttpException, HttpStatus, UseFilters } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post, UseGuards, Req, HttpException, HttpStatus, UseFilters } from '@nestjs/common';
 import { chatService } from '@chat/chat.service';
 import { chatDTO } from '@chat/dto/chat.dto';
 import { newChatDTO, receiveNewChatDTO } from '@chat/dto/newChat.dto';
-import { toPromise } from '@shared/utils';
 import { MessageDTO } from '@chat/dto/message.dto';
-import { MsgDTO, newMessageDTO, receiveMessageDTO } from '@chat/dto/newMessage.dto';
+import { newMessageDTO, receiveMessageDTO } from '@chat/dto/newMessage.dto';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
 import { UserService } from '@user/user.service';
 import { UserDTO } from '@user/dto/user.dto';
-import { UserEntity } from '@user/entities/user.entity';
 import { UnauthorizedFilter } from 'src/auth/unauthorized.filter';
-import e from 'express';
-import { find } from 'rxjs';
 
 @Controller('chat')
 export class ChatController {
@@ -87,14 +83,4 @@ export class ChatController {
         Logger.log(msg.owner);
         return await this.service.createNewMessage(msg);
     }
-
-    // @Get('msg')
-    // async getAllMessages(): Promise<MessageDTO[]> {
-        // return await this.service.getAllMessages();
-    // }
-    @Get('msg/:id')
-    async getMessagesFromChat(@Param("id") id: string): Promise<MessageDTO[]> {
-        return await this.service.getMessagesFromChat(id);
-    }
-    
 }

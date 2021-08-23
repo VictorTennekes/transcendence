@@ -9,9 +9,14 @@ export class UserEntity {
 	@IsNotEmpty()
 	@PrimaryColumn()
 	intra_name: string;
-
+	
 	@MaxLength(50)
 	@Column( { length: '50'} )
 	@IsNotEmpty()
 	display_name: string;
+	
+	@ManyToMany((type) => chatEntity, (chat: chatEntity) => chat.users)
+	@JoinTable()
+	chats: chatEntity[];
+	
 }

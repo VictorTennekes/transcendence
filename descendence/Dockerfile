@@ -11,8 +11,9 @@ COPY package.json .
 
 # install required npm packages
 RUN npm install -g npm@6.14.13
-RUN npm install
 RUN npm install -g @angular/cli@12.1.1
+
+RUN npm install
 
 # copy app
 COPY . .

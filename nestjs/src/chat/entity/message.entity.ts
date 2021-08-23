@@ -23,4 +23,3 @@ export class MessageEntity {
     @JoinColumn()
     chat: chatEntity;
 }
-

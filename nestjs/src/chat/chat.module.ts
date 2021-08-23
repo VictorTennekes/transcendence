@@ -9,18 +9,18 @@ import { UserService } from '@user/user.service';
 import { UserEntity } from '@user/entities/user.entity';
 
 @Module({
-  controllers: [ChatController],
-  providers: [
-            chatService,
-            UserService
-        ],
-  imports: [
-      ConfigModule,
-      TypeOrmModule.forFeature([
-        chatEntity,
-        MessageEntity,
-        UserEntity
-    ])
-  ]
+	controllers: [ChatController],
+	providers: [
+		chatService,
+		UserService
+	],
+	imports: [
+		ConfigModule,
+		TypeOrmModule.forFeature([
+			chatEntity,
+			MessageEntity,
+			UserEntity
+		])
+	]
 })
 export class ChatModule {}
