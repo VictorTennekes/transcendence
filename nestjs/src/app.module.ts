@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ChatModule } from '@chat/chat.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import 'dotenv/config';
@@ -22,8 +23,8 @@ import 'dotenv/config';
 			}),
 			inject: [ConfigService]
 		}),
+		ChatModule,
 		AuthModule
 	]
 })
 export class AppModule { }
-

@@ -4,6 +4,9 @@ import { FailComponent } from './fail/fail.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { MasterComponent } from './master/master.component';
+import { ChatComponent } from './components/chat/chat.component';
+import { MatInputModule } from '@angular/material/input'
+import { SearchComponent } from './components/search/search.component';
 
 const routes: Routes = [
 	{
@@ -25,11 +28,16 @@ const routes: Routes = [
 	{
 		path: 'login',
 		component: LoginComponent
+	},
+    {
+		path: 'chat',
+		component: SearchComponent
 	}
 ];
 
 @NgModule({
-	imports: [RouterModule.forRoot(routes)],
+	imports:
+        [RouterModule.forRoot(routes)],
 	exports: [RouterModule]
 })
 export class AppRoutingModule { }

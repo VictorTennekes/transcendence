@@ -8,21 +8,31 @@ import { HttpClientModule } from '@angular/common/http';
 import { MasterComponent } from './master/master.component';
 import { LoginComponent } from './login/login.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ChatComponent } from './components/chat/chat.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
 import { FailComponent } from './fail/fail.component';
+import { SearchComponent } from './components/search/search.component';
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		HomeComponent,
 		MasterComponent,
+        SearchComponent,
+        ChatComponent,
 		LoginComponent,
-		FailComponent
+		FailComponent,
 	],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
 		HttpClientModule,
-		ReactiveFormsModule
+		ReactiveFormsModule,
+		BrowserAnimationsModule,
+        MatInputModule,
+        MatListModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]
