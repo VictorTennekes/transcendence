@@ -5,6 +5,6 @@ export class NewChatDTO extends OmitType(ChatDTO, ['id', 'messages'] as const) {
 }
 
 export class ReceiveNewChatDTO {
-    name: string;
-    user: string;
+	name: string;
+	user: string;
 }

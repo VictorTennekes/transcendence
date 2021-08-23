@@ -4,17 +4,17 @@ import { MessageEntity } from "./message.entity";
 
 @Entity('chat')
 export class ChatEntity {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+	@PrimaryGeneratedColumn("uuid")
+	id: string;
 
-    @Column()
-    name: string;
+	@Column()
+	name: string;
 
-    @ManyToMany(type => UserEntity, {cascade: true})
-    @JoinTable()
-    users: UserEntity[];
+	@ManyToMany(type => UserEntity, {cascade: true})
+	@JoinTable()
+	users: UserEntity[];
 
-    @OneToMany(type => MessageEntity, message => message.chat)
-    messages: MessageEntity[];
+	@OneToMany(type => MessageEntity, message => message.chat)
+	messages: MessageEntity[];
 
 }

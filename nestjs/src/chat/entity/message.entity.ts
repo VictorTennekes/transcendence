@@ -6,20 +6,20 @@ import { userInfo } from "os";
 
 @Entity('message')
 export class MessageEntity {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+	@PrimaryGeneratedColumn("uuid")
+	id: string;
 
-    @CreateDateColumn()
-    time: Date;
+	@CreateDateColumn()
+	time: Date;
 
-    @ManyToOne(type => UserEntity, user => user.intra_name, {cascade: true})
-    @JoinColumn()
-    owner: UserEntity;
+	@ManyToOne(type => UserEntity, user => user.intra_name, {cascade: true})
+	@JoinColumn()
+	owner: UserEntity;
 
-    @Column()
-    message: string;
+	@Column()
+	message: string;
 
-    @ManyToOne(type => ChatEntity, chat => chat.messages)
-    @JoinColumn()
-    chat: ChatEntity;
+	@ManyToOne(type => ChatEntity, chat => chat.messages)
+	@JoinColumn()
+	chat: ChatEntity;
 }

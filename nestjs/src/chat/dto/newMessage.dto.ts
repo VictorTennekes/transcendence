@@ -8,7 +8,7 @@ export class MsgDTO extends OmitType(newMessageDTO, ['owner'] as const) {
 }
 
 export class receiveMessageDTO {
-    owner: string; // user_id?
-    message: string;
-    chat: string;
+	owner: string; // user_id?
+	message: string;
+	chat: string;
 }
