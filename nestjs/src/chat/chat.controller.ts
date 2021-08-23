@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Logger, Param, Post, UseGuards, Req, HttpException, HttpStatus, UseFilters } from '@nestjs/common';
-import { chatService } from '@chat/chat.service';
-import { chatDTO } from '@chat/dto/chat.dto';
-import { newChatDTO, receiveNewChatDTO } from '@chat/dto/newChat.dto';
+import { ChatService } from '@chat/chat.service';
+import { ChatDTO } from '@chat/dto/chat.dto';
+import { NewChatDTO, ReceiveNewChatDTO } from '@chat/dto/newChat.dto';
 import { MessageDTO } from '@chat/dto/message.dto';
 import { newMessageDTO, receiveMessageDTO } from '@chat/dto/newMessage.dto';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
@@ -11,7 +11,7 @@ import { UnauthorizedFilter } from 'src/auth/unauthorized.filter';
 
 @Controller('chat')
 export class ChatController {
-    constructor(private readonly service: chatService,
+    constructor(private readonly service: ChatService,
                 private readonly userService: UserService) {}
     // @Get(":id")
     // async getChatById(@Param("id", new ParseUUIDPipe()) uuid: string): Promise<chatDTO> {
@@ -22,7 +22,7 @@ export class ChatController {
     @Get("find/:user")
     @UseGuards(AuthenticatedGuard)
     @UseFilters(UnauthorizedFilter)
-    async getChatById(@Param("user") username: string, @Req() req): Promise<chatDTO> {
+    async getChatById(@Param("user") username: string, @Req() req): Promise<ChatDTO> {
         Logger.log(`Finding user ${username}`);
         // let users: string[];
         // users.push(username);
@@ -42,12 +42,12 @@ export class ChatController {
     }
 
     @Post('new')
-    async createNewChat(@Body() newChat: receiveNewChatDTO, @Req() req): Promise<chatDTO> {
+    async createNewChat(@Body() newChat: ReceiveNewChatDTO, @Req() req): Promise<ChatDTO> {
         Logger.log(`Creating new chat`);
         let user: UserDTO = await this.userService.findOne(req.session.passport.user.intra_name);
         Logger.log(`${newChat.user}`);
         // newChat.users.push(user);
-        let nc: newChatDTO = {
+        let nc: NewChatDTO = {
             name: newChat.name,
             users: []
         }
@@ -72,7 +72,7 @@ export class ChatController {
         //if there isn't a session, then use a placeholder user.
         //or create a session for random user with login
         let msgOwner: UserDTO = await this.userService.findOne(req.session.passport.user.intra_name);
-        let chat: chatDTO = await this.service.getChatById(newMessage.chat);
+        let chat: ChatDTO = await this.service.getChatById(newMessage.chat);
         let msg: newMessageDTO = {
             owner: msgOwner,
             message: newMessage.message,

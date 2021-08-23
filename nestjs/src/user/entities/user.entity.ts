@@ -1,5 +1,4 @@
-import { chatEntity } from "@chat/entity/chat.entity";
-import { Type } from "class-transformer";
+import { ChatEntity } from "@chat/entity/chat.entity";
 import { IsNotEmpty, MaxLength } from "class-validator";
 import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from "typeorm";
 
@@ -15,8 +14,8 @@ export class UserEntity {
 	@IsNotEmpty()
 	display_name: string;
 	
-	@ManyToMany((type) => chatEntity, (chat: chatEntity) => chat.users)
+	@ManyToMany((type) => ChatEntity, (chat: ChatEntity) => chat.users)
 	@JoinTable()
-	chats: chatEntity[];
+	chats: ChatEntity[];
 	
 }

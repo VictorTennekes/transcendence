@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable, Logger, Req } from "@nestjs/common";
 import { toPromise } from "@shared/utils";
-import { chatDTO } from "@chat/dto/chat.dto";
-import { newChatDTO } from "@chat/dto/newChat.dto";
-import { chatEntity } from "@chat/entity/chat.entity";
+import { ChatDTO } from "@chat/dto/chat.dto";
+import { NewChatDTO } from "@chat/dto/newChat.dto";
+import { ChatEntity } from "@chat/entity/chat.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { MessageDTO } from "@chat/dto/message.dto";
@@ -11,18 +11,18 @@ import { MessageEntity } from "@chat/entity/message.entity";
 import { UserDTO } from "@user/dto/user.dto";
 
 @Injectable()
-export class chatService {
-    constructor(@InjectRepository(chatEntity) private readonly repo: Repository<chatEntity>,
+export class ChatService {
+    constructor(@InjectRepository(ChatEntity) private readonly repo: Repository<ChatEntity>,
                 @InjectRepository(MessageEntity) private readonly msgRepo: Repository<MessageEntity>) {}
 
-    async getChatById(uuid: string): Promise<chatDTO> {
+    async getChatById(uuid: string): Promise<ChatDTO> {
         const item = await this.repo.findOne({
             where: {id: uuid}
         });
         if (!item) {
             throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
         }
-        const ret: chatDTO = {
+        const ret: ChatDTO = {
             id: item.id,
             name: item.name,
             users: item.users,
@@ -31,7 +31,7 @@ export class chatService {
         return toPromise(ret);
     }
 
-    async getChatByUsers(users: UserDTO[]): Promise<chatDTO> {
+    async getChatByUsers(users: UserDTO[]): Promise<ChatDTO> {
         Logger.log(`getting chat by user ${users[0].intra_name} ${users[1].intra_name}`);
 
         const items = await this.repo
@@ -93,7 +93,7 @@ export class chatService {
             throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
         }
         Logger.log(`chat id: ${item.id}`);
-        const ret: chatDTO = {
+        const ret: ChatDTO = {
             id: item.id,
             name: item.name,
             users: item.users,
@@ -104,14 +104,14 @@ export class chatService {
 
     }
 
-    async createNewChat(newChat: newChatDTO): Promise<chatDTO> {
+    async createNewChat(newChat: NewChatDTO): Promise<ChatDTO> {
         Logger.log("creating a new chat");
-        let item: chatEntity = await this.repo.create({
+        let item: ChatEntity = await this.repo.create({
             name: newChat.name,
             users: newChat.users
         });
         item = await this.repo.save(item);
-        const ret: chatDTO = {
+        const ret: ChatDTO = {
             id: item.id,
             name: item.name,
             users: item.users,

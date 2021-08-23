@@ -1,6 +1,6 @@
 import { ConfigModule } from "@nestjs/config";
 import { Column, CreateDateColumn, ManyToOne, Entity, PrimaryColumn, PrimaryGeneratedColumn, JoinColumn, OneToMany, OneToOne} from "typeorm";
-import { chatEntity } from "@chat/entity/chat.entity";
+import { ChatEntity } from "@chat/entity/chat.entity";
 import { UserEntity } from "@user/entities/user.entity";
 import { userInfo } from "os";
 
@@ -19,7 +19,7 @@ export class MessageEntity {
     @Column()
     message: string;
 
-    @ManyToOne(type => chatEntity, chat => chat.messages)
+    @ManyToOne(type => ChatEntity, chat => chat.messages)
     @JoinColumn()
-    chat: chatEntity;
+    chat: ChatEntity;
 }

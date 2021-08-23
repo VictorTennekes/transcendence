@@ -1,5 +1,5 @@
 import { UserDTO } from "@user/dto/user.dto";
-import { chatDTO } from "./chat.dto";
+import { ChatDTO } from "./chat.dto";
 
 export class MessageDTO {
     id: string;
@@ -7,5 +7,5 @@ export class MessageDTO {
     // owner: string; // user_id?
     owner: UserDTO; // user_id?
     message: string;
-    chat: chatDTO;
+    chat: ChatDTO;
 }
