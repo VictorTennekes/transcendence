@@ -9,6 +9,7 @@ button {
 
 a {
 	text-decoration: none;
+	cursor: pointer;
 }
 
 @mixin CenterVertical() {
@@ -71,7 +72,7 @@ a {
 }
 
 //Navigation Button style
-button.NavItem {
+a.NavItem {
 	border-radius: 0.63rem;
 	position: relative;
 	border: none;
@@ -99,7 +100,7 @@ button.NavItem {
 	height: 2.5rem;
 	border-radius: 50%;
 	background-color:rgb(233, 174, 71);
-	position: absolute;
+	position: relative;
 	left: 1rem;
 	top: 50%;
 	margin-right: -50%;
@@ -107,8 +108,7 @@ button.NavItem {
 
 	&::before {
 		content: url('https://api.iconify.design/mdi/arrow-bottom-left-thick.svg?color=white&width=35&height=35');
-		display: inline-block;
-		position: relative;
+		position: absolute;
 		top: 2px;
 	}
 }
@@ -118,7 +118,7 @@ button.NavItem {
 }
 
 //Text inside of the button
-.NavItem a, .NavItem p {
+.NavItem p {
 	@include CenterVertical();
 	left: 4.5rem;
 	text-align: left;
@@ -147,6 +147,12 @@ button.NavItem {
 .ViewContainer {
 	background-color: #2f7690;
 	border: none;
+	height: 100%;
+	width: 100%;
+	display: grid;
+	grid-row: auto;
+	place-items: center;
+	align-content: center;
 }
 
 .RightContainer {

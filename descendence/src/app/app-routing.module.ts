@@ -5,6 +5,7 @@ import { HomeComponent } from './home/home.component';
 import { LoginGuard } from './login.guard';
 import { LoginComponent } from './login/login.component';
 import { MasterComponent } from './master/master.component';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { UserComponent } from './user/user.component';
 
 const routes: Routes = [
@@ -21,6 +22,10 @@ const routes: Routes = [
 			{
 				path: 'users',
 				component: UserComponent
+			},
+			{
+				path: 'settings',
+				component: UserSettingsComponent
 			}
 		]
 	},

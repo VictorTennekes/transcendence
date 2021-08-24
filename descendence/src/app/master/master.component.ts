@@ -12,13 +12,17 @@ import { UserService } from '../user.service';
 })
 export class MasterComponent implements OnInit {
 	
+	displayName: string = "";
+
 	constructor(
 		private readonly router: Router,
 		private userService: UserService,
 		private cookies: CookieService,
 	) { }
 	
-	ngOnInit(): void { }
+	ngOnInit(): void {
+		this.userService.getCurrentUser().subscribe((data: any) => {this.displayName = data.display_name});
+	}
 
 	logOut(): void {
 		this.userService.logout().subscribe(() => {});

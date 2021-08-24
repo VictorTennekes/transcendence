@@ -13,6 +13,7 @@ import { LoginGuard } from './login.guard';
 import { UserComponent } from './user/user.component';
 import { UserService } from './user.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
 
 @NgModule({
 	declarations: [
@@ -22,6 +23,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 		LoginComponent,
 		FailComponent,
 		UserComponent,
+  UserSettingsComponent,
 	],
 	imports: [
 		CookieModule.forRoot(),
