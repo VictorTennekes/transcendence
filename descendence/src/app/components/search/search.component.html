@@ -1,8 +1,20 @@
-<form [formGroup]="userForm" (ngSubmit)="submitUser()" class="example-form">
+<!-- <form [formGroup]="userForm" (ngSubmit)="submitUser()" class="example-form">
     <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>User name</mat-label>
         <textarea formControlName="userName" matInput></textarea>
     </mat-form-field>
     <button class="button" type="submit">Send</button>
 </form>
-<app-chat [chatId]="chatId"></app-chat>
+<app-chat [chatId]="chatId"></app-chat> -->
+
+<form [formGroup]="userForm" class="example-form" (ngSubmit)="submitUser()">
+	<mat-form-field class="example-full-width" appearance="fill">
+	  <mat-label>username</mat-label>
+	  <input matInput formControlName="username">
+	  <mat-hint>Errors appear instantly!</mat-hint>
+	  <mat-error *ngIf="userForm.errors?.validUser">
+		Please enter a valid email address
+	  </mat-error>
+	</mat-form-field>
+	<button class="button" type="submit">Send</button>
+  </form>
