@@ -31,51 +31,25 @@ export class ChatService {
 		return toPromise(ret);
 	}
 
-	async getChatByUsers(users: UserDTO[]): Promise<ChatDTO> {
-		Logger.log(`getting chat by user ${users[0].intra_name} ${users[1].intra_name}`);
 
-		const items = await this.repo
-				.createQueryBuilder("chat")
-				.innerJoinAndSelect("chat.users", "users")
-				.getMany();
-
-		// const qb = await this.repo
-		// .createQueryBuilder('chat')
-		// .innerJoin('chat.users', 'userGroup', 'userGroup.id IN (:...groupIds)', { users }); 
-	   
-		
-
-
-		Logger.log("got chat by user");
+	private getMatchingUsers(items: ChatEntity[], users: UserDTO[]) {
 		let item;
 		for (let i = 0; i < items.length; i++) {
 			Logger.log(`${JSON.stringify(items[i])}`);
 			let count = 0;
-		
-			
-
 			for (let j = 0; j < users.length; j++) {
-				// Logger.log(items[i].users);
-				Logger.log(`Looking for user: ${users[j].intra_name}`);
-				// this.roles.findIndex(role=> role.name === 'ADMIN')
-				Logger.log(JSON.stringify(items[i].users))
-				Logger.log(items[i].users.findIndex(user => user.intra_name == users[j].intra_name));
-
-
+				if (users.length === 1) {
+					if (items[i].users.length === 1 && items[i].users[0].intra_name === users[0].intra_name) {
+						item = items[i];
+						return item;
+					}
+				}
 				function userExists(username) {
 					return items[i].users.some(function(el) {
 						return el.intra_name === username;
 					});
 				}
-
-
-				// if (items[i].users.findIndex(user => user.intra_name === users[j].intra_name)) {
-
 				if (userExists(users[j].intra_name)) {
-
-
-				// }
-				// if (items[i].users.includes(users[j])) {
 					Logger.log(`found ${count} === ${users.length}`);
 					count++;
 				}
@@ -84,10 +58,23 @@ export class ChatService {
 					Logger.log(`item: ${JSON.stringify(item)}`);
 					Logger.log(`items[i]: ${JSON.stringify(items[i])}`);
 					Logger.log(`hereee`);
-					break;
+					return item;
 				}
 			}
 		}
+		return null;
+	}
+
+	async getChatByUsers(users: UserDTO[]): Promise<ChatDTO> {
+		const items = await this.repo
+				.createQueryBuilder("chat")
+				.innerJoinAndSelect("chat.users", "users")
+				.getMany();
+		
+		//TODO: in the future, display a list of matching chats for multiuser chats.
+
+		let item = this.getMatchingUsers(items, users);
+
 		if (!item) {
 			Logger.log("can't find chat");
 			throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
@@ -106,15 +93,15 @@ export class ChatService {
 
 	async createNewChat(newChat: NewChatDTO): Promise<ChatDTO> {
 		Logger.log("creating a new chat");
-		Logger.log(newChat.users[0].intra_name);
-		Logger.log(newChat.users[1].intra_name);
+		// Logger.log(newChat.users[0].intra_name);
+		// Logger.log(newChat.users[1].intra_name);
 		let item: ChatEntity = await this.repo.create({
 			name: newChat.name,
 			users: newChat.users
 		});
 		
-		Logger.log(item.users[0].intra_name);
-		Logger.log(item.users[1].intra_name);
+		// Logger.log(item.users[0].intra_name);
+		// Logger.log(item.users[1].intra_name);
 		item = await this.repo.save(item);
 		Logger.log("saved");
 		const ret: ChatDTO = {

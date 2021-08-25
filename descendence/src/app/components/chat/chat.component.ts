@@ -28,6 +28,7 @@ import { newMsg, retMessage } from './message.model';
 	}
  
 	ngOnChanges() {
+		console.log("chat id on change: ", this.chatId);
 		if (this.chatId != "") {
 			this.displayComponent = true;
 			this.chatService.getMessages(this.chatId).subscribe(
@@ -40,6 +41,7 @@ import { newMsg, retMessage } from './message.model';
 	}
 
 	public onSubmit() {
+		console.log("submitting to chat: ", this.chatId);
 		const msg: newMsg = {
 			chat: this.chatId,
 			message: this.messageForm.controls['message'].value
