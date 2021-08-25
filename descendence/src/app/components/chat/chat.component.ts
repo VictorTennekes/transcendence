@@ -28,14 +28,18 @@ import { newMsg, retMessage } from './message.model';
     }
  
     ngOnChanges() {
+		console.log("changes");
         if (this.chatId != "") {
+			console.log("here");
             this.displayComponent = true;
             console.log("chatId: ", this.chatId);
             this.chatService.getMessages(this.chatId).subscribe(
                 (response) => this.messages = response,
                 (error) => console.log(error)
             );
-        }
+        } else {
+			this.displayComponent = false;
+		}
     }
 
     public onSubmit() {

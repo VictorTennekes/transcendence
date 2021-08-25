@@ -14,8 +14,12 @@ export class UserEntity {
 	@IsNotEmpty()
 	display_name: string;
 	
-	@ManyToMany((type) => ChatEntity, (chat: ChatEntity) => chat.users)
+	// @ManyToMany((type) => ChatEntity, (chat: ChatEntity) => chat.users)
+	// @JoinTable()
+	// chats: ChatEntity[];
+
+	@ManyToMany((type) => ChatEntity)
 	@JoinTable()
 	chats: ChatEntity[];
-	
+
 }

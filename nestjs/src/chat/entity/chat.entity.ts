@@ -1,4 +1,5 @@
 import { UserEntity } from "@user/entities/user.entity";
+import { userInfo } from "os";
 import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { MessageEntity } from "./message.entity";
 
@@ -10,9 +11,14 @@ export class ChatEntity {
 	@Column()
 	name: string;
 
-	@ManyToMany(type => UserEntity, {cascade: true})
+	// @ManyToMany(type => UserEntity, (user: UserEntity) => user.chats)
+	// @JoinTable()
+	// users: UserEntity[];
+
+	@ManyToMany(type => UserEntity)
 	@JoinTable()
 	users: UserEntity[];
+
 
 	@OneToMany(type => MessageEntity, message => message.chat)
 	messages: MessageEntity[];

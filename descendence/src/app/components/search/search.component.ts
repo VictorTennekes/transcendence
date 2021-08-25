@@ -52,6 +52,7 @@ import { nullSafeIsEquivalent } from "@angular/compiler/src/output/output_ast";
 				console.log(this.userForm.errors);
                 if (error.error.statusCode === 404) {
 					this.userNotFound = true;
+					this.chatId = "";
 					console.log("user not found");
                 } else {
                     console.log("creating new chat");

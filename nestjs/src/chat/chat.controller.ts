@@ -75,6 +75,7 @@ export class ChatController {
 		let chat: ChatDTO = await this.service.getChatById(newMessage.chat);
 		let msg: newMessageDTO = {
 			owner: msgOwner,
+			// owner: msgOwner.intra_name,
 			message: newMessage.message,
 			chat: chat
 		};
@@ -83,4 +84,9 @@ export class ChatController {
 		Logger.log(msg.owner);
 		return await this.service.createNewMessage(msg);
 	}
+
+	@Get('msg/:id')
+    async getMessagesFromChat(@Param("id") id: string): Promise<MessageDTO[]> {
+        return await this.service.getMessagesFromChat(id);
+    }
 }

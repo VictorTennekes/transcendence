@@ -106,11 +106,17 @@ export class ChatService {
 
 	async createNewChat(newChat: NewChatDTO): Promise<ChatDTO> {
 		Logger.log("creating a new chat");
+		Logger.log(newChat.users[0].intra_name);
+		Logger.log(newChat.users[1].intra_name);
 		let item: ChatEntity = await this.repo.create({
 			name: newChat.name,
 			users: newChat.users
 		});
+		
+		Logger.log(item.users[0].intra_name);
+		Logger.log(item.users[1].intra_name);
 		item = await this.repo.save(item);
+		Logger.log("saved");
 		const ret: ChatDTO = {
 			id: item.id,
 			name: item.name,
@@ -146,6 +152,7 @@ export class ChatService {
 
 	async getMessagesFromChat(id: string): Promise<MessageDTO[]> {
 		Logger.log(`id: ${id}`);
+		Logger.log(`get messages from chat`);
 		const item = await this.msgRepo.find({
 			where: {chat: id},
 			relations: ["owner"]
