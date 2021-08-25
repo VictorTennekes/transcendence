@@ -4,8 +4,7 @@ import { ChatDTO } from "./chat.dto";
 export class MessageDTO {
 	id: string;
 	time: Date;
-	// owner: string; // user_id?
-	owner: UserDTO; // user_id?
+	owner: UserDTO;
 	message: string;
 	chat: ChatDTO;
 }

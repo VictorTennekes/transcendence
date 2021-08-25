@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger, Req } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { toPromise } from "@shared/utils";
 import { ChatDTO } from "@chat/dto/chat.dto";
 import { NewChatDTO } from "@chat/dto/newChat.dto";

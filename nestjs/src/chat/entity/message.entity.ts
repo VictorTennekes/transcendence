@@ -14,10 +14,7 @@ export class MessageEntity {
 
 	@ManyToOne(type => UserEntity, user => user.intra_name, {cascade: true})
 	@JoinColumn()
-	owner: UserEntity; //this used to be string
-
-	// @Column()
-	// owner: string;
+	owner: UserEntity;
 
 	@Column()
 	message: string;
