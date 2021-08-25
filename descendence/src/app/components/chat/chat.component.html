@@ -1,6 +1,7 @@
 <div *ngIf="displayComponent">
 <mat-list>
     <mat-list-item *ngFor="let message of messages">
+      <p matLine> {{message.time | date:'hh:mm a, MMM dd, YY' }} </p>
       <img matListAvatar src="..." alt="...">
       <h3 matLine> {{message.owner.display_name}} </h3>
       <p matLine>

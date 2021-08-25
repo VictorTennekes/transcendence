@@ -155,7 +155,10 @@ export class ChatService {
 		Logger.log(`get messages from chat`);
 		const item = await this.msgRepo.find({
 			where: {chat: id},
-			relations: ["owner"]
+			relations: ["owner"],
+			order: {
+				time: "ASC"
+			}
 		});
 		if (!item) {
 			throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
