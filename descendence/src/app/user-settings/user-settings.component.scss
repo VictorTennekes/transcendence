@@ -62,8 +62,8 @@ button {
 	margin-right: 2.5rem;
 	border-radius: 12px;
 	border: none;
-	color: #477381;
 	background-color: #A4C8D2;
+	color: #477381;
 	font-family: 'Poppins';
 	font-weight: bolder;
 	font-size: 1.6rem;
@@ -238,6 +238,7 @@ form input {
 	place-content: center;
 	flex-direction: row;
 	flex-wrap: nowrap;
+	margin-bottom: 2.5rem;
 }
 
 button.save {
