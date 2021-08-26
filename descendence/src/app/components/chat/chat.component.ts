@@ -1,7 +1,8 @@
+import { NodeWithI18n } from '@angular/compiler';
 import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { ChatService } from './chat.service';
-import { ChatClientService } from './chatClient.service';
 import { newMsg, retMessage } from './message.model';
 
 @Component({
@@ -15,7 +16,7 @@ import { newMsg, retMessage } from './message.model';
 	constructor(
 		  private formBuilder: FormBuilder,
 		  private chatService: ChatService,
-		  private chatClientService: ChatClientService
+		//   private chatClientService: ChatClientService
 	  ) { }
 
 	@Input()
@@ -23,24 +24,33 @@ import { newMsg, retMessage } from './message.model';
 
 	displayComponent: boolean = false;
 	messages: retMessage[] = [];
-		messageForm = this.formBuilder.group({
+	messageForm = this.formBuilder.group({
 		message: "",
 	});
 
 	// public msgArr: string[] = [];
 
 	ngOnInit(): void {
-		this.chatClientService.receiveChat().subscribe((msg) => {
+		this.chatService.receiveChat().subscribe((msg) => {
 			console.log("message from chat socket: ", msg);
+			let item: retMessage = {
+				chat: msg.chat,
+				id: "",
+				time: new Date(),
+				owner: {
+					intra_name: "websock",
+					display_name: "websock"
+				},
+				message: msg.message
+			}
+			this.messages.push(item);
 			// this.msgArr.push(msg);
 		})
 
-		this.chatClientService.getUsers().subscribe((users) => {
-			console.log("users method returns: ", users);
-		})
+		// this.chatService.getUsers().subscribe((users) => {
+			// console.log("users method returns: ", users);
+		// })
 	}
-
-	
 
 	ngOnChanges() {
 		if (this.chatId != "") {
@@ -55,12 +65,23 @@ import { newMsg, retMessage } from './message.model';
 	}
 
 	public onSubmit() {
-		this.chatClientService.sendChat("hello world");
+		// this.chatClientService.sendChat(this.messageForm.controls['message'].value);
+		const pushThing: retMessage = {
+			chat: this.chatId,
+			id: "",
+			time: new Date(),
+			owner: {
+				intra_name: "jsaariko",
+				display_name: "jsaariko"
+			},
+			message: this.messageForm.controls['message'].value
+		}
+		this.messages.push(pushThing);
 		const msg: newMsg = {
 			chat: this.chatId,
 			message: this.messageForm.controls['message'].value
 		}
-		this.chatService.create(msg).subscribe(
+		this.chatService.send(msg).subscribe(
 			(response) => console.log(response),
 			(error) => console.log(error)
 		);

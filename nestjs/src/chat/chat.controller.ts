@@ -68,7 +68,7 @@ export class ChatController {
 	@Post('msg')
 	async createNewMessage(@Body() newMessage: receiveMessageDTO, @Req() req): Promise<MessageDTO> {
 		Logger.log(newMessage);
-		Logger.log(newMessage);
+		// Logger.log(newMessage);
 		//if there isn't a session, then use a placeholder user.
 		//or create a session for random user with login
 		let msgOwner: UserDTO = await this.userService.findOne(req.session.passport.user.intra_name);
