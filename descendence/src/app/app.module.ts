@@ -14,6 +14,7 @@ import { UserComponent } from './user/user.component';
 import { UserService } from './user.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
+import { ImageService } from './services/image-service.service';
 
 @NgModule({
 	declarations: [
@@ -23,7 +24,7 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
 		LoginComponent,
 		FailComponent,
 		UserComponent,
-  UserSettingsComponent,
+		UserSettingsComponent,
 	],
 	imports: [
 		CookieModule.forRoot(),
@@ -32,9 +33,9 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
 		HttpClientModule,
 		ReactiveFormsModule,
 		FormsModule,
-  FontAwesomeModule
+		FontAwesomeModule
 	],
-	providers: [ UserService ],
+	providers: [ UserService, ImageService ],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }

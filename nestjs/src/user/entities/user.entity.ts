@@ -16,4 +16,10 @@ export class UserEntity {
 	})
 	@IsNotEmpty()
 	display_name: string;
+
+	@Column({
+		nullable: true,
+		type: "varchar",
+	})
+	avatar_url: string;
 }

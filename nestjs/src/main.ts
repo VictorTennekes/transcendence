@@ -4,8 +4,11 @@ import { AppModule } from './app.module';
 import { getDbConnectionOptions, runDbMigrations } from './shared/utils';
 import * as passport from 'passport';
 import * as session from 'express-session';
+var morgan = require('morgan');
 
 import 'dotenv/config';
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 const postgresConnection = 
 {
@@ -19,7 +22,16 @@ const postgresConnection =
 const postgresSession = require('connect-pg-simple')(session);
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule);
+	const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+	//useful for debugging requests - used to see which url requests are made
+//	app.use(morgan('tiny'));
+
+	//serving static files (avatars)
+	app.useStaticAssets(join(__dirname, '..', 'assets'), {
+		index: false,
+		prefix: '/assets',
+	});
 
 	const fs = require('fs');
 	const path = require('path');
@@ -31,6 +43,7 @@ async function bootstrap() {
 		connection: postgresConnection,
 	});
 	
+	//create the 'session' table if it doesn't exist
 	const sessionStore = await knex.schema.hasTable('session').then(exists => {
 		if (exists) return;
 		return new Promise((resolve, reject) => {
@@ -66,11 +79,11 @@ async function bootstrap() {
 		saveUninitialized: false,
 		resave: true,
 	}));
+
 	//initialize passport to use SessionSerializer and save it into 'request.session'
 	app.use(passport.initialize());
 	app.use(passport.session());
 
-	//integrate changes to the structure of entities into the database
 	await app.listen(3000);
 }
 

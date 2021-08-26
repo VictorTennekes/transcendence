@@ -50,24 +50,36 @@ button {
 	margin: 2.5rem;
 	margin-left: 5rem;
 	margin-right: 5rem;
-	background: linear-gradient(135.2deg, #C4377B -6.4%, #6839B5 49.35%, #0D6EFF 104.83%, #0D6EFF 104.84%, #0D6EFF 104.85%);
+
+	//discord-like display
+	background-size: cover;
+	background-position: 50%;
+
+//	background: linear-gradient(135.2deg, #C4377B -6.4%, #6839B5 49.35%, #0D6EFF 104.83%, #0D6EFF 104.84%, #0D6EFF 104.85%);
 	border: 0.35rem solid white;
 	margin-bottom: 5rem;
 }
 
 .avatar-change {
-	display: block;
+	cursor: pointer;
+	margin: auto;
+	display: grid;
+	place-items: center;
+	place-content: center;
 	width: 20rem;
 	height: 4.25rem;
 	margin-right: 2.5rem;
 	border-radius: 12px;
 	border: none;
 	background-color: #A4C8D2;
-	color: #477381;
-	font-family: 'Poppins';
-	font-weight: bolder;
-	font-size: 1.6rem;
-	
+
+	& span {
+		color: #477381;
+		font-family: 'Poppins';
+		font-weight: bolder;
+		font-size: 1.6rem;
+	}
+
 	&:hover {
 		filter: brightness(0.8);
 	}
@@ -91,7 +103,7 @@ button {
 	}
 }
 
-form#displayname {
+div#displayname {
 	width: 70rem;
 	height: 6rem;
 	margin: auto;
@@ -99,27 +111,27 @@ form#displayname {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
-}
 
-form input {
-	background: rgba(255, 255, 255, 0.15);
-	font-family: 'Poppins';
-	font-size: 1.6rem;
-	border: none;
-	color: white;
-	padding-left: 2rem;
-	
-	&:hover {
-		background: rgba(255, 255, 255, 0.2);
-	}
-	
-	&:focus {
-		background: rgba(255, 255, 255, 0.2);
+	& input {
+		background: rgba(255, 255, 255, 0.15);
+		font-family: 'Poppins';
+		font-size: 1.6rem;
 		border: none;
-		outline: none;
-		resize: none;
-		box-shadow: none;
-		writing-mode: none;
+		color: white;
+		padding-left: 2rem;
+		
+		&:hover {
+			background: rgba(255, 255, 255, 0.2);
+		}
+		
+		&:focus {
+			background: rgba(255, 255, 255, 0.2);
+			border: none;
+			outline: none;
+			resize: none;
+			box-shadow: none;
+			writing-mode: none;
+		}
 	}
 }
 
@@ -285,4 +297,8 @@ button.save {
 	&:active {
 		filter: brightness(0.8);
 	}
+}
+
+#avatar-select {
+	display: none;
 }

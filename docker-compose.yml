@@ -30,6 +30,8 @@ services:
         volumes:
             - ./nestjs:/usr/src/app
             - /usr/src/app/node_modules
-#probably needs fixing, data is gone when the container exits
+            - images:/usr/src/app/assets
+#this establishes the volumes as separate from local disk
 volumes:
     database-data:
+    images:

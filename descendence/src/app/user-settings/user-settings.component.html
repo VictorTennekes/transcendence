@@ -1,20 +1,24 @@
 <div class="section-title">
 	Profile
 </div>
+<form [formGroup]="settingsForm" (ngSubmit)="saveChanges()" autocomplete="off">
 <div class="section-container">
 	<div class="avatar-wrapper">
-		<div class="avatar"></div>
-		<button class="avatar-change">Change Avatar</button>
-		<span class="avatar-reset">Restore Default</span>
-	</div>
-	<form id="displayname" autocomplete="off">
-		<label for="name">
-			<div class="bar">
-				<span>Display Name</span>
-			</div>
+		<div class="avatar" style="{{avatar}}"></div>
+		<label for="avatar-select">
+			<div class="avatar-change"><span>Change Avatar</span></div>
 		</label>
-		<input type="text" id="name" class="displayname" spellcheck="false">
-	</form>
+		<input id="avatar-select" formControlName="avatar" type="file" (click)="onClickSelectAvatar($event)" (change)="selectAvatar($event)">
+		<span class="avatar-reset" (click)="resetAvatar()">Restore Default</span>
+	</div>
+		<div id="displayname">
+			<label for="name">
+				<div class="bar">
+					<span>Display Name</span>
+				</div>
+			</label>
+			<input type="text" id="name" formControlName="displayName" class="displayname" spellcheck="false">
+		</div>
 </div>
 <div class="section-title">
 	Security
@@ -24,14 +28,14 @@
 	<div class="setting-container">
 		<label for="checkbox" class="state-text">{{ twoFactorState }}</label>
 		<label class="switch">
-			<input id="checkbox" class="checkbox" type="checkbox" name="2fa"/>
+			<input id="checkbox" formControlName="twoFactorEnabled" class="checkbox" type="checkbox" name="2fa"/>
 			<i></i>
 		</label>
 	</div>
 </div>
 <div class="action-container">
 	<a>
-		<button class="save">
+		<button type="submit" class="save">
 			<span>Save Changes</span>
 		</button>
 	</a>
@@ -39,3 +43,4 @@
 		<span class="cancel">Return to previous page</span>
 	</a>
 </div>
+</form>

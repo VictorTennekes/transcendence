@@ -3,11 +3,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import 'dotenv/config';
+import { MulterModule } from '@nestjs/platform-express';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
 	controllers: [],
 	providers: [],
 	imports: [
+		MulterModule.register({
+			dest: 'assets',
+		}),
 		TypeOrmModule.forRootAsync({
 			imports: [ConfigModule],
 			useFactory: async (configService: ConfigService) => ({
