@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ChatService } from './chat.service';
+import { ChatClientService } from './chatClient.service';
 import { newMsg, retMessage } from './message.model';
 
 @Component({
@@ -13,8 +14,10 @@ import { newMsg, retMessage } from './message.model';
 
 	constructor(
 		  private formBuilder: FormBuilder,
-		  private chatService: ChatService
+		  private chatService: ChatService,
+		  private chatClientService: ChatClientService
 	  ) { }
+
 	@Input()
 	chatId: string = "";
 
@@ -24,9 +27,21 @@ import { newMsg, retMessage } from './message.model';
 		message: "",
 	});
 
+	// public msgArr: string[] = [];
+
 	ngOnInit(): void {
+		this.chatClientService.receiveChat().subscribe((msg) => {
+			console.log("message from chat socket: ", msg);
+			// this.msgArr.push(msg);
+		})
+
+		this.chatClientService.getUsers().subscribe((users) => {
+			console.log("users method returns: ", users);
+		})
 	}
- 
+
+	
+
 	ngOnChanges() {
 		if (this.chatId != "") {
 			this.displayComponent = true;
@@ -40,6 +55,7 @@ import { newMsg, retMessage } from './message.model';
 	}
 
 	public onSubmit() {
+		this.chatClientService.sendChat("hello world");
 		const msg: newMsg = {
 			chat: this.chatId,
 			message: this.messageForm.controls['message'].value

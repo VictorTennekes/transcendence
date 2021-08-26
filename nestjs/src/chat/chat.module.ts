@@ -7,12 +7,14 @@ import { ChatEntity } from '@chat/entity/chat.entity';
 import { MessageEntity } from './entity/message.entity';
 import { UserService } from '@user/user.service';
 import { UserEntity } from '@user/entities/user.entity';
+import { ChatGateway } from './chat.gateway';
 
 @Module({
 	controllers: [ChatController],
 	providers: [
 		ChatService,
-		UserService
+		UserService,
+		ChatGateway
 	],
 	imports: [
 		ConfigModule,

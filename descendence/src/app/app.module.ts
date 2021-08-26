@@ -14,6 +14,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { FailComponent } from './fail/fail.component';
 import { SearchComponent } from './components/search/search.component';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+
+const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transports: ['websocket']} };
+// const config: SocketIoConfig = { url: 'http://nestjs:3000', options: {} };
 
 @NgModule({
 	declarations: [
@@ -23,7 +27,7 @@ import { SearchComponent } from './components/search/search.component';
         SearchComponent,
         ChatComponent,
 		LoginComponent,
-		FailComponent,
+		FailComponent
 	],
 	imports: [
 		BrowserModule,
@@ -32,7 +36,8 @@ import { SearchComponent } from './components/search/search.component';
 		ReactiveFormsModule,
 		BrowserAnimationsModule,
         MatInputModule,
-        MatListModule
+        MatListModule,
+		SocketIoModule.forRoot(config)
 	],
 	providers: [],
 	bootstrap: [AppComponent]
