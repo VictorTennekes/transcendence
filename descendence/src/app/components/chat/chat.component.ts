@@ -37,6 +37,7 @@ import { retMessage } from './message.model';
 	}
 
 	ngOnChanges() {
+		console.log("chat id on change: ", this.chatId);
 		if (this.chatId != "") {
 			this.displayComponent = true;
 			this.chatService.getMessages(this.chatId).subscribe(

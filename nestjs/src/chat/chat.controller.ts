@@ -22,7 +22,11 @@ export class ChatController {
 		if (user) {
 			let users: UserDTO[] = [];
 			users.push(user);
-			users.push(await this.userService.findOne(req.session.passport.user.intra_name));
+			Logger.log("after push");
+			if (username !== req.session.passport.user.intra_name) {
+				users.push(await this.userService.findOne(req.session.passport.user.intra_name));
+			}
+			Logger.log("about to return");
 			return await this.service.getChatByUsers(users);
 		} else {
 			throw new HttpException("No user by name " + username, HttpStatus.NOT_FOUND);
@@ -38,9 +42,13 @@ export class ChatController {
 			name: newChat.name,
 			users: []
 		}
+		Logger.log(`users ${user.intra_name}`);
 		nc.users.push(user);
 		user = await this.userService.findOne(newChat.user);
-		nc.users.push(user);
+		if (user.intra_name !== nc.users[0].intra_name) {
+			Logger.log(`users ${user.intra_name}`);
+			nc.users.push(user);
+		}
 		return await this.service.createNewChat(nc);
 	}
 	
