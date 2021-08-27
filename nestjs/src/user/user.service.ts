@@ -30,6 +30,10 @@ export class UserService {
 		return (user);
 	}
 
+	async setTwoFactorAuthenticationSecret(secret: string, login: string) {
+		await this.update(login, {two_factor_secret: secret});
+	}
+
 	async update(login: string, changedData: any) {
 		console.log(`data: ${changedData}`);
 		let user = await this.findOne(login);

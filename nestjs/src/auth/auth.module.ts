@@ -8,6 +8,8 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { LoginGuard } from './login.guard';
 import { SessionSerializer } from './session.serializer';
+import { TwoFactorAuthenticationController } from './two-factor-authentication.controller';
+import { TwoFactorAuthenticationService } from './two-factor-authentication.service';
 
 @Module({
 	imports: [
@@ -15,9 +17,11 @@ import { SessionSerializer } from './session.serializer';
 		ConfigModule
 	],
 	controllers: [
-		AuthController
+		AuthController,
+		TwoFactorAuthenticationController
 	],
 	providers: [
+		TwoFactorAuthenticationService,
 		SessionSerializer,
 		AuthService,
 		FortyTwoStrategy,

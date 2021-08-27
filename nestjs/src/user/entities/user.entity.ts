@@ -22,4 +22,16 @@ export class UserEntity {
 		type: "varchar",
 	})
 	avatar_url: string;
+
+	@Column({
+		type: 'boolean',
+		default: false,
+	})
+	two_factor_enabled: boolean;
+
+	@Column({
+		type: 'varchar',
+		nullable: true
+	})
+	two_factor_secret?: string;
 }

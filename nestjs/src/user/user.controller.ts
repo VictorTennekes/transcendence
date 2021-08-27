@@ -39,11 +39,7 @@ export class UserController {
 	@UseFilters(UnauthorizedFilter)
 	async fetch_current(@Req() request)
 	{
-//		return ({display_name: "HELLO"});
-		console.log(JSON.stringify(request.session));
-		console.log(`fetch_current: passport: ${JSON.stringify(request.session.passport.user.intra_name)}`);
 		const user = await this.userService.findOne(request.session.passport.user.intra_name);
-		console.log(`${JSON.stringify(user)}`);
 		return user;
 	}
 
@@ -60,7 +56,6 @@ export class UserController {
 	}))
 	@Post('image_upload')
 	async imageUpload(@Req() request, @UploadedFile() avatar: Express.Multer.File) {
-		console.log(`FILE: ${avatar}`);
 		let previousAvatar: string | null = null;
 
 		const response = {
@@ -95,15 +90,20 @@ export class UserController {
 	@UseFilters(UnauthorizedFilter)
 	@Post('update_display_name')
 	async update_display_name(@Req() request, @Body() display_name: string) {
-		console.log(`body: ${JSON.stringify(display_name)}`);
 		await this.userService.update(request.session.passport.user.intra_name, display_name);
+	}
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	@Post('update_two_factor')
+	async update_two_factor(@Req() request, @Body() two_factor_enabled: string) {
+		await this.userService.update(request.session.passport.user.intra_name, two_factor_enabled);
 	}
 
 	@Post('login')
 //	@UsePipes(new ValidationPipe())
 	async login(@Body() loginDetails: LoginUserDto)
 	{
-		console.log(loginDetails.intra_name);
 		return await this.userService.login(loginDetails);
 	}
 }

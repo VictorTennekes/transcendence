@@ -24,10 +24,15 @@ export class UserService {
 	}
 
 	updateDisplayName(newDisplayName: string): void {
-		console.log(`new name: ${newDisplayName}`);
 		this.http.post('api/user/update_display_name', {display_name: newDisplayName}).subscribe(() => {});
 		this.userSource.next('');
 	}
+
+	updateTwoFactor(newState: boolean): void {
+		this.http.post('api/user/update_two_factor', {two_factor_enabled: newState}).subscribe(() => {});
+		this.userSource.next('');
+	}
+
 	getCurrentUser(): any {
 		return this.http.get('api/user/fetch_current').pipe(take(1));
 	}

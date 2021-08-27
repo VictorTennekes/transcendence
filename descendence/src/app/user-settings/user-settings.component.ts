@@ -12,12 +12,13 @@ import { UserService } from '../user.service';
 export class UserSettingsComponent implements OnInit {
 	@Input()
 	displayName: any;
-	currentAvatarUrl: string;
-	twoFactorState: string = "Disabled";
+	currentAvatarUrl: string = "";
 	settingsForm: FormGroup;
-	url: any;
+	avatarReset: boolean = false;
+	changedAvatarPreview: any;
 	selectedAvatarFile: File | null = null;
-	
+	initialTwoFactorState: boolean;
+
 	constructor(
 		private readonly userService: UserService,
 		private readonly imageService: ImageService
@@ -33,7 +34,8 @@ export class UserSettingsComponent implements OnInit {
 		var reader = new FileReader();
 
 		reader.addEventListener('load', (event:any) => {
-			this.url = event.target.result;
+			this.changedAvatarPreview = event.target.result;
+			this.avatarReset = false;
 		});
 		reader.readAsDataURL(event.target.files[0]); // read file as data url
 	}
@@ -44,18 +46,18 @@ export class UserSettingsComponent implements OnInit {
 	}
 
 	resetAvatar() {
-		this.url = null;
+		this.changedAvatarPreview = null;
 		this.settingsForm.patchValue({avatar: ""});
 		this.selectedAvatarFile = null;
-		this.imageService.delete().subscribe(() => {});
+		this.avatarReset = true;
 	}
 
 	get avatar(): string {
 		let style = "background-image: ";
 
-		if (this.url)
-			style += `url(${this.url});`
-		else if (this.currentAvatarUrl) {
+		if (this.changedAvatarPreview)
+			style += `url(${this.changedAvatarPreview});`
+		else if (!this.avatarReset && this.currentAvatarUrl) {
 			style += `url(cdn/assets/${this.currentAvatarUrl});`
 		}
 		else
@@ -63,17 +65,19 @@ export class UserSettingsComponent implements OnInit {
 		return style;
 	}
 
-	saveChanges() {
-		console.warn(this.settingsForm.value);
-		let madeChanges: boolean = false;
-		let avatar
+	get twoFactorState(): string {
+		return this.settingsForm.controls['twoFactorEnabled'].value ? "Enabled" : "Disabled";
+	}
 
-		let formValues: {[key: string]: string} = {};
+	saveChanges() {
+		let formValues: {[key: string]: any} = {};
 		for (const field in this.settingsForm.controls) {
 			formValues[field] = this.settingsForm.controls[field].value;
 		}
-		console.log(`FORMVALUES: ${JSON.stringify(formValues)}`);
-		if (formValues['avatar']) {
+		if (this.avatarReset) {
+			this.imageService.delete().subscribe(() => { this.userService.userSource.next(''); });
+		}
+		else if (formValues['avatar']) {
 			this.imageService.upload(this.selectedAvatarFile as File).subscribe(
 				(res: any) => {
 					this.userService.userSource.next('');
@@ -84,19 +88,23 @@ export class UserSettingsComponent implements OnInit {
 			);
 		}
 		if (formValues['displayName']) {
-			console.log("NEW NAME ENTERED");
 			this.userService.updateDisplayName(formValues['displayName']);
+		}
+		if (this.initialTwoFactorState !== formValues['twoFactorEnabled']) {
+			this.userService.updateTwoFactor(formValues['twoFactorEnabled']);
 		}
 	}
 
 	ngOnInit(): void {
 		this.settingsForm = new FormGroup({
 			displayName: new FormControl(""),
-			twoFactorEnabled: new FormControl(true), //fetch from user entry
+			twoFactorEnabled: new FormControl(false),
 			avatar: new FormControl("")
 		});
 		this.userService.userSubject.subscribe((user:any) => {
 			this.currentAvatarUrl = user.avatar_url;
+			this.initialTwoFactorState = user.two_factor_enabled;
+			this.settingsForm.patchValue({'twoFactorEnabled': this.initialTwoFactorState});
 		});
 	}
 }
