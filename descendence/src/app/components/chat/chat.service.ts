@@ -16,7 +16,7 @@ export class ChatService {
 		this.socket.emit('chat', message);
 	}
 
-	receiveChat(): Observable<newMsg> {
+	receiveChat(): Observable<retMessage> {
 		return this.socket.fromEvent('chat');
 	}
 
@@ -24,8 +24,9 @@ export class ChatService {
 		// return this.socket.fromEvent('users');
 	// }
 
-	public send(msg: newMsg): Observable<retMessage> {
+	public send(msg: retMessage): Observable<retMessage> {
 		console.log(msg.message);
+		console.log(msg.time);
 		this.socket.emit('chat', msg);
 		return this.http.post<retMessage>(this.url, msg);
 	}

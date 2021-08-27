@@ -9,7 +9,7 @@ export class MessageEntity {
 	@PrimaryGeneratedColumn("uuid")
 	id: string;
 
-	@CreateDateColumn()
+	@Column()
 	time: Date;
 
 	@ManyToOne(type => UserEntity, user => user.intra_name, {cascade: true})

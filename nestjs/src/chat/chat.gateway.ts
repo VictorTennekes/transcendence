@@ -1,6 +1,6 @@
 import { Logger } from "@nestjs/common";
 import { OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway, WebSocketServer, SubscribeMessage } from "@nestjs/websockets";
-import { receiveMessageDTO } from "./dto/newMessage.dto";
+import { MessageDTO } from "./dto/message.dto";
 
 
 @WebSocketGateway()
@@ -20,7 +20,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	@SubscribeMessage('chat')
-	async onChat(client, message: receiveMessageDTO) {
+	async onChat(client, message: MessageDTO) {
 		Logger.log(`onChat, message received: ${message}`);
 		client.broadcast.emit('chat', message);
 	}

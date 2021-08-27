@@ -66,23 +66,10 @@ export class ChatController {
 		// return await this.service.createNewChat(newChat);
 	// }
 	@Post('msg')
-	async createNewMessage(@Body() newMessage: receiveMessageDTO, @Req() req): Promise<MessageDTO> {
+	async createNewMessage(@Body() newMessage: MessageDTO, @Req() req): Promise<MessageDTO> {
 		Logger.log(newMessage);
-		// Logger.log(newMessage);
-		//if there isn't a session, then use a placeholder user.
-		//or create a session for random user with login
-		let msgOwner: UserDTO = await this.userService.findOne(req.session.passport.user.intra_name);
-		let chat: ChatDTO = await this.service.getChatById(newMessage.chat);
-		let msg: newMessageDTO = {
-			owner: msgOwner,
-			// owner: msgOwner.intra_name,
-			message: newMessage.message,
-			chat: chat
-		};
 		Logger.log("chat controller nest");
-		Logger.log(msg.message);
-		Logger.log(msg.owner);
-		return await this.service.createNewMessage(msg);
+		return await this.service.createNewMessage(newMessage);
 	}
 
 	@Get('msg/:id')

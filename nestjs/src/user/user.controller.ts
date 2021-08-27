@@ -26,4 +26,11 @@ export class UserController {
 		console.log(loginDetails.intra_name);
 		return await this.userService.login(loginDetails);
 	}
+
+	@Get()
+	async getCurrentUser(@Req() req): Promise<UserDTO> {
+		Logger.log("user is:");
+		Logger.log(JSON.stringify(req.session.passport.user));
+		return (req.session.passport.user);
+	}
 }

@@ -126,12 +126,13 @@ export class ChatService {
 		return toPromise(ret);
 	}
 
-	async createNewMessage(newMessage: newMessageDTO): Promise<MessageDTO> {
-		const {owner, message, chat} = newMessage;
+	async createNewMessage(newMessage: MessageDTO): Promise<MessageDTO> {
+		const {owner, time, message, chat} = newMessage;
 		Logger.log(newMessage.owner);
 		Logger.log(newMessage.message);
 		const item: MessageEntity = await this.msgRepo.create({
 			owner,
+			time,
 			message,
 			chat,
 		});
