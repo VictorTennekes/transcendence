@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { newMsg, retMessage } from "./message.model";
+import { chatModel, retMessage, userModel, createChatModel } from "./message.model";
 import { Observable } from "rxjs";
 import { Socket } from "ngx-socket-io";
 
@@ -10,8 +10,6 @@ export class ChatService {
 	constructor(private http: HttpClient,
 				private socket: Socket) {}
 
-// constructor(private socket: Socket) {}
-
 	sendChat(message: string) {
 		this.socket.emit('chat', message);
 	}
@@ -20,23 +18,29 @@ export class ChatService {
 		return this.socket.fromEvent('chat');
 	}
 
-	// getUsers() {
-		// return this.socket.fromEvent('users');
-	// }
-
-	public send(msg: retMessage): Observable<retMessage> {
+	send(msg: retMessage): Observable<retMessage> {
 		console.log(msg.message);
 		console.log(msg.time);
 		this.socket.emit('chat', msg);
 		return this.http.post<retMessage>(this.url, msg);
 	}
 
-	public getMessages(chatId: string): Observable<retMessage[]> {
+	getMessages(chatId: string): Observable<retMessage[]> {
 		return this.http.get<retMessage[]>(this.url + chatId);
 	}
 
-	// public getMessages(chatId: string): Observable<retMessage[]> {
-		// return this.http.get<retMessage[]>(this.url);
-	// }
+	//TODO: breaks when you log out and log back in with different user?
+	getCurrentUser(): Observable<userModel> {
+		return this.http.get<userModel>('user');
+	}
+
+	findUser(username: string): Observable<chatModel> {
+		return this.http.get<chatModel>('api/chat/find/' + username);
+	}
+
+	createNewChat(newChat: createChatModel): Observable<chatModel> {
+		return this.http.post<chatModel>('api/chat/new', newChat);
+	}
+
 }
 

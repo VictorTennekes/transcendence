@@ -6,7 +6,6 @@ import { ChatEntity } from "@chat/entity/chat.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { MessageDTO } from "@chat/dto/message.dto";
-import { newMessageDTO } from "@chat/dto/newMessage.dto";
 import { MessageEntity } from "@chat/entity/message.entity";
 import { UserDTO } from "@user/dto/user.dto";
 
@@ -32,7 +31,6 @@ export class ChatService {
 	}
 
 	async getChatByUsers(users: UserDTO[]): Promise<ChatDTO> {
-		Logger.log(`getting chat by user ${users[0].intra_name} ${users[1].intra_name}`);
 
 		const items = await this.repo
 				.createQueryBuilder("chat")

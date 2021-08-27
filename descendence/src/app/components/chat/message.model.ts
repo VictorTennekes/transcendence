@@ -4,11 +4,6 @@ export interface userModel {
 	display_name: string;
 }
 
-export interface newMsg {
-	chat: string;
-	message: string;
-}
-
 export interface retMessage {
 	chat: string;
 	id: string;

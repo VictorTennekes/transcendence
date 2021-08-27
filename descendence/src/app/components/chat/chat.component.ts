@@ -1,10 +1,7 @@
-import { NodeWithI18n } from '@angular/compiler';
 import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { Observable } from 'rxjs';
 import { ChatService } from './chat.service';
-import { newMsg, retMessage, userModel } from './message.model';
-import { HttpClient } from '@angular/common/http';
+import { retMessage } from './message.model';
 
 @Component({
 	selector: 'app-chat',
@@ -16,14 +13,11 @@ import { HttpClient } from '@angular/common/http';
 
 	constructor(
 		  private formBuilder: FormBuilder,
-		  private chatService: ChatService,
-		  private http: HttpClient
-		//   private chatClientService: ChatClientService
+		  private chatService: ChatService
 	  ) { }
 
 	@Input()
 	chatId: string = "";
-
 
 	displayComponent: boolean = false;
 	messages: retMessage[] = [];
@@ -32,37 +26,17 @@ import { HttpClient } from '@angular/common/http';
 		message: "",
 	});
 
-	// public msgArr: string[] = [];
-
 	ngOnInit(): void {
-		this.http.get('user').subscribe((response) => {
-			console.log(response);
-			this.user = response;
+		this.chatService.getCurrentUser().subscribe((user) => {
+			this.user = user
 		})
 		this.chatService.receiveChat().subscribe((msg) => {
-			console.log("message from chat socket: ", msg);
-			let item: retMessage = {
-				chat: msg.chat,
-				id: "",
-				time: new Date(),
-				owner: this.user,
-				message: msg.message
-			}
-			this.messages.push(item);
+			this.messages.push(msg);
 			this.messages.splice(0, this.messages.length - 6);
-			// this.msgArr.push(msg);
 		})
-
-		// this.chatService.getUsers().subscribe((users) => {
-			// console.log("users method returns: ", users);
-		// })
 	}
 
 	ngOnChanges() {
-		// this.http.get('user').subscribe((response) => {
-			// console.log(response);
-			// this.user = response;
-		// })
 		if (this.chatId != "") {
 			this.displayComponent = true;
 			this.chatService.getMessages(this.chatId).subscribe(
@@ -78,8 +52,6 @@ import { HttpClient } from '@angular/common/http';
 	}
 
 	public onSubmit() {
-		
-		// this.chatClientService.sendChat(this.messageForm.controls['message'].value);
 		const pushThing: retMessage = {
 			chat: this.chatId,
 			id: "",
@@ -90,10 +62,6 @@ import { HttpClient } from '@angular/common/http';
 		this.messages.push(pushThing);
 		if (this.messages.length > 6) {
 			this.messages.splice(0, this.messages.length - 6);
-		}
-		const msg: newMsg = {
-			chat: this.chatId,
-			message: this.messageForm.controls['message'].value
 		}
 		this.chatService.send(pushThing).subscribe(
 			(response) => console.log(response),

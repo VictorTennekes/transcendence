@@ -13,30 +13,18 @@ import { UnauthorizedFilter } from 'src/auth/unauthorized.filter';
 export class ChatController {
 	constructor(private readonly service: ChatService,
 				private readonly userService: UserService) {}
-	// @Get(":id")
-	// async getChatById(@Param("id", new ParseUUIDPipe()) uuid: string): Promise<chatDTO> {
-	//     const item = await this.service.getChatById(uuid);
-	//     return toPromise(item);
-	// }
 
 	@Get("find/:user")
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async getChatById(@Param("user") username: string, @Req() req): Promise<ChatDTO> {
-		Logger.log(`Finding user ${username}`);
-		// let users: string[];
-		// users.push(username);
-		// users.push(req.session.passport.user.intra_name);
 		const user = await this.userService.findOne(username);
 		if (user) {
-			Logger.log("found user");
-			// return await this.service.getChatByUser(username);
 			let users: UserDTO[] = [];
 			users.push(user);
 			users.push(await this.userService.findOne(req.session.passport.user.intra_name));
 			return await this.service.getChatByUsers(users);
 		} else {
-			Logger.log("can't find user");
 			throw new HttpException("No user by name " + username, HttpStatus.NOT_FOUND);
 		}
 	}
@@ -46,7 +34,6 @@ export class ChatController {
 		Logger.log(`Creating new chat`);
 		let user: UserDTO = await this.userService.findOne(req.session.passport.user.intra_name);
 		Logger.log(`${newChat.user}`);
-		// newChat.users.push(user);
 		let nc: NewChatDTO = {
 			name: newChat.name,
 			users: []
@@ -56,19 +43,9 @@ export class ChatController {
 		nc.users.push(user);
 		return await this.service.createNewChat(nc);
 	}
-
-	// @Post("chat_by_user")
-	// async findExistingOrCreateNew(@Body() newChat: chatDTO, @Req() req): Promise<chatDTO> {
-// 
-	// }
-	// @Post()
-	// async createNewChat(@Body() newChat: newChatDTO): Promise<chatDTO> {
-		// return await this.service.createNewChat(newChat);
-	// }
+	
 	@Post('msg')
 	async createNewMessage(@Body() newMessage: MessageDTO, @Req() req): Promise<MessageDTO> {
-		Logger.log(newMessage);
-		Logger.log("chat controller nest");
 		return await this.service.createNewMessage(newMessage);
 	}
 
