@@ -68,6 +68,7 @@ import { retMessage } from './message.model';
 			(response) => console.log(response),
 			(error) => console.log(error)
 		);
+		this.chatService.sendChat(pushThing.message);
 		this.messageForm.reset();
 	  }
   }

@@ -11,11 +11,12 @@ export class ChatService {
 				private socket: Socket) {}
 
 	sendChat(message: string) {
-		this.socket.emit('chat', message);
+		this.socket.emit('send_message', message);
 	}
 
 	receiveChat(): Observable<retMessage> {
-		return this.socket.fromEvent('chat');
+		// return this.socket.fromEvent('chat');
+		return this.socket.fromEvent('request_message');
 	}
 
 	send(msg: retMessage): Observable<retMessage> {
