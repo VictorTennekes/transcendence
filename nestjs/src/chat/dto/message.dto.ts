@@ -8,3 +8,8 @@ export class MessageDTO {
 	message: string;
 	chat: ChatDTO;
 }
+
+export class randomsgDTO {
+	message: string;
+	chat: string;
+}

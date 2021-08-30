@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { chatModel, retMessage, userModel, createChatModel } from "./message.model";
+import { chatModel, retMessage, userModel, createChatModel, newMessage } from "./message.model";
 import { Observable } from "rxjs";
 import { Socket } from "ngx-socket-io";
 
@@ -10,7 +10,7 @@ export class ChatService {
 	constructor(private http: HttpClient,
 				private socket: Socket) {}
 
-	sendChat(message: string) {
+	sendChat(message: newMessage) {
 		this.socket.emit('send_message', message);
 	}
 
@@ -41,6 +41,13 @@ export class ChatService {
 
 	createNewChat(newChat: createChatModel): Observable<chatModel> {
 		return this.http.post<chatModel>('api/chat/new', newChat);
+	}
+
+	receiveMessages(): Observable<retMessage> {
+		const item: Observable<retMessage> = this.socket.fromEvent('receive_message');
+		console.log("received message from server: ");
+		console.log(item);
+		return item;
 	}
 
 }

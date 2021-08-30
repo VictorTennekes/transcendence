@@ -5,7 +5,7 @@ import { NewChatDTO } from "@chat/dto/newChat.dto";
 import { ChatEntity } from "@chat/entity/chat.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { MessageDTO } from "@chat/dto/message.dto";
+import { MessageDTO, randomsgDTO } from "@chat/dto/message.dto";
 import { MessageEntity } from "@chat/entity/message.entity";
 import { UserDTO } from "@user/dto/user.dto";
 
@@ -16,7 +16,8 @@ export class ChatService {
 
 	async getChatById(uuid: string): Promise<ChatDTO> {
 		const item = await this.repo.findOne({
-			where: {id: uuid}
+			where: {id: uuid},
+			relations: ["users"]
 		});
 		if (!item) {
 			throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
@@ -131,6 +132,27 @@ export class ChatService {
 		}
 		return toPromise(ret);
 	}
+
+	async createNewMessageSocket(message: string, owner: UserDTO, chat: ChatDTO): Promise<MessageDTO> {
+		// const { message } = newMessage;
+		// Logger.log(newMessage.owner);
+		// Logger.log(newMessage.message);
+		const item: MessageEntity = await this.msgRepo.create({
+			owner,
+			message,
+			chat,
+		});
+		await this.msgRepo.save(item);
+		const ret: MessageDTO = {
+			id: item.id,
+			time: item.time,
+			owner: item.owner,
+			message: item.message,
+			chat: item.chat
+		}
+		return toPromise(ret);
+	}
+
 	
 	async getAllMessages(): Promise<MessageDTO[]> {
 		return await this.msgRepo.find();

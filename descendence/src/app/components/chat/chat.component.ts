@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ChatService } from './chat.service';
-import { retMessage } from './message.model';
+import { retMessage, newMessage } from './message.model';
 
 @Component({
 	selector: 'app-chat',
@@ -27,12 +27,15 @@ import { retMessage } from './message.model';
 	});
 
 	ngOnInit(): void {
-		this.chatService.getCurrentUser().subscribe((user) => {
-			this.user = user
-		})
 		this.chatService.receiveChat().subscribe((msg) => {
 			this.messages.push(msg);
 			this.messages.splice(0, this.messages.length - 6);
+		})
+		this.chatService.receiveMessages().subscribe((msg) => {
+			console.log(msg);
+			this.messages.push(msg);
+			this.messages.splice(0, this.messages.length - 6);
+			console.log('yay somebodys speaking to me!');
 		})
 	}
 
@@ -53,22 +56,11 @@ import { retMessage } from './message.model';
 	}
 
 	public onSubmit() {
-		const pushThing: retMessage = {
+		const pushThing: newMessage = {
 			chat: this.chatId,
-			id: "",
-			time: new Date(),
-			owner: this.user,
 			message: this.messageForm.controls['message'].value
 		}
-		this.messages.push(pushThing);
-		if (this.messages.length > 6) {
-			this.messages.splice(0, this.messages.length - 6);
-		}
-		this.chatService.send(pushThing).subscribe(
-			(response) => console.log(response),
-			(error) => console.log(error)
-		);
-		this.chatService.sendChat(pushThing.message);
+		this.chatService.sendChat(pushThing);
 		this.messageForm.reset();
 	  }
   }

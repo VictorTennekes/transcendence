@@ -12,6 +12,11 @@ export interface retMessage {
 	message: string;
 }
 
+export interface newMessage {
+	chat: string;
+	message: string;
+}
+
 export interface chatModel {
 	id: string,
 	name: string,
