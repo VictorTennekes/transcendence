@@ -1,22 +1,18 @@
-import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { ChatComponent } from "../chat/chat.component";
-import { ChatService } from "../chat/chat.service";
 import { createChatModel } from "../chat/message.model";
+import { SearchService } from "./search.service";
 
 @Component({
 	selector: 'chat-search',
 	templateUrl: './search.component.html',
 	styleUrls: ['./search.component.scss'],
-	providers: [ChatComponent, ChatService]
+	providers: [ChatComponent, SearchService]
   })
   export class SearchComponent implements OnInit {
 
-	constructor(
-		private chatService: ChatService,
-		private http: HttpClient
-	) {}
+	constructor(private searchService: SearchService) {}
 
 	public chatId: string = "";
 
@@ -30,11 +26,12 @@ import { createChatModel } from "../chat/message.model";
 
 	public userNotFound: boolean = false;
 	public submitUser() {
+		//TODO: send ChatComponent a complete chatDTO object on redirect which will contain initial messages 
 		const newChat: createChatModel = {
 			name: '',
 			user: this.userForm.value.username
 		}
-		this.chatService.findUser(this.userForm.value.username).subscribe(
+		this.searchService.findUser(this.userForm.value.username).subscribe(
 			(response) => {
 				this.chatId = response.id;
 			},
@@ -43,7 +40,7 @@ import { createChatModel } from "../chat/message.model";
 					this.userNotFound = true;
 					this.chatId = ""
 				} else {
-					this.chatService.createNewChat(newChat).subscribe(
+					this.searchService.createNewChat(newChat).subscribe(
 						(response) => this.chatId = response.id,
 						(error) => console.log(error)
 					)

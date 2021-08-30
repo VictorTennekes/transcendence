@@ -9,7 +9,7 @@ export class MessageDTO {
 	chat: ChatDTO;
 }
 
-export class randomsgDTO {
+export class newMessageDTO {
 	message: string;
 	chat: string;
 }

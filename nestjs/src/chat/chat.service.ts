@@ -5,7 +5,7 @@ import { NewChatDTO } from "@chat/dto/newChat.dto";
 import { ChatEntity } from "@chat/entity/chat.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { MessageDTO, randomsgDTO } from "@chat/dto/message.dto";
+import { MessageDTO} from "@chat/dto/message.dto";
 import { MessageEntity } from "@chat/entity/message.entity";
 import { UserDTO } from "@user/dto/user.dto";
 

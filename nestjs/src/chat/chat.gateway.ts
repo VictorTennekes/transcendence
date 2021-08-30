@@ -1,19 +1,15 @@
-import { Logger, Req, UseFilters, UseGuards } from "@nestjs/common";
+import { Logger, UseFilters, UseGuards } from "@nestjs/common";
 import { OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody } from "@nestjs/websockets";
 import { ConnectedSocket } from "@nestjs/websockets";
 import { Socket } from "socket.io";
 import { ChatService } from "./chat.service";
 import { UserService } from "@user/user.service";
 import { parse } from 'cookie';
-import { LoginGuard } from "src/auth/login.guard";
-import * as session from 'express-session';
-import {ConfigService} from '@nestjs/config'
+// import * as session from 'express-session';
 import { UserDTO } from "@user/dto/user.dto";
 import { AuthenticatedGuard } from "src/auth/authenticated.guard";
 import { UnauthorizedFilter } from "src/auth/unauthorized.filter";
-import { MessageDTO, randomsgDTO } from "./dto/message.dto";
-
-// var cookieParser = require('cookie-parser')
+import { MessageDTO, newMessageDTO } from "./dto/message.dto";
 
 class socketData {
 	user: UserDTO;
@@ -25,8 +21,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@WebSocketServer() server;
 
 	constructor(private chatService: ChatService,
-				private userService: UserService,
-				private configService: ConfigService) {}
+				private userService: UserService) {}
 
 	connectedSockets: socketData[] = []
 
@@ -39,20 +34,19 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		const cookie = socket.handshake.headers.cookie;
 
 		Logger.log(`cookie: ${cookie}`)
-		if (!cookie) return null; // no cookies
+		if (!cookie) return null;
 		const parsedCookie = parse(cookie);
 		Logger.log(`parsed cookie: ${JSON.stringify(parsedCookie)}`)
-		// const cookieData = parsedCookie[this.configService.get('s')];
 		const cookieData = parsedCookie['connect.sid'];
 		Logger.log(JSON.stringify(cookieData));
-		let sessionData;
+		// let sessionData;
 
 		let sid = cookieData.substr(2, cookieData.indexOf(".") - 2);
 
-	const postgresSession = require('connect-pg-simple')(session);
+		// const postgresSession = require('connect-pg-simple')(session);
 
-		const fs = require('fs');
-		const path = require('path');
+		// const fs = require('fs');
+		// const path = require('path');
 
 		const postgresConnection = 
 		{
@@ -89,58 +83,30 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async handleConnection(@ConnectedSocket() client: Socket) {
-		Logger.log('handle connection');
+		Logger.log("new connection");
 		const user: UserDTO = await this.getUserFromSocket(client);
-		Logger.log(JSON.stringify(user));
 		if (!user) return;
 		let newSocket: socketData = {
 			user: user,
 			socket: client
 		};
 		this.connectedSockets.push(newSocket);
-		Logger.log(JSON.stringify(newSocket.user));
-		Logger.log('here');
-		// Logger.log(JSON.stringify(client));
-		// Logger.log(JSON.stringify(client));
-		console.log(client.id);
-		Logger.log('after');
-		// Logger.log(JSON.stringify(newSocket.socket));
-		// this.server.emit('users', 1);
-		// Logger.log(`added new socket ${newSocket.intra_name}`);
 	}
 
 	async handleDisconnect(@ConnectedSocket() client: Socket) {
 		Logger.log('disconnecting socket');
-		// Logger.log(`${this.connectedSockets[0].socket}`);
-		console.log(client.id);
-		console.log(this.connectedSockets[0].socket.id);
-		// Logger.log(`${client}`);
 		const index = this.connectedSockets.findIndex(x => x.socket.id === client.id);
-		// const index = this.connectedSockets.indexOf(value);
-		// console.log(value.user);
 		Logger.log(index);
-
 		this.connectedSockets.splice(index, 1);
-		// this.server.emit('users', 0);
 	}
 
 
 	@SubscribeMessage('send_message')
-	async sendMessage(@ConnectedSocket() client: Socket, @MessageBody() message: randomsgDTO) {
+	async sendMessage(@ConnectedSocket() client: Socket, @MessageBody() message: newMessageDTO) {
 		Logger.log(`onChat, message received: ${message}`);
-		Logger.log('chat id!:');
-
-		Logger.log(message.chat);
-
 		const chat = await this.chatService.getChatById(message.chat);
-
-		console.log(message);
-		console.log(chat);
-
 		const user = await this.getUserFromSocket(client);
-
 		const finalMsg: MessageDTO = await this.chatService.createNewMessageSocket(message.message, user, chat);
-
 		for (let sock of this.connectedSockets) {
 			console.log(sock.user);
 			if (chat.users.findIndex(x => x.intra_name === sock.user.intra_name) !== -1) {

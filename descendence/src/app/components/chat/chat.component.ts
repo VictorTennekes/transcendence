@@ -27,14 +27,13 @@ import { retMessage, newMessage } from './message.model';
 	});
 
 	ngOnInit(): void {
-		this.chatService.receiveChat().subscribe((msg) => {
-			this.messages.push(msg);
-			this.messages.splice(0, this.messages.length - 6);
-		})
 		this.chatService.receiveMessages().subscribe((msg) => {
 			console.log(msg);
-			this.messages.push(msg);
-			this.messages.splice(0, this.messages.length - 6);
+			console.log(msg.chat.id, this.chatId);
+			if (msg.chat.id === this.chatId) {
+				this.messages.push(msg);
+				this.messages.splice(0, this.messages.length - 6);
+			}
 			console.log('yay somebodys speaking to me!');
 		})
 	}
@@ -43,24 +42,17 @@ import { retMessage, newMessage } from './message.model';
 		console.log("chat id on change: ", this.chatId);
 		if (this.chatId != "") {
 			this.displayComponent = true;
-			this.chatService.getMessages(this.chatId).subscribe(
-				(response) => {
-					this.messages = response;
-					this.messages.splice(0, this.messages.length - 6)
-				},
-				(error) => console.log(error)
-			);
 		} else {
 			this.displayComponent = false;
 		}
 	}
 
 	public onSubmit() {
-		const pushThing: newMessage = {
+		const newMessage: newMessage = {
 			chat: this.chatId,
 			message: this.messageForm.controls['message'].value
 		}
-		this.chatService.sendChat(pushThing);
+		this.chatService.sendMessage(newMessage);
 		this.messageForm.reset();
 	  }
   }

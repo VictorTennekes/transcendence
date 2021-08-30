@@ -1,11 +1,10 @@
-
 export interface userModel {
 	intra_name: string;
 	display_name: string;
 }
 
 export interface retMessage {
-	chat: string;
+	chat: chatModel;
 	id: string;
 	time: Date;
 	owner: userModel;
@@ -20,7 +19,8 @@ export interface newMessage {
 export interface chatModel {
 	id: string,
 	name: string,
-	user: string
+	users: string,
+	messages: retMessage[]
 }
 
 export interface createChatModel {
