@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { retMessage, newMessage } from "./message.model";
+import { retMessage, newMessage, chatModel } from "./message.model";
 import { Observable } from "rxjs";
 import { Socket } from "ngx-socket-io";
 

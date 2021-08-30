@@ -30,8 +30,12 @@ const routes: Routes = [
 		component: LoginComponent
 	},
     {
-		path: 'chat',
+		path: 'search',
 		component: SearchComponent
+	},
+	{
+		path: 'chat',
+		component: ChatComponent
 	}
 ];
 

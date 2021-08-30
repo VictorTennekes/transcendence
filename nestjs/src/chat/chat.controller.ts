@@ -21,33 +21,28 @@ export class ChatController {
 		if (user) {
 			let users: UserDTO[] = [];
 			users.push(user);
-			Logger.log("after push");
 			if (username !== req.session.passport.user.intra_name) {
 				users.push(await this.userService.findOne(req.session.passport.user.intra_name));
 			}
-			Logger.log("about to return");
 			return await this.service.getChatByUsers(users);
 		} else {
 			throw new HttpException("No user by name " + username, HttpStatus.NOT_FOUND);
 		}
 	}
 
-	@Post('new')
+	@Post('get')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async createNewChat(@Body() newChat: ReceiveNewChatDTO, @Req() req): Promise<ChatDTO> {
-		Logger.log(`Creating new chat`);
+	async getOrCreateChat(@Body() newChat: ReceiveNewChatDTO, @Req() req): Promise<ChatDTO> {
 		let user: UserDTO = await this.userService.findOne(req.session.passport.user.intra_name);
 		Logger.log(`${newChat.user}`);
 		let nc: NewChatDTO = {
 			name: newChat.name,
 			users: []
 		}
-		Logger.log(`users ${user.intra_name}`);
 		nc.users.push(user);
 		user = await this.userService.findOne(newChat.user);
 		if (user.intra_name !== nc.users[0].intra_name) {
-			Logger.log(`users ${user.intra_name}`);
 			nc.users.push(user);
 		}
 		return await this.service.createNewChat(nc);

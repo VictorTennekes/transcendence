@@ -19,7 +19,7 @@ export interface newMessage {
 export interface chatModel {
 	id: string,
 	name: string,
-	users: string,
+	users: userModel[],
 	messages: retMessage[]
 }
 

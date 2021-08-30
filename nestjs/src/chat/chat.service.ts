@@ -134,9 +134,6 @@ export class ChatService {
 	}
 
 	async createNewMessageSocket(message: string, owner: UserDTO, chat: ChatDTO): Promise<MessageDTO> {
-		// const { message } = newMessage;
-		// Logger.log(newMessage.owner);
-		// Logger.log(newMessage.message);
 		const item: MessageEntity = await this.msgRepo.create({
 			owner,
 			message,
@@ -153,7 +150,6 @@ export class ChatService {
 		return toPromise(ret);
 	}
 
-	
 	async getAllMessages(): Promise<MessageDTO[]> {
 		return await this.msgRepo.find();
 	}
@@ -161,16 +157,19 @@ export class ChatService {
 	async getMessagesFromChat(id: string): Promise<MessageDTO[]> {
 		Logger.log(`id: ${id}`);
 		Logger.log(`get messages from chat`);
-		const item = await this.msgRepo.find({
+		const items = await this.msgRepo.find({
 			where: {chat: id},
 			relations: ["owner"],
 			order: {
-				time: "ASC"
-			}
+				time: "DESC"
+			},
+			skip: 0,
+			take: 6,
 		});
-		if (!item) {
+
+		if (!items) {
 			throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
 		}
-		return item;
+		return items;
 	}
 }

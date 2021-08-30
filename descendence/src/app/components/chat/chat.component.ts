@@ -1,7 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ChatService } from './chat.service';
-import { retMessage, newMessage } from './message.model';
+import { retMessage, newMessage, chatModel } from './message.model';
+
+//TODO: protect this route
 
 @Component({
 	selector: 'app-chat',
@@ -16,40 +19,24 @@ import { retMessage, newMessage } from './message.model';
 		  private chatService: ChatService
 	  ) { }
 
-	@Input()
-	chatId: string = "";
-
-	displayComponent: boolean = false;
-	messages: retMessage[] = [];
-	user: any;
+	public chat: chatModel;
 	messageForm = this.formBuilder.group({
 		message: "",
 	});
 
 	ngOnInit(): void {
+		this.chat = history.state;
 		this.chatService.receiveMessages().subscribe((msg) => {
-			console.log(msg);
-			console.log(msg.chat.id, this.chatId);
-			if (msg.chat.id === this.chatId) {
-				this.messages.push(msg);
-				this.messages.splice(0, this.messages.length - 6);
+			if (msg.chat.id === this.chat.id) {
+				this.chat.messages.push(msg);
+				this.chat.messages.splice(0, this.chat.messages.length - 6);
 			}
-			console.log('yay somebodys speaking to me!');
 		})
-	}
-
-	ngOnChanges() {
-		console.log("chat id on change: ", this.chatId);
-		if (this.chatId != "") {
-			this.displayComponent = true;
-		} else {
-			this.displayComponent = false;
-		}
 	}
 
 	public onSubmit() {
 		const newMessage: newMessage = {
-			chat: this.chatId,
+			chat: this.chat.id,
 			message: this.messageForm.controls['message'].value
 		}
 		this.chatService.sendMessage(newMessage);
