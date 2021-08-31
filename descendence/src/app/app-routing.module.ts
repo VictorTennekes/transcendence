@@ -7,6 +7,7 @@ import { MasterComponent } from './master/master.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { MatInputModule } from '@angular/material/input'
 import { SearchComponent } from './components/search/search.component';
+import { chatGuardService } from './components/chat/chatGuard.service';
 
 const routes: Routes = [
 	{
@@ -35,7 +36,8 @@ const routes: Routes = [
 	},
 	{
 		path: 'chat',
-		component: ChatComponent
+		component: ChatComponent,
+		canActivate: [chatGuardService]
 	}
 ];
 
