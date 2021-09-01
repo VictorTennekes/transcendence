@@ -16,7 +16,8 @@ import { retMessage, newMessage, chatModel } from './message.model';
 
 	constructor(
 		  private formBuilder: FormBuilder,
-		  private chatService: ChatService
+		  private chatService: ChatService,
+		  private router: Router
 	  ) { }
 
 	public chat: chatModel;
@@ -26,6 +27,10 @@ import { retMessage, newMessage, chatModel } from './message.model';
 
 	ngOnInit(): void {
 		this.chat = history.state;
+		console.log(this.chat);
+		if (!this.chat.id) {
+			this.router.navigateByUrl('/search');
+		}
 		this.chatService.receiveMessages().subscribe((msg) => {
 			if (msg.chat.id === this.chat.id) {
 				this.chat.messages.push(msg);
