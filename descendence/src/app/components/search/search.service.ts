@@ -19,4 +19,8 @@ export class SearchService {
 	getMessagesFromChat(chatId: string): Observable<retMessage[]> {
 		return this.http.get<retMessage[]>(this.url + 'msg/' + chatId);
 	}
+
+	getChats(): Observable<chatModel[]> {
+		return this.http.get<chatModel[]>(this.url);
+	}
 }

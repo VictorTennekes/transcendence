@@ -13,6 +13,13 @@ export class ChatController {
 	constructor(private readonly service: ChatService,
 				private readonly userService: UserService) {}
 
+	@Get()
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async getAllChats(@Req() req): Promise<ChatDTO[]> {
+		return this.service.getAllChatsByUser(req.session.passport.user.intra_name);
+	}
+
 	@Get("find/:user")
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)

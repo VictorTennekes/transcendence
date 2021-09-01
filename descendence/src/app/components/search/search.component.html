@@ -6,3 +6,10 @@
 	<button class="button" type="submit">Send</button>
 	<div *ngIf="userNotFound">User not found</div>
 </form>
+
+<mat-list>
+	<mat-list-item *ngFor="let chat of chats">
+		<h3>{{chat.name}}</h3>
+		<p *ngFor="let user of chat.users">{{user.display_name}} </p>
+	</mat-list-item>
+</mat-list>

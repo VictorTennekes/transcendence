@@ -19,13 +19,28 @@ import { SearchService } from "./search.service";
 		private chatService: ChatService) {}
 
 	public userNotFound: boolean = false;
+	public chats: chatModel[] = [];
+
 
 	userForm = new FormGroup ({
 		username: new FormControl('', {
 		})
 	})
 
+	private getChats(): chatModel[] {
+		this.searchService.getChats().subscribe(response => {
+			console.log(response);
+			this.chats = response;
+			return response
+		});
+		return [];
+	}
+
 	ngOnInit(): void {
+		// this.chats = this.getChats()
+		this.getChats();
+		console.log("chats");
+		console.log(this.chats);
 	}
 
 	//TODO: display all options for chats

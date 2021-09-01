@@ -66,9 +66,14 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		Logger.log(JSON.stringify(res));
 
 		const otherRes = await knex("session").where("sid", sid);
+		// Logger.log(JSON.stringify(otherRes));
+		// Logger.log(JSON.stringify(otherRes[0].sess.passport));
+		if (!otherRes) return null;
+		if (!otherRes[0].sess) return null;
+		if (!otherRes[0].sess.passport) return null;
 		Logger.log(JSON.stringify(otherRes));
 		Logger.log(JSON.stringify(otherRes[0].sess.passport));
-		if (!otherRes[0].sess.passport) return null;
+
 		const user = otherRes[0].sess.passport.user;
 		Logger.log(user);
 
