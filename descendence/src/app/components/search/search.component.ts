@@ -45,6 +45,20 @@ import { SearchService } from "./search.service";
 
 	//TODO: display all options for chats
 	//TODO: On select of chat, messages will get get fetched from the db
+
+	private redirectToChat(chat: chatModel) {
+		this.searchService.getMessagesFromChat(chat.id).subscribe((response) => {
+			chat.messages = response.reverse();
+			this.router.navigateByUrl('/chat', {state: chat});
+		})
+	}
+
+	public getChat(chat: chatModel) {
+		console.log("this chat is");
+		console.log(chat);
+		this.redirectToChat(chat);
+	}
+
 	public submitUser() {
 		let chat: chatModel;
 		const newChat: createChatModel = {
@@ -53,11 +67,7 @@ import { SearchService } from "./search.service";
 		}
 		this.searchService.findUser(this.userForm.value.username).subscribe(
 			(response) => {
-				chat = response;
-				this.searchService.getMessagesFromChat(chat.id).subscribe((response) => {
-					chat.messages = response.reverse();
-					this.router.navigateByUrl('/chat', {state: chat} );
-				})
+				this.redirectToChat(response);
 			},
 			(error) => {
 				if (error.error.statusCode === 404) {
@@ -65,9 +75,7 @@ import { SearchService } from "./search.service";
 				} else {
 					this.searchService.getChat(newChat).subscribe(
 						(response) => {
-							chat = response;
-							chat.messages = [];
-							this.router.navigateByUrl('/chat', {state: chat} );
+							this.redirectToChat(response);
 						},
 						(error) => console.log(error)
 					)

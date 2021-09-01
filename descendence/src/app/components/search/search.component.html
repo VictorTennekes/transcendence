@@ -8,8 +8,10 @@
 </form>
 
 <mat-list>
-	<mat-list-item *ngFor="let chat of chats">
-		<h3>{{chat.name}}</h3>
-		<p *ngFor="let user of chat.users">{{user.display_name}} </p>
+	<mat-list-item *ngFor="let chat of chats" (click)="getChat(chat)">
+		<a>{{chat.name}}</a>
+		<tr *ngFor="let user of chat.users; let last=last" [ngClass]="{ flast: last }">
+			<p>{{user.intra_name}} &nbsp; </p>
+		</tr>
 	</mat-list-item>
 </mat-list>

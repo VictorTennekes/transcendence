@@ -4,7 +4,7 @@ import { ChatDTO } from "@chat/dto/chat.dto";
 import { NewChatDTO } from "@chat/dto/newChat.dto";
 import { ChatEntity } from "@chat/entity/chat.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { getSqljsManager, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { MessageDTO} from "@chat/dto/message.dto";
 import { MessageEntity } from "@chat/entity/message.entity";
 import { UserDTO } from "@user/dto/user.dto";
@@ -67,47 +67,6 @@ export class ChatService {
 	}
 
 	async getAllChatsByUser(username: string): Promise<ChatDTO[]> {
-		Logger.log("get all chats by user")
-		// const usr = await this.userRepo.createQueryBuilder("userEntity")
-		// 		.leftJoinAndSelect("userEntity.chats", "chats")
-		// 		.where("userEntity.intra_name = :username", {username})
-		// 		.getOne();
-
-		// const chat = await this.repo.createQueryBuilder("chat")
-		// 		.leftJoinAndSelect("chat.users", "users")
-		// 		.getMany();
-
-		// console.log(usr);
-		// console.log(chat);
-
-
-		// const res = this.roleRepository.find({
-		// 	join: { alias: 'roles', innerJoin: { users: 'roles.users' } },
-		// 	where: qb => {
-		// 	  qb.where({ // Filter Role fields
-		// 		a: 1,
-		// 		b: 2
-		// 	  }).andWhere('users.name = :userName', { userName: 'John Doe' }); // Filter related field
-		// 	}
-		//   });
-
-
-
-
-		// const res = this.repo.find({
-		// 	join: { alias: 'chat', innerJoin: { users: 'chat.users' } },
-		// 	where: qb => {
-		// 	  qb.where({ // Filter Role fields
-		// 	  }).andWhere('users.name = :username', { username }); // Filter related field
-		// 	}
-		//   });
-
-		// let user: UserDTO = {
-		// 	intra_name: username,
-		// 	display_name: username,
-		// 	chats: []
-		// }
-
 		const chats = await this.repo
 		.createQueryBuilder('chat')
 		.innerJoin('chat.users', 'users')
@@ -115,7 +74,6 @@ export class ChatService {
 		.getMany();
 		console.log("items is:");
 		console.log(chats);
-
 
 		for (let chat in chats) {
 			console.log(chat);
@@ -126,33 +84,11 @@ export class ChatService {
 					.getOne();
 			console.log(chats[chat]);
 		}
-
 		console.log(chats);
-		// const lol = await this.userRepo
-		// .createQueryBuilder('userEntity')
-		// .leftJoinAndSelect('userEntity.chats', 'chats')
-		// .where("userEntity.intra_name = :username", {username})
-		// .getMany();
-		// console.log("userrepo")
-		// console.log(lol);
-
-		// const qb = this.repo
-		// .createQueryBuilder('user')
-		// .innerJoin('user.groups', 'userGroup', 'userGroup.id IN (:...groupIds)', { groupIds });
-
-		// const qb = await this.repo
-		// .createQueryBuilder('chat')
-		// .innerJoin('chat.users', 'chatUser', 'chatUser.intra_name IN (:username)', { username })
-		// .getMany();
-		// console.log("qb");
-		// console.log(qb);
-
-		  
 		if (!chats) {
 			throw new HttpException("no such user", HttpStatus.BAD_REQUEST);
 		}
 		return toPromise(chats)
-		// return user.chats;
 	}
 
 	async getChatByUsers(users: UserDTO[]): Promise<ChatDTO> {
