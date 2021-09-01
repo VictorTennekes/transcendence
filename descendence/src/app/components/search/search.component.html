@@ -1,12 +1,11 @@
 <form [formGroup]="userForm" (ngSubmit)="submitUser()">
 	<mat-form-field class="example-full-width" appearance="fill">
-		<mat-label>username</mat-label>
+		<mat-label>chat name</mat-label>
 		<input matInput formControlName="username">
 	</mat-form-field>
-	<button class="button" type="submit">Send</button>
+	<button mat-raised-button type="submit" class="button">Find</button>
 	<div *ngIf="userNotFound">User not found</div>
 </form>
-
 <mat-list>
 	<mat-list-item *ngFor="let chat of chats" (click)="getChat(chat)">
 		<a>{{chat.name}}</a>

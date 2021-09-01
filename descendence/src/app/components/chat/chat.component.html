@@ -1,3 +1,6 @@
+<button mat-icon-button aria-label="Example icon button with a home icon" (click)="back()">
+	<mat-icon>arrow_back</mat-icon>
+</button>
 <mat-list>
 	<mat-list-item *ngFor="let message of chat.messages">
 		<p matLine> {{message.time | date:'hh:mm a, MMM dd, YY' }} </p>
@@ -13,5 +16,5 @@
 		<mat-label>Message</mat-label>
 		<textarea formControlName="message" matInput placeholder="Ex. Hi!"></textarea>
 	</mat-form-field>
-	<button class="button" type="submit">Send</button>
+	<button mat-raised-button type="submit" class="button">Send</button>
 </form>

@@ -39,6 +39,10 @@ import { retMessage, newMessage, chatModel } from './message.model';
 		})
 	}
 
+	public back() {
+		this.router.navigateByUrl('/search');
+	}
+
 	public onSubmit() {
 		const newMessage: newMessage = {
 			chat: this.chat.id,

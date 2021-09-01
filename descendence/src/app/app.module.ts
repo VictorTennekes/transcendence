@@ -12,6 +12,8 @@ import { ChatComponent } from './components/chat/chat.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
 import { FailComponent } from './fail/fail.component';
 import { SearchComponent } from './components/search/search.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
@@ -37,6 +39,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transp
 		BrowserAnimationsModule,
         MatInputModule,
         MatListModule,
+		MatIconModule,
+		MatButtonModule,
 		SocketIoModule.forRoot(config)
 	],
 	providers: [chatGuardService],
