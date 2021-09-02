@@ -40,12 +40,15 @@ export class ChatController {
 	@Post('get')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async getOrCreateChat(@Body() newChat: ReceiveNewChatDTO, @Req() req): Promise<ChatDTO> {
+	async createDirectChat(@Body() newChat: ReceiveNewChatDTO, @Req() req): Promise<ChatDTO> {
+	// async getOrCreateChat(@Body() newChat: ReceiveNewChatDTO, @Req() req): Promise<ChatDTO> {
 		let user: UserDTO = await this.userService.findOne(req.session.passport.user.intra_name);
 		Logger.log(`${newChat.user}`);
 		let nc: NewChatDTO = {
 			name: newChat.name,
-			users: []
+			visibility: 'direct',
+			users: [],
+			admins: []
 		}
 		nc.users.push(user);
 		user = await this.userService.findOne(newChat.user);

@@ -18,7 +18,7 @@ export class CreateChatComponent implements OnInit {
 		name: new FormControl('', [Validators.required]),
 		users: this.formBuilder.array([]),
 		// users: [this.SubjectsArray],
-		public: new FormControl('true', [Validators.required])
+		visibility: new FormControl('public', [Validators.required])
 	});
 
 	ngOnInit(): void {

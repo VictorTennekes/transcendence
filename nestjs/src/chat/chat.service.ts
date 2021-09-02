@@ -24,9 +24,12 @@ export class ChatService {
 		if (!item) {
 			throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
 		}
+
 		const ret: ChatDTO = {
 			id: item.id,
 			name: item.name,
+			visibility: item.visibility,
+			admins: item.admins,
 			users: item.users,
 			messages: item.messages
 		}
@@ -109,6 +112,8 @@ export class ChatService {
 		const ret: ChatDTO = {
 			id: item.id,
 			name: item.name,
+			visibility: item.visibility,
+			admins: item.admins,
 			users: item.users,
 			messages: item.messages
 		}
@@ -123,7 +128,9 @@ export class ChatService {
 		// Logger.log(newChat.users[1].intra_name);
 		let item: ChatEntity = await this.repo.create({
 			name: newChat.name,
-			users: newChat.users
+			users: newChat.users,
+			visibility: newChat.visibility,
+			admins: newChat.admins
 		});
 		
 		// Logger.log(item.users[0].intra_name);
@@ -133,6 +140,8 @@ export class ChatService {
 		const ret: ChatDTO = {
 			id: item.id,
 			name: item.name,
+			visibility: item.visibility,
+			admins: item.admins,
 			users: item.users,
 			messages: item.messages
 		}

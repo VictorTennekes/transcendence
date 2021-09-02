@@ -1,14 +1,22 @@
 import { UserEntity } from "@user/entities/user.entity";
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Check, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { MessageEntity } from "./message.entity";
 
 @Entity('chat')
+@Check(`"visibility" in ('direct', 'public', 'private')`)
 export class ChatEntity {
 	@PrimaryGeneratedColumn("uuid")
 	id: string;
 
 	@Column()
 	name: string;
+
+	@Column()
+	visibility: string;
+
+	@ManyToMany(type => UserEntity, UserEntity => UserEntity.chats, {cascade: true})
+	@JoinTable()
+	admins: UserEntity[]
 
 	@ManyToMany(type => UserEntity, UserEntity => UserEntity.chats, {cascade: true})
 	@JoinTable()
