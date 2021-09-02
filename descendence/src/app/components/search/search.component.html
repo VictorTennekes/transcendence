@@ -6,6 +6,9 @@
 	<button mat-raised-button type="submit" class="button">Find</button>
 	<div *ngIf="userNotFound">User not found</div>
 </form>
+<button mat-raised-button class="button" (click)="redirectCreate()">
+	<mat-icon>add</mat-icon>
+</button>
 <mat-list>
 	<mat-list-item *ngFor="let chat of chats" (click)="getChat(chat)">
 		<a>{{chat.name}}</a>

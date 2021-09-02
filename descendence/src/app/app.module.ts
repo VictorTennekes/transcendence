@@ -18,6 +18,8 @@ import { FailComponent } from './fail/fail.component';
 import { SearchComponent } from './components/search/search.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { chatGuardService } from './components/chat/chatGuard.service';
+import { CreateChatComponent } from './create-chat/create-chat.component';
+import {MatRadioModule} from '@angular/material/radio';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transports: ['websocket']} };
 
@@ -29,7 +31,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transp
         SearchComponent,
         ChatComponent,
 		LoginComponent,
-		FailComponent
+		FailComponent,
+		CreateChatComponent
 	],
 	imports: [
 		BrowserModule,
@@ -41,6 +44,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transp
         MatListModule,
 		MatIconModule,
 		MatButtonModule,
+		MatRadioModule,
 		SocketIoModule.forRoot(config)
 	],
 	providers: [chatGuardService],

@@ -1,0 +1,33 @@
+<button mat-icon-button aria-label="Example icon button with a home icon" (click)="back()">
+	<mat-icon>arrow_back</mat-icon>
+</button>
+<form [formGroup]="createChatForm" (ngSubmit)="otherSubmit()" (keyup.enter)="otherSubmit()">
+	<mat-form-field class="example-full-width" appearance="fill">
+		<mat-label>Chat name</mat-label>
+		<textarea formControlName="name" matInput placeholder="Ex. Hi!"></textarea>
+	</mat-form-field>
+
+	<div>
+	 <table class="table table-bordered" formArrayName="users">  
+		<tr>  
+		  <th colspan="2">Users:</th>  
+		  <th width="150px"><button type="button" (click)="addUser()" class="btn btn-primary">Add More</button></th>  
+		</tr>  
+		<tr *ngFor="let user of users().controls; let i=index" [formGroupName]="i">  
+		  <td>  
+			  New user :  
+			  <input type="text" formControlName="username" class="form-control">  
+		  </td>  
+		  <td>  
+			  <button (click)="removeUser(i)" class="btn btn-danger">Remove</button>  
+		  </td>  
+		</tr>  
+	  </table>
+	</div>
+
+	<mat-radio-group name="public" formControlName="public">
+		<mat-radio-button type="radio" [checked]='true' value="true">public</mat-radio-button>
+		<mat-radio-button type="radio" value="false">private</mat-radio-button>
+	</mat-radio-group>
+	<button mat-raised-button type="submit" class="button">Send</button>
+</form>

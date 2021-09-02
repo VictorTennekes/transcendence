@@ -59,6 +59,10 @@ import { SearchService } from "./search.service";
 		this.redirectToChat(chat);
 	}
 
+	public redirectCreate() {
+		this.router.navigateByUrl('/new-chat');
+	}
+
 	public submitUser() {
 		let chat: chatModel;
 		const newChat: createChatModel = {
