@@ -1,16 +1,23 @@
+<!-- <div class="cdk-overlay-container">
+	<div id="cdk-overlay-0" class="cdk-overlay-pane" dir="ltr">
+		<app-focus-overlay></app-focus-overlay>
+	</div>
+</div> -->
+
 <div class="section-title">
 	Profile
 </div>
+
 <form [formGroup]="settingsForm" (ngSubmit)="saveChanges()" autocomplete="off">
-<div class="section-container">
-	<div class="avatar-wrapper">
-		<div class="avatar" style="{{avatar}}"></div>
-		<label for="avatar-select">
-			<div class="avatar-change"><span>Change Avatar</span></div>
-		</label>
-		<input id="avatar-select" formControlName="avatar" type="file" (click)="onClickSelectAvatar($event)" (change)="selectAvatar($event)">
-		<span class="avatar-reset" (click)="resetAvatar()">Restore Default</span>
-	</div>
+	<div class="section-container">
+		<div class="avatar-wrapper">
+			<div class="avatar" style="{{avatar}}"></div>
+			<label for="avatar-select">
+				<div class="avatar-change"><span>Change Avatar</span></div>
+			</label>
+			<input id="avatar-select" formControlName="avatar" type="file" (click)="onClickSelectAvatar($event)" (change)="selectAvatar($event)">
+			<span class="avatar-reset" (click)="resetAvatar()">Restore Default</span>
+		</div>
 		<div id="displayname">
 			<label for="name">
 				<div class="bar">
@@ -19,28 +26,33 @@
 			</label>
 			<input type="text" id="name" formControlName="displayName" class="displayname" spellcheck="false">
 		</div>
-</div>
-<div class="section-title">
-	Security
-</div>
-<div class="section-container">
-	<span class="setting-title">Two-Factor Authentication</span>
-	<div class="setting-container">
-		<label for="checkbox" class="state-text">{{ twoFactorState }}</label>
-		<label class="switch">
-			<input id="checkbox" formControlName="twoFactorEnabled" class="checkbox" type="checkbox" name="2fa"/>
-			<i></i>
-		</label>
 	</div>
-</div>
-<div class="action-container">
-	<a>
-		<button type="submit" class="save">
-			<span>Save Changes</span>
-		</button>
-	</a>
-	<a>
-		<span class="cancel">Return to previous page</span>
-	</a>
-</div>
+
+	<div class="section-title">
+		Security
+	</div>
+
+	<div class="section-container">
+		<span class="setting-title">Two-Factor Authentication</span>
+		<div class="setting-container">
+			<label for="checkbox" class="state-text">{{ twoFactorState }}</label>
+			<label class="switch">
+				<input id="checkbox" (click)="toggleSwitch($event)" formControlName="twoFactorEnabled" class="checkbox" type="checkbox" name="2fa"/>
+				<i></i>
+			</label>
+			<div class="two-factor-open" id="two-factor-tab">
+				Yeet
+			</div>
+		</div>
+	</div>
+	<div class="action-container">
+		<a>
+			<button type="submit" class="save">
+				<span>Save Changes</span>
+			</button>
+		</a>
+		<a>
+			<span class="cancel">Return to previous page</span>
+		</a>
+	</div>
 </form>

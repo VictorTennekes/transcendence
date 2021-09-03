@@ -15,6 +15,12 @@ import { UserService } from './user.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { ImageService } from './services/image-service.service';
+import { FocusOverlayComponent } from './focus-overlay/focus-overlay.component';
+import { FullscreenOverlayContainer, OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
+import { FocusOverlayService } from './focus-overlay/focus-overlay.service';
+import { NgxKjuaModule } from 'ngx-kjua';
+import { QrCodeDirective } from './focus-overlay/qrcode.directive';
+import { OnlyNumber } from './focus-overlay/only-numbers.directive';
 
 @NgModule({
 	declarations: [
@@ -25,6 +31,9 @@ import { ImageService } from './services/image-service.service';
 		FailComponent,
 		UserComponent,
 		UserSettingsComponent,
+		FocusOverlayComponent,
+		QrCodeDirective,
+		OnlyNumber
 	],
 	imports: [
 		CookieModule.forRoot(),
@@ -33,9 +42,16 @@ import { ImageService } from './services/image-service.service';
 		HttpClientModule,
 		ReactiveFormsModule,
 		FormsModule,
-		FontAwesomeModule
+		FontAwesomeModule,
+		OverlayModule,
+		NgxKjuaModule
 	],
-	providers: [ UserService, ImageService ],
+	entryComponents: [ FocusOverlayComponent],
+	providers: [
+		UserService,
+		ImageService,
+		FocusOverlayService,
+	],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }

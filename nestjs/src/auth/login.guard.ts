@@ -17,7 +17,7 @@ export class LoginGuard extends AuthGuard('42')
 		const request = ctx.getRequest();
 		console.log("right before super.logIn()");
 		if (result)
-		super.logIn(request);
+			super.logIn(request);
 //		console.table(request.session);
 		console.log("end of LoginGuard");
 		return (result);

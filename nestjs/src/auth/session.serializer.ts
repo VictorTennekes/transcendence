@@ -1,24 +1,32 @@
 import { Injectable } from "@nestjs/common";
 import { PassportSerializer } from "@nestjs/passport";
+import { UserService } from "@user/user.service";
 
 //SerializeUser is called by AuthGuard(Strategy).logIn(request)
 //DeserializeUser is called on every request
 @Injectable()
 export class SessionSerializer extends PassportSerializer
 {
-	constructor() {
+	constructor(
+		private readonly userService: UserService
+	) {
 		super();
 	}
 
-	serializeUser(user: any, done: (err: any, id?: any) => void): void {
+	async serializeUser(user: any, done: (err: any, id?: any) => void){
 		//store only the intra_name;
 		console.log(`Serializing: ${JSON.stringify(user)}`);
-		done(null, user);
+		const sessionData = {
+			login: user.intra_name,
+		};
+		done(null, sessionData);
 	}
 
-	deserializeUser(payload: any, done: (err: any, id?: any) => void): void {
+	async deserializeUser(payload: any, done: (err: any, id?: any) => void) {
 		//fetch the user from the database, using the intra_name;
 		console.log(`Deserializing: ${JSON.stringify(payload)}`);
-		done(null, payload);
+		const user = await this.userService.findOne(payload.login);
+		console.log(`Deserializing: ${JSON.stringify(user)}`);
+		done(null, user);
 	}
 }

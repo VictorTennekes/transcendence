@@ -60,6 +60,29 @@ button {
 	margin-bottom: 5rem;
 }
 
+#two-factor-tab {
+	display: none;
+	position: fixed;
+	margin: auto;
+	margin-left: 500px;
+	width: 500px;
+	height: 1000px;
+	background-color: rgba(214, 180, 180, 0.24);
+	border-radius: 1rem;
+}
+
+#overlay {
+	position: absolute; /* Sit on top of the page content */
+	display: block; /* Hidden by default */
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+	z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+	cursor: pointer; /* Add a pointer on hover */
+}
+
 .avatar-change {
 	cursor: pointer;
 	margin: auto;
@@ -260,6 +283,8 @@ button.save {
 	background-color: white;
 	margin-right: 2rem;
 	cursor: pointer;
+	border: none;
+	outline: none;
 
 	& span {
 		font-family: Poppins;
@@ -269,8 +294,10 @@ button.save {
 		color: #1B99BC;
 	}
 
-	&:hover, &:active {
+	&:hover, &:active, &:focus {
 		background-color: #24bee9;
+		outline: none;
+		border: none;
 
 		& span {
 			color: white;

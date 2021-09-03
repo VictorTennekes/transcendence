@@ -1,0 +1,66 @@
+canvas {
+	border-radius: 3rem;
+	margin-bottom: 3rem;
+}
+
+input, input:focus {
+	outline: none;
+	margin-left: 0.1rem;
+	font-weight: bold;
+}
+
+.container {
+	border-radius: 1rem;
+	background-color: #223D5E;
+	border: none;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	place-items: center;
+	padding: 3rem;
+}
+
+.button-container {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	place-items: center;
+}
+
+button {
+	border-radius: 1rem;
+	width: 12rem;
+	padding: 0.4rem;
+	background-color: white;
+	color: rgb(18, 128, 218);
+	font-family: 'Poppins';
+	font-weight: bolder;
+	font-size: 1.6rem;
+	margin: auto;
+	&:hover {
+		filter: brightness(0.8);
+	}
+	&:active {
+		filter: brightness(0.6);
+		border: none;
+		outline: none;
+	}
+	&:focus {
+		border: none;
+		outline: none;
+	}
+}
+
+.code-container {
+	display: block;
+	& input {
+		border: none;
+		border-radius: 0.2rem;
+		width: 3rem;
+		&:active, &:focus {
+			border: none;
+			outline: none;
+		}
+	}
+	margin-bottom: 1rem;
+}

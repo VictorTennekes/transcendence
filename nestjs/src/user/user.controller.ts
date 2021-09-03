@@ -39,7 +39,9 @@ export class UserController {
 	@UseFilters(UnauthorizedFilter)
 	async fetch_current(@Req() request)
 	{
-		const user = await this.userService.findOne(request.session.passport.user.intra_name);
+		Logger.log(`USER: ${request.session.passport.user.login}`);
+		const user = await this.userService.findOne(request.session.passport.user.login);
+		Logger.log(`FETCH_CURRENT - USER: ${user}`);
 		return user;
 	}
 
@@ -65,7 +67,7 @@ export class UserController {
 		const user = await this.fetch_current(request);
 		if (user.avatar_url)
 			previousAvatar = user.avatar_url;
-		await this.userService.update(request.session.passport.user.intra_name, {avatar_url: avatar.filename});
+		await this.userService.update(request.session.passport.user.login, {avatar_url: avatar.filename});
 		if (previousAvatar && previousAvatar != avatar.filename) {
 			const filepath = join('assets', previousAvatar);
 			unlinkAsync(filepath);
@@ -78,26 +80,26 @@ export class UserController {
 	@Get('image_delete')
 	async imageDelete(@Req() request)
 	{
-		const user = await this.userService.findOne(request.session.passport.user.intra_name);
+		const user = await this.userService.findOne(request.session.passport.user.login);
 		if (user.avatar_url) {
 			const filepath = join('assets', user.avatar_url);
 			unlinkAsync(filepath);
 		}
-		await this.userService.update(request.session.passport.user.intra_name, {avatar_url: null});
+		await this.userService.update(request.session.passport.user.login, {avatar_url: null});
 	}
 
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	@Post('update_display_name')
 	async update_display_name(@Req() request, @Body() display_name: string) {
-		await this.userService.update(request.session.passport.user.intra_name, display_name);
+		await this.userService.update(request.session.passport.user.login, display_name);
 	}
 
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	@Post('update_two_factor')
 	async update_two_factor(@Req() request, @Body() two_factor_enabled: string) {
-		await this.userService.update(request.session.passport.user.intra_name, two_factor_enabled);
+		await this.userService.update(request.session.passport.user.login, two_factor_enabled);
 	}
 
 	@Post('login')

@@ -24,13 +24,11 @@ export class UserService {
 	}
 
 	updateDisplayName(newDisplayName: string): void {
-		this.http.post('api/user/update_display_name', {display_name: newDisplayName}).subscribe(() => {});
-		this.userSource.next('');
+		this.http.post('api/user/update_display_name', {display_name: newDisplayName}).subscribe(() => {this.userSource.next('');});
 	}
 
 	updateTwoFactor(newState: boolean): void {
-		this.http.post('api/user/update_two_factor', {two_factor_enabled: newState}).subscribe(() => {});
-		this.userSource.next('');
+		this.http.post('api/user/update_two_factor', {two_factor_enabled: newState}).subscribe(() => {this.userSource.next('');});
 	}
 
 	getCurrentUser(): any {
