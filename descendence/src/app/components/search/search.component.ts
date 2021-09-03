@@ -64,11 +64,13 @@ import { SearchService } from "./search.service";
 	}
 
 	public submitUser() {
-		let chat: chatModel;
 		const newChat: createChatModel = {
 			name: '',
-			user: this.userForm.value.username
+			users: [],
+			admins: [],
+			visibility: 'direct'
 		}
+		newChat.users.push(this.userForm.value.username);
 		this.searchService.findUser(this.userForm.value.username).subscribe(
 			(response) => {
 				this.redirectToChat(response);

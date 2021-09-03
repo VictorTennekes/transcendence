@@ -52,7 +52,6 @@ export class ChatService {
 						return item;
 					}
 				} else {
-
 					function userExists(username) {
 						return items[i].users.some(function(el) {
 							return el.intra_name === username;
@@ -69,7 +68,6 @@ export class ChatService {
 						Logger.log(`hereee`);
 						return item;
 					}
-
 				}
 
 			}
@@ -110,8 +108,6 @@ export class ChatService {
 		//TODO: in the future, display a list of matching chats for multiuser chats.
 
 		let item = this.getMatchingUsers(items, users);
-		Logger.log("get chat by users");
-		console.log(item);
 
 		if (!item) {
 			Logger.log("can't find chat");

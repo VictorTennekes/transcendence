@@ -26,6 +26,7 @@ export class ChatController {
 	async getChatById(@Param("user") username: string, @Req() req): Promise<ChatDTO> {
 		const user = await this.userService.findOne(username);
 		if (user) {
+			Logger.log("find/:user, found a user")
 			let users: UserDTO[] = [];
 			users.push(user);
 			if (username !== req.session.passport.user.intra_name) {
@@ -43,16 +44,17 @@ export class ChatController {
 	async createDirectChat(@Body() newChat: ReceiveNewChatDTO, @Req() req): Promise<ChatDTO> {
 	// async getOrCreateChat(@Body() newChat: ReceiveNewChatDTO, @Req() req): Promise<ChatDTO> {
 		let user: UserDTO = await this.userService.findOne(req.session.passport.user.intra_name);
-		Logger.log(`${newChat.user}`);
+		Logger.log(`${newChat.users}`);
 		let nc: NewChatDTO = {
 			name: newChat.name,
-			visibility: 'direct',
+			visibility: newChat.visibility,
 			users: [],
 			admins: []
 		}
 		nc.users.push(user);
-		user = await this.userService.findOne(newChat.user);
+		user = await this.userService.findOne(newChat.users[0]);//TODO: do this in a loop for the whole array
 		if (user.intra_name !== nc.users[0].intra_name) {
+			Logger.log("a different user found")
 			nc.users.push(user);
 		}
 		return await this.service.createNewChat(nc);
