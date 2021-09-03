@@ -43,27 +43,35 @@ export class ChatService {
 			let count = 0;
 			for (let j = 0; j < users.length; j++) {
 				if (users.length === 1) {
-					if (items[i].users.length === 1 && items[i].users[0].intra_name === users[0].intra_name) {
+					// if (items[i].users.length === 1 && items[i].users[0].intra_name === users[0].intra_name) {
+					if (items[i].users.length === 1
+						&& users.length === 1
+						&& items[i].users[0].intra_name === users[0].intra_name) {
+						Logger.log("found matching item");
 						item = items[i];
 						return item;
 					}
+				} else {
+
+					function userExists(username) {
+						return items[i].users.some(function(el) {
+							return el.intra_name === username;
+						});
+					}
+					if (userExists(users[j].intra_name)) {
+						Logger.log(`found ${count} === ${users.length}`);
+						count++;
+					}
+					if (count == users.length) {
+						item = items[i];
+						Logger.log(`item: ${JSON.stringify(item)}`);
+						Logger.log(`items[i]: ${JSON.stringify(items[i])}`);
+						Logger.log(`hereee`);
+						return item;
+					}
+
 				}
-				function userExists(username) {
-					return items[i].users.some(function(el) {
-						return el.intra_name === username;
-					});
-				}
-				if (userExists(users[j].intra_name)) {
-					Logger.log(`found ${count} === ${users.length}`);
-					count++;
-				}
-				if (count == users.length) {
-					item = items[i];
-					Logger.log(`item: ${JSON.stringify(item)}`);
-					Logger.log(`items[i]: ${JSON.stringify(items[i])}`);
-					Logger.log(`hereee`);
-					return item;
-				}
+
 			}
 		}
 		return null;
@@ -99,10 +107,11 @@ export class ChatService {
 				.createQueryBuilder("chat")
 				.innerJoinAndSelect("chat.users", "users")
 				.getMany();
-		
 		//TODO: in the future, display a list of matching chats for multiuser chats.
 
 		let item = this.getMatchingUsers(items, users);
+		Logger.log("get chat by users");
+		console.log(item);
 
 		if (!item) {
 			Logger.log("can't find chat");
