@@ -9,6 +9,10 @@ export class FocusOverlayRef {
 		return this.overlayRef.detachments();
 	}
 
+	backdropClose() {
+		return this.overlayRef.backdropClick();
+	}
+
 	close() {
 		this.overlayRef.dispose();
 	}

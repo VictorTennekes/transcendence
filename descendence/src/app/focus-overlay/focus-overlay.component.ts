@@ -2,6 +2,7 @@ import { AfterViewInit, Component, Injector, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { FocusOverlayService } from './focus-overlay.service';
+import { SharedValidatorService } from './shared-validator.service';
 
 const otp_length = 6;
 
@@ -16,6 +17,7 @@ export class FocusOverlayComponent implements OnInit, AfterViewInit {
 	codeForm: FormGroup;
 	constructor(
 		private readonly authService: AuthService,
+		private valid: SharedValidatorService,
 		private service: FocusOverlayService
 	) {
 		this.codeForm = new FormGroup({
@@ -30,6 +32,7 @@ export class FocusOverlayComponent implements OnInit, AfterViewInit {
 
 	ngAfterViewInit() {
 		const inputs = document.querySelectorAll<HTMLInputElement>('#code-container > *[id]');
+		inputs[0].focus();
 		for (let i = 0; i < inputs.length; i++) {
 			inputs[i].addEventListener('keydown', function(event: any) {
 				if (event.key === "Backspace") {
@@ -91,6 +94,7 @@ export class FocusOverlayComponent implements OnInit, AfterViewInit {
 		console.log(code);
 		this.authService.validateQRCode(code).subscribe((result: any) => {
 			console.log("succes");
+			this.valid.valid = true;
 			this.service.close();
 		},
 		(err) => {

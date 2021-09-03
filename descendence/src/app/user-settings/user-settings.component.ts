@@ -3,6 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FocusOverlayRef } from '../focus-overlay/focus-overlay.ref';
 import { FocusOverlayService } from '../focus-overlay/focus-overlay.service';
+import { SharedValidatorService } from '../focus-overlay/shared-validator.service';
 import { ImageService} from '../services/image-service.service';
 import { UserService } from '../user.service';
 
@@ -29,6 +30,7 @@ export class UserSettingsComponent implements OnInit {
 	
 	constructor(
 		private overlay: FocusOverlayService,
+		private valid: SharedValidatorService,
 		private readonly userService: UserService,
 		private readonly imageService: ImageService
 		) {
@@ -84,8 +86,15 @@ export class UserSettingsComponent implements OnInit {
 		toggleSwitch(event: Event) {
 			const twoFactorForm = this.settingsForm.controls['twoFactorEnabled'];
 			if (!twoFactorForm.value) {
-				this.openOverlay()?.detachment().subscribe((event) => {
-					twoFactorForm.setValue(true);
+				
+				const overlay = this.openOverlay();
+				overlay?.detachment().subscribe((e) => {
+					if (this.valid.valid === true) {
+						twoFactorForm.setValue(true);
+					}
+				},
+				(err) => {
+					console.log(err);
 				})
 				event.preventDefault();
 			}

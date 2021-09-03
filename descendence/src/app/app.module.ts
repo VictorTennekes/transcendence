@@ -21,6 +21,7 @@ import { FocusOverlayService } from './focus-overlay/focus-overlay.service';
 import { NgxKjuaModule } from 'ngx-kjua';
 import { QrCodeDirective } from './focus-overlay/qrcode.directive';
 import { OnlyNumber } from './focus-overlay/only-numbers.directive';
+import { SharedValidatorService } from './focus-overlay/shared-validator.service';
 
 @NgModule({
 	declarations: [
@@ -51,6 +52,7 @@ import { OnlyNumber } from './focus-overlay/only-numbers.directive';
 		UserService,
 		ImageService,
 		FocusOverlayService,
+		SharedValidatorService
 	],
 	bootstrap: [AppComponent]
 })

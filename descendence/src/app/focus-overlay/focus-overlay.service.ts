@@ -3,6 +3,7 @@ import { Overlay, OverlayConfig } from '@angular/cdk/overlay';
 import { FocusOverlayComponent } from "./focus-overlay.component";
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { FocusOverlayRef } from "./focus-overlay.ref";
+import { SharedValidatorService } from "./shared-validator.service";
 
 interface FilePreviewDialogConfig {
 	panelClass?: string;
@@ -21,6 +22,7 @@ export class FocusOverlayService {
 	dialogRef: FocusOverlayRef;
 	constructor(
 		private readonly overlay: Overlay,
+		private valid: SharedValidatorService
 	) { }
 	// createInjector(data: any): PortalInjector {
 	// 	const injectorTokens = new WeakMap();
@@ -69,6 +71,7 @@ export class FocusOverlayService {
 		this.dialogRef = new FocusOverlayRef(overlayRef);
 		overlayRef.attach(focusOverlayPortal);
 		overlayRef.backdropClick().subscribe((_) => {
+			this.valid.valid = false;
 			this.dialogRef.close();
 		});
 		
