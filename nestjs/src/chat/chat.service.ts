@@ -135,13 +135,15 @@ export class ChatService {
 			name: newChat.name,
 			users: newChat.users,
 			visibility: newChat.visibility,
-			admins: newChat.admins
+			admins: newChat.admins,
+			password: newChat.password
 		});
 		
 		// Logger.log(item.users[0].intra_name);
 		// Logger.log(item.users[1].intra_name);
 		item = await this.repo.save(item);
 		Logger.log("saved");
+		console.log(item);
 		let msg: MessageDTO[] = []
 		if (item.messages) {
 			msg = item.messages;
@@ -165,7 +167,7 @@ export class ChatService {
 			owner,
 			time,
 			message,
-			chat,
+			chat
 		});
 		await this.msgRepo.save(item);
 		const ret: MessageDTO = {

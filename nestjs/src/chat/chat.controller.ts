@@ -49,7 +49,8 @@ export class ChatController {
 			name: newChat.name,
 			visibility: newChat.visibility,
 			users: [],
-			admins: []
+			admins: [],
+			password: newChat.password
 		}
 		nc.users.push(user);
 		user = await this.userService.findOne(newChat.users[0]);//TODO: do this in a loop for the whole array
@@ -72,7 +73,8 @@ export class ChatController {
 			name: newChat.name,
 			visibility: newChat.visibility,
 			users: [],
-			admins: []
+			admins: [],
+			password: newChat.password
 		}
 		nc.users.push(user);
 		nc.admins.push(user);

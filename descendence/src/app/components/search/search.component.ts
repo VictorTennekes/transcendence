@@ -68,7 +68,8 @@ import { SearchService } from "./search.service";
 			name: '',
 			users: [],
 			admins: [],
-			visibility: 'direct'
+			visibility: 'direct',
+			password: ""
 		}
 		newChat.users.push(this.userForm.value.username);
 		this.searchService.findUser(this.userForm.value.username).subscribe(

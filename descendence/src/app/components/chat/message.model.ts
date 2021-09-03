@@ -30,4 +30,5 @@ export interface createChatModel {
 	users: string[],
 	admins: string[],
 	visibility: string;
+	password: string;
 }

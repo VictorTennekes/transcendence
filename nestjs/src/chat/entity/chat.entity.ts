@@ -3,7 +3,7 @@ import { Check, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGenerat
 import { MessageEntity } from "./message.entity";
 
 @Entity('chat')
-@Check(`"visibility" in ('direct', 'public', 'private')`)
+@Check(`"visibility" in ('direct', 'public', 'private', 'protected')`)
 export class ChatEntity {
 	@PrimaryGeneratedColumn("uuid")
 	id: string;
@@ -13,6 +13,9 @@ export class ChatEntity {
 
 	@Column()
 	visibility: string;
+
+	@Column()
+	password: string;
 
 	@ManyToMany(type => UserEntity, UserEntity => UserEntity.chats, {cascade: true})
 	@JoinTable()
