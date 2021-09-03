@@ -23,4 +23,10 @@ export class SearchService {
 	getChats(): Observable<chatModel[]> {
 		return this.http.get<chatModel[]>(this.url);
 	}
+
+	createNewChat(chat: createChatModel): Observable<chatModel> {
+		console.log("search serbice create new chat");
+		console.log(chat);
+		return this.http.post<chatModel>(this.url + 'new', chat);
+	}	
 }

@@ -60,6 +60,34 @@ export class ChatController {
 		return await this.service.createNewChat(nc);
 	}
 
+	@Post('new')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async createNewChat(@Body() newChat: ReceiveNewChatDTO, @Req() req): Promise<ChatDTO> {
+		console.log("create new chat");
+		console.log(newChat);	
+		console.log("that was new chat");
+		let user = await this.userService.findOne(req.session.passport.user.intra_name);
+		let nc: NewChatDTO = {
+			name: newChat.name,
+			visibility: newChat.visibility,
+			users: [],
+			admins: []
+		}
+		nc.users.push(user);
+		nc.admins.push(user);
+		for (let usr of newChat.users) {
+			console.log("user in array");
+			console.log(usr);
+			let item = await this.userService.findOne(usr);
+			if (item) {
+				nc.users.push(item);
+			}
+			//TODO: do i error if i cant find a user?
+		}
+		return await this.service.createNewChat(nc);
+	}
+
 	@Get('msg/:id')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)

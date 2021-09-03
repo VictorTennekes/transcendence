@@ -142,13 +142,17 @@ export class ChatService {
 		// Logger.log(item.users[1].intra_name);
 		item = await this.repo.save(item);
 		Logger.log("saved");
+		let msg: MessageDTO[] = []
+		if (item.messages) {
+			msg = item.messages;
+		}
 		const ret: ChatDTO = {
 			id: item.id,
 			name: item.name,
 			visibility: item.visibility,
 			admins: item.admins,
 			users: item.users,
-			messages: item.messages
+			messages: msg
 		}
 		return toPromise(ret);
 	}
