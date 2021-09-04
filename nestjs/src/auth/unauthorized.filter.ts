@@ -11,9 +11,12 @@ export class UnauthorizedFilter implements ExceptionFilter {
 		_exception: ForbiddenException | UnauthorizedException,
 		host: ArgumentsHost
 	) {
-		console.log(_exception instanceof ForbiddenException ? `@Forbidden` : `@Unauthorized`);
+		console.log(_exception instanceof ForbiddenException ? `@Forbidden` : `@Unauthorized`, " | ", _exception.message);
 		const ctx = host.switchToHttp();
 		const response = ctx.getResponse<Response>();
-		response.redirect('/auth/unauthorized');
+		if (_exception.message === '2FA enabled but not passed.') {
+			response.redirect('/2fa/authenticate');
+		}
+		response.redirect('http://localhost:4200/');
 	}
 }

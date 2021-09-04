@@ -22,6 +22,7 @@ import { NgxKjuaModule } from 'ngx-kjua';
 import { QrCodeDirective } from './focus-overlay/qrcode.directive';
 import { OnlyNumber } from './focus-overlay/only-numbers.directive';
 import { SharedValidatorService } from './focus-overlay/shared-validator.service';
+import { TwoFactorComponent } from './two-factor/two-factor.component';
 
 @NgModule({
 	declarations: [
@@ -34,7 +35,8 @@ import { SharedValidatorService } from './focus-overlay/shared-validator.service
 		UserSettingsComponent,
 		FocusOverlayComponent,
 		QrCodeDirective,
-		OnlyNumber
+		OnlyNumber,
+  TwoFactorComponent
 	],
 	imports: [
 		CookieModule.forRoot(),

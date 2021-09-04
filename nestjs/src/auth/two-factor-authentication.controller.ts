@@ -63,14 +63,17 @@ export class TwoFactorAuthenticationController {
 	@Post('authenticate')
 	@UseGuards(No2FAGuard)
 	@UseFilters(UnauthorizedFilter)
-	async authenticate(@Req() req, @Body() twoFactorAuthenticationCode: string, @Res() res) {
+	async authenticate(@Req() req, @Body() twoFactorAuthenticationCode) {
 		Logger.log(`AUTHENTICATE - 2FA-CODE: ${JSON.stringify(twoFactorAuthenticationCode)}`);
-		const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode, req.user);
+		const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode.code, req.user);
 		if (!isCodeValid) {
 			throw new UnauthorizedException('Wrong authentication code');
 		}
+		else {
+			Logger.log("CORRECT CODE ENTERED");
+		}
 		req.session.two_factor = true;
 		req.session.save();
-		res.redirect('http://localhost:4200/');
+		return true;
 	}
 }
