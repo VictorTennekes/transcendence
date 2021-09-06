@@ -13,6 +13,7 @@ import * as bcrypt from 'bcryptjs';
 })
 export class CreateChatComponent implements OnInit {
 	hide = true;
+	submitted: boolean = false;
 	constructor(
 		private formBuilder: FormBuilder,
 		private router: Router,
@@ -22,10 +23,21 @@ export class CreateChatComponent implements OnInit {
 		name: new FormControl('', [Validators.required]),
 		users: this.formBuilder.array([]),
 		visibility: new FormControl('public'),
-		password: new FormControl('', [Validators.required])
+		password: new FormControl('')
 	});
 
 	ngOnInit(): void {
+		this.createChatForm.get('visibility')?.valueChanges.subscribe((value) => {
+			console.log("visibility:", value);
+			if (value === 'protected') {
+				this.createChatForm.get('password')?.setValidators(Validators.required);
+			} else {
+				console.log("clearing validators?");
+				this.createChatForm.get('password')?.clearValidators();
+			}
+			this.createChatForm.get('password')?.updateValueAndValidity();
+
+		})
 	}
 
 	users(): FormArray {
@@ -67,9 +79,18 @@ export class CreateChatComponent implements OnInit {
 		return hashedPass;
 	}
 
+	public getErrorMessage() {
+		return "form Invalid";
+	}
+
 	public otherSubmit() {
+		this.submitted = true;
 		console.log(this.createChatForm.value);
-		let pw = this.encryptPassword(this.createChatForm.controls['password'].value);
+		let pw = "";
+		if (this.createChatForm.controls['visibility'].value === 'protected') {
+			pw = this.encryptPassword(this.createChatForm.controls['password'].value);
+		}
+		console.log("pass:");
 		console.log(pw);
 		let newChat: createChatModel
 		if (this.createChatForm.valid) {
@@ -87,11 +108,15 @@ export class CreateChatComponent implements OnInit {
 			console.log(newChat.users);
 
 			this.searchService.createNewChat(newChat).subscribe((response) => {
+				console.log("should be routing?");
 				this.router.navigateByUrl('/chat', {state: response});
 			},
 			(error) => {
+				console.log("error");
 				console.log(error);
 			})
+		} else {
+			console.log('invalid');
 		}
 	}
 

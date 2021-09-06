@@ -31,5 +31,6 @@
 			<mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
 		</button>
 	</mat-form-field>
+    <mat-error *ngIf="createChatForm.invalid && submitted">{{getErrorMessage()}}</mat-error>
 	<button mat-raised-button type="submit" class="button">Send</button>
 </form>
