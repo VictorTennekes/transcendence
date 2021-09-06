@@ -9,6 +9,7 @@ services:
             - nestjs
         volumes:
             - ./descendence:/usr/src/app
+            - node_modules:/usr/src/app/node_modules
     database:
         image: "postgres"
         ports:
@@ -24,14 +25,12 @@ services:
         container_name: nestjs
         image: nestjs:1.0.0
         build: ./nestjs
-        command: npm run start:debug
         ports:
             - 3000:3000
         volumes:
             - ./nestjs:/usr/src/app
             - /usr/src/app/node_modules
-            - images:/usr/src/app/assets
 #this establishes the volumes as separate from local disk
 volumes:
     database-data:
-    images:
+    node_modules:

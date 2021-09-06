@@ -1,0 +1,8 @@
+<form [formGroup]="userForm" (ngSubmit)="submitUser()">
+	<mat-form-field class="example-full-width" appearance="fill">
+		<mat-label>username</mat-label>
+		<input matInput formControlName="username">
+	</mat-form-field>
+	<button class="button" type="submit">Send</button>
+	<div *ngIf="userNotFound">User not found</div>
+</form>

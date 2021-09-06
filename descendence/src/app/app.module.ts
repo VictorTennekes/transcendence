@@ -23,12 +23,23 @@ import { QrCodeDirective } from './focus-overlay/qrcode.directive';
 import { OnlyNumber } from './focus-overlay/only-numbers.directive';
 import { SharedValidatorService } from './focus-overlay/shared-validator.service';
 import { TwoFactorComponent } from './two-factor/two-factor.component';
+import { ChatComponent } from './components/chat/chat.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { SearchComponent } from './components/search/search.component';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { chatGuardService } from './components/chat/chatGuard.service';
+
+const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transports: ['websocket']} };
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		HomeComponent,
 		MasterComponent,
+		SearchComponent,
+		ChatComponent,
 		LoginComponent,
 		FailComponent,
 		UserComponent,
@@ -36,7 +47,7 @@ import { TwoFactorComponent } from './two-factor/two-factor.component';
 		FocusOverlayComponent,
 		QrCodeDirective,
 		OnlyNumber,
-  TwoFactorComponent
+		TwoFactorComponent
 	],
 	imports: [
 		CookieModule.forRoot(),
@@ -47,14 +58,19 @@ import { TwoFactorComponent } from './two-factor/two-factor.component';
 		FormsModule,
 		FontAwesomeModule,
 		OverlayModule,
-		NgxKjuaModule
+		NgxKjuaModule,
+		BrowserAnimationsModule,
+		MatInputModule,
+		MatListModule,
+		SocketIoModule.forRoot(config)
 	],
 	entryComponents: [ FocusOverlayComponent],
 	providers: [
 		UserService,
 		ImageService,
 		FocusOverlayService,
-		SharedValidatorService
+		SharedValidatorService,
+		chatGuardService
 	],
 	bootstrap: [AppComponent]
 })

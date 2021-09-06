@@ -148,7 +148,7 @@ export class UserSettingsComponent implements OnInit {
 			this.userService.updateTwoFactor(formValues['twoFactorEnabled']);
 		}
 	}
-	
+
 	ngOnInit(): void {
 		this.settingsForm = new FormGroup({
 			displayName: new FormControl(""),
@@ -156,6 +156,7 @@ export class UserSettingsComponent implements OnInit {
 			avatar: new FormControl("")
 		});
 		this.addValidator();
+		//remove me
 		this.settingsForm.controls['twoFactorEnabled'].valueChanges.subscribe((value) => {
 			console.log(value);
 		});

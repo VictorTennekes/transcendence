@@ -9,6 +9,10 @@ import { TwoFactorGuard } from './two-factor.guard';
 import { TwoFactorComponent } from './two-factor/two-factor.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { UserComponent } from './user/user.component';
+import { ChatComponent } from './components/chat/chat.component';
+import { MatInputModule } from '@angular/material/input'
+import { SearchComponent } from './components/search/search.component';
+import { chatGuardService } from './components/chat/chatGuard.service';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -43,6 +47,19 @@ const routes: Routes = [
 		component: TwoFactorComponent
 	},
 	//redirect to '' if nothing is matched
+	{
+		path: 'search',
+		component: SearchComponent
+	},
+	{
+		path: 'chat',
+		component: ChatComponent,
+		canActivate: [chatGuardService]
+	},
+	{
+		path: 'login',
+		component: LoginComponent
+	},
 	{
 		path: '**',
 		redirectTo: ''

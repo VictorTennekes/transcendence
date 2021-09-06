@@ -1,6 +1,6 @@
-import { Type } from "class-transformer";
+import { ChatEntity } from "@chat/entity/chat.entity";
 import { IsNotEmpty, MaxLength } from "class-validator";
-import { Column, Entity, PrimaryColumn, Unique } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn, Unique } from "typeorm";
 
 //These class validator decorators are triggered by @UsePipes(new ValidationPipe()) on routes
 @Entity()
@@ -8,7 +8,7 @@ export class UserEntity {
 	@IsNotEmpty()
 	@PrimaryColumn()
 	intra_name: string;
-
+	
 	@MaxLength(50)
 	@Column({
 		type: "varchar",
@@ -37,4 +37,12 @@ export class UserEntity {
 		nullable: true
 	})
 	two_factor_secret?: string;
+	
+	// @ManyToMany((type) => ChatEntity, (chat: ChatEntity) => chat.users)
+	// @JoinTable()
+	// chats: ChatEntity[];
+
+	@ManyToMany((type) => ChatEntity)
+	@JoinTable()
+	chats: ChatEntity[];
 }

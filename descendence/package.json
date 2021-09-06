@@ -27,6 +27,7 @@
 		"@fortawesome/fontawesome-svg-core": "^1.2.35",
 		"@fortawesome/free-solid-svg-icons": "^5.15.3",
 		"@nestjs/platform-express": "^8.0.6",
+		"ngx-socket-io": "^4.1.0",
 		"ajv": "^6.12.6",
 		"angular2-flash-messages": "^3.0.1",
 		"angularx-qrcode": "^11.0.0",
