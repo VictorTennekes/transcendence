@@ -9,3 +9,13 @@ export class ChatDTO {
 	users: UserDTO[];
 	messages: MessageDTO[];
 }
+
+export class ChatPassDTO {
+	id: string;
+	name: string;
+	visibility: string;
+	admins: UserDTO[];
+	users: UserDTO[];
+	messages: MessageDTO[];
+	password: string;
+}

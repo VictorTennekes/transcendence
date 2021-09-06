@@ -34,7 +34,12 @@ export class SearchService {
 		return this.http.get<chatModel[]>(this.url + 'find/' + searchBy);
 	}
 
-	// validatePassword(password: string): boolean {
-		// if (await this.http.post())
-	// }
+	validatePassword(pass: string, chatId: string): Observable<boolean> {
+		let object = {
+			pass,
+			chatId
+		}
+		console.log(object);
+		return this.http.post<boolean>(this.url + 'validate-pass', object);
+	}
 }

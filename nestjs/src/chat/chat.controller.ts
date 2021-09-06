@@ -8,6 +8,11 @@ import { UserService } from '@user/user.service';
 import { UserDTO } from '@user/dto/user.dto';
 import { UnauthorizedFilter } from 'src/auth/unauthorized.filter';
 
+class validatePassDTO {
+	pass: string;
+	chatId: string;
+}
+
 @Controller('chat')
 export class ChatController {
 	constructor(private readonly service: ChatService,
@@ -118,4 +123,14 @@ export class ChatController {
     async getMessagesFromChat(@Param("id") id: string): Promise<MessageDTO[]> {
         return await this.service.getMessagesFromChat(id);
     }
+
+
+	@Post('validate-pass')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async validatePassword(@Body() body: validatePassDTO): Promise<boolean> {
+		Logger.log("validate password");
+		console.log(body);
+		return this.service.validatePassword(body.pass, body.chatId);
+	}
 }

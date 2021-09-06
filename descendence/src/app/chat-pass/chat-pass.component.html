@@ -1,7 +1,7 @@
 <form [formGroup]="chatPassForm" (ngSubmit)="onSubmit()" (keyup.enter)="onSubmit()">
 	<mat-form-field class="example-full-width" appearance="fill">
 		<mat-label>password</mat-label>
-		<input matInput [type]="hide ? 'password' : 'text'" formControlName="password" [(ngModel)]="plainText">
+		<input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
 		<button mat-icon-button type="button" matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
 			<mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
 		</button>

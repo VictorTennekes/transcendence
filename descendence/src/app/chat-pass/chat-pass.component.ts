@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { SearchService } from '../components/search/search.service';
 
 @Component({
@@ -11,8 +12,8 @@ import { SearchService } from '../components/search/search.service';
 export class ChatPassComponent implements OnInit {
 	hide = true;
 
-	plainText: string = "";
-	constructor(public formBuilder: FormBuilder,
+	constructor(public router: Router,
+				public formBuilder: FormBuilder,
 				public searchService: SearchService) { }
 
 	chatPassForm = new FormGroup ({
@@ -23,8 +24,17 @@ export class ChatPassComponent implements OnInit {
 	}
 
 	public onSubmit() {
-		// if (this.searchService.validatePassword(this.plainText)) {
-
-		// }
+		console.log(history.state);
+		this.searchService.validatePassword(this.chatPassForm.controls['password'].value, history.state.id).subscribe(
+			(response) => {
+				console.log(response);
+				if (response === true) {
+					this.router.navigateByUrl('/chat', {state: history.state});
+				} else {
+					//validation failed
+					console.log("wrong pass");
+				}
+			}
+		)
 	}
 }

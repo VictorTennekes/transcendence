@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { toPromise } from "@shared/utils";
-import { ChatDTO } from "@chat/dto/chat.dto";
+import { ChatDTO, ChatPassDTO } from "@chat/dto/chat.dto";
 import { NewChatDTO } from "@chat/dto/newChat.dto";
 import { ChatEntity } from "@chat/entity/chat.entity";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -9,6 +9,7 @@ import { MessageDTO} from "@chat/dto/message.dto";
 import { MessageEntity } from "@chat/entity/message.entity";
 import { UserDTO } from "@user/dto/user.dto";
 import { UserEntity } from "@user/entities/user.entity";
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class ChatService {
@@ -129,13 +130,7 @@ export class ChatService {
 
 	async getChatByName(name: string, username: string): Promise<ChatDTO[]> {
 		Logger.log(`getting chats: ${name}`);
-		// let chats = await this.repo.find({
-		// 	where: {
-		// 		name: name
-		// 	},
-		// 	relations: ["users"]
-		// })
-
+		console.log(await this.repo.find());
 
 		Logger.log(`name: ${name}, username: ${username}`);
 
@@ -243,5 +238,15 @@ export class ChatService {
 			throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
 		}
 		return items;
+	}
+
+	async validatePassword(pass: string, chatId: string): Promise<boolean> {
+		const chat = await this.repo.findOne({where: {
+			id: chatId
+		}})
+		console.log(chat);
+
+		let val = toPromise(bcrypt.compareSync(pass, chat.password));
+		return toPromise(val);
 	}
 }
