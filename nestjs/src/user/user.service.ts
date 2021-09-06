@@ -30,6 +30,18 @@ export class UserService {
 		return (user);
 	}
 
+	//Might want to add case insensitive checking
+	async checkDisplayName(currentDisplayName: string, display_name: string) {
+		if (!display_name) {
+			return false;
+		}
+		if (currentDisplayName == display_name) {
+			return true;
+		}
+		const isAvailable = await this.userRepository.count({where: {display_name}}) ? false : true;
+		return isAvailable;
+	}
+
 	async setTwoFactorAuthenticationSecret(secret: string, login: string) {
 		await this.update(login, {two_factor_secret: secret});
 	}

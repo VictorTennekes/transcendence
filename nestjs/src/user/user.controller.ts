@@ -88,6 +88,14 @@ export class UserController {
 		await this.userService.update(request.session.passport.user.login, {avatar_url: null});
 	}
 
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	@Post('check_display_name')
+	async check_display_name(@Req() request, @Body() display_name: any) {
+		return await this.userService.checkDisplayName(request.user.display_name, display_name.display_name);
+	}
+
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	@Post('update_display_name')

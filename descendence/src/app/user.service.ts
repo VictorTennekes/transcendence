@@ -23,6 +23,10 @@ export class UserService {
 		}));
 	}
 
+	checkDisplayNameAvailability(newDisplayName: string) {
+		return this.http.post('api/user/check_display_name', {display_name: newDisplayName});
+	}
+
 	updateDisplayName(newDisplayName: string): void {
 		this.http.post('api/user/update_display_name', {display_name: newDisplayName}).subscribe(() => {this.userSource.next('');});
 	}

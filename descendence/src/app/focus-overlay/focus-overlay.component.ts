@@ -87,9 +87,13 @@ export class FocusOverlayComponent implements OnInit, AfterViewInit {
 		for (let field in inputFields) {
 			console.log(`INPUTFIELD[${field}] = ${inputFields[field].value}`);
 			if (inputFields[field].value === '') {
-				return ;
+				break ;
 			}
 			code += inputFields[field].value;
+		}
+		if (code.length != otp_length) {
+			this.clearField();
+			return ;
 		}
 		console.log(code);
 		this.authService.validateQRCode(code).subscribe((result: any) => {

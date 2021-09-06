@@ -43,13 +43,13 @@ export class TwoFactorAuthenticationController {
 	@Post('turn-on')
 	@UseGuards(AuthenticatedGuard)
 	async turnOnTwoFactorAuthentication(
-		@Req() request,
+		@Req() req,
 		@Body() twoFactorAuthenticationCode
 	) {
 		Logger.log(`AUTHENTICATE - 2FA-CODE: ${JSON.stringify(twoFactorAuthenticationCode)}`);
 
 		const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
-			twoFactorAuthenticationCode.code, request.user
+			twoFactorAuthenticationCode.code, req.user
 		);
 		if (!isCodeValid) {
 			throw new UnauthorizedException('Wrong authentication code');
@@ -57,6 +57,8 @@ export class TwoFactorAuthenticationController {
 		else {
 			Logger.log(`CODE IS VALID!!!`);
 		}
+		req.session.two_factor = true;
+		req.session.save();
 		return (true);
 	}
 
