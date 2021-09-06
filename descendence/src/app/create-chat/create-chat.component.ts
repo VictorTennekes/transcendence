@@ -1,11 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ChatService } from '../components/chat/chat.service';
 import { SearchService } from '../components/search/search.service';
 import { createChatModel } from '../components/chat/message.model';
-import { chatGuardService } from '../components/chat/chatGuard.service';
-import * as CryptoJS from 'crypto-js';
+import * as bcrypt from 'bcryptjs';
 
 @Component({
   selector: 'app-create-chat',
@@ -19,15 +17,6 @@ export class CreateChatComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private router: Router,
 		private searchService: SearchService) { }
-
-plainText: string = "";
-
-	encryptText: string = "";
-	encPassword: string = "";
-	decPassword: string = "";
-	conversionEncryptOutput: string = "";
-	conversionDecryptOutput: string = "";
-
 
 	createChatForm = this.formBuilder.group({
 		name: new FormControl('', [Validators.required]),
@@ -45,7 +34,6 @@ plainText: string = "";
 
 	newUser(): FormGroup {
 		return this.formBuilder.group({
-			// name: new FormControl('', [Validators.required])
 			username: ""
 		})
 	}
@@ -74,13 +62,14 @@ plainText: string = "";
 	}
 
 	public encryptPassword(value: string): string {
-		this.conversionEncryptOutput = CryptoJS.AES.encrypt(this.plainText.trim(), this.encPassword.trim()).toString();
-		return this.conversionEncryptOutput;
+		console.log(value)
+		const hashedPass = bcrypt.hashSync(value, bcrypt.genSaltSync());
+		return hashedPass;
 	}
 
 	public otherSubmit() {
 		console.log(this.createChatForm.value);
-		let pw = this.encryptPassword(this.plainText);
+		let pw = this.encryptPassword(this.createChatForm.controls['password'].value);
 		console.log(pw);
 		let newChat: createChatModel
 		if (this.createChatForm.valid) {
@@ -88,7 +77,6 @@ plainText: string = "";
 				name: this.createChatForm.controls['name'].value,
 				visibility: this.createChatForm.controls['visibility'].value,
 				password: pw,
-				// users: this.createChatForm.controls['users'].value,
 				users: [],
 				admins: []
 			}

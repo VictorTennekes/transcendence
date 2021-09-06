@@ -49,7 +49,11 @@ import { SearchService } from "./search.service";
 	private redirectToChat(chat: chatModel) {
 		this.searchService.getMessagesFromChat(chat.id).subscribe((response) => {
 			chat.messages = response.reverse();
-			this.router.navigateByUrl('/chat', {state: chat});
+			if (chat.visibility === 'protected') {
+				this.router.navigateByUrl('/chat-pass', {state: chat});
+			} else {
+				this.router.navigateByUrl('/chat', {state: chat});
+			}
 		})
 	}
 

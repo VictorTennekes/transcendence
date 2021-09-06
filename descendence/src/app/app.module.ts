@@ -20,6 +20,7 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { chatGuardService } from './components/chat/chatGuard.service';
 import { CreateChatComponent } from './create-chat/create-chat.component';
 import {MatRadioModule} from '@angular/material/radio';
+import { ChatPassComponent } from './chat-pass/chat-pass.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transports: ['websocket']} };
 
@@ -32,7 +33,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transp
         ChatComponent,
 		LoginComponent,
 		FailComponent,
-		CreateChatComponent
+		CreateChatComponent,
+  ChatPassComponent
 	],
 	imports: [
 		BrowserModule,

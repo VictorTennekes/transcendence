@@ -28,5 +28,9 @@ export class SearchService {
 		console.log("search serbice create new chat");
 		console.log(chat);
 		return this.http.post<chatModel>(this.url + 'new', chat);
-	}	
+	}
+
+	// validatePassword(password: string): boolean {
+		// if (await this.http.post())
+	// }
 }
