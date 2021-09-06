@@ -112,7 +112,8 @@ export class ChatService {
 
 		if (!item) {
 			Logger.log("can't find chat");
-			throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
+			return null;
+			// throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
 		}
 		Logger.log(`chat id: ${item.id}`);
 		const ret: ChatDTO = {

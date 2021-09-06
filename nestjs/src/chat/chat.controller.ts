@@ -57,7 +57,19 @@ export class ChatController {
 				users.push(await this.userService.findOne(req.session.passport.user.intra_name));
 			}
 			// return await this.service.getChatByUsers(users);
-			chats.push(await this.service.getChatByUsers(users));
+			let dm = await this.service.getChatByUsers(users);
+			if (!dm) {
+				let chatdto: NewChatDTO = {
+					name: "",
+					visibility: "direct",
+					admins: [],
+					users: users,
+					password: ""
+				};
+				dm = await this.service.createNewChat(chatdto);
+			}
+			chats.push(dm);
+			console.log(chats);
 		}
 		if (!chats) {
 			throw new HttpException("No chat by name " + name, HttpStatus.NOT_FOUND);

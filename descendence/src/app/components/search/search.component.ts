@@ -47,6 +47,10 @@ import { SearchService } from "./search.service";
 	//TODO: display all options for chats
 	//TODO: On select of chat, messages will get get fetched from the db
 
+	// function isMatching(user) {
+		// return user.intra_name === 
+	// }
+
 	private redirectToChat(chat: chatModel) {
 		this.searchService.getMessagesFromChat(chat.id).subscribe((response) => {
 			chat.messages = response.reverse();
