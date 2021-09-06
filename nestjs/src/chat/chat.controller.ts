@@ -20,24 +20,46 @@ export class ChatController {
 		return this.service.getAllChatsByUser(req.session.passport.user.intra_name);
 	}
 
-	@Get("find/:user")
+	// @Get("find/:user")
+	// @UseGuards(AuthenticatedGuard)
+	// @UseFilters(UnauthorizedFilter)
+	// async getChatById(@Param("user") username: string, @Req() req): Promise<ChatDTO> {
+	// 	const user = await this.userService.findOne(username);
+	// 	if (user) {
+	// 		Logger.log("find/:user, found a user")
+	// 		let users: UserDTO[] = [];
+	// 		users.push(user);
+	// 		if (username !== req.session.passport.user.intra_name) {
+	// 			users.push(await this.userService.findOne(req.session.passport.user.intra_name));
+	// 		}
+	// 		return await this.service.getChatByUsers(users);
+	// 	} else {
+	// 		throw new HttpException("No user by name " + username, HttpStatus.NOT_FOUND);
+	// 	}
+	// }
+
+	@Get("find/:name")
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async getChatById(@Param("user") username: string, @Req() req): Promise<ChatDTO> {
-		const user = await this.userService.findOne(username);
+	async getChatById(@Param("name") name: string, @Req() req): Promise<ChatDTO[]> {
+		let chats: ChatDTO[] = await this.service.getChatByName(name);
+		const user = await this.userService.findOne(name);
 		if (user) {
-			Logger.log("find/:user, found a user")
+			Logger.log("find/:name, found a user")
 			let users: UserDTO[] = [];
 			users.push(user);
-			if (username !== req.session.passport.user.intra_name) {
+			if (name !== req.session.passport.user.intra_name) {
 				users.push(await this.userService.findOne(req.session.passport.user.intra_name));
 			}
-			return await this.service.getChatByUsers(users);
-		} else {
-			throw new HttpException("No user by name " + username, HttpStatus.NOT_FOUND);
+			// return await this.service.getChatByUsers(users);
+			chats.push(await this.service.getChatByUsers(users));
 		}
+		if (!chats) {
+			throw new HttpException("No chat by name " + name, HttpStatus.NOT_FOUND);
+		}
+		return chats;
 	}
-
+	
 	@Post('get')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)

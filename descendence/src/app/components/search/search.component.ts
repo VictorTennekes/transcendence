@@ -19,6 +19,7 @@ import { SearchService } from "./search.service";
 		private chatService: ChatService) {}
 
 	public userNotFound: boolean = false;
+	public chatNotFound: boolean = false;
 	public chats: chatModel[] = [];
 
 
@@ -76,22 +77,34 @@ import { SearchService } from "./search.service";
 			password: ""
 		}
 		newChat.users.push(this.userForm.value.username);
-		this.searchService.findUser(this.userForm.value.username).subscribe(
+		this.searchService.findMatchingChats(this.userForm.value.username).subscribe(
 			(response) => {
-				this.redirectToChat(response);
+				console.log("response");
+				console.log(response);
+				this.chatNotFound = false;
+				this.chats = response;
 			},
 			(error) => {
-				if (error.error.statusCode === 404) {
-					this.userNotFound = true;
-				} else {
-					this.searchService.getChat(newChat).subscribe(
-						(response) => {
-							this.redirectToChat(response);
-						},
-						(error) => console.log(error)
-					)
-				}
+				this.chatNotFound = true;
+				console.log(error)
 			}
 		)
+	// 	this.searchService.findUser(this.userForm.value.username).subscribe(
+	// 		(response) => {
+	// 			this.redirectToChat(response);
+	// 		},
+	// 		(error) => {
+	// 			if (error.error.statusCode === 404) {
+	// 				this.userNotFound = true;
+	// 			} else {
+	// 				this.searchService.getChat(newChat).subscribe(
+	// 					(response) => {
+	// 						this.redirectToChat(response);
+	// 					},
+	// 					(error) => console.log(error)
+	// 				)
+	// 			}
+	// 		}
+	// 	)
 	}
 }

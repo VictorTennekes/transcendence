@@ -5,6 +5,7 @@
 	</mat-form-field>
 	<button mat-raised-button type="submit" class="button">Find</button>
 	<div *ngIf="userNotFound">User not found</div>
+	<div *ngIf="chatNotFound">No chats found</div>
 </form>
 <button mat-raised-button class="button" (click)="redirectCreate()">
 	<mat-icon>add</mat-icon>

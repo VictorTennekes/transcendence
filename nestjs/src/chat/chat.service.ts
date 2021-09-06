@@ -127,6 +127,16 @@ export class ChatService {
 
 	}
 
+	async getChatByName(name: string): Promise<ChatDTO[]> {
+		Logger.log(`getting chats: ${name}`);
+		let chats = this.repo.find({where: {
+			name: name
+		},
+		relations: ["users"]})
+		return chats;
+		// return toPromise(chats);
+	}
+
 	async createNewChat(newChat: NewChatDTO): Promise<ChatDTO> {
 		Logger.log("creating a new chat");
 		// Logger.log(newChat.users[0].intra_name);

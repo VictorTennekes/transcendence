@@ -8,9 +8,9 @@ export class SearchService {
 	private url = 'api/chat/';
 	constructor(private http: HttpClient) {}
 
-	findUser(username: string): Observable<chatModel> {
-		return this.http.get<chatModel>(this.url + 'find/' + username);
-	}
+	// findUser(username: string): Observable<chatModel> {
+		// return this.http.get<chatModel>(this.url + 'find/' + username);
+	// }
 
 	getChat(newChat: createChatModel): Observable<chatModel> {
 		return this.http.post<chatModel>(this.url + 'get', newChat);
@@ -28,6 +28,10 @@ export class SearchService {
 		console.log("search serbice create new chat");
 		console.log(chat);
 		return this.http.post<chatModel>(this.url + 'new', chat);
+	}
+
+	findMatchingChats(searchBy: string): Observable<chatModel[]> {
+		return this.http.get<chatModel[]>(this.url + 'find/' + searchBy);
 	}
 
 	// validatePassword(password: string): boolean {
