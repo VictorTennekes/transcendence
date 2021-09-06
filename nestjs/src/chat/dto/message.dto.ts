@@ -8,3 +8,8 @@ export class MessageDTO {
 	message: string;
 	chat: ChatDTO;
 }
+
+export class newMessageDTO {
+	message: string;
+	chat: string;
+}

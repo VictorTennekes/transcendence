@@ -1,24 +1,17 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { newMsg, retMessage } from "./message.model";
+import { retMessage, newMessage, chatModel } from "./message.model";
 import { Observable } from "rxjs";
+import { Socket } from "ngx-socket-io";
 
 @Injectable()
 export class ChatService {
-	private url = 'api/chat/msg/';
-	constructor(private http: HttpClient) {}
+	constructor(private socket: Socket) {}
 
-	public create(msg: newMsg): Observable<retMessage> {
-		console.log(msg.message);
-		return this.http.post<retMessage>(this.url, msg);
+	sendMessage(message: newMessage) {
+		this.socket.emit('send_message', message);
 	}
-
-	public getMessages(chatId: string): Observable<retMessage[]> {
-		return this.http.get<retMessage[]>(this.url + chatId);
+	
+	receiveMessages(): Observable<retMessage> {
+		return this.socket.fromEvent('receive_message');
 	}
-
-	// public getMessages(chatId: string): Observable<retMessage[]> {
-		// return this.http.get<retMessage[]>(this.url);
-	// }
 }
-

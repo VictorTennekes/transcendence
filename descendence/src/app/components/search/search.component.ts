@@ -1,22 +1,24 @@
-import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
+import { Router } from "@angular/router";
 import { ChatComponent } from "../chat/chat.component";
+import { ChatService } from "../chat/chat.service";
 import { chatModel, createChatModel } from "../chat/message.model";
+import { SearchService } from "./search.service";
 
 @Component({
 	selector: 'chat-search',
 	templateUrl: './search.component.html',
 	styleUrls: ['./search.component.scss'],
-	providers: [ChatComponent]
+	providers: [ChatComponent, SearchService, ChatService]
   })
   export class SearchComponent implements OnInit {
 
-	constructor(
-		private http: HttpClient
-	) {}
+	constructor(private searchService: SearchService,
+		private router: Router,
+		private chatService: ChatService) {}
 
-	public chatId: string = "";
+	public userNotFound: boolean = false;
 
 	userForm = new FormGroup ({
 		username: new FormControl('', {
@@ -26,29 +28,34 @@ import { chatModel, createChatModel } from "../chat/message.model";
 	ngOnInit(): void {
 	}
 
-	public userNotFound: boolean = false;
+	//TODO: display all options for chats
+	//TODO: On select of chat, messages will get get fetched from the db
 	public submitUser() {
+		let chat: chatModel;
 		const newChat: createChatModel = {
 			name: '',
 			user: this.userForm.value.username
 		}
-
-		let findUser: string = 'api/chat/find/' + this.userForm.value.username;
-		this.http.get<chatModel>(findUser).subscribe(
+		this.searchService.findUser(this.userForm.value.username).subscribe(
 			(response) => {
-				this.chatId = response.id;
+				chat = response;
+				this.searchService.getMessagesFromChat(chat.id).subscribe((response) => {
+					chat.messages = response.reverse();
+					this.router.navigateByUrl('/chat', {state: chat} );
+				})
 			},
 			(error) => {
-				console.log(error);
-				console.log(this.userForm.errors);
 				if (error.error.statusCode === 404) {
 					this.userNotFound = true;
-					this.chatId = "";
 				} else {
-					this.http.post<chatModel>('api/chat/new', newChat).subscribe(
-						(response) => this.chatId = response.id,
+					this.searchService.getChat(newChat).subscribe(
+						(response) => {
+							chat = response;
+							chat.messages = [];
+							this.router.navigateByUrl('/chat', {state: chat} );
+						},
 						(error) => console.log(error)
-					);
+					)
 				}
 			}
 		)

@@ -1,7 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ChatService } from './chat.service';
-import { newMsg, retMessage } from './message.model';
+import { retMessage, newMessage, chatModel } from './message.model';
+
+//TODO: protect this route
 
 @Component({
 	selector: 'app-chat',
@@ -15,41 +18,28 @@ import { newMsg, retMessage } from './message.model';
 		  private formBuilder: FormBuilder,
 		  private chatService: ChatService
 	  ) { }
-	@Input()
-	chatId: string = "";
 
-	displayComponent: boolean = false;
-	messages: retMessage[] = [];
-		messageForm = this.formBuilder.group({
+	public chat: chatModel;
+	messageForm = this.formBuilder.group({
 		message: "",
 	});
 
 	ngOnInit(): void {
-	}
- 
-	ngOnChanges() {
-		console.log("chat id on change: ", this.chatId);
-		if (this.chatId != "") {
-			this.displayComponent = true;
-			this.chatService.getMessages(this.chatId).subscribe(
-				(response) => this.messages = response,
-				(error) => console.log(error)
-			);
-		} else {
-			this.displayComponent = false;
-		}
+		this.chat = history.state;
+		this.chatService.receiveMessages().subscribe((msg) => {
+			if (msg.chat.id === this.chat.id) {
+				this.chat.messages.push(msg);
+				this.chat.messages.splice(0, this.chat.messages.length - 6);
+			}
+		})
 	}
 
 	public onSubmit() {
-		console.log("submitting to chat: ", this.chatId);
-		const msg: newMsg = {
-			chat: this.chatId,
+		const newMessage: newMessage = {
+			chat: this.chat.id,
 			message: this.messageForm.controls['message'].value
 		}
-		this.chatService.create(msg).subscribe(
-			(response) => console.log(response),
-			(error) => console.log(error)
-		);
+		this.chatService.sendMessage(newMessage);
 		this.messageForm.reset();
 	  }
   }
