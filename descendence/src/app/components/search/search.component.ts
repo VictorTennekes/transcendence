@@ -1,51 +1,56 @@
 import { HttpClient } from "@angular/common/http";
-import { Component, ComponentFactory, ComponentFactoryResolver, Input, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { Component, OnInit } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
 import { ChatComponent } from "../chat/chat.component";
 import { chatModel, createChatModel } from "../chat/message.model";
 
 @Component({
-    selector: 'chat-search',
-    templateUrl: './search.component.html',
-    styleUrls: ['./search.component.scss'],
-    providers: [ChatComponent]
+	selector: 'chat-search',
+	templateUrl: './search.component.html',
+	styleUrls: ['./search.component.scss'],
+	providers: [ChatComponent]
   })
   export class SearchComponent implements OnInit {
 
-    constructor(
-        private formBuilder: FormBuilder,
-        private http: HttpClient
-        ) {}
+	constructor(
+		private http: HttpClient
+	) {}
 
-    public chatId: string = "";
+	public chatId: string = "";
 
-    userForm = this.formBuilder.group({
-        userName: ""
-    })
+	userForm = new FormGroup ({
+		username: new FormControl('', {
+		})
+	})
 
-    ngOnInit(): void {
+	ngOnInit(): void {
+	}
 
-    }
+	public userNotFound: boolean = false;
+	public submitUser() {
+		const newChat: createChatModel = {
+			name: '',
+			user: this.userForm.value.username
+		}
 
-    public submitUser() {
-        const newChat: createChatModel = {
-            name: '',
-            user: this.userForm.controls['userName'].value
-        }
-        let findUser: string = 'api/chat/find/' + this.userForm.controls['userName'].value;
-        this.http.get<chatModel>(findUser).subscribe(
-            (response) => this.chatId = response.id,
-            (error) => {
-                console.log(error);
-                if (error.error.statusCode === 404) {
-                    console.log("user not found");
-                } else {
-                    this.http.post<chatModel>('api/chat/new', newChat).subscribe(
-                        (response) => this.chatId = response.id,
-                        (error) => console.log(error)
-                    );
-                }
-            }
-        )
-    }
+		let findUser: string = 'api/chat/find/' + this.userForm.value.username;
+		this.http.get<chatModel>(findUser).subscribe(
+			(response) => {
+				this.chatId = response.id;
+			},
+			(error) => {
+				console.log(error);
+				console.log(this.userForm.errors);
+				if (error.error.statusCode === 404) {
+					this.userNotFound = true;
+					this.chatId = "";
+				} else {
+					this.http.post<chatModel>('api/chat/new', newChat).subscribe(
+						(response) => this.chatId = response.id,
+						(error) => console.log(error)
+					);
+				}
+			}
+		)
+	}
 }

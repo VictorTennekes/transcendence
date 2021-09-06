@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger, Req } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { toPromise } from "@shared/utils";
 import { ChatDTO } from "@chat/dto/chat.dto";
 import { NewChatDTO } from "@chat/dto/newChat.dto";
@@ -8,14 +8,13 @@ import { Repository } from "typeorm";
 import { MessageDTO } from "@chat/dto/message.dto";
 import { newMessageDTO } from "@chat/dto/newMessage.dto";
 import { MessageEntity } from "@chat/entity/message.entity";
-import { SessionSerializer } from "src/auth/session.serializer";
 import { UserDTO } from "@user/dto/user.dto";
 
 @Injectable()
 export class ChatService {
 	constructor(@InjectRepository(ChatEntity) private readonly repo: Repository<ChatEntity>,
-	@InjectRepository(MessageEntity) private readonly msgRepo: Repository<MessageEntity>) {}
-	
+				@InjectRepository(MessageEntity) private readonly msgRepo: Repository<MessageEntity>) {}
+
 	async getChatById(uuid: string): Promise<ChatDTO> {
 		const item = await this.repo.findOne({
 			where: {id: uuid}
@@ -31,18 +30,56 @@ export class ChatService {
 		}
 		return toPromise(ret);
 	}
-	
-	async getChatByUser(user: UserDTO): Promise<ChatDTO> {
-		Logger.log("getting chat by user");
-		const item = await this.repo
-		.createQueryBuilder("chat")
-		.leftJoinAndSelect("chat.users", "users")
-		.getOne();
-		//TODO: find chat by two users, looked up user and user that looked up the other user
-		Logger.log("got chat by user");
+
+
+	private getMatchingUsers(items: ChatEntity[], users: UserDTO[]) {
+		let item;
+		for (let i = 0; i < items.length; i++) {
+			Logger.log(`${JSON.stringify(items[i])}`);
+			let count = 0;
+			for (let j = 0; j < users.length; j++) {
+				if (users.length === 1) {
+					if (items[i].users.length === 1 && items[i].users[0].intra_name === users[0].intra_name) {
+						item = items[i];
+						return item;
+					}
+				}
+				function userExists(username) {
+					return items[i].users.some(function(el) {
+						return el.intra_name === username;
+					});
+				}
+				if (userExists(users[j].intra_name)) {
+					Logger.log(`found ${count} === ${users.length}`);
+					count++;
+				}
+				if (count == users.length) {
+					item = items[i];
+					Logger.log(`item: ${JSON.stringify(item)}`);
+					Logger.log(`items[i]: ${JSON.stringify(items[i])}`);
+					Logger.log(`hereee`);
+					return item;
+				}
+			}
+		}
+		return null;
+	}
+
+	async getChatByUsers(users: UserDTO[]): Promise<ChatDTO> {
+		const items = await this.repo
+				.createQueryBuilder("chat")
+				.innerJoinAndSelect("chat.users", "users")
+				.getMany();
+		
+		//TODO: in the future, display a list of matching chats for multiuser chats.
+
+		let item = this.getMatchingUsers(items, users);
+
 		if (!item) {
+			Logger.log("can't find chat");
 			throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
 		}
+		Logger.log(`chat id: ${item.id}`);
 		const ret: ChatDTO = {
 			id: item.id,
 			name: item.name,
@@ -51,19 +88,22 @@ export class ChatService {
 		}
 		Logger.log(`chat users: ${item.users}`)
 		return toPromise(ret);
-		
+
 	}
-	
+
 	async createNewChat(newChat: NewChatDTO): Promise<ChatDTO> {
-		const { name, users } = newChat;
 		Logger.log("creating a new chat");
-		const item: ChatEntity = await this.repo.create({
-			name,
-			users
+		// Logger.log(newChat.users[0].intra_name);
+		// Logger.log(newChat.users[1].intra_name);
+		let item: ChatEntity = await this.repo.create({
+			name: newChat.name,
+			users: newChat.users
 		});
-		Logger.log("about to save new chat");
-		await this.repo.save(item);
-		Logger.log("successfully saved new chat");
+		
+		// Logger.log(item.users[0].intra_name);
+		// Logger.log(item.users[1].intra_name);
+		item = await this.repo.save(item);
+		Logger.log("saved");
 		const ret: ChatDTO = {
 			id: item.id,
 			name: item.name,
@@ -72,7 +112,7 @@ export class ChatService {
 		}
 		return toPromise(ret);
 	}
-	
+
 	async createNewMessage(newMessage: newMessageDTO): Promise<MessageDTO> {
 		const {owner, message, chat} = newMessage;
 		Logger.log(newMessage.owner);
@@ -96,11 +136,16 @@ export class ChatService {
 	async getAllMessages(): Promise<MessageDTO[]> {
 		return await this.msgRepo.find();
 	}
-	
+
 	async getMessagesFromChat(id: string): Promise<MessageDTO[]> {
 		Logger.log(`id: ${id}`);
+		Logger.log(`get messages from chat`);
 		const item = await this.msgRepo.find({
 			where: {chat: id},
+			relations: ["owner"],
+			order: {
+				time: "ASC"
+			}
 		});
 		if (!item) {
 			throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);

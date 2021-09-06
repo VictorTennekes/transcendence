@@ -5,20 +5,20 @@ import { Observable } from "rxjs";
 
 @Injectable()
 export class ChatService {
-    private url = 'api/chat/msg/';
-    constructor(private http: HttpClient) {}
+	private url = 'api/chat/msg/';
+	constructor(private http: HttpClient) {}
 
-    public create(msg: newMsg): Observable<retMessage> {
-        console.log(msg.message);
-        return this.http.post<retMessage>(this.url, msg);
-    }
+	public create(msg: newMsg): Observable<retMessage> {
+		console.log(msg.message);
+		return this.http.post<retMessage>(this.url, msg);
+	}
 
-    public getMessages(chatId: string): Observable<retMessage[]> {
-        return this.http.get<retMessage[]>(this.url + chatId);
-    }
+	public getMessages(chatId: string): Observable<retMessage[]> {
+		return this.http.get<retMessage[]>(this.url + chatId);
+	}
 
-    // public getMessages(chatId: string): Observable<retMessage[]> {
-        // return this.http.get<retMessage[]>(this.url);
-    // }
+	// public getMessages(chatId: string): Observable<retMessage[]> {
+		// return this.http.get<retMessage[]>(this.url);
+	// }
 }
 

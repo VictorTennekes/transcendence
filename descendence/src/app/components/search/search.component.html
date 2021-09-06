@@ -1,8 +1,9 @@
-<form [formGroup]="userForm" (ngSubmit)="submitUser()" class="example-form">
-    <mat-form-field class="example-full-width" appearance="fill">
-        <mat-label>User name</mat-label>
-        <textarea formControlName="userName" matInput></textarea>
-    </mat-form-field>
-    <button class="button" type="submit">Send</button>
+<form [formGroup]="userForm" class="example-form" (ngSubmit)="submitUser()">
+	<mat-form-field class="example-full-width" appearance="fill">
+		<mat-label>username</mat-label>
+		<input matInput formControlName="username">
+	</mat-form-field>
+	<button class="button" type="submit">Send</button>
+	<div *ngIf="userNotFound">User not found</div>
 </form>
 <app-chat [chatId]="chatId"></app-chat>

@@ -1,19 +1,19 @@
 <div *ngIf="displayComponent">
 <mat-list>
-    <mat-list-item *ngFor="let message of messages">
-      <img matListAvatar src="..." alt="...">
-      <h3 matLine> {{message.owner}} </h3>
-      <p matLine>
-        <span class="demo-2"> -- {{message.message}} </span>
-      </p>
-    </mat-list-item>
+	<mat-list-item *ngFor="let message of messages">
+		<p matLine> {{message.time | date:'hh:mm a, MMM dd, YY' }} </p>
+		<img matListAvatar src="..." alt="...">
+		<h3 matLine> {{message.owner.display_name}} </h3>
+		<p matLine>
+		<span class="demo-2"> -- {{message.message}} </span>
+		</p>
+	</mat-list-item>
 </mat-list>
 <form [formGroup]="messageForm" (ngSubmit)="onSubmit()" class="example-form">
-    <mat-form-field class="example-full-width" appearance="fill">
-        <mat-label>Message</mat-label>
-        <textarea formControlName="message" matInput placeholder="Ex. Hi!"></textarea>
-    </mat-form-field>
-    <button class="button" type="submit">Send</button>
+	<mat-form-field class="example-full-width" appearance="fill">
+		<mat-label>Message</mat-label>
+		<textarea formControlName="message" matInput placeholder="Ex. Hi!"></textarea>
+	</mat-form-field>
+	<button class="button" type="submit">Send</button>
 </form>
 </div>
-<p>chat works!</p>
