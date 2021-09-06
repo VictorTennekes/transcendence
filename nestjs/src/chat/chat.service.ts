@@ -4,7 +4,7 @@ import { ChatDTO } from "@chat/dto/chat.dto";
 import { NewChatDTO } from "@chat/dto/newChat.dto";
 import { ChatEntity } from "@chat/entity/chat.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Not, Repository } from "typeorm";
 import { MessageDTO} from "@chat/dto/message.dto";
 import { MessageEntity } from "@chat/entity/message.entity";
 import { UserDTO } from "@user/dto/user.dto";
@@ -127,14 +127,29 @@ export class ChatService {
 
 	}
 
-	async getChatByName(name: string): Promise<ChatDTO[]> {
+	async getChatByName(name: string, username: string): Promise<ChatDTO[]> {
 		Logger.log(`getting chats: ${name}`);
-		let chats = this.repo.find({where: {
-			name: name
-		},
-		relations: ["users"]})
-		return chats;
-		// return toPromise(chats);
+		// let chats = await this.repo.find({
+		// 	where: {
+		// 		name: name
+		// 	},
+		// 	relations: ["users"]
+		// })
+
+
+		Logger.log(`name: ${name}, username: ${username}`);
+
+		let chats = await this.repo
+		.createQueryBuilder("chat")
+		.innerJoinAndSelect("chat.users", "users")
+		.where("chat.name = :name", {name})
+		.andWhere("(chat.visibility != 'private' OR users.intra_name = :username)", {username})
+		.getMany()
+
+		console.log("getChatByName result:");
+		console.log(chats)
+		// return chats;
+		return toPromise(chats);
 	}
 
 	async createNewChat(newChat: NewChatDTO): Promise<ChatDTO> {
