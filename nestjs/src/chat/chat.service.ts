@@ -152,6 +152,7 @@ export class ChatService {
 		Logger.log("creating a new chat");
 		// Logger.log(newChat.users[0].intra_name);
 		// Logger.log(newChat.users[1].intra_name);
+		console.log(newChat);
 		let item: ChatEntity = await this.repo.create({
 			name: newChat.name,
 			users: newChat.users,

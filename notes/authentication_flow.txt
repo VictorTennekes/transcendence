@@ -22,7 +22,7 @@ link to auth:
 
 link to protected page:
 	deserializeUser() -> user data from session
-	AuthenticatedGuard() -> return (!!req.session.user)
+	AuthenticatedGuard() -> return (!!req.session.passport.user)
 	true:
 		access route
 	false:

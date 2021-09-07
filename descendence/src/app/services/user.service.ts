@@ -1,30 +1,26 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Injectable, OnInit } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+
+interface User {
+	intraName: string;
+	displayName: string;
+	avatarUrl: string | null;
+}
 
 @Injectable({
 	providedIn: 'root'
 })
 export class UserService {
-	private SERVER_URL = "/api/user/home";
-	constructor( private http: HttpClient) { }
-
-	handleError(error: HttpErrorResponse)
-	{
-		let errorMessage = 'Unknown error!';
-
-		if (error.error instanceof ErrorEvent) {
-			errorMessage = `Error: ${error.error.message}`;
-		}
-		else {
-			errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-		}
-		window.alert(errorMessage);
-		return throwError(errorMessage);
-	}
-	
-	public get() {
-		return this.http.get(this.SERVER_URL).pipe(catchError(this.handleError));
+	userSource = new BehaviorSubject<any>(0);
+	userSubject: Observable<User>;
+	constructor(
+		private readonly http: HttpClient
+	) {
+		this.userSubject = this.userSource.pipe(switchMap(() => this.http.get<User>('/api/user/fetch_current')));
 	}
 }
+
+//call userSource.next('') to send updates to the subscriptions;

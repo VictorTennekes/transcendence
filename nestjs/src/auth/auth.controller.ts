@@ -1,36 +1,46 @@
-import { Controller, Get, Logger, Post, Req, Res, Session, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Req, Res, Session, UnauthorizedException, UseFilters, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
+import { authenticate } from 'passport';
+import { AuthService } from './auth.service';
 import { AuthenticatedGuard } from './authenticated.guard';
 import { LoginGuard } from './login.guard';
+import { No2FAGuard } from './no-2fa.guard';
 import { UnauthorizedFilter } from './unauthorized.filter';
 
 @Controller('auth')
 export class AuthController {
-	constructor() {}
+	constructor(
+		private readonly authService: AuthService,
+	) {}
 
 	//when first logging in, navigate user here
 	@Get('redirect')
 	@UseGuards(LoginGuard)
 	@UseFilters(UnauthorizedFilter)
 	async login(@Req() req, @Res() res: Response) {
-		//		res.set('Set-Cookie', `sid=${req.session["cookie"]}`);
-		res.redirect('/auth/redirect_success');
+		if (req.user.two_factor_enabled) {
+			res.redirect('http://localhost:4200/2fa');
+		}
+		res.redirect('http://localhost:4200/');
 	}
-	
-	//subsequent visits will have the authorization header appended
-	@Get('redirect_success')
+
+	@Get('@session')
+	@UseGuards(No2FAGuard)
+	@UseFilters(UnauthorizedFilter)
+	session(@Req() req) {
+		Logger.log(JSON.stringify(req.user));
+		return {
+			user: req.user.intra_name,
+			two_factor_enabled: req.user.two_factor_enabled,
+			two_factor_passed: req.session.two_factor,
+		};
+	}
+
+	@Get('logout')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	authorized(@Req() req, @Res() res) {
-
-//		return ("AUTHENTICATED :O");
-		res.redirect('http://localhost:4200/success');
-	}
-	
-	//requests without authorization header get sent here (by UnauthorizedFilter)
-	@Get('redirect_failure')
-	unauthorized(@Req() req, @Res() res) {
-		res.redirect('http://localhost:4200/fail');
+	logout(@Req() req) {
+		req.session.destroy();
 	}
 }

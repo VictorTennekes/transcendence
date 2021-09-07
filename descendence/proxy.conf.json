@@ -6,13 +6,12 @@
 			"^/api/*": ""
 		}
 	},
-	"/user/*": {
-		"target": "http://nestjs:3000/user",
+	"/cdn/*": {
+		"target": "http://nestjs:3000/",
 		"secure": false,
 		"pathRewrite": {
-			"^/user/*": ""
-		},
-		"changeOrigin": true
+			"^/cdn/*": ""
+		}
 	},
 	"changeOrigin": true,
 	"logLevel": "debug"

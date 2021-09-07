@@ -30,6 +30,34 @@ export class UserService {
 		return (user);
 	}
 
+	//Might want to add case insensitive checking
+	async checkDisplayName(currentDisplayName: string, display_name: string) {
+		if (!display_name) {
+			return false;
+		}
+		if (currentDisplayName == display_name) {
+			return true;
+		}
+		const isAvailable = await this.userRepository.count({where: {display_name}}) ? false : true;
+		return isAvailable;
+	}
+
+	async setTwoFactorAuthenticationSecret(secret: string, login: string) {
+		await this.update(login, {two_factor_secret: secret});
+	}
+
+	async update(login: string, changedData: any) {
+		console.log(`data: ${changedData}`);
+		let user = await this.findOne(login);
+		//validate that displayName is unique (?)
+		user = await this.userRepository.save({
+			...user,
+			...changedData
+		});
+		//handle errors thrown by 'save' for possible uniqueness issues.
+		console.log(`updated user: ${JSON.stringify(user)}`);
+	}
+
 	async create(login: string) {
 		const intra_name = login;
 		const display_name = intra_name;
@@ -37,14 +65,9 @@ export class UserService {
 		await this.userRepository.save(user);
 		return (user);
 	}
-
-	findAll() {
-		return `This action returns all user`;
-	}
 	
-	findOne(login: string) {
-		const intra_name = login;
-		return this.userRepository.findOne({where: { intra_name }});
+	async findOne(login: string) {
+		return await this.userRepository.findOne({where: { intra_name: login }});
 	}
 
 	async login(loginInformation: LoginUserDto): Promise<LoginStatus> {

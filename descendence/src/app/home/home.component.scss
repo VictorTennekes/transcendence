@@ -1,0 +1,41 @@
+button {
+	border: none;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	place-items: center;
+	place-content: center;
+	margin: 500px auto 0;
+	cursor: pointer;
+	background-color: rgb(255, 255, 255);
+	border-radius: 9999px;
+	border-color: transparent;
+	width: 350px;
+	height: 125px;
+	position: relative;
+
+	& p {
+		font-family: 'Segoe UI';
+		font-size: 35px;
+		font-weight: bold;
+		color: rgb(14, 122, 224);
+	}
+
+	& a {
+		margin-right: 0.5rem;
+		transform: translateY(6px);
+	}
+}
+
+button:hover {
+	& p {
+		color: rgb(242, 249, 255);
+	}
+	stroke: 5px rgb(0, 0, 0);
+	background-color:rgb(0, 110, 255);
+}
+
+button:active {
+	filter: brightness(0.8);
+//	box-shadow: 0px 0px 25px 25px rgb(141, 255, 246);
+}

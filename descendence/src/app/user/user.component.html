@@ -1,0 +1,5 @@
+<p>{{ displayName }}</p>
+<form #form="ngForm" (ngSubmit)="onSubmit(form)" novalidate>
+<input name="new" ngModel required>
+<button>Submit</button>
+</form>

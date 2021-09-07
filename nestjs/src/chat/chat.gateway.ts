@@ -1,4 +1,4 @@
-import { Logger, UseFilters, UseGuards } from "@nestjs/common";
+import { ConsoleLogger, Logger, UseFilters, UseGuards } from "@nestjs/common";
 import { OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody } from "@nestjs/websockets";
 import { ConnectedSocket } from "@nestjs/websockets";
 import { Socket } from "socket.io";
@@ -30,6 +30,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	async getUserFromSocket(socket: Socket): Promise<UserDTO> {
+	// async getUserFromSocket(socket: Socket): Promise<string> {
 
 		const cookie = socket.handshake.headers.cookie;
 
@@ -68,6 +69,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		const otherRes = await knex("session").where("sid", sid);
 		// Logger.log(JSON.stringify(otherRes));
 		// Logger.log(JSON.stringify(otherRes[0].sess.passport));
+		console.log("got session");
 		if (!otherRes) return null;
 		if (!otherRes[0].sess) return null;
 		if (!otherRes[0].sess.passport) return null;
@@ -79,10 +81,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 
 		//TODO: get this user from userService
-		const sessUser = this.userService.findOne(user);
-
+		Logger.log("getting user by login: ", user.login);
+		const sessUser = this.userService.findOne(user.login);
+		// console.log(sessUser);
 		// return sessUser;
-		return user;
+		return sessUser;
 	}
 
 	@UseGuards(AuthenticatedGuard)
@@ -91,6 +94,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		Logger.log("new connection");
 		const user: UserDTO = await this.getUserFromSocket(client);
 		if (!user) return;
+
 		let newSocket: socketData = {
 			user: user,
 			socket: client

@@ -22,7 +22,8 @@ export class ChatController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async getAllChats(@Req() req): Promise<ChatDTO[]> {
-		return this.service.getAllChatsByUser(req.session.passport.user.intra_name);
+		// return this.service.getAllChatsByUser(req.session.passport.user.intra_name);
+		return this.service.getAllChatsByUser(req.session.passport.user.login);
 	}
 
 	// @Get("find/:user")
@@ -47,14 +48,14 @@ export class ChatController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async getChatById(@Param("name") name: string, @Req() req): Promise<ChatDTO[]> {
-		let chats: ChatDTO[] = await this.service.getChatByName(name, req.session.passport.user.intra_name);
+		let chats: ChatDTO[] = await this.service.getChatByName(name, req.session.passport.user.login);
 		const user = await this.userService.findOne(name);
 		if (user) {
 			Logger.log("find/:name, found a user")
 			let users: UserDTO[] = [];
 			users.push(user);
-			if (name !== req.session.passport.user.intra_name) {
-				users.push(await this.userService.findOne(req.session.passport.user.intra_name));
+			if (name !== req.session.passport.user.login) {
+				users.push(await this.userService.findOne(req.session.passport.user.login));
 			}
 			// return await this.service.getChatByUsers(users);
 			let dm = await this.service.getChatByUsers(users);
@@ -82,7 +83,7 @@ export class ChatController {
 	@UseFilters(UnauthorizedFilter)
 	async createDirectChat(@Body() newChat: ReceiveNewChatDTO, @Req() req): Promise<ChatDTO> {
 	// async getOrCreateChat(@Body() newChat: ReceiveNewChatDTO, @Req() req): Promise<ChatDTO> {
-		let user: UserDTO = await this.userService.findOne(req.session.passport.user.intra_name);
+		let user: UserDTO = await this.userService.findOne(req.session.passport.user.login);
 		Logger.log(`${newChat.users}`);
 		let nc: NewChatDTO = {
 			name: newChat.name,
@@ -107,7 +108,10 @@ export class ChatController {
 		console.log("create new chat");
 		console.log(newChat);	
 		console.log("that was new chat");
-		let user = await this.userService.findOne(req.session.passport.user.intra_name);
+		console.log(req.session.passport);
+		console.log(req.session.passport.user.login);
+		let user = await this.userService.findOne(req.session.passport.user.login);
+		console.log(user);
 		let nc: NewChatDTO = {
 			name: newChat.name,
 			visibility: newChat.visibility,
