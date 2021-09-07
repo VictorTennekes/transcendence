@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { toPromise } from "@shared/utils";
-import { ChatDTO, ChatPassDTO } from "@chat/dto/chat.dto";
+import { ChatDTO } from "@chat/dto/chat.dto";
 import { NewChatDTO } from "@chat/dto/newChat.dto";
 import { ChatEntity } from "@chat/entity/chat.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Not, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { MessageDTO} from "@chat/dto/message.dto";
 import { MessageEntity } from "@chat/entity/message.entity";
 import { UserDTO } from "@user/dto/user.dto";
@@ -44,7 +44,6 @@ export class ChatService {
 			let count = 0;
 			for (let j = 0; j < users.length; j++) {
 				if (users.length === 1) {
-					// if (items[i].users.length === 1 && items[i].users[0].intra_name === users[0].intra_name) {
 					if (items[i].users.length === 1
 						&& users.length === 1
 						&& items[i].users[0].intra_name === users[0].intra_name) {
@@ -150,8 +149,6 @@ export class ChatService {
 
 	async createNewChat(newChat: NewChatDTO): Promise<ChatDTO> {
 		Logger.log("creating a new chat");
-		// Logger.log(newChat.users[0].intra_name);
-		// Logger.log(newChat.users[1].intra_name);
 		console.log(newChat);
 		let item: ChatEntity = await this.repo.create({
 			name: newChat.name,
@@ -160,9 +157,6 @@ export class ChatService {
 			admins: newChat.admins,
 			password: newChat.password
 		});
-		
-		// Logger.log(item.users[0].intra_name);
-		// Logger.log(item.users[1].intra_name);
 		item = await this.repo.save(item);
 		Logger.log("saved");
 		console.log(item);

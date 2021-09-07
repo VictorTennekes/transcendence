@@ -28,12 +28,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { SearchComponent } from './components/search/search.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { chatGuardService } from './components/chat/chatGuard.service';
 import { CreateChatComponent } from './create-chat/create-chat.component';
-import {MatRadioModule} from '@angular/material/radio';
+import { MatRadioModule } from '@angular/material/radio';
 import { ChatPassComponent } from './chat-pass/chat-pass.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transports: ['websocket']} };

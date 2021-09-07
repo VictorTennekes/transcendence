@@ -22,27 +22,8 @@ export class ChatController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async getAllChats(@Req() req): Promise<ChatDTO[]> {
-		// return this.service.getAllChatsByUser(req.session.passport.user.intra_name);
 		return this.service.getAllChatsByUser(req.session.passport.user.login);
 	}
-
-	// @Get("find/:user")
-	// @UseGuards(AuthenticatedGuard)
-	// @UseFilters(UnauthorizedFilter)
-	// async getChatById(@Param("user") username: string, @Req() req): Promise<ChatDTO> {
-	// 	const user = await this.userService.findOne(username);
-	// 	if (user) {
-	// 		Logger.log("find/:user, found a user")
-	// 		let users: UserDTO[] = [];
-	// 		users.push(user);
-	// 		if (username !== req.session.passport.user.intra_name) {
-	// 			users.push(await this.userService.findOne(req.session.passport.user.intra_name));
-	// 		}
-	// 		return await this.service.getChatByUsers(users);
-	// 	} else {
-	// 		throw new HttpException("No user by name " + username, HttpStatus.NOT_FOUND);
-	// 	}
-	// }
 
 	@Get("find/:name")
 	@UseGuards(AuthenticatedGuard)
@@ -57,7 +38,6 @@ export class ChatController {
 			if (name !== req.session.passport.user.login) {
 				users.push(await this.userService.findOne(req.session.passport.user.login));
 			}
-			// return await this.service.getChatByUsers(users);
 			let dm = await this.service.getChatByUsers(users);
 			if (!dm) {
 				let chatdto: NewChatDTO = {
@@ -82,7 +62,6 @@ export class ChatController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async createDirectChat(@Body() newChat: ReceiveNewChatDTO, @Req() req): Promise<ChatDTO> {
-	// async getOrCreateChat(@Body() newChat: ReceiveNewChatDTO, @Req() req): Promise<ChatDTO> {
 		let user: UserDTO = await this.userService.findOne(req.session.passport.user.login);
 		Logger.log(`${newChat.users}`);
 		let nc: NewChatDTO = {

@@ -38,7 +38,6 @@ import { SearchService } from "./search.service";
 	}
 
 	ngOnInit(): void {
-		// this.chats = this.getChats()
 		this.getChats();
 		console.log("chats");
 		console.log(this.chats);
@@ -46,10 +45,6 @@ import { SearchService } from "./search.service";
 
 	//TODO: display all options for chats
 	//TODO: On select of chat, messages will get get fetched from the db
-
-	// function isMatching(user) {
-		// return user.intra_name === 
-	// }
 
 	private redirectToChat(chat: chatModel) {
 		this.searchService.getMessagesFromChat(chat.id).subscribe((response) => {
@@ -93,22 +88,5 @@ import { SearchService } from "./search.service";
 				console.log(error)
 			}
 		)
-	// 	this.searchService.findUser(this.userForm.value.username).subscribe(
-	// 		(response) => {
-	// 			this.redirectToChat(response);
-	// 		},
-	// 		(error) => {
-	// 			if (error.error.statusCode === 404) {
-	// 				this.userNotFound = true;
-	// 			} else {
-	// 				this.searchService.getChat(newChat).subscribe(
-	// 					(response) => {
-	// 						this.redirectToChat(response);
-	// 					},
-	// 					(error) => console.log(error)
-	// 				)
-	// 			}
-	// 		}
-	// 	)
 	}
 }

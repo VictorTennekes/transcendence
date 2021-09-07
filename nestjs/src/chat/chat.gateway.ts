@@ -1,11 +1,10 @@
-import { ConsoleLogger, Logger, UseFilters, UseGuards } from "@nestjs/common";
+import { Logger, UseFilters, UseGuards } from "@nestjs/common";
 import { OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody } from "@nestjs/websockets";
 import { ConnectedSocket } from "@nestjs/websockets";
 import { Socket } from "socket.io";
 import { ChatService } from "./chat.service";
 import { UserService } from "@user/user.service";
 import { parse } from 'cookie';
-// import * as session from 'express-session';
 import { UserDTO } from "@user/dto/user.dto";
 import { AuthenticatedGuard } from "src/auth/authenticated.guard";
 import { UnauthorizedFilter } from "src/auth/unauthorized.filter";
