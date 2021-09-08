@@ -35,6 +35,7 @@ import { chatGuardService } from './components/chat/chatGuard.service';
 import { CreateChatComponent } from './create-chat/create-chat.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { ChatPassComponent } from './chat-pass/chat-pass.component';
+import { CommonModule } from '@angular/common';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transports: ['websocket']} };
 
@@ -72,7 +73,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transp
 		MatIconModule,
 		MatButtonModule,
 		MatRadioModule,
-		SocketIoModule.forRoot(config)
+		SocketIoModule.forRoot(config),
+		CommonModule
 	],
 	entryComponents: [ FocusOverlayComponent],
 	providers: [

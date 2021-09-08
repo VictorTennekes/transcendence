@@ -24,8 +24,10 @@
 					<span>Display Name</span>
 				</div>
 			</label>
-			<input type="text" id="name" formControlName="displayName" class="displayname" spellcheck="false">
-			<p>{{settingsForm.controls['displayName'].valid}}</p>
+			<input type="text" id="name" formControlName="displayName" class="displayname" spellcheck="false" [ngClass]="{
+				'available' : settingsForm.controls['displayName'].valid && settingsForm.controls['displayName'].dirty,
+				'taken' :  !settingsForm.controls['displayName'].valid && settingsForm.controls['displayName'].dirty
+			}">
 		</div>
 	</div>
 
