@@ -30,6 +30,7 @@ import { MatListModule } from '@angular/material/list';
 import { SearchComponent } from './components/search/search.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { chatGuardService } from './components/chat/chatGuard.service';
+import { CommonModule } from '@angular/common';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transports: ['websocket']} };
 
@@ -62,7 +63,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transp
 		BrowserAnimationsModule,
 		MatInputModule,
 		MatListModule,
-		SocketIoModule.forRoot(config)
+		SocketIoModule.forRoot(config),
+		CommonModule
 	],
 	entryComponents: [ FocusOverlayComponent],
 	providers: [

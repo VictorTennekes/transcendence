@@ -139,7 +139,6 @@ div#displayname {
 		background: rgba(255, 255, 255, 0.15);
 		font-family: 'Poppins';
 		font-size: 1.6rem;
-		border: none;
 		color: white;
 		padding-left: 2rem;
 		
@@ -156,6 +155,12 @@ div#displayname {
 			writing-mode: none;
 		}
 	}
+}
+.available {
+	border: 3px solid rgb(50, 211, 35)
+}
+.taken {
+	border: 3px solid rgb(226, 23, 23);
 }
 
 .bar {
