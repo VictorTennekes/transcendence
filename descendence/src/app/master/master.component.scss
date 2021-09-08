@@ -1,0 +1,223 @@
+
+//Container for the entire site
+//specifies the "grid" like layout for the nav/view/chat containers
+button {
+	padding: 0;
+	margin: 0;
+	border: none;
+}
+
+a {
+	text-decoration: none;
+	cursor: pointer;
+}
+
+@mixin CenterVertical() {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+@mixin CenterHorizontal() {
+	position: absolute;
+	left: 50%;
+	margin-right: -50%;
+	transform: translateX(-50%);
+}
+
+@mixin Center() {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+}
+
+.SiteContent {
+	--site-border-size: 3.25rem;
+
+	width: 90%;
+	height: 90%;
+	background-color: transparent;
+
+	margin: 0;
+	padding: 0;
+	@include Center();
+
+	display: grid;
+	grid-template-columns: 3.5fr 18fr 4.5fr;
+
+	border-radius: var(--site-border-size);
+	-webkit-box-shadow: 0px 10px 23px 0px #14365C; 
+	box-shadow: 0px 10px 23px 0px #14365C;
+	box-sizing: border-box;
+}
+
+//Container for the left side of the screen
+//separating the container into the logo, the navcontainer and the logout button
+.LeftContainer {
+	display: grid;
+	height: 100%;
+	margin: 0;
+//	border-radius: 3.25rem 0px 0px 3.25rem;
+	border-radius: var(--site-border-size) 0 0 var(--site-border-size);
+	background-color: #235266;
+	grid-template-rows: 2fr 8fr 1fr;
+	justify-items: stretch;
+	gap: 0.5rem;
+	padding: 0.63rem;
+	box-sizing: inherit;
+}
+
+//Container for the primary nav items
+.NavContainer {
+	grid-template-rows: repeat(10, 2fr);
+	display: grid;
+	gap: 0.5rem;
+	place-items: left;
+}
+
+//Navigation Button style
+a.NavItem {
+	border-radius: 0.63rem;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	place-items: center;
+	border: none;
+	margin: 0;
+	background-color: transparent;
+
+	&:hover {
+		background-color: rgb(0,0,0,0.1);
+	}
+	&:active {
+		background-color: #2f7690;
+	}
+	
+	& span {
+		display: block;
+		margin: auto;
+		margin-left: 1rem;
+	}
+}
+
+.IconBackground {
+	display: block;
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 50%;
+	background-color:rgb(233, 174, 71);
+	margin: 0;
+	padding: 0;
+	margin-left: 0.6rem;
+	position: relative;
+
+	&#users {
+		background-color: white;
+
+		& svg {
+			fill: rgb(233, 174, 71);
+			font-size: 3rem;
+			position: absolute;
+			top: -4px;
+			left: -4px;
+		}
+	}
+
+	&#play {
+		& svg {
+			position: absolute;
+			top: 3px;
+			left: 6px;
+			font-size: 2rem;
+		}
+	}
+
+	& svg {
+		fill: white;
+		font-size: 2.5rem;
+	}
+
+	// &::before {
+	// 	content: url('https://api.iconify.design/mdi/arrow-bottom-left-thick.svg?color=white&width=35&height=35');
+	// 	position: absolute;
+	// 	top: 2px;
+	// 	left: 3px;
+	// }
+}
+
+#logout-button {
+	height: 80%;
+}
+
+//Text inside of the button
+.NavItem span {
+//	@include CenterVertical();
+	display: inline-block;
+	font-family: 'Poppins', sans-serif;
+	font-weight: bolder;
+	font-size: 1.6rem;
+	color: rgb(255, 255, 255, 0.6);
+}
+
+.LogoContainer {
+	border: none;
+	background-color: transparent;
+	border-radius: var(--site-border-size) 0 0 0;
+}
+
+//The style for the Logo in the top right, uses the "stroke" class mixin
+.LogoContainer span {
+	font-size: 3.44rem;
+	color: white;
+	font-family: "Fredoka One";
+	font-weight: bold;
+	text-shadow: rgb(233, 174, 71) 5px 0px 0px, rgb(233, 174, 71) 4.90033px 0.993347px 0px, rgb(233, 174, 71) 4.60531px 1.94709px 0px, rgb(233, 174, 71) 4.12668px 2.82321px 0px, rgb(233, 174, 71) 3.48353px 3.58678px 0px, rgb(233, 174, 71) 2.70151px 4.20736px 0px, rgb(233, 174, 71) 1.81179px 4.6602px 0px, rgb(233, 174, 71) 0.849836px 4.92725px 0px, rgb(233, 174, 71) -0.145998px 4.99787px 0px, rgb(233, 174, 71) -1.13601px 4.86924px 0px, rgb(233, 174, 71) -2.08073px 4.54649px 0px, rgb(233, 174, 71) -2.94251px 4.04248px 0px, rgb(233, 174, 71) -3.68697px 3.37732px 0px, rgb(233, 174, 71) -4.28444px 2.57751px 0px, rgb(233, 174, 71) -4.71111px 1.67494px 0px, rgb(233, 174, 71) -4.94996px 0.7056px 0px, rgb(233, 174, 71) -4.99147px -0.291871px 0px, rgb(233, 174, 71) -4.83399px -1.27771px 0px, rgb(233, 174, 71) -4.48379px -2.2126px 0px, rgb(233, 174, 71) -3.95484px -3.05929px 0px, rgb(233, 174, 71) -3.26822px -3.78401px 0px, rgb(233, 174, 71) -2.4513px -4.35788px 0px, rgb(233, 174, 71) -1.53666px -4.75801px 0px, rgb(233, 174, 71) -0.560763px -4.96845px 0px, rgb(233, 174, 71) 0.437495px -4.98082px 0px, rgb(233, 174, 71) 1.41831px -4.79462px 0px, rgb(233, 174, 71) 2.34258px -4.41727px 0px, rgb(233, 174, 71) 3.17346px -3.86382px 0px, rgb(233, 174, 71) 3.87783px -3.15633px 0px, rgb(233, 174, 71) 4.4276px -2.32301px 0px, rgb(233, 174, 71) 4.80085px -1.39708px 0px, rgb(233, 174, 71) 4.98271px -0.415447px 0px;
+}
+
+.ViewContainer {
+	background-color: #2f7690;
+	border: none;
+	width: 100%;
+	display: grid;
+	place-items: center;
+	align-content: center;
+	padding: 0;
+	margin: 0;
+}
+
+.RightContainer {
+	display: grid;
+	height: 100%;
+	padding: 1.5rem;
+	box-sizing: border-box;
+	border-radius: 0 var(--site-border-size) var(--site-border-size) 0;
+	background-color: #235266;
+	grid-template-rows: 2fr 9fr;
+}
+
+.profile-wrapper {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	place-items: center;
+	place-content: center;
+	justify-content: left;
+
+	& a {
+		color: white;
+		font-family: 'Poppins';
+		font-weight: bolder;
+		font-size: 1.6rem;
+	}
+}
+
+.avatar {
+	width: 5.5rem;
+	height: 5.5rem;
+	border-radius: 50%;
+	background-size: cover;
+	background-position: 50%;
+	margin-right: 1.5rem;
+}

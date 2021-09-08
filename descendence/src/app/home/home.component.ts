@@ -1,7 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserService } from '../services/user.service';
 
 @Component({
 	selector: 'app-home',
@@ -9,12 +8,11 @@ import { UserService } from '../services/user.service';
 	styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-	
-	public user = {'email':'nobody@unknown.com'};
-	constructor( private userService: UserService) { }
+
+	constructor() { }
 
 	ngOnInit(): void {
-		// window.location.href = "http://localhost:3000/user/home";
+		console.log("HOME");
 	}
 	onClick() : void {
 		document.location.href = "api/auth/redirect";

@@ -4,6 +4,9 @@ import { Injectable, Logger, Request, UnauthorizedException } from '@nestjs/comm
 import { ConfigService } from '@nestjs/config';
 import { toPromise } from '@shared/utils';
 import { AuthService } from './auth.service';
+import * as session from 'express-session';
+
+const postgres = require('connect-pg-simple');
 
 @Injectable()
 export class FortyTwoStrategy extends PassportStrategy(Strategy) {
@@ -27,9 +30,16 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy) {
 	async validate(request, accessToken: string, refreshToken: string, profile): Promise<any> {
 		profile = profile ?? request.user;
 		if (!profile)
-			return (null);
+			return null;
 		console.log("FortyTwoStrategy::validate()");
 		const user = await this.authService.validateUser(profile.intraName);
+		// console.log(`USER ITEM: ${JSON.stringify(user)}`);
+		// const sessionItem = request.sessionStore.get(request.sessionID, (err, session) => {
+		// 	console.log(session);
+		// });
+		if (!user.two_factor_enabled)
+			return (user);
+			//		if (request.session.)
 		return (user);
 	}
 }
