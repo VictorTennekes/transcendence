@@ -36,6 +36,7 @@ import { CreateChatComponent } from './create-chat/create-chat.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { ChatPassComponent } from './chat-pass/chat-pass.component';
 import { CommonModule } from '@angular/common';
+import { MATERIAL_SANITY_CHECKS } from '@angular/material/core';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transports: ['websocket']} };
 
@@ -82,7 +83,11 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transp
 		ImageService,
 		FocusOverlayService,
 		SharedValidatorService,
-		chatGuardService
+		chatGuardService,
+		{
+		provide: MATERIAL_SANITY_CHECKS,//am i really doing this?
+		useValue: false
+		}
 	],
 	bootstrap: [AppComponent]
 })
