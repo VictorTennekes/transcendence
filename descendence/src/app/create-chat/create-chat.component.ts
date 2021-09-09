@@ -111,7 +111,7 @@ export class CreateChatComponent implements OnInit {
 			this.searchService.createNewChat(newChat).subscribe((response) => {
 				console.log("should be routing?");
 				// this.router.navigateByUrl('/chat', {state: response});
-				this.router.navigate([{outlets: {chat: 'chat'}}], {state: response, skipLocationChange: true});
+				this.router.navigate(['home', {outlets: {chat: 'chat'}}], {state: response, skipLocationChange: true});
 			},
 			(error) => {
 				console.log("error");
