@@ -37,6 +37,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { ChatPassComponent } from './chat-pass/chat-pass.component';
 import { CommonModule } from '@angular/common';
 import { MATERIAL_SANITY_CHECKS } from '@angular/material/core';
+import { ChatContainerComponent } from './chat-container/chat-container.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transports: ['websocket']} };
 
@@ -56,7 +57,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transp
 		FocusOverlayComponent,
 		QrCodeDirective,
 		OnlyNumber,
-		TwoFactorComponent
+		TwoFactorComponent,
+  ChatContainerComponent
 	],
 	imports: [
 		CookieModule.forRoot(),

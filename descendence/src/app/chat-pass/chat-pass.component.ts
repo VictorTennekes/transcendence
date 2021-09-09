@@ -23,6 +23,11 @@ export class ChatPassComponent implements OnInit {
 	ngOnInit(): void {
 	}
 
+	public back() {
+		// this.router.navigateByUrl('/search');
+		this.router.navigate([{outlets: {chat: 'search'}}]);
+	}
+
 	public onSubmit() {
 		console.log(history.state);
 		this.searchService.validatePassword(this.chatPassForm.controls['password'].value, history.state.id).subscribe(

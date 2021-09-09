@@ -50,9 +50,11 @@ import { SearchService } from "./search.service";
 		this.searchService.getMessagesFromChat(chat.id).subscribe((response) => {
 			chat.messages = response.reverse();
 			if (chat.visibility === 'protected') {
-				this.router.navigateByUrl('/chat-pass', {state: chat});
+				this.router.navigate([{outlets: {chat: 'chat-pass'}}], {state: chat});
+				// this.router.navigateByUrl('/chat-pass', {state: chat});
 			} else {
-				this.router.navigateByUrl('/chat', {state: chat});
+				this.router.navigate([{outlets: {chat: 'chat'}}], {state: chat});
+				// this.router.navigateByUrl('/chat', {state: chat});
 			}
 		})
 	}
@@ -64,7 +66,8 @@ import { SearchService } from "./search.service";
 	}
 
 	public redirectCreate() {
-		this.router.navigateByUrl('/new-chat');
+		this.router.navigate([{outlets: {chat: 'new-chat'}}]);
+		// this.router.navigateByUrl('/new-chat');
 	}
 
 	public submitUser() {

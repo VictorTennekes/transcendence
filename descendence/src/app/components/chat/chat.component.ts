@@ -40,7 +40,8 @@ import { retMessage, newMessage, chatModel } from './message.model';
 	}
 
 	public back() {
-		this.router.navigateByUrl('/search');
+		// this.router.navigateByUrl('/search');
+		this.router.navigate([{outlets: {chat: 'search'}}]);
 	}
 
 	public onSubmit() {

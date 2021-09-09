@@ -15,6 +15,7 @@ import { SearchComponent } from './components/search/search.component';
 import { chatGuardService } from './components/chat/chatGuard.service';
 import { CreateChatComponent } from './create-chat/create-chat.component';
 import { ChatPassComponent } from './chat-pass/chat-pass.component';
+import { ChatContainerComponent } from './chat-container/chat-container.component';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -36,20 +37,32 @@ const routes: Routes = [
 				component: UserSettingsComponent
 			},
 			{
+				path: 'search',
+				component: SearchComponent,
+				outlet: "chat"
+			},
+			{
 				path: 'new-chat',
-				component: CreateChatComponent
+				component: CreateChatComponent,
+				outlet: "chat"
 			},
 			{
 				path: 'chat',
 				component: ChatComponent,
-				canActivate: [chatGuardService]
+				canActivate: [chatGuardService],
+				outlet: "chat"
 			},
 			
 			{
 				path: 'chat-pass',
-				component: ChatPassComponent
+				component: ChatPassComponent,
+				outlet: "chat"
 			},
-
+			// {
+				// path: '',
+				// component: SearchComponent,
+				// outlet: "chat"
+			// }
 		]
 	},
 	//login page
@@ -64,10 +77,10 @@ const routes: Routes = [
 		component: TwoFactorComponent
 	},
 	//redirect to '' if nothing is matched
-	{
-		path: 'search',
-		component: SearchComponent
-	},
+	// {
+		// path: 'search',
+		// component: SearchComponent
+	// },
 	
 	{
 		path: 'login',
