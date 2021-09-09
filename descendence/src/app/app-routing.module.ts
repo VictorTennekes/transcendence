@@ -34,7 +34,22 @@ const routes: Routes = [
 			{
 				path: 'settings',
 				component: UserSettingsComponent
-			}
+			},
+			{
+				path: 'new-chat',
+				component: CreateChatComponent
+			},
+			{
+				path: 'chat',
+				component: ChatComponent,
+				canActivate: [chatGuardService]
+			},
+			
+			{
+				path: 'chat-pass',
+				component: ChatPassComponent
+			},
+
 		]
 	},
 	//login page
@@ -53,19 +68,7 @@ const routes: Routes = [
 		path: 'search',
 		component: SearchComponent
 	},
-	{
-		path: 'chat',
-		component: ChatComponent,
-		canActivate: [chatGuardService]
-	},
-	{
-		path: 'new-chat',
-		component: CreateChatComponent
-	},
-	{
-		path: 'chat-pass',
-		component: ChatPassComponent
-	},
+	
 	{
 		path: 'login',
 		component: LoginComponent

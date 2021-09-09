@@ -7,12 +7,13 @@
 	<div *ngIf="userNotFound">User not found</div>
 	<div *ngIf="chatNotFound">No chats found</div>
 </form>
-<button mat-raised-button class="button" (click)="redirectCreate()">
+<button mat-raised-button class="button" (click)="redirectCreate()" >
 	<mat-icon>add</mat-icon>
 </button>
 <mat-list>
 	<mat-list-item *ngFor="let chat of chats" (click)="getChat(chat)">
 		<h3>{{chat.name}}</h3>
+		<br>
 		<tr *ngFor="let user of chat.users; let last=last" [ngClass]="{ flast: last }">
 			<p>{{user.intra_name}} &nbsp; </p>
 		</tr>
