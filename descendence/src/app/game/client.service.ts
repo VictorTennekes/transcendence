@@ -22,15 +22,17 @@ export class ClientService {
 	}
 
 	sendPlayerData(data: PlayerData, ) {
-		this.socket.emit('sendPlayerData' + , data);
+		this.socket.emit('sendPlayerData-' + this.playerNumber, data);
 	}
 
 	connect() {
-		this.socket.on('connection', (data: any) => {
-			this.playerNumber = data.playerNumber;
-		})
+		this.socket.connect();
 	}
-
+	initialize() {
+		this.socket.on('initialize', (playerNumber: string) => {
+			this.playerNumber = playerNumber;
+		});
+	}
 	// initializeGame() {
 	// 	this.socket.fromEvent('initialize').subscribe((playerNumber: any) => {
 	// 		this.playerNumber = playerNumber;

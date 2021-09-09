@@ -1,81 +1,85 @@
+import { ClientService } from "./client.service";
 
 enum KeyBindings {
-	UP = 38,
-	DOWN = 40
+	UP,
+	DOWN
 }
 
 export class Game {
-//	private gameCanvas: HTMLCanvasElement;
-	private gameContext;
-	public static keysPressed: boolean[] = [];
-	public static playerScore: number = 0;
-	public static computerScore: number = 0;
-	private player1: Paddle;
-	private computerPlayer: ComputerPaddle;
+	private gameContext: CanvasRenderingContext2D;
+	public static players: {[id: string] : Player} = {};
 	private ball: Ball;
-	constructor(private gameCanvas: HTMLCanvasElement) {
-		console.log(`${JSON.stringify(this.gameCanvas)}`);
-		this.gameContext = this.gameCanvas.getContext("2d");
-		if (this.gameContext) {
-			this.gameContext.font = "30px Orbitron";
+
+	static setKeyPressed(player: Player, keyString: string, state: boolean) {
+		if (keyString !== 'ArrowUp' && keyString !== 'ArrowDown') {
+			return ;
 		}
+		console.log(keyString);
+		const key: KeyBindings = (keyString === 'ArrowUp') ? KeyBindings.UP : KeyBindings.DOWN;
+		player.keysPressed[key] = state;
+	}
+
+	constructor(
+		private gameCanvas: HTMLCanvasElement,
+		private readonly client: ClientService
+	) {
+//		console.log(`${JSON.stringify(this.gameCanvas)}`);
+		const context = this.gameCanvas.getContext("2d");
+		if (context) {
+			this.gameContext = context;
+		} else {
+			return ;
+		}
+		this.gameContext.font = "30px Orbitron";
 		
 		window.addEventListener("keydown",function(e) {
-			console.log(`KEY PRESSED: ${parseInt(e.key)}`);
-			Game.keysPressed[parseInt(e.key)] = true;
-		} );
+			Game.setKeyPressed(Game.players['one'], e.key, true);
+		});
 		
 		window.addEventListener("keyup",function(e: KeyboardEvent) {
-			console.log(`KEY PRESSED: ${parseInt(e.key)}`);
-			Game.keysPressed[parseInt(e.key)] = false;
-		} );
+			Game.setKeyPressed(Game.players['one'], e.key, false);
+		});
+
 		
 		var paddleWidth:number = 20, paddleHeight:number = 60, ballSize:number = 10, wallOffset:number = 20;
+		Game.players['one'] = new Player(paddleWidth,paddleHeight,wallOffset,this.gameCanvas.height / 2 - paddleHeight / 2);
+		Game.players['two'] = new Player(paddleWidth,paddleHeight,this.gameCanvas.width - (wallOffset + paddleWidth) ,this.gameCanvas.height / 2 - paddleHeight / 2);
 		
-		this.player1 = new Paddle(paddleWidth,paddleHeight,wallOffset,this.gameCanvas.height / 2 - paddleHeight / 2);
-		this.computerPlayer = new ComputerPaddle(paddleWidth,paddleHeight,this.gameCanvas.width - (wallOffset + paddleWidth) ,this.gameCanvas.height / 2 - paddleHeight / 2);
 		this.ball = new Ball(ballSize,ballSize,this.gameCanvas.width / 2 - ballSize / 2, this.gameCanvas.height / 2 - ballSize / 2);
 		
 	}
+
 	drawBoardDetails() {
+		//draw court outline
+		this.gameContext.strokeStyle = "#fff";
+		this.gameContext.lineWidth = 5;
+		this.gameContext.strokeRect(10,10,this.gameCanvas.width - 20 ,this.gameCanvas.height - 20);
+		//draw center lines
+		for (var i = 0; i + 30 < this.gameCanvas.height; i += 30) {
+			this.gameContext.fillStyle = "#fff";
+			this.gameContext.fillRect(this.gameCanvas.width / 2 - 10, i + 10, 15, 20);
+		}
 		
-		if (this.gameContext) {
-			//draw court outline
-			this.gameContext.strokeStyle = "#fff";
-			this.gameContext.lineWidth = 5;
-			this.gameContext.strokeRect(10,10,this.gameCanvas.width - 20 ,this.gameCanvas.height - 20);
-			//draw center lines
-			for (var i = 0; i + 30 < this.gameCanvas.height; i += 30) {
-				this.gameContext.fillStyle = "#fff";
-				this.gameContext.fillRect(this.gameCanvas.width / 2 - 10, i + 10, 15, 20);
-			}
-			
-			//draw scores
-			this.gameContext.fillText(Game.playerScore.toString(), 280, 50);
-			this.gameContext.fillText(Game.computerScore.toString(), 390, 50);
-		}
+		//draw scores
+		this.gameContext.fillText(Game.players['one'].score.toString(), 280, 50);
+		this.gameContext.fillText(Game.players['two'].score.toString(), 390, 50);
 	}
+
 	update() {
-		this.player1.update(this.gameCanvas);
-		this.computerPlayer.update(this.ball,this.gameCanvas);
-		this.ball.update(this.player1,this.computerPlayer,this.gameCanvas);
+		Game.players['one'].update(this.gameCanvas);
+		Game.players['two'].update(this.gameCanvas);
+		this.ball.update(Game.players['one'].paddle, Game.players['two'].paddle, this.gameCanvas);
 	}
+
 	draw() {
-		if (this.gameContext) {
-			this.gameContext.fillStyle = "#000";
-			this.gameContext.fillRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
-			
-			this.drawBoardDetails();
-			this.player1.draw(this.gameContext);
-			this.computerPlayer.draw(this.gameContext);
-			this.ball.draw(this.gameContext);
-		}
+		this.gameContext.fillStyle = "#000";
+		this.gameContext.fillRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
+		
+		this.drawBoardDetails();
+		Game.players['one'].paddle.draw(this.gameContext);
+		Game.players['two'].paddle.draw(this.gameContext);
+		this.ball.draw(this.gameContext);
 	}
-	// gameLoop(game: Game) {
-	// 	game.update();
-	// 	game.draw();
-	// 	requestAnimationFrame(game.gameLoop);
-	// }
 }
 
 class Entity {
@@ -97,6 +101,21 @@ class Entity {
 	}
 }
 
+class Player {
+	paddle: Paddle;
+	keysPressed: boolean[] = [];
+
+	score: number;
+
+	constructor(w:number,h:number,x:number,y:number) {
+		this.score = 0;
+		this.paddle = new Paddle(w,h,x,y);
+	}
+	update(canvas: HTMLCanvasElement) {
+		this.paddle.update(canvas, this.keysPressed);
+	}
+}
+
 class Paddle extends Entity {
 	
 	private speed:number = 10;
@@ -105,13 +124,13 @@ class Paddle extends Entity {
 		super(w,h,x,y);
 	}
 	
-	update(canvas: HTMLCanvasElement) {
-		if ( Game.keysPressed[KeyBindings.UP] ) {
+	update(canvas: HTMLCanvasElement, keysPressed: boolean[]) {
+		if ( keysPressed[KeyBindings.UP] ) {
 			this.yVel = -1;
 			if (this.y <= 20) {
 				this.yVel = 0
 			}
-		} else if (Game.keysPressed[KeyBindings.DOWN]) {
+		} else if (keysPressed[KeyBindings.DOWN]) {
 			this.yVel = 1;
 			if (this.y + this.height >= canvas.height - 20) {
 				this.yVel = 0;
@@ -119,45 +138,8 @@ class Paddle extends Entity {
 		} else {
 			this.yVel = 0;
 		}
-		
 		this.y += this.yVel * this.speed;
-		
 	}
-}
-
-class ComputerPaddle extends Entity {
-	
-	private speed:number = 10;
-	
-	constructor(w:number,h:number,x:number,y:number) {
-		super(w,h,x,y);
-	}
-	
-	update(ball:Ball, canvas: HTMLCanvasElement) {
-		
-		//chase ball
-		if (ball.y < this.y && ball.xVel == 1) {
-			this.yVel = -1;
-			
-			if (this.y <= 20) {
-				this.yVel = 0;
-			}
-		}
-		else if (ball.y > this.y + this.height && ball.xVel == 1) {
-			this.yVel = 1;
-			
-			if (this.y + this.height >= canvas.height - 20) {
-				this.yVel = 0;
-			}
-		}
-		else {
-			this.yVel = 0;
-		}
-		
-		this.y += this.yVel * this.speed;
-		
-	}
-	
 }
 
 class Ball extends Entity {
@@ -175,7 +157,7 @@ class Ball extends Entity {
 		this.yVel = 1;
 	}
 	
-	update(player:Paddle,computer:ComputerPaddle, canvas: HTMLCanvasElement) {
+	update(playerOne:Paddle, playerTwo:Paddle, canvas: HTMLCanvasElement) {
 		
 		//check top canvas bounds
 		if (this.y <= 10) {
@@ -190,26 +172,26 @@ class Ball extends Entity {
 		//check left canvas bounds
 		if (this.x <= 0) {
 			this.x = canvas.width / 2 - this.width / 2;
-			Game.computerScore += 1;
+			Game.players['two'].score += 1;
 		}
 		
 		//check right canvas bounds
 		if (this.x + this.width >= canvas.width) {
 			this.x = canvas.width / 2 - this.width / 2;
-			Game.playerScore += 1;
+			Game.players['one'].score += 1;
 		}
 		
 		
 		//check player collision
-		if (this.x <= player.x + player.width) {
-			if (this.y >= player.y && this.y + this.height <= player.y + player.height) {
+		if (this.x <= playerOne.x + playerOne.width) {
+			if (this.y >= playerOne.y && this.y + this.height <= playerOne.y + playerOne.height) {
 				this.xVel = 1;
 			}
 		}
 		
 		//check computer collision
-		if (this.x + this.width >= computer.x) {
-			if (this.y >= computer.y && this.y + this.height <= computer.y + computer.height) {
+		if (this.x + this.width >= playerTwo.x) {
+			if (this.y >= playerTwo.y && this.y + this.height <= playerTwo.y + playerTwo.height) {
 				this.xVel = -1;
 			}
 		}
@@ -218,6 +200,3 @@ class Ball extends Entity {
 		this.y += this.yVel * this.speed;
 	}
 }
-
-// var game = new Game();
-// requestAnimationFrame(game.gameLoop);

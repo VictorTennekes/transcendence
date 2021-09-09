@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { request } from 'http';
+import { ClientService } from '../client.service';
 import { Game } from '../game.script';
 
 @Component({
@@ -9,7 +10,9 @@ import { Game } from '../game.script';
 })
 export class ViewComponent implements OnInit, AfterViewInit {
 	game: Game;
-	constructor() { }
+	constructor(
+		private readonly client: ClientService,
+	) { }
 	
 	ngOnInit(): void {
 	}
@@ -22,7 +25,7 @@ export class ViewComponent implements OnInit, AfterViewInit {
 
 	ngAfterViewInit() {
 		const canvas = <HTMLCanvasElement>document.getElementById('game-canvas');
-		this.game = new Game(canvas);
+		this.game = new Game(canvas, this.client);
 		this.gameLoop();
 	}
 }
