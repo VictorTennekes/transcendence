@@ -31,8 +31,14 @@ import { SearchComponent } from './components/search/search.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { chatGuardService } from './components/chat/chatGuard.service';
 import { CommonModule } from '@angular/common';
+import { ViewComponent } from './game/view/view.component';
 
-const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transports: ['websocket']} };
+const config: SocketIoConfig = {
+	url: 'http://localhost:3000',
+	options: {
+		transports: ['websocket']
+	}
+};
 
 @NgModule({
 	declarations: [
@@ -48,7 +54,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transp
 		FocusOverlayComponent,
 		QrCodeDirective,
 		OnlyNumber,
-		TwoFactorComponent
+		TwoFactorComponent,
+		ViewComponent
 	],
 	imports: [
 		CookieModule.forRoot(),
@@ -72,7 +79,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transp
 		ImageService,
 		FocusOverlayService,
 		SharedValidatorService,
-		chatGuardService
+		chatGuardService,
 	],
 	bootstrap: [AppComponent]
 })
