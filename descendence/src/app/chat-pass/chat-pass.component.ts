@@ -25,7 +25,7 @@ export class ChatPassComponent implements OnInit {
 
 	public back() {
 		// this.router.navigateByUrl('/search');
-		this.router.navigate([{outlets: {chat: 'search'}}]);
+		this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
 	}
 
 	public onSubmit() {

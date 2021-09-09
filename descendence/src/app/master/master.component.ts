@@ -40,8 +40,16 @@ export class MasterComponent implements OnInit {
 	}
 
 	logOut(): void {
-		this.userService.logout().subscribe(() => {});
+		console.log('is the error here?')
+		this.userService.logout().subscribe((error: any) => {
+			console.log('response');
+			console.log(error);
+		});
 		this.cookies.remove('connect.sid');
-		this.router.navigate(['home']);
+		// this.router.navigate(['home']);
+		console.log('where is the error');
+		this.router.navigate(['auth']);
+		console.log('is error here');
+		// this.router.navigate(['home', {outlets: {primary: 'home'}}]);
 	}
 }

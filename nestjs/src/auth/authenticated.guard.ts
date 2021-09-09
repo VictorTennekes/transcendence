@@ -6,8 +6,11 @@ export class AuthenticatedGuard implements CanActivate {
 	canActivate(context: ExecutionContext): boolean | Promise<boolean> {
 		const httpContext = context.switchToHttp();
 		const request = httpContext.getRequest();
+		
 		if (!request.isAuthenticated())
-			throw new UnauthorizedException(undefined, 'Request is not authenticated!');
+			console.log("is not authed");
+			// throw new UnauthorizedException(undefined, 'Request is not authenticated!');
+			// throw new UnauthorizedException(undefined, 'Request is not authenticated!');
 		if (!request?.session?.passport?.user?.login)
 			throw new UnauthorizedException(undefined, 'No session found.');
 		if (request?.session?.passport?.two_factor_enabled && !request?.session?.two_factor)

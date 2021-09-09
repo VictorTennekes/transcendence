@@ -10,7 +10,7 @@ export class chatGuardService implements CanActivate {
 		if (history.state) {
 			return true;
 		}
-		this.router.navigate(["/search"]);
+		this.router.navigate(['home', {outlets: {chat: "/search"}}], {skipLocationChange: true});
 		return false
 	}
 }

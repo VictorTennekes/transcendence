@@ -29,7 +29,8 @@ import { retMessage, newMessage, chatModel } from './message.model';
 		this.chat = history.state;
 		console.log(this.chat);
 		if (!this.chat.id) {
-			this.router.navigateByUrl('/search');
+			// this.router.navigateByUrl('/search');
+			this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
 		}
 		this.chatService.receiveMessages().subscribe((msg) => {
 			if (msg.chat.id === this.chat.id) {
@@ -41,7 +42,7 @@ import { retMessage, newMessage, chatModel } from './message.model';
 
 	public back() {
 		// this.router.navigateByUrl('/search');
-		this.router.navigate([{outlets: {chat: 'search'}}]);
+		this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
 	}
 
 	public onSubmit() {

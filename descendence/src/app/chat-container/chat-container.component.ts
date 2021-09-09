@@ -13,7 +13,7 @@ export class ChatContainerComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.router.navigate([{outlets: {chat: 'search'}}]);
+		this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
 	}
 
 }

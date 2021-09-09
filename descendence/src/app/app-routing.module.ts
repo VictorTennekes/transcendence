@@ -21,7 +21,7 @@ const routes: Routes = [
 	//guard the main page by LoginGuard
 	{
 		canActivate: [LoginGuard],
-		path: '',
+		path: 'home',
 		component: MasterComponent,
 		children: [
 			{
@@ -67,7 +67,7 @@ const routes: Routes = [
 	},
 	//login page
 	{
-		path: 'home',
+		path: 'auth',
 		component: HomeComponent
 	},
 	//2fa page
@@ -76,15 +76,14 @@ const routes: Routes = [
 		path: '2fa',
 		component: TwoFactorComponent
 	},
-	//redirect to '' if nothing is matched
-	// {
-		// path: 'search',
-		// component: SearchComponent
-	// },
-	
 	{
 		path: 'login',
 		component: LoginComponent
+	},
+	{
+		path: '',
+		redirectTo: 'home',
+		pathMatch: 'full'
 	},
 	{
 		path: '**',

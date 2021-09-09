@@ -63,7 +63,7 @@ export class CreateChatComponent implements OnInit {
 	}
 
 	public back() {
-		this.router.navigate([{outlets: {chat: 'search'}}]);
+		this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
 	//   this.router.navigateByUrl('/search');
 	}
 
@@ -110,7 +110,8 @@ export class CreateChatComponent implements OnInit {
 
 			this.searchService.createNewChat(newChat).subscribe((response) => {
 				console.log("should be routing?");
-				this.router.navigateByUrl('/chat', {state: response});
+				// this.router.navigateByUrl('/chat', {state: response});
+				this.router.navigate([{outlets: {chat: 'chat'}}], {state: response, skipLocationChange: true});
 			},
 			(error) => {
 				console.log("error");
