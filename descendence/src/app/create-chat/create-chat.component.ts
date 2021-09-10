@@ -85,6 +85,7 @@ export class CreateChatComponent implements OnInit {
 	}
 
 	public otherSubmit() {
+		console.log('here');
 		this.submitted = true;
 		console.log(this.createChatForm.value);
 		let pw = "";
@@ -111,7 +112,7 @@ export class CreateChatComponent implements OnInit {
 			this.searchService.createNewChat(newChat).subscribe((response) => {
 				console.log("should be routing?");
 				// this.router.navigateByUrl('/chat', {state: response});
-				this.router.navigate(['home', {outlets: {chat: 'chat'}}], {state: response, skipLocationChange: true});
+				this.router.navigate(['home', {outlets: {chat: ['get-chat', response.id]}}], {state: response});
 			},
 			(error) => {
 				console.log("error");

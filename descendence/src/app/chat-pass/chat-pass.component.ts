@@ -34,7 +34,8 @@ export class ChatPassComponent implements OnInit {
 			(response) => {
 				console.log(response);
 				if (response === true) {
-					this.router.navigateByUrl('/chat', {state: history.state});
+					// this.router.navigateByUrl('/chat', {state: history.state});
+					this.router.navigate(['home', {outlets: {chat: 'get-chat'}}, {state: history.state}]);
 				} else {
 					//validation failed
 					console.log("wrong pass");

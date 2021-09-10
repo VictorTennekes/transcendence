@@ -47,9 +47,9 @@ const routes: Routes = [
 				outlet: "chat"
 			},
 			{
-				path: 'chat',
+				path: 'get-chat/:id',
 				component: ChatComponent,
-				canActivate: [chatGuardService],
+				// canActivate: [chatGuardService],
 				outlet: "chat"
 			},
 			

@@ -49,13 +49,14 @@ import { SearchService } from "./search.service";
 	private redirectToChat(chat: chatModel) {
 		this.searchService.getMessagesFromChat(chat.id).subscribe((response) => {
 			chat.messages = response.reverse();
-			if (chat.visibility === 'protected') {
-				this.router.navigate(['home', {outlets: {chat: 'chat-pass'}}], {state: chat, skipLocationChange: true});
+			// if (chat.visibility === 'protected') {
+				// this.router.navigate(['home', {outlets: {chat: 'chat-pass'}}], {state: chat, skipLocationChange: true});
 				// this.router.navigateByUrl('/chat-pass', {state: chat});
-			} else {
-				this.router.navigate(['home', {outlets: {chat: 'chat'}}], {state: chat, skipLocationChange: true});
+			// } else {
+				console.log('redirecting to new clicked chat')
+				this.router.navigate(['home', {outlets: {chat: ['get-chat', chat.id]}}], {state: chat});
 				// this.router.navigateByUrl('/chat', {state: chat});
-			}
+			// }
 		})
 	}
 

@@ -40,7 +40,6 @@ export class UserService {
 	}
 
 	logout(): any {
-		console.log("loggin out");
 		return this.http.get('api/auth/logout').pipe(take(1));
 	}
 }

@@ -28,10 +28,10 @@ import { retMessage, newMessage, chatModel } from './message.model';
 	ngOnInit(): void {
 		this.chat = history.state;
 		console.log(this.chat);
-		if (!this.chat.id) {
+		// if (!this.chat.id) {
 			// this.router.navigateByUrl('/search');
-			this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
-		}
+			// this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
+		// }
 		this.chatService.receiveMessages().subscribe((msg) => {
 			if (msg.chat.id === this.chat.id) {
 				this.chat.messages.push(msg);
