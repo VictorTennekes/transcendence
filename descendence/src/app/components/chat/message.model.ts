@@ -1,6 +1,7 @@
 export interface userModel {
 	intra_name: string;
 	display_name: string;
+	avatar_url: string;
 }
 
 export interface retMessage {
