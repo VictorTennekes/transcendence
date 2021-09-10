@@ -25,7 +25,7 @@ const routes: Routes = [
 		component: MasterComponent,
 		children: [
 			{
-				path: '',
+				path: 'game',
 				component: FailComponent
 			},
 			{
@@ -58,11 +58,13 @@ const routes: Routes = [
 				component: ChatPassComponent,
 				outlet: "chat"
 			},
-			// {
-				// path: '',
+			{
+				path: '',
 				// component: SearchComponent,
+				redirectTo: 'game',
+				pathMatch: 'full'
 				// outlet: "chat"
-			// }
+			}
 		]
 	},
 	//login page
