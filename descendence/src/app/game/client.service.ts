@@ -2,19 +2,17 @@ import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 
 interface PlayerData {
-	verticalPosition: number;
-};
+	keysPressed: boolean[];
+}
 
 interface GameData {
-	playerOne: PlayerData;
-	playerTwo: PlayerData;
+	
 };
 
 @Injectable({
 	providedIn: 'root'
 })
 export class ClientService {
-	playerNumber: string;
 	initialized: boolean = false;
 	constructor(
 		private readonly socket: Socket,
@@ -22,20 +20,26 @@ export class ClientService {
 	}
 
 	sendPlayerData(data: PlayerData, ) {
-		this.socket.emit('sendPlayerData-' + this.playerNumber, data);
+		this.socket.emit('sendPlayerData', data);
 	}
 
-	connect() {
-		this.socket.connect();
+	requestGameData() {
+		this.socket.emit('gamedata');
 	}
-	initialize() {
-		this.socket.on('initialize', (playerNumber: string) => {
-			this.playerNumber = playerNumber;
-		});
+	receiveGameData() {
+		return this.socket.fromEvent('gamedata');
 	}
-	// initializeGame() {
-	// 	this.socket.fromEvent('initialize').subscribe((playerNumber: any) => {
-	// 		this.playerNumber = playerNumber;
-	// 	})
-	// }
+
+	pressUp() {
+		this.socket.emit('press_up', {});
+	}
+	pressDown() {
+		this.socket.emit('press_down', {});
+	}
+	releaseUp() {
+		this.socket.emit('release_up', {});
+	}
+	releaseDown() {
+		this.socket.emit('release_down', {});
+	}
 }

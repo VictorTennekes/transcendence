@@ -7,10 +7,12 @@ import 'dotenv/config';
 import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { GameService } from './game/game.service';
+import { GameGateway } from './game/game.gateway';
 
 @Module({
 	controllers: [],
-	providers: [],
+	providers: [GameService, GameGateway],
 	imports: [
 		MulterModule.register({
 			dest: 'assets',

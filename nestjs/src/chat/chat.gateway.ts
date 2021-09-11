@@ -1,4 +1,4 @@
-import { Logger, UseFilters, UseGuards } from "@nestjs/common";
+import { Logger, Req, UseFilters, UseGuards } from "@nestjs/common";
 import { OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody } from "@nestjs/websockets";
 import { ConnectedSocket } from "@nestjs/websockets";
 import { Socket } from "socket.io";
@@ -10,6 +10,7 @@ import { UserDTO } from "@user/dto/user.dto";
 import { AuthenticatedGuard } from "src/auth/authenticated.guard";
 import { UnauthorizedFilter } from "src/auth/unauthorized.filter";
 import { MessageDTO, newMessageDTO } from "./dto/message.dto";
+import { request } from "http";
 
 class socketData {
 	user: UserDTO;
