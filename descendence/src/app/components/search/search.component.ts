@@ -30,7 +30,7 @@ import { SearchService } from "./search.service";
 
 	private getChats(): chatModel[] {
 		this.searchService.getChats().subscribe(response => {
-			console.log(response);
+			// console.log(response);
 			this.chats = response;
 			return response
 		});
@@ -39,30 +39,31 @@ import { SearchService } from "./search.service";
 
 	ngOnInit(): void {
 		this.getChats();
-		console.log("chats");
-		console.log(this.chats);
+		// console.log("chats");
+		// console.log(this.chats);
 	}
 
 	//TODO: display all options for chats
 	//TODO: On select of chat, messages will get get fetched from the db
 
 	private redirectToChat(chat: chatModel) {
-		this.searchService.getMessagesFromChat(chat.id).subscribe((response) => {
-			chat.messages = response.reverse();
+		// this.searchService.getMessagesFromChat(chat.id).subscribe((response) => {
+			// chat.messages = response.reverse();
 			// if (chat.visibility === 'protected') {
 				// this.router.navigate(['home', {outlets: {chat: 'chat-pass'}}], {state: chat, skipLocationChange: true});
 				// this.router.navigateByUrl('/chat-pass', {state: chat});
 			// } else {
-				console.log('redirecting to new clicked chat')
-				this.router.navigate(['home', {outlets: {chat: ['get-chat', chat.id]}}], {state: chat});
+				// this.router.navigate(['home', {outlets: {chat: ['pass-chat', chat.id]}}]);
+				// console.log('redirecting to new clicked chat')
+				this.router.navigate(['home', {outlets: {chat: ['get-chat', chat.id]}}]);
 				// this.router.navigateByUrl('/chat', {state: chat});
 			// }
-		})
+		// })
 	}
 
 	public getChat(chat: chatModel) {
-		console.log("this chat is");
-		console.log(chat);
+		// console.log("this chat is");
+		// console.log(chat);
 		this.redirectToChat(chat);
 	}
 
@@ -82,14 +83,14 @@ import { SearchService } from "./search.service";
 		newChat.users.push(this.userForm.value.username);
 		this.searchService.findMatchingChats(this.userForm.value.username).subscribe(
 			(response) => {
-				console.log("response");
-				console.log(response);
+				// console.log("response");
+				// console.log(response);
 				this.chatNotFound = false;
 				this.chats = response;
 			},
 			(error) => {
 				this.chatNotFound = true;
-				console.log(error)
+				// console.log(error)
 			}
 		)
 	}

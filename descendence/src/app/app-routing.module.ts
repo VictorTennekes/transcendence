@@ -16,6 +16,7 @@ import { chatGuardService } from './components/chat/chatGuard.service';
 import { CreateChatComponent } from './create-chat/create-chat.component';
 import { ChatPassComponent } from './chat-pass/chat-pass.component';
 import { ChatContainerComponent } from './chat-container/chat-container.component';
+import { SearchService } from './components/search/search.service';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -24,6 +25,12 @@ const routes: Routes = [
 		path: 'home',
 		component: MasterComponent,
 		children: [
+	
+			{
+				path: 'pass-chat/:id',
+				component: ChatPassComponent,
+				outlet: "chat"
+			},
 			{
 				path: 'game',
 				component: FailComponent
@@ -49,15 +56,10 @@ const routes: Routes = [
 			{
 				path: 'get-chat/:id',
 				component: ChatComponent,
-				// canActivate: [chatGuardService],
+				canActivate: [chatGuardService],
 				outlet: "chat"
 			},
-			
-			{
-				path: 'chat-pass',
-				component: ChatPassComponent,
-				outlet: "chat"
-			},
+		
 			{
 				path: '',
 				// component: SearchComponent,
@@ -96,6 +98,6 @@ const routes: Routes = [
 @NgModule({
 	imports: [RouterModule.forRoot(routes)],
 	exports: [RouterModule],
-	providers: [ LoginGuard ]
+	providers: [ LoginGuard, chatGuardService, SearchService ]
 })
 export class AppRoutingModule { }
