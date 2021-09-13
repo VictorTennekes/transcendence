@@ -33,12 +33,24 @@ import { retMessage, newMessage, chatModel } from './message.model';
 	messageForm = this.formBuilder.group({
 		message: "",
 	});
+	public default_avatar_url = "";
+	public sendError: boolean = false;
 
 	ngOnInit(): void {
+		this.chatService.listenForError().subscribe((error) => {
+			console.log(error);
+			this.sendError = true;
+		})
+		console.log(this.chat);
 		this.route.params.subscribe(params => {
 			this.searchService.findChatById(params['id']).subscribe((response) => {
+				console.log("found chat by id");
+				// console.log(response);
 				this.chat = response;
+				console.log(this.chat);
 				this.chatService.receiveMessages().subscribe((msg) => {
+						console.log("chat is");
+						console.log(this.chat);
 					if (msg.chat.id === this.chat.id) {
 						this.chat.messages.push(msg);
 						this.chat.messages.splice(0, this.chat.messages.length - 6);
@@ -53,6 +65,7 @@ import { retMessage, newMessage, chatModel } from './message.model';
 	}
 
 	public onSubmit() {
+		this.sendError = false;
 		const newMessage: newMessage = {
 			chat: this.chat.id,
 			message: this.messageForm.controls['message'].value

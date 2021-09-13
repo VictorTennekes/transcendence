@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SearchService } from '../components/search/search.service';
+import { SearchService } from '../search/search.service';
 
 @Component({
   selector: 'app-chat-pass',

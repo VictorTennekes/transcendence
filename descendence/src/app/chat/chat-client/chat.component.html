@@ -2,12 +2,12 @@
 	<mat-icon>arrow_back</mat-icon>
 </button>
 <mat-list>
-	<mat-list-item *ngFor="let message of chat.messages">
-		<p matLine> {{message.time | date:'hh:mm a, MMM dd, YY' }} </p>
-		<img matListAvatar src={{message.owner.avatar_url}} alt="user profile photo">
-		<h3 matLine> {{message.owner.display_name}} </h3>
+	<mat-list-item *ngFor="let msg of chat.messages">
+		<p matLine> {{msg.time | date:'hh:mm a, MMM dd, YY' }} </p>
+		<img matListAvatar src={{msg.owner.avatar_url}} alt="user profile photo">
+		<h3 matLine> {{msg.owner.display_name}} </h3>
 		<p matLine>
-		<span class="demo-2"> -- {{message.message}} </span>
+		<span class="demo-2"> -- {{msg.message}} </span>
 		</p>
 	</mat-list-item>
 </mat-list>
@@ -19,3 +19,4 @@
 	</mat-form-field>
 	<button mat-raised-button type="submit" class="button">Send</button>
 </form>
+<p *ngIf="sendError">Error sending message</p>

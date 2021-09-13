@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
-import { ChatComponent } from "../chat/chat.component";
-import { ChatService } from "../chat/chat.service";
-import { chatModel, createChatModel } from "../chat/message.model";
+import { ChatComponent } from "../chat-client/chat.component";
+import { ChatService } from "../chat-client/chat.service";
+import { chatModel, createChatModel } from "../chat-client/message.model";
 import { SearchService } from "./search.service";
 
 @Component({

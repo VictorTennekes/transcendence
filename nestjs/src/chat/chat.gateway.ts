@@ -29,9 +29,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	async getUserFromSocket(socket: Socket): Promise<UserDTO> {
-
 		const cookie = socket.handshake.headers.cookie;
-
 		if (!cookie) return null;
 		const parsedCookie = parse(cookie);
 		const cookieData = parsedCookie['connect.sid'];
@@ -56,6 +54,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 		const otherRes = await knex("session").where("sid", sid);
 		if (!otherRes) return null;
+		if (!otherRes[0]) return null;
 		if (!otherRes[0].sess) return null;
 		if (!otherRes[0].sess.passport) return null;
 
@@ -64,13 +63,14 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		return sessUser;
 	}
 
-	@UseGuards(AuthenticatedGuard)
-	@UseFilters(UnauthorizedFilter)
 	async handleConnection(@ConnectedSocket() client: Socket) {
 		Logger.log("new connection");
 		const user: UserDTO = await this.getUserFromSocket(client);
-		if (!user) return;
-
+		if (!user) {
+			Logger.log("something's wrong, can't find user")
+			return;
+		}
+		console.log("Logging in ", user.intra_name);
 		let newSocket: socketData = {
 			user: user,
 			socket: client
@@ -89,9 +89,14 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	async sendMessage(@ConnectedSocket() client: Socket, @MessageBody() message: newMessageDTO) {
 		const chat = await this.chatService.getChatById(message.chat);
 		const user = await this.getUserFromSocket(client);
+		if (!user) {
+			client.emit('send_message_error');
+			return;
+		}
 		const finalMsg: MessageDTO = await this.chatService.createNewMessageSocket(message.message, user, chat);
 		for (let sock of this.connectedSockets) {
 			if (chat.users.findIndex(x => x.intra_name === sock.user.intra_name) !== -1) {
+				console.log("emitting receive messages");
 				sock.socket.emit('receive_message', finalMsg);
 			}
 		}
@@ -101,6 +106,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage('request_message')
 	async getMessages(@ConnectedSocket() client: Socket, chatId: string) {
 		let messages = this.chatService.getMessagesFromChat(chatId);
+		console.log("emitting send_msg messages");
 		client.emit('send_messages_by_chatid', messages);
 		
 	}

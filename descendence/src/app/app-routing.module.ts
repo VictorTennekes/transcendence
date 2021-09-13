@@ -9,12 +9,12 @@ import { TwoFactorGuard } from './two-factor.guard';
 import { TwoFactorComponent } from './two-factor/two-factor.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { UserComponent } from './user/user.component';
-import { ChatComponent } from './components/chat/chat.component';
-import { SearchComponent } from './components/search/search.component';
-import { chatGuardService } from './components/chat/chatGuard.service';
-import { CreateChatComponent } from './create-chat/create-chat.component';
-import { ChatPassComponent } from './chat-pass/chat-pass.component';
-import { SearchService } from './components/search/search.service';
+import { ChatComponent } from './chat/chat-client/chat.component';
+import { SearchComponent } from './chat/search/search.component';
+import { chatGuardService } from './chat/chat-client/chatGuard.service';
+import { CreateChatComponent } from './chat/create-chat/create-chat.component';
+import { ChatPassComponent } from './chat/chat-pass/chat-pass.component';
+import { SearchService } from './chat/search/search.service';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard

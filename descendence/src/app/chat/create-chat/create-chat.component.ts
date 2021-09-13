@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SearchService } from '../components/search/search.service';
-import { createChatModel } from '../components/chat/message.model';
+import { SearchService } from '../search/search.service';
+import { createChatModel } from '../chat-client/message.model';
 import * as bcrypt from 'bcryptjs';
 
 @Component({

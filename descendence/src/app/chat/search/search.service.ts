@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { chatModel, createChatModel, retMessage } from "../chat/message.model";
+import { chatModel, createChatModel, retMessage } from "../chat-client/message.model";
 import { Observable } from "rxjs";
 
 @Injectable()
