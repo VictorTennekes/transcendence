@@ -10,12 +10,10 @@ import { TwoFactorComponent } from './two-factor/two-factor.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { UserComponent } from './user/user.component';
 import { ChatComponent } from './components/chat/chat.component';
-import { MatInputModule } from '@angular/material/input'
 import { SearchComponent } from './components/search/search.component';
 import { chatGuardService } from './components/chat/chatGuard.service';
 import { CreateChatComponent } from './create-chat/create-chat.component';
 import { ChatPassComponent } from './chat-pass/chat-pass.component';
-import { ChatContainerComponent } from './chat-container/chat-container.component';
 import { SearchService } from './components/search/search.service';
 
 const routes: Routes = [
@@ -62,10 +60,8 @@ const routes: Routes = [
 		
 			{
 				path: '',
-				// component: SearchComponent,
 				redirectTo: 'game',
 				pathMatch: 'full'
-				// outlet: "chat"
 			}
 		]
 	},

@@ -6,8 +6,6 @@ import { SearchService } from '../search/search.service';
 import { ChatService } from './chat.service';
 import { retMessage, newMessage, chatModel } from './message.model';
 
-//TODO: protect this route
-
 @Component({
 	selector: 'app-chat',
 	templateUrl: './chat.component.html',
@@ -16,7 +14,6 @@ import { retMessage, newMessage, chatModel } from './message.model';
   })
   export class ChatComponent implements OnInit {
 
-	// private routeSubscription: Subscription;
 	constructor(
 		  private formBuilder: FormBuilder,
 		  private chatService: ChatService,
@@ -39,12 +36,7 @@ import { retMessage, newMessage, chatModel } from './message.model';
 
 	ngOnInit(): void {
 		this.route.params.subscribe(params => {
-			// console.log(params) //log the entire params object
-			// console.log("param id dud");
-			// console.log(params['id']) //log the value of id
 			this.searchService.findChatById(params['id']).subscribe((response) => {
-				// console.log("found chat");
-				// console.log(response);
 				this.chat = response;
 				this.chatService.receiveMessages().subscribe((msg) => {
 					if (msg.chat.id === this.chat.id) {
@@ -54,18 +46,9 @@ import { retMessage, newMessage, chatModel } from './message.model';
 				})
 			});
 		  });
-		// this.chat = history.state;
-		// this.searchService.getChat()
-		// console.log(this.chat);
-		// if (!this.chat.id) {
-			// this.router.navigateByUrl('/search');
-			// this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
-		// }
-		
 	}
 
 	public back() {
-		// this.router.navigateByUrl('/search');
 		this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
 	}
 

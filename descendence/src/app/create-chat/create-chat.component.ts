@@ -14,6 +14,7 @@ import * as bcrypt from 'bcryptjs';
 export class CreateChatComponent implements OnInit {
 	hide = true;
 	submitted: boolean = false;
+
 	constructor(
 		private formBuilder: FormBuilder,
 		private router: Router,
@@ -28,11 +29,9 @@ export class CreateChatComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.createChatForm.get('visibility')?.valueChanges.subscribe((value) => {
-			console.log("visibility:", value);
 			if (value === 'protected') {
 				this.createChatForm.get('password')?.setValidators(Validators.required);
 			} else {
-				console.log("clearing validators?");
 				this.createChatForm.get('password')?.clearValidators();
 			}
 			this.createChatForm.get('password')?.updateValueAndValidity();
@@ -64,7 +63,6 @@ export class CreateChatComponent implements OnInit {
 
 	public back() {
 		this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
-	//   this.router.navigateByUrl('/search');
 	}
 
 	public isProtected(): boolean {
@@ -75,7 +73,6 @@ export class CreateChatComponent implements OnInit {
 	}
 
 	public encryptPassword(value: string): string {
-		console.log(value)
 		const hashedPass = bcrypt.hashSync(value, bcrypt.genSaltSync());
 		return hashedPass;
 	}
@@ -85,15 +82,11 @@ export class CreateChatComponent implements OnInit {
 	}
 
 	public otherSubmit() {
-		console.log('here');
 		this.submitted = true;
-		console.log(this.createChatForm.value);
 		let pw = "";
 		if (this.createChatForm.controls['visibility'].value === 'protected') {
 			pw = this.encryptPassword(this.createChatForm.controls['password'].value);
 		}
-		console.log("pass:");
-		console.log(pw);
 		let newChat: createChatModel
 		if (this.createChatForm.valid) {
 			newChat = {
@@ -106,16 +99,10 @@ export class CreateChatComponent implements OnInit {
 			for (let item of this.createChatForm.controls['users'].value) {
 				newChat.users.push(item.username);
 			}
-			console.log("users");
-			console.log(newChat.users);
-
 			this.searchService.createNewChat(newChat).subscribe((response) => {
-				console.log("should be routing?");
-				// this.router.navigateByUrl('/chat', {state: response});
 				this.router.navigate(['home', {outlets: {chat: ['get-chat', response.id]}}], {state: response});
 			},
 			(error) => {
-				console.log("error");
 				console.log(error);
 			})
 		} else {

@@ -29,24 +29,14 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	async getUserFromSocket(socket: Socket): Promise<UserDTO> {
-	// async getUserFromSocket(socket: Socket): Promise<string> {
 
 		const cookie = socket.handshake.headers.cookie;
 
-		// Logger.log(`cookie: ${cookie}`)
 		if (!cookie) return null;
 		const parsedCookie = parse(cookie);
-		// Logger.log(`parsed cookie: ${JSON.stringify(parsedCookie)}`)
 		const cookieData = parsedCookie['connect.sid'];
-		// Logger.log(JSON.stringify(cookieData));
-		// let sessionData;
 
 		let sid = cookieData.substr(2, cookieData.indexOf(".") - 2);
-
-		// const postgresSession = require('connect-pg-simple')(session);
-
-		// const fs = require('fs');
-		// const path = require('path');
 
 		const postgresConnection = 
 		{
@@ -63,27 +53,14 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		});
 
 		const res = await knex.select("*").from("session");
-		// Logger.log(JSON.stringify(res));
 
 		const otherRes = await knex("session").where("sid", sid);
-		// Logger.log(JSON.stringify(otherRes));
-		// Logger.log(JSON.stringify(otherRes[0].sess.passport));
-		// console.log("got session");
 		if (!otherRes) return null;
 		if (!otherRes[0].sess) return null;
 		if (!otherRes[0].sess.passport) return null;
-		// Logger.log(JSON.stringify(otherRes));
-		// Logger.log(JSON.stringify(otherRes[0].sess.passport));
 
 		const user = otherRes[0].sess.passport.user;
-		// Logger.log(user);
-
-
-		//TODO: get this user from userService
-		// Logger.log("getting user by login: ", user.login);
 		const sessUser = this.userService.findOne(user.login);
-		// console.log(sessUser);
-		// return sessUser;
 		return sessUser;
 	}
 
@@ -104,35 +81,27 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	async handleDisconnect(@ConnectedSocket() client: Socket) {
 		Logger.log('disconnecting socket');
 		const index = this.connectedSockets.findIndex(x => x.socket.id === client.id);
-		// Logger.log(index);
 		this.connectedSockets.splice(index, 1);
 	}
 
 
 	@SubscribeMessage('send_message')
 	async sendMessage(@ConnectedSocket() client: Socket, @MessageBody() message: newMessageDTO) {
-		// Logger.log(`onChat, message received: ${message}`);
 		const chat = await this.chatService.getChatById(message.chat);
 		const user = await this.getUserFromSocket(client);
 		const finalMsg: MessageDTO = await this.chatService.createNewMessageSocket(message.message, user, chat);
 		for (let sock of this.connectedSockets) {
-			// console.log(sock.user);
 			if (chat.users.findIndex(x => x.intra_name === sock.user.intra_name) !== -1) {
-				// Logger.log(`sending a message to ${JSON.stringify(sock.user)}`)
 				sock.socket.emit('receive_message', finalMsg);
 			}
 		}
 
 	}
 
-	// TODO: refactor so that communications take place solely through chat.gateway.
-	// TODO: Frontend shouldn't do any of the work. Dates should be generated and users should be identified here in the backend
 	@SubscribeMessage('request_message')
 	async getMessages(@ConnectedSocket() client: Socket, chatId: string) {
 		let messages = this.chatService.getMessagesFromChat(chatId);
 		client.emit('send_messages_by_chatid', messages);
-		// Logger.log(`onChat, message received: ${message}`);
-		// client.broadcast.emit('chat', message);
 		
 	}
 
