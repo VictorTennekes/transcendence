@@ -1,3 +1,9 @@
   .example-full-width {
 	margin-right: 10px
   }
+
+  .no-wrap {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+  }

@@ -12,11 +12,13 @@
 </button>
 <mat-list>
 	<mat-list-item *ngFor="let chat of chats" (click)="getChat(chat)">
-		<h3>{{chat.name}}</h3>
-		<br>
-		<tr *ngFor="let user of chat.users; let last=last" [ngClass]="{ flast: last }">
-			<p>{{user.intra_name}} &nbsp; </p>
-		</tr>
+		<div mat-line>{{chat.name}}</div>
+		<div mat-line>
+			<div *ngFor="let user of chat.users">
+				<p>{{user.intra_name}} &nbsp; </p>
+			</div>
+		</div>
+		<mat-divider></mat-divider>
 	</mat-list-item>
 </mat-list>
 <router-outlet name="chat"></router-outlet>
