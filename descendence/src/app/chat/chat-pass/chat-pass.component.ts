@@ -11,7 +11,7 @@ import { SearchService } from '../search/search.service';
 })
 export class ChatPassComponent implements OnInit {
 	hide = true;
-
+	wrongPass: boolean = false;
 	constructor(public router: Router,
 				public formBuilder: FormBuilder,
 				public searchService: SearchService,
@@ -29,6 +29,7 @@ export class ChatPassComponent implements OnInit {
 	}
 	
 	public onSubmit() {
+		this.wrongPass = false;
 		this.route.params.subscribe((params) => {
 			let id: string = params['id'];
 			this.searchService.validatePassword(this.chatPassForm.controls['password'].value, params['id']).subscribe(
@@ -40,6 +41,8 @@ export class ChatPassComponent implements OnInit {
 					});
 				} else {
 					console.log("wrong pass");
+					this.wrongPass = true;
+
 				}
 			}
 		)
