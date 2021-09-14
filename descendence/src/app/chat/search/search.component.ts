@@ -30,6 +30,7 @@ import { SearchService } from "./search.service";
 	private getChats(): chatModel[] {
 		this.searchService.getChats().subscribe(response => {
 			this.chats = response;
+			console.log(response);
 			return response
 		});
 		return [];

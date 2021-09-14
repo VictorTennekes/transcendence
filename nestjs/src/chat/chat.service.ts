@@ -36,6 +36,19 @@ export class ChatService {
 		});
 	}
 
+	private isCurrent(time: Date) {
+		let now = new Date
+		now.setHours(0,0,0,0);
+		if (time < now) {
+			console.log("Selected date is in the past");
+			return false;
+		} else {
+			console.log("Selected date is NOT in the past");
+			return true;
+		}
+
+	}
+
 	async getChatById(uuid: string): Promise<ChatDTO> {
 		const item = await this.repo.findOne({
 			where: {id: uuid},
@@ -229,7 +242,20 @@ export class ChatService {
 	}
 
 	async userCanAccessChat(username: string, chatId: string):  Promise<boolean>{
-		const chat = await this.getChatById(chatId);
+		// const chat = await this.getChatById(chatId);
+		const chat = await this.repo.findOne({
+			where: {id: chatId},
+			relations: ["bans", "users", "bans.user"]
+		})
+		console.log(chat);
+		for (let ban of chat.bans) {
+			console.log(ban);
+			console.log(username);
+			if (ban.user.intra_name === username && this.isCurrent(ban.endTime)) {//TODO: and ban is still valid
+				console.log("i should be banned");
+				throw new HttpException("you are banned", HttpStatus.NOT_ACCEPTABLE);
+			}
+		}
 		if (chat.visibility !== 'public') {
 			if (this.userExists(username, chat.users)) {
 				return true;
@@ -328,14 +354,19 @@ export class ChatService {
 	}
 
 	async addMutedUser(ban: updateChatDTO): Promise<ChatDTO> {
+		console.log("muting a user");
 		let chat: ChatEntity = await this.repo.findOne({
 			where: {id: ban.id},
-			relations: ["bans"]
+			relations: ["mutes"]
 		});
+		console.log(chat);
+		console.log(ban);
 		// for (let username of ban.users) {
+			console.log("username: ", ban.mutedUser);
 			let user = await this.userRepo.findOne({
-				where: {intra_name: ban.bannedUser}
+				where: {intra_name: ban.mutedUser}
 			})
+			console.log(user);
 			if (!user) {
 				throw new HttpException("User not found", HttpStatus.NOT_FOUND);
 			}
@@ -380,6 +411,23 @@ export class ChatService {
 		let res = await this.repo.save(chat);
 		console.log(res);
 		return res;
+	}
+
+	async userIsMuted(user: UserDTO, chatId) {
+		const chatMutes = await this.repo.findOne({
+			where: {id: chatId},
+			relations: ["mutes", "mutes.user"]
+		})
+		console.log(chatMutes);
+		for(let mute of chatMutes.mutes) {
+			console.log("mute");
+			console.log(mute);
+			console.log(user);
+			if (mute.user.intra_name === user.intra_name && this.isCurrent(mute.endTime)) {//TODO: make sure mute is current
+				return true;
+			}
+		}	
+		return false;
 	}
 
 }

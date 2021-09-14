@@ -26,6 +26,7 @@ export class chatGuardService implements CanActivate {
 			if (err.status === 403) {
 				this.router.navigate(['/home', {outlets: {chat: ['pass-chat', id]}}])
 			}
+			console.log(err);
 			return of(false);
 		}));
 	}

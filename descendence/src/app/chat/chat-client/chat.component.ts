@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { SearchService } from '../search/search.service';
 import { ChatService } from './chat.service';
 import { retMessage, newMessage, chatModel } from './message.model';
-
+//TODO: when entering a chat, add user to the chat (when public + no pw and user wasn't previously part of chat)
 @Component({
 	selector: 'app-chat',
 	templateUrl: './chat.component.html',
@@ -39,6 +39,7 @@ import { retMessage, newMessage, chatModel } from './message.model';
 	ngOnInit(): void {
 		this.chatService.listenForError().subscribe((error) => {
 			console.log(error);
+			//TODO: specify error when possinle
 			this.sendError = true;
 		})
 		console.log(this.chat);

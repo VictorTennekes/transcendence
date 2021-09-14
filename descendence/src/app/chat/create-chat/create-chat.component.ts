@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { SearchService } from '../search/search.service';
 import { createChatModel } from '../chat-client/message.model';
 import * as bcrypt from 'bcryptjs';
-
+//TODO: make sure to trim weird characters
 @Component({
   selector: 'app-create-chat',
   templateUrl: './create-chat.component.html',
