@@ -13,6 +13,11 @@ class validatePassDTO {
 	chatId: string;
 }
 
+export class updateUsersDTO {
+	chatId: string;
+	users: string[];
+}
+
 @Controller('chat')
 export class ChatController {
 	constructor(private readonly service: ChatService,
@@ -116,7 +121,6 @@ export class ChatController {
         return await this.service.getMessagesFromChat(id);
     }
 
-
 	@Post('validate-pass')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
@@ -139,4 +143,26 @@ export class ChatController {
 		const user: UserDTO = await this.userService.findOne(req.user.intra_name);
 		return this.service.addUserToChat(id.id, user);
 	}
+
+	@Post('update-admins')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async updateAdmins(@Body() admins: updateUsersDTO) {
+		// this.service.updateAdmins(admins);
+		// console.log("updating admins");
+		// console.log(admins);
+		// return "lol";
+		return this.service.updateAdmins(admins);
+	}
+
+	// @Post('update-admins')
+	// @UseGuards(AuthenticatedGuard)
+	// @UseFilters(UnauthorizedFilter)
+	// async updateAdmins(@Body() admins: updateUsersDTO) {
+	// 	// this.service.updateAdmins(admins);
+	// 	// console.log("updating admins");
+	// 	// console.log(admins);
+	// 	// return "lol";
+	// 	return this.service.updateAdmins(admins);
+	// }
 }

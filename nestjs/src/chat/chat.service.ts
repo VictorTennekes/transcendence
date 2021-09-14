@@ -12,6 +12,8 @@ import { UserEntity } from "@user/entities/user.entity";
 import * as bcrypt from 'bcryptjs';
 import { stringify } from "querystring";
 import { Observable } from "rxjs";
+import { updateUsersDTO } from "./chat.controller";
+import { ChatGateway } from "./chat.gateway";
 
 @Injectable()
 export class ChatService {
@@ -242,5 +244,28 @@ export class ChatService {
 			const lol = await this.repo.manager.save(chat);
 			return lol;
 		}
+	}
+
+	async updateAdmins(admins: updateUsersDTO) {
+		let chat: ChatEntity = await this.repo.findOne({
+			where: {id: admins.chatId},
+			relations: ["users", "admins"]
+		});
+		for (let username of admins.users) {
+			let user = await this.userRepo.findOne({
+				where: {intra_name: username}
+			})
+			if (!user) {
+				throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+			}
+			if (!this.userExists(user.intra_name, chat.users)) {
+				chat.users.push(user);
+			}
+			chat.admins.push(user);
+			console.log(user);
+		}
+		const lol = await this.repo.save(chat);
+		console.log(lol);
+		return lol;
 	}
 }

@@ -1,3 +1,5 @@
+import { Identifiers } from "@angular/compiler";
+
 export interface userModel {
 	intra_name: string;
 	display_name: string;
@@ -32,4 +34,15 @@ export interface createChatModel {
 	admins: string[],
 	visibility: string;
 	password: string;
+}
+
+export interface editChatModel {
+	id: string,
+	admin: string,
+	mutedUser: string,
+	mutedTime: string,
+	bannedUser: string,
+	bannedTime: string,
+	visibility: string,
+	password: string
 }

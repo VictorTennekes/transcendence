@@ -60,8 +60,18 @@ import { retMessage, newMessage, chatModel } from './message.model';
 		  });
 	}
 
+	public userIsAdmin(): boolean {
+		return true;
+	}
+
 	public back() {
 		this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
+	}
+
+	public edit() {
+		if (this.userIsAdmin()) {
+			this.router.navigate(['/home', {outlets: {chat: ['settings', this.chat.id]}}])
+		}
 	}
 
 	public onSubmit() {

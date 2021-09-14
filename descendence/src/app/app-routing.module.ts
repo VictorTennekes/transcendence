@@ -15,6 +15,7 @@ import { chatGuardService } from './chat/chat-client/chatGuard.service';
 import { CreateChatComponent } from './chat/create-chat/create-chat.component';
 import { ChatPassComponent } from './chat/chat-pass/chat-pass.component';
 import { SearchService } from './chat/search/search.service';
+import { SettingsComponent } from './chat/settings.component';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -55,9 +56,15 @@ const routes: Routes = [
 				path: 'get-chat/:id',
 				component: ChatComponent,
 				canActivate: [chatGuardService],
+				// canActivate: [chatUserGuard],
 				outlet: "chat"
 			},
-		
+			{
+				path: 'settings/:id',
+				component: SettingsComponent,
+				// canActivate: [chatAdminGuard],
+				outlet: "chat"
+			},
 			{
 				path: '',
 				redirectTo: 'game',

@@ -1,7 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { chatModel, createChatModel, retMessage } from "../chat-client/message.model";
+import { chatModel, createChatModel, editChatModel, retMessage } from "../chat-client/message.model";
 import { Observable } from "rxjs";
+// import { updateUsers } from "../settings.component";
+
 
 @Injectable()
 export class SearchService {
@@ -54,5 +56,17 @@ export class SearchService {
 			messages: []
 		}
 		return this.http.post<chatModel>(this.url + "add-user", chat);
+	}
+
+	updateAdmins(data: editChatModel): Observable<any> {
+		console.log(data);
+		console.log(this.url + "update-admins");
+		return this.http.post(this.url + "update-admins", data)
+	}
+
+	updateChat(data: editChatModel): Observable<any> {
+		console.log(data);
+		console.log(this.url + "update-admins");
+		return this.http.post(this.url + "update-chat", data)
 	}
 }

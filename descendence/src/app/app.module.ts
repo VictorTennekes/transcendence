@@ -44,6 +44,7 @@ import { CommonModule } from '@angular/common';
 import { MATERIAL_SANITY_CHECKS } from '@angular/material/core';
 // import { ChatContainerComponent } from './chat-container/chat-container.component';
 import { ChatContainerComponent } from './chat/chat-container/chat-container.component';
+import { SettingsComponent } from './chat/settings.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transports: ['websocket']} };
 
@@ -64,7 +65,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transp
 		QrCodeDirective,
 		OnlyNumber,
 		TwoFactorComponent,
-  ChatContainerComponent
+  ChatContainerComponent,
+  SettingsComponent
 	],
 	imports: [
 		CookieModule.forRoot(),

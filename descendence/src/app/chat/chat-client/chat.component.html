@@ -1,6 +1,9 @@
-<button mat-icon-button aria-label="Example icon button with a home icon" (click)="back()">
+<button mat-icon-button (click)="back()">
 	<mat-icon>arrow_back</mat-icon>
 </button>
+<button mat-icon-button *ngIf="userIsAdmin()" (click)="edit()">
+	<mat-icon>settings</mat-icon>
+</button> 
 <h1>{{chat.name}}</h1>
 <mat-list>
 	<mat-list-item *ngFor="let msg of chat.messages">

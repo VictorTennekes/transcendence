@@ -1,0 +1,54 @@
+<button mat-icon-button (click)="back()">
+	<mat-icon>arrow_back</mat-icon>
+</button>
+
+<form [formGroup]="addAdminForm" (ngSubmit)="submitAdmin()" (keyup.enter)="submitAdmin()">
+	<h3>Add admin</h3>
+	<mat-form-field class="example-full-width" appearance="fill">
+		<mat-label>intra name</mat-label>
+		<input formControlName="username" matInput placeholder="tbruinem">
+	</mat-form-field>
+	<button mat-raised-button type="submit">Add admin</button>
+</form>
+
+<form [formGroup]="addMuteForm" (ngSubmit)="submitMute()" (keyup.enter)="submitMute()">
+	<h3>Mute a user</h3>
+	<mat-form-field class="example-full-width" appearance="fill">
+		<mat-label>intra name</mat-label>
+		<input formControlName="username" matInput placeholder="tbruinem">
+	</mat-form-field>
+	<mat-form-field>
+		<input matInput formControlName="time" type="datetime-local" placeholder="mute until">
+	</mat-form-field>
+	<button mat-raised-button type="submit">Mute</button>
+</form>
+
+<form [formGroup]="addBanForm" (ngSubmit)="submitBan()" (keyup.enter)="submitBan()">
+	<h3>Ban a user</h3>
+	<mat-form-field class="example-full-width" appearance="fill">
+		<mat-label>intra name</mat-label>
+		<input formControlName="username" matInput placeholder="tbruinem">
+	</mat-form-field>
+	<mat-form-field>
+		<input matInput formControlName="time" type="datetime-local" placeholder="ban until">
+	</mat-form-field>
+	<button mat-raised-button type="submit">Mute</button>
+</form>
+
+<form [formGroup]="editVisibilityForm" (ngSubmit)="submitVisibility()" (keyup.enter)="submitVisibility()">
+	<h3>Edit visibility</h3>
+	<mat-label>Edit visibility</mat-label>
+	<mat-radio-group name="visibility" formControlName="visibility">
+		<mat-radio-button type="radio" [checked]="originallyPublic()" value="public">public</mat-radio-button>
+		<mat-radio-button type="radio" [checked]="originallyPrivate()" value="private">private</mat-radio-button>
+		<mat-radio-button type="radio" [checked]="originallyProtected()" value="protected">password protected</mat-radio-button>
+	</mat-radio-group>
+	<mat-form-field *ngIf=isProtected() class="example-full-width" appearance="fill">
+		<mat-label>password</mat-label>
+		<input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+		<button mat-icon-button type="button" matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+			<mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+		</button>
+	</mat-form-field>
+	<button mat-raised-button type="submit">Edit visibility</button>
+</form>
