@@ -8,6 +8,7 @@ import { MessageEntity } from './entity/message.entity';
 import { UserService } from '@user/user.service';
 import { UserEntity } from '@user/entities/user.entity';
 import { ChatGateway } from './chat.gateway';
+import { BanEntity } from './entity/ban.entity';
 
 @Module({
 	controllers: [ChatController],
@@ -21,7 +22,8 @@ import { ChatGateway } from './chat.gateway';
 		TypeOrmModule.forFeature([
 			ChatEntity,
 			MessageEntity,
-			UserEntity
+			UserEntity,
+			BanEntity
 		])
 	]
 })

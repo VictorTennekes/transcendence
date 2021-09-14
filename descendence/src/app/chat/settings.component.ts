@@ -6,6 +6,8 @@ import { Validators } from '@angular/forms';
 import { chatModel, createChatModel, editChatModel } from './chat-client/message.model';
 import { chatGuardService } from './chat-client/chatGuard.service';
 import * as bcrypt from 'bcryptjs';
+import { resourceLimits } from 'worker_threads';
+import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 
 // export interface updateUsers {
 	// chatId: string;
@@ -60,6 +62,8 @@ export class SettingsComponent implements OnInit {
 				this.chat = result;
 			});
 		})
+		// this.editVisibilityForm.setValue({visibility: this.chat.visibility});
+		this.editVisibilityForm.controls['visibility'].setValue({visibility: this.chat.visibility});
 		this.editVisibilityForm.get('visibility')?.valueChanges.subscribe((value) => {
 			if (value === 'protected') {
 				this.editVisibilityForm.get('password')?.setValidators(Validators.required);
@@ -97,42 +101,66 @@ export class SettingsComponent implements OnInit {
 	}
 
 	public isProtected(): boolean {
-		if (this.editVisibilityForm.controls['visibility'].value === 'protected') {
+		if (['private', 'public', 'protected'].includes(this.editVisibilityForm.controls['visibility'].value)) {
+			if (this.editVisibilityForm.controls['visibility'].value === 'protected') {
+				return true;
+			}
+			return false
+		}
+		if (this.chat.visibility === 'protected') {
 			return true;
 		}
 		return false
 	}
 
 	public encryptPassword(value: string): string {
-		return bcrypt.hashSync(value, bcrypt.genSaltSync());
+		console.log("encrypting", value);
+		if (value) {
+			return bcrypt.hashSync(value, bcrypt.genSaltSync());
+		}
+		throw "oops";
 	}
 
 
 	public submitAdmin() {
 		let data: editChatModel = {
 			id: this.chat.id,
-			admin: "",
+			admin: this.addAdminForm.controls['username'].value,
 			mutedUser: "",
-			mutedTime: "",
+			mutedTime: new Date,
 			bannedUser: "",
-			bannedTime: "",
+			bannedTime: new Date,
 			visibility: "",
 			password: ""
 		}
-
+		this.searchService.updateAdmins(data).subscribe((result) => {
+			console.log(result);
+		})
+		this.addAdminForm.reset();
 	}
 
 
 	public submitVisibility() {
-		let data: editChatModel = {
-			id: this.chat.id,
-			admin: "",
-			mutedUser: "",
-			mutedTime: "",
-			bannedUser: "",
-			bannedTime: "",
-			visibility: "",
-			password: ""
+		console.log(this.editVisibilityForm.value);
+		console.log(this.editVisibilityForm.controls['password'].value);
+		try {
+			let data: editChatModel = {
+				id: this.chat.id,
+				admin: "",
+				mutedUser: "",
+				mutedTime: new Date,
+				bannedUser: "",
+				bannedTime: new Date,
+				visibility: this.editVisibilityForm.controls['visibility'].value,
+				password: this.encryptPassword(this.editVisibilityForm.controls['password'].value)
+			}
+			console.log(data);
+			this.searchService.editVisibility(data).subscribe((result) => {
+				console.log(result);
+			})
+			this.editVisibilityForm.controls['password'].reset();
+		} catch (error) {
+			console.log(error);
 		}
 	}
 
@@ -140,64 +168,37 @@ export class SettingsComponent implements OnInit {
 		let data: editChatModel = {
 			id: this.chat.id,
 			admin: "",
-			mutedUser: "",
-			mutedTime: "",
+			mutedUser: this.addMuteForm.controls['username'].value,
+			mutedTime: this.addMuteForm.controls['time'].value,
 			bannedUser: "",
-			bannedTime: "",
+			bannedTime: new Date,
 			visibility: "",
 			password: ""
 		}
 		console.log(this.addMuteForm.value);
+		this.searchService.addMute(data).subscribe((result) => {
+			console.log(result);
+		})
+		this.addMuteForm.reset();
 	}
 
 	public submitBan() {
+		let data: editChatModel = {
+			id: this.chat.id,
+			admin: "",
+			mutedUser: "",
+			mutedTime: new Date,
+			bannedUser: this.addBanForm.controls['username'].value,
+			bannedTime: this.addBanForm.controls['time'].value,
+			visibility: "",
+			password: ""
+		}
+		console.log("adding ban for:");
+		console.log(data);
+		this.searchService.addBan(data).subscribe((result) => {
+			console.log(result);
+		})
 
+		this.addBanForm.reset();
 	}
-	// public submit() {
-	// 	console.log(this.editChatForm.value);
-	// 	// let data: updateUsers = {
-	// 		// chatId: this.chat.id,
-	// 		// users: []
-	// 	// }
-	// 	let data: editChatModel = {
-	// 		id: this.chat.id,
-	// 		admins: [],
-	// 		mutes: [],
-	// 		bans: [],
-	// 		visibility: "",
-	// 		password: ""
-	// 	}
-
-	// 	if (this.editChatForm.controls['visibility'].value == 'protected' && this.editChatForm.controls['password']) {
-	// 		data.visibility = 'protected';
-	// 		data.password = this.encryptPassword(this.editChatForm.controls['password'].value);
-	// 	} else if (this.editChatForm.controls['visibility'].value != this.chat.visibility) {
-	// 		data.visibility = this.editChatForm.controls['visibility'].value;
-	// 	}
-
-	// 	for (let item of this.editChatForm.controls['admins'].value) {
-	// 		data.admins.push(item.username);
-	// 	}
-
-	// 	// for (let item of this.editChatForm.controls['admins'].value) {
-	// 		// data.admins.push(item.username);
-	// 	// }
-
-
-	// 	// this.searchService.updateAdmins(this.chatId, this.editChatForm.controls['admins'].value);
-	// 	// this.searchService.updateAdmins(data).subscribe((reply) => {
-	// 		// console.log(reply)
-	// 	// })
-	// 	this.searchService.updateChat(data).subscribe((reply) => {
-	// 		console.log(reply)
-	// 	})
-
-
-	// 	// this.chat.visibility = this.editChatForm.controls['visibility'].value;
-	// 	// let lol: createChatModel = {
-
-	// 	// }
-	// 	// this.searchService.updateVisibility()
-	// }
-  
 }

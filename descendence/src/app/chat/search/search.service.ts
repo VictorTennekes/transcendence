@@ -64,9 +64,20 @@ export class SearchService {
 		return this.http.post(this.url + "update-admins", data)
 	}
 
-	updateChat(data: editChatModel): Observable<any> {
-		console.log(data);
-		console.log(this.url + "update-admins");
-		return this.http.post(this.url + "update-chat", data)
+	addBan(data: editChatModel): Observable<any> {
+		return this.http.post(this.url + 'add-ban', data);
 	}
+
+	addMute(data: editChatModel): Observable<any> {
+		return this.http.post(this.url + 'add-mute', data);
+	}
+
+	editVisibility(data: editChatModel): Observable<any> {
+		return this.http.post(this.url + 'edit-visibility', data);
+	}
+	// updateChat(data: editChatModel): Observable<any> {
+		// console.log(data);
+		// console.log(this.url + "update-admins");
+		// return this.http.post(this.url + "update-chat", data)
+	// }
 }

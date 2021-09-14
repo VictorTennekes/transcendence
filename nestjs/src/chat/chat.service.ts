@@ -12,14 +12,23 @@ import { UserEntity } from "@user/entities/user.entity";
 import * as bcrypt from 'bcryptjs';
 import { stringify } from "querystring";
 import { Observable } from "rxjs";
-import { updateUsersDTO } from "./chat.controller";
+import { updateChatDTO, updateUsersDTO } from "./chat.controller";
 import { ChatGateway } from "./chat.gateway";
+import { BanEntity } from "./entity/ban.entity";
+
+export class banDTO {
+	// id: string;
+	user: UserDTO;
+	endTime: Date;
+	chat: ChatEntity;
+}
 
 @Injectable()
 export class ChatService {
 	constructor(@InjectRepository(ChatEntity) private readonly repo: Repository<ChatEntity>,
 				@InjectRepository(MessageEntity) private readonly msgRepo: Repository<MessageEntity>,
-				@InjectRepository(UserEntity) private readonly userRepo: Repository<UserEntity>) {}
+				@InjectRepository(UserEntity) private readonly userRepo: Repository<UserEntity>,
+				@InjectRepository(BanEntity) private readonly banRepo: Repository<BanEntity>) {}
 
 	private userExists(username: string, users: UserDTO[]) {
 		return users.some(function(el) {
@@ -246,26 +255,131 @@ export class ChatService {
 		}
 	}
 
-	async updateAdmins(admins: updateUsersDTO) {
+	async updateAdmins(admins: updateChatDTO): Promise<ChatDTO> {
+		Logger.log("update admins:")
+		console.log(admins.id);
+		console.log(admins);
 		let chat: ChatEntity = await this.repo.findOne({
-			where: {id: admins.chatId},
+			where: {id: admins.id},
 			relations: ["users", "admins"]
 		});
-		for (let username of admins.users) {
+		console.log("chat is: ", chat);
+		if (!chat) {
+			throw new HttpException("Chat not found", HttpStatus.NOT_FOUND);
+		}
+		console.log("found chat");
+		// for (let username of admins.admin) {
 			let user = await this.userRepo.findOne({
-				where: {intra_name: username}
+				where: {intra_name: admins.admin}
 			})
 			if (!user) {
 				throw new HttpException("User not found", HttpStatus.NOT_FOUND);
 			}
+			console.log("lol");
+			console.log(chat);
+			console.log(user);
 			if (!this.userExists(user.intra_name, chat.users)) {
 				chat.users.push(user);
 			}
 			chat.admins.push(user);
 			console.log(user);
-		}
+		// }
+		//TODO: do not add duplicate admins
 		const lol = await this.repo.save(chat);
 		console.log(lol);
 		return lol;
 	}
+
+	async addBannedUser(ban: updateChatDTO): Promise<ChatDTO> {
+		let chat: ChatEntity = await this.repo.findOne({
+			where: {id: ban.id},
+			relations: ["bans"]
+		});
+		// for (let username of ban.users) {
+			let user = await this.userRepo.findOne({
+				where: {intra_name: ban.bannedUser}
+			})
+			if (!user) {
+				throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+			}
+			// chat.admins.push(user);
+			
+			// chat.bans.push(user);
+
+			console.log(user);
+			// let b: banDTO = {
+				// id: "",
+				// user: user,
+				// chat: chat,
+				// endTime: ban.bannedTime,
+
+			// }
+			//TODO: do not multpile bans for same person and chat. just extend the time if needed
+			let b = await this.banRepo.create({
+				chat: chat,
+				user: user,
+				endTime: ban.bannedTime
+			});
+			chat.bans.push(b);
+		// }
+		const lol = await this.repo.save(chat);
+		console.log(lol);
+		return lol;
+	}
+
+	async addMutedUser(ban: updateChatDTO): Promise<ChatDTO> {
+		let chat: ChatEntity = await this.repo.findOne({
+			where: {id: ban.id},
+			relations: ["bans"]
+		});
+		// for (let username of ban.users) {
+			let user = await this.userRepo.findOne({
+				where: {intra_name: ban.bannedUser}
+			})
+			if (!user) {
+				throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+			}
+			// chat.admins.push(user);
+			
+			// chat.bans.push(user);
+
+			console.log(user);
+			// let b: banDTO = {
+				// id: "",
+				// user: user,
+				// chat: chat,
+				// endTime: ban.bannedTime,
+
+			// }
+			//TODO: do not multpile bans for same person and chat. just extend the time if needed
+			let b = await this.banRepo.create({
+				chat: chat,
+				user: user,
+				endTime: ban.bannedTime
+			});
+			chat.mutes.push(b);
+		// }
+		const lol = await this.repo.save(chat);
+		console.log(lol);
+		return lol;
+	}
+
+	async editVisibility(data: updateChatDTO): Promise<ChatDTO> {
+		let chat: ChatEntity = await this.repo.findOne({
+			where: {id: data.id}
+		})
+		if (chat.visibility != data.visibility
+			&& ['private', 'direct', 'protected', 'public'].includes(data.visibility)) {
+			chat.visibility = data.visibility;
+		}
+		if (data.visibility === 'protected') {
+			chat.password = data.password;
+		}
+		console.log("editing visibility");
+		console.log(data);
+		let res = await this.repo.save(chat);
+		console.log(res);
+		return res;
+	}
+
 }

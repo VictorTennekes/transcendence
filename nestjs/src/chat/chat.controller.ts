@@ -18,6 +18,18 @@ export class updateUsersDTO {
 	users: string[];
 }
 
+
+export class updateChatDTO {
+	id: string;
+	admin: string;
+	mutedUser: string;
+	mutedTime: Date;
+	bannedUser: string;
+	bannedTime: Date;
+	visibility: string;
+	password: string;
+}
+
 @Controller('chat')
 export class ChatController {
 	constructor(private readonly service: ChatService,
@@ -147,22 +159,28 @@ export class ChatController {
 	@Post('update-admins')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async updateAdmins(@Body() admins: updateUsersDTO) {
-		// this.service.updateAdmins(admins);
-		// console.log("updating admins");
-		// console.log(admins);
-		// return "lol";
+	async updateAdmins(@Body() admins: updateChatDTO) {
 		return this.service.updateAdmins(admins);
 	}
 
-	// @Post('update-admins')
-	// @UseGuards(AuthenticatedGuard)
-	// @UseFilters(UnauthorizedFilter)
-	// async updateAdmins(@Body() admins: updateUsersDTO) {
-	// 	// this.service.updateAdmins(admins);
-	// 	// console.log("updating admins");
-	// 	// console.log(admins);
-	// 	// return "lol";
-	// 	return this.service.updateAdmins(admins);
-	// }
+	@Post('add-ban')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async addBan(@Body() data: updateChatDTO) {
+		return this.service.addBannedUser(data);
+	}
+
+	@Post('add-mute')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async addMute(@Body() data: updateChatDTO) {
+		return this.service.addMutedUser(data);
+	}
+
+	@Post('edit-visibility')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async editVisibility(@Body() data: updateChatDTO) {
+		return this.service.editVisibility(data);
+	}
 }

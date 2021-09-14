@@ -40,9 +40,9 @@ export interface editChatModel {
 	id: string,
 	admin: string,
 	mutedUser: string,
-	mutedTime: string,
+	mutedTime: Date,
 	bannedUser: string,
-	bannedTime: string,
+	bannedTime: Date,
 	visibility: string,
 	password: string
 }
