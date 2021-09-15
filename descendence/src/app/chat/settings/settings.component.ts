@@ -1,18 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SearchService } from './search/search.service';
+import { SearchService } from '../search/search.service';
 import { Validators } from '@angular/forms';
-import { chatModel, createChatModel, editChatModel } from './chat-client/message.model';
-import { chatGuardService } from './chat-client/chatGuard.service';
+import { chatModel, editChatModel } from '../chat-client/message.model';
 import * as bcrypt from 'bcryptjs';
-import { resourceLimits } from 'worker_threads';
-import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
-
-// export interface updateUsers {
-	// chatId: string;
-	// users: string[];
-// }
 
 @Component({
   selector: 'app-settings',

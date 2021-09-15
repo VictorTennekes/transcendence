@@ -15,7 +15,7 @@ import { chatGuardService } from './chat/chat-client/chatGuard.service';
 import { CreateChatComponent } from './chat/create-chat/create-chat.component';
 import { ChatPassComponent } from './chat/chat-pass/chat-pass.component';
 import { SearchService } from './chat/search/search.service';
-import { SettingsComponent } from './chat/settings.component';
+import { SettingsComponent } from './chat/settings/settings.component';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -62,7 +62,7 @@ const routes: Routes = [
 			{
 				path: 'settings/:id',
 				component: SettingsComponent,
-				// canActivate: [chatAdminGuard],
+				// canActivate: [chatAdminGuard],//TODO: add adminGuard
 				outlet: "chat"
 			},
 			{
