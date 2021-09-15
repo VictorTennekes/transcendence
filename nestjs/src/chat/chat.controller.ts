@@ -183,4 +183,11 @@ export class ChatController {
 	async editVisibility(@Body() data: updateChatDTO) {
 		return this.service.editVisibility(data);
 	}
+
+	@Get('user-is-admin/:id')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async userIsAdmin(@Param("id") id: string, @Req() req): Promise<boolean> {
+		return this.service.userIsAdmin(id, req.user.intra_name);
+	}
 }

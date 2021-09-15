@@ -75,6 +75,10 @@ export class SearchService {
 	editVisibility(data: editChatModel): Observable<any> {
 		return this.http.post(this.url + 'edit-visibility', data);
 	}
+
+	userIsAdmin(id: string): Observable<boolean> {
+		return this.http.get<boolean>(this.url + 'user-is-admin/' + id);
+	}
 	// updateChat(data: editChatModel): Observable<any> {
 		// console.log(data);
 		// console.log(this.url + "update-admins");

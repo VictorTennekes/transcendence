@@ -36,7 +36,9 @@ import { retMessage, newMessage, chatModel } from './message.model';
 	public default_avatar_url = "";
 	public sendError: boolean = false;
 
+	public userIsAdmin: boolean = false;
 	ngOnInit(): void {
+		
 		this.chatService.listenForError().subscribe((error) => {
 			console.log(error);
 			//TODO: specify error when possinle
@@ -49,6 +51,9 @@ import { retMessage, newMessage, chatModel } from './message.model';
 				// console.log(response);
 				this.chat = response;
 				console.log(this.chat);
+				this.searchService.userIsAdmin(this.chat.id).subscribe((result) => {
+					this.userIsAdmin = result;
+				});
 				this.chatService.receiveMessages().subscribe((msg) => {
 						console.log("chat is");
 						console.log(this.chat);
@@ -61,16 +66,12 @@ import { retMessage, newMessage, chatModel } from './message.model';
 		  });
 	}
 
-	public userIsAdmin(): boolean {
-		return true;
-	}
-
 	public back() {
 		this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
 	}
 
 	public edit() {
-		if (this.userIsAdmin()) {
+		if (this.userIsAdmin) {
 			this.router.navigate(['/home', {outlets: {chat: ['settings', this.chat.id]}}])
 		}
 	}

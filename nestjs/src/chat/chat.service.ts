@@ -430,4 +430,16 @@ export class ChatService {
 		return false;
 	}
 
+	async userIsAdmin(id: string, username: string): Promise<boolean> {
+		const chat = await this.repo.findOne({
+			where: {id: id},
+			relations: ["admins"]
+		})
+		console.log(chat);
+		if (this.userExists(username, chat.admins)) {
+			return true;
+		}
+		return false;
+	}
+
 }

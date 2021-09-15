@@ -1,7 +1,7 @@
 <button mat-icon-button (click)="back()">
 	<mat-icon>arrow_back</mat-icon>
 </button>
-<button mat-icon-button *ngIf="userIsAdmin()" (click)="edit()">
+<button mat-icon-button *ngIf="userIsAdmin" (click)="edit()">
 	<mat-icon>settings</mat-icon>
 </button> 
 <h1>{{chat.name}}</h1>
