@@ -16,6 +16,7 @@ import { CreateChatComponent } from './chat/create-chat/create-chat.component';
 import { ChatPassComponent } from './chat/chat-pass/chat-pass.component';
 import { SearchService } from './chat/search/search.service';
 import { SettingsComponent } from './chat/settings/settings.component';
+import { chatAdminGuard } from './chat/chat-client/chatAdminGuard.service';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -56,13 +57,12 @@ const routes: Routes = [
 				path: 'get-chat/:id',
 				component: ChatComponent,
 				canActivate: [chatGuardService],
-				// canActivate: [chatUserGuard],
 				outlet: "chat"
 			},
 			{
 				path: 'settings/:id',
 				component: SettingsComponent,
-				// canActivate: [chatAdminGuard],//TODO: add adminGuard
+				canActivate: [chatAdminGuard],
 				outlet: "chat"
 			},
 			{
@@ -101,6 +101,6 @@ const routes: Routes = [
 @NgModule({
 	imports: [RouterModule.forRoot(routes)],
 	exports: [RouterModule],
-	providers: [ LoginGuard, chatGuardService, SearchService ]
+	providers: [ LoginGuard, chatGuardService, SearchService, chatAdminGuard ]
 })
 export class AppRoutingModule { }
