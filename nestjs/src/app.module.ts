@@ -7,12 +7,11 @@ import 'dotenv/config';
 import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { GameService } from './game/game.service';
-import { GameGateway } from './game/game.gateway';
+import { GameModule } from './game/game.module';
+import { MatchModule } from './match/match.module';
 
 @Module({
 	controllers: [],
-	providers: [GameService, GameGateway],
 	imports: [
 		MulterModule.register({
 			dest: 'assets',
@@ -32,7 +31,9 @@ import { GameGateway } from './game/game.gateway';
 			inject: [ConfigService]
 		}),
 		ChatModule,
-		AuthModule
+		AuthModule,
+		GameModule,
+		MatchModule
 	]
 })
 export class AppModule { }

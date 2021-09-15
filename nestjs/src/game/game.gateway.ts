@@ -1,7 +1,7 @@
+import { Logger } from "@nestjs/common";
 import { OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody } from "@nestjs/websockets";
 import { ConnectedSocket } from "@nestjs/websockets";
 import { Socket } from "socket.io";
-import { GameService } from "./game.service";
 import { Game } from "./game.script";
 
 @WebSocketGateway()
@@ -10,9 +10,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	game: Game;
 	interval: {[key: string] : NodeJS.Timer} = {};
 
-	constructor(
-		private readonly gameService: GameService
-	) {
+	constructor() {
 		this.game = new Game();
 		this.game.update();
 	}
@@ -34,30 +32,25 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage('press_up')
 	press_up(@ConnectedSocket() client) {
-//		console.log("PRESS UP");
 		this.game.setKeyPressed('one', 'ArrowUp', true);
 	}
 	
 	@SubscribeMessage('release_up')
 	release_up(@ConnectedSocket() client) {
-//		console.log("RELEASE UP");
 		this.game.setKeyPressed('one', 'ArrowUp', false);
 	}
 	@SubscribeMessage('press_down')
 	press_down(@ConnectedSocket() client) {
-//		console.log("PRESS DOWN");
 		this.game.setKeyPressed('one', 'ArrowDown', true);
 	}
 	
 	@SubscribeMessage('release_down')
 	release_down(@ConnectedSocket() client) {
-//		console.log("RELEASE DOWN");
 		this.game.setKeyPressed('one', 'ArrowDown', false);
 	}
 
 	handleConnection(@ConnectedSocket() client: Socket) {
-		console.log(`CLIENT[${client.id} - JOINED]`);
+		Logger.log(`GAME GATEWAY - CLIENT[${client.id}] - JOINED]`);
 		this.interval[client.id] = setInterval(() => this.gameLoop(), 1000/60);
-//		client.emit('gamedata', {});
 	}
 }
