@@ -250,7 +250,7 @@ export class ChatService {
 		for (let ban of chat.bans) {
 			console.log(ban);
 			console.log(username);
-			if (ban.user.intra_name === username && this.isCurrent(ban.endTime)) {//TODO: and ban is still valid
+			if (ban.user.intra_name === username && this.isCurrent(ban.endTime)) {
 				console.log("i should be banned");
 				throw new HttpException("you are banned", HttpStatus.NOT_ACCEPTABLE);
 			}
