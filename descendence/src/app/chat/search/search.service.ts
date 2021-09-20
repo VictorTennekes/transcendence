@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { chatModel, createChatModel, retMessage } from "../chat-client/message.model";
 import { Observable } from "rxjs";
+import {map} from 'rxjs/operators';
 
 @Injectable()
 export class SearchService {
@@ -54,5 +55,9 @@ export class SearchService {
 			messages: []
 		}
 		return this.http.post<chatModel>(this.url + "add-user", chat);
+	}
+
+	userInChat(id: string): Observable<boolean> {
+		return this.http.get<any>(this.url + 'user-in-chat/' + id);
 	}
 }

@@ -241,6 +241,20 @@ export class ChatService {
 			chat.users.push(user);
 			const lol = await this.repo.manager.save(chat);
 			return lol;
-		}
+		} else {
+			return chat;
+		}//TODO: make sure this is the correct format
 	}
+
+	async userInChat(username: string, id: string): Promise<boolean> {
+		const chat = await this.repo.findOne({
+			where: {id: id},
+			relations: ["users"]
+		})
+		if (this.userExists(username, chat.users)) {
+			return true;
+		}
+		return false;
+	}
+
 }

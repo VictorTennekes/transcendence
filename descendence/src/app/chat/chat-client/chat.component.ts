@@ -1,7 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { SearchService } from '../search/search.service';
 import { ChatService } from './chat.service';
 import { retMessage, newMessage, chatModel } from './message.model';
@@ -43,21 +42,23 @@ import { retMessage, newMessage, chatModel } from './message.model';
 		})
 		console.log(this.chat);
 		this.route.params.subscribe(params => {
-			this.searchService.findChatById(params['id']).subscribe((response) => {
-				console.log("found chat by id");
-				// console.log(response);
-				this.chat = response;
-				console.log(this.chat);
-				this.chatService.receiveMessages().subscribe((msg) => {
-						console.log("chat is");
-						console.log(this.chat);
+			this.searchService.findChatById(params['id']).subscribe((fullChat: chatModel) => {
+				this.chat = fullChat;
+				this.searchService.userInChat(this.chat.id).subscribe((isTrue: boolean) => {
+					if (isTrue === false) {
+						this.searchService.addUserToChat(this.chat.id).subscribe((updatedChat: chatModel) => {
+							this.chat.users = updatedChat.users;
+						})
+					}
+				})
+				this.chatService.receiveMessages().subscribe((msg: retMessage) => {
 					if (msg.chat.id === this.chat.id) {
 						this.chat.messages.push(msg);
 						this.chat.messages.splice(0, this.chat.messages.length - 6);
 					}
 				})
 			});
-		  });
+		});
 	}
 
 	public back() {

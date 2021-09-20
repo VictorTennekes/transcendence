@@ -139,4 +139,12 @@ export class ChatController {
 		const user: UserDTO = await this.userService.findOne(req.user.intra_name);
 		return this.service.addUserToChat(id.id, user);
 	}
+
+	@Get('user-in-chat/:id')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async userInChat(@Param("id") id: string, @Req() req): Promise<boolean> {
+		return this.service.userInChat(req.user.intra_name, id);
+	}
+
 }
