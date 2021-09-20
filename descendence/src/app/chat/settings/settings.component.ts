@@ -161,7 +161,7 @@ export class SettingsComponent implements OnInit {
 			id: this.chat.id,
 			admin: "",
 			mutedUser: this.addMuteForm.controls['username'].value,
-			mutedTime: this.addMuteForm.controls['time'].value,
+			mutedTime: new Date(this.addMuteForm.controls['time'].value),
 			bannedUser: "",
 			bannedTime: new Date,
 			visibility: "",
@@ -181,7 +181,7 @@ export class SettingsComponent implements OnInit {
 			mutedUser: "",
 			mutedTime: new Date,
 			bannedUser: this.addBanForm.controls['username'].value,
-			bannedTime: this.addBanForm.controls['time'].value,
+			bannedTime: new Date(this.addBanForm.controls['time'].value),
 			visibility: "",
 			password: ""
 		}

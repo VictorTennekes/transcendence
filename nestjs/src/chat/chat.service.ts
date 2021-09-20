@@ -37,8 +37,7 @@ export class ChatService {
 	}
 
 	private isCurrent(time: Date) {
-		let now = new Date
-		now.setHours(0,0,0,0);
+		let now = new Date();
 		if (time < now) {
 			console.log("Selected date is in the past");
 			return false;
