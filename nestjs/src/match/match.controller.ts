@@ -1,5 +1,5 @@
 import { Controller, Get, Post, UseGuards, UseFilters, Req } from '@nestjs/common';
-import { MatchService } from './match.service';
+import { MatchService, MatchSettings } from './match.service';
 import { No2FAGuard } from 'src/auth/no-2fa.guard';
 import { UnauthorizedFilter } from 'src/auth/unauthorized.filter';
 
@@ -11,11 +11,21 @@ export class MatchController {
 
 	}
 
-	@Post()
+	@Post('create_private')
 	@UseGuards(No2FAGuard)
 	@UseFilters(UnauthorizedFilter)
-	createPrivateMatch(@Req() request) {
-		const id = this.matchService.createMatch(request.user.intra_name, {}, true);
+	createPrivateMatch(@Req() request, settings: MatchSettings) {
+		const id = this.matchService.createMatch(request.user.intra_name, settings, true);
 		return (id);
+	}
+
+	//in the frontend start listening for events on this matchid
+	//then as soon as the match finds an opponent, send an event
+	@Post('find')
+	@UseGuards(No2FAGuard)
+	@UseFilters(UnauthorizedFilter)
+	findMatch(@Req() request, settings: MatchSettings) {
+		const id = this.matchService.findMatch(request.user.intra_name, settings);
+		return id;
 	}
 }

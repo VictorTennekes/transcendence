@@ -17,6 +17,7 @@ export interface MatchSettings {
 	}
 };
 
+//might be missing an 'accepted' array, for when 'accept' button is pressed
 class Match {
 	private players: string[];
 	private _accepted: boolean = false;
@@ -66,17 +67,21 @@ export class MatchService {
 		return id;
 	}
 
+	//probably needs a different name, as there is a difference between 'accepting' the match
+	// and actually pressing the accept button on a queue-pop (which is done through the socket)
 	acceptMatch(user: string, matchId: string) {
 		this.matches[matchId].setOpponent(user);
 
 		//notify the creator and the opponent that the match is accepted
 	}
 
-	async findMatch(user: string, settings: MatchSettings): Observable<string> {
+	//return the match (either found or created)
+	async findMatch(user: string, settings: MatchSettings) {
 		let found = false;
 
 		for (const key in this.matches) {
-			if (this.matches[key].accepted || this.matches[key].private) continue ;
+			if (this.matches[key].accepted || this.matches[key].private)
+				continue ;
 			if (this.matches[key].settingCompare(settings)) {
 				this.matches[key].setOpponent(user);
 				found = true;

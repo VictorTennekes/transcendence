@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input'
 import { SearchComponent } from './components/search/search.component';
 import { chatGuardService } from './components/chat/chatGuard.service';
 import { ViewComponent } from './game/view/view.component';
+import { MatchComponent } from './match/match.component';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -24,7 +25,7 @@ const routes: Routes = [
 		children: [
 			{
 				path: '',
-				component: FailComponent
+				component: MatchComponent
 			},
 			{
 				path: 'users',
