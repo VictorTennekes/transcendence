@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { SearchService } from '../search/search.service';
 import { createChatModel } from '../chat-client/message.model';
 import * as bcrypt from 'bcryptjs';
-//TODO: make sure to trim weird characters
+
 @Component({
   selector: 'app-create-chat',
   templateUrl: './create-chat.component.html',
@@ -87,10 +87,10 @@ export class CreateChatComponent implements OnInit {
 		if (this.createChatForm.controls['visibility'].value === 'protected') {
 			pw = this.encryptPassword(this.createChatForm.controls['password'].value);
 		}
-		let newChat: createChatModel
+		let newChat: createChatModel;
 		if (this.createChatForm.valid) {
 			newChat = {
-				name: this.createChatForm.controls['name'].value,
+				name: this.createChatForm.controls['name'].value.replace(/(\r\n|\n|\r)/gm, ""),
 				visibility: this.createChatForm.controls['visibility'].value,
 				password: pw,
 				users: [],
