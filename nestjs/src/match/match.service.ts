@@ -19,11 +19,12 @@ export interface MatchSettings {
 
 //might be missing an 'accepted' array, for when 'accept' button is pressed
 class Match {
-	private players: string[];
+	private creator: string;
+	private opponent: null | string = null;
 	private _accepted: boolean = false;
 
 	constructor(private id: string, creator: string, private settings: MatchSettings, private _private = false) {
-		this.players.push(creator);
+		this.creator = creator;
 	}
 
 	get accepted() {
@@ -35,17 +36,17 @@ class Match {
 	}
 
 	setOpponent(opponent: string) {
-		if (this.players.length >= 2) {
-			//error
+		if (!!this.opponent) {
+			//error;
 		}
-		this.players.push(opponent);
+		this.opponent = opponent;
 		this._accepted = true;
 	}
 
 	settingCompare(setting: MatchSettings): boolean {
-		if (this.settings.powerups) {
+		if (this.settings?.powerups) {
 			for (const item in this.settings.powerups) {
-				if (this.settings.powerups[item] != setting.powerups[item]) {
+				if (!setting.powerups[item] || this.settings.powerups[item] != setting.powerups[item]) {
 					return false;
 				}
 			}
@@ -59,7 +60,7 @@ class Match {
 export class MatchService {
 	constructor( ) {}
 
-	matches: {[key: string] : Match}
+	matches: {[key: string] : Match} = {};
 
 	createMatch(creator: string, settings: MatchSettings, privateFlag = false): string {
 		let id = nanoid();

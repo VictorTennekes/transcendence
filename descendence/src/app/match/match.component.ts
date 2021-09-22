@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatchService } from '../match.service';
 import { Socket } from 'ngx-socket-io';
+import { QueueService } from '../queue.service';
+import { AcceptService } from '../accept.service';
 
 @Component({
 	selector: 'app-match',
@@ -11,16 +13,24 @@ export class MatchComponent implements OnInit {
 	
 	constructor(
 		private readonly socket: Socket,
-		private readonly matchService: MatchService
+		private readonly matchService: MatchService,
+		private readonly queueService: QueueService,
+		private readonly acceptService: AcceptService
 	) { }
 	
 	findMatch() {
 		//when we receive the match id, we will listen to the event to be notified when the match is ready
-		this.matchService.findMatch().subscribe((id: string) => {
-			this.socket.on(id, (id: string) => {
+		this.matchService.findMatch().subscribe((id) => {
+			let overlay = this.queueService.open({hasBackdrop: false});
+			//we'll only get a 'ready' notification once
+			// this.socket.once(id as string, (id: string) => {
 				//match is ready
-				this.socket.emit(id, {});
-			});
+			var interval = setInterval(() => {
+				this.acceptService.open();
+				overlay.close();
+				clearInterval(interval);
+			}, 2000);
+			// });
 		})
 	}
 	

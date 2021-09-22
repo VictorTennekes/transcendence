@@ -32,6 +32,10 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { chatGuardService } from './components/chat/chatGuard.service';
 import { CommonModule } from '@angular/common';
 import { ViewComponent } from './game/view/view.component';
+import { QueueComponent } from './queue/queue.component';
+import { QueueService } from './queue.service';
+import { AcceptComponent } from './accept/accept.component';
+import { AcceptService } from './accept.service';
 
 const config: SocketIoConfig = {
 	url: 'http://localhost:3000',
@@ -55,7 +59,9 @@ const config: SocketIoConfig = {
 		QrCodeDirective,
 		OnlyNumber,
 		TwoFactorComponent,
-		ViewComponent
+		ViewComponent,
+  QueueComponent,
+  AcceptComponent
 	],
 	imports: [
 		CookieModule.forRoot(),
@@ -73,13 +79,15 @@ const config: SocketIoConfig = {
 		SocketIoModule.forRoot(config),
 		CommonModule
 	],
-	entryComponents: [ FocusOverlayComponent],
+	entryComponents: [ FocusOverlayComponent, QueueComponent, AcceptComponent],
 	providers: [
 		UserService,
 		ImageService,
 		FocusOverlayService,
 		SharedValidatorService,
 		chatGuardService,
+		QueueService,
+		AcceptService
 	],
 	bootstrap: [AppComponent]
 })

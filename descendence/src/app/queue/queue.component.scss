@@ -1,0 +1,10 @@
+.container { //find out how to make it stick to the top of the view container
+	width: 10rem;
+	height: 2rem;
+	background-color: white;
+	padding: 1rem;
+
+	box-sizing: border-box;
+	position: absolute;
+	top: 0;
+}
