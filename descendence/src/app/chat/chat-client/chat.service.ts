@@ -14,4 +14,8 @@ export class ChatService {
 	receiveMessages(): Observable<retMessage> {
 		return this.socket.fromEvent('receive_message');
 	}
+
+	listenForError(): Observable<string> {
+		return this.socket.fromEvent('send_message_error');
+	}
 }

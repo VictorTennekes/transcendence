@@ -1,6 +1,7 @@
 export interface userModel {
 	intra_name: string;
 	display_name: string;
+	avatar_url: string;
 }
 
 export interface retMessage {
@@ -20,10 +21,15 @@ export interface chatModel {
 	id: string,
 	name: string,
 	users: userModel[],
-	messages: retMessage[]
+	admins: userModel[],
+	messages: retMessage[],
+	visibility: string;
 }
 
 export interface createChatModel {
 	name: string,
-	user: string
+	users: string[],
+	admins: string[],
+	visibility: string;
+	password: string;
 }

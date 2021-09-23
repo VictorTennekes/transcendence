@@ -23,7 +23,8 @@ export class LoginGuard implements CanActivate {
 	): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 		return this.authService.isLoggedIn().pipe(map((result) => {
 			if (!result) {
-				this.router.navigateByUrl('/home');
+				// this.router.navigateByUrl('/home');
+				this.router.navigateByUrl('auth');
 			}
 			return result;
 		}),catchError(error => of(false)));
