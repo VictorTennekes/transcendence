@@ -4,6 +4,7 @@ import { chatModel, createChatModel, editChatModel, retMessage } from "../chat-c
 import { Observable } from "rxjs";
 // import { updateUsers } from "../settings.component";
 
+import {map} from 'rxjs/operators';
 
 @Injectable()
 export class SearchService {
@@ -84,4 +85,7 @@ export class SearchService {
 		// console.log(this.url + "update-admins");
 		// return this.http.post(this.url + "update-chat", data)
 	// }
+	userInChat(id: string): Observable<boolean> {
+		return this.http.get<any>(this.url + 'user-in-chat/' + id);
+	}
 }

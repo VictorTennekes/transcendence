@@ -190,4 +190,11 @@ export class ChatController {
 	async userIsAdmin(@Param("id") id: string, @Req() req): Promise<boolean> {
 		return this.service.userIsAdmin(id, req.user.intra_name);
 	}
+	@Get('user-in-chat/:id')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async userInChat(@Param("id") id: string, @Req() req): Promise<boolean> {
+		return this.service.userInChat(req.user.intra_name, id);
+	}
+
 }

@@ -1,7 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { SearchService } from '../search/search.service';
 import { ChatService } from './chat.service';
 import { retMessage, newMessage, chatModel } from './message.model';
@@ -51,6 +50,13 @@ import { retMessage, newMessage, chatModel } from './message.model';
 				// console.log(response);
 				this.chat = response;
 				console.log(this.chat);
+				this.searchService.userInChat(this.chat.id).subscribe((isTrue: boolean) => {
+					if (isTrue === false) {
+						this.searchService.addUserToChat(this.chat.id).subscribe((updatedChat: chatModel) => {
+							this.chat.users = updatedChat.users;
+						})
+					}
+				})
 				this.searchService.userIsAdmin(this.chat.id).subscribe((result) => {
 					this.userIsAdmin = result;
 				});
@@ -63,7 +69,7 @@ import { retMessage, newMessage, chatModel } from './message.model';
 					}
 				})
 			});
-		  });
+		});
 	}
 
 	public back() {
