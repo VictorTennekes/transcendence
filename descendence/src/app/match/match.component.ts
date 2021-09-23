@@ -20,6 +20,10 @@ export class MatchComponent implements OnInit {
 	
 	overlay: any;
 
+	get disabled() {
+		return this.queueService.findDisabled;
+	}
+
 	async findMatch() {
 		//when we receive the match id, we will listen to the event to be notified when the match is ready
 		this.matchService.findMatch({}).subscribe((id: string) => {

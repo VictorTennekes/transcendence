@@ -1,3 +1,25 @@
+.score-container {
+	display: flex;
+	flex-direction: column;
+
+	place-items: center;
+	place-content: center;
+}
+
+.score {
+	width: 700px;
+	height: 6rem;
+	background: linear-gradient(-80deg, #A30E29 1.6%, #D2404B 49.46%, #1C71E6 49.47%, #063EAB 98.33%);
+	border-radius: 0.6rem;
+	background-position: right bottom;
+	transition: background-position .5s ease;
+	margin-bottom: 15px;
+
+	&:hover {
+		background-position: left top;
+	}
+}
+
 canvas {
 	display: block;
 	margin: 0px auto;

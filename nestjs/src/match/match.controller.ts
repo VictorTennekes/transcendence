@@ -38,6 +38,13 @@ export class MatchController {
 		this.matchService.acceptMatch(id, request.user.intra_name);
 	}
 
+	@Get('cancel/:id')
+	@UseGuards(No2FAGuard)
+	@UseFilters(UnauthorizedFilter)
+	cancelMatch(@Req() request, @Param('id') id: string) {
+		this.matchService.cancelMatch(id);
+	}
+
 	@Get('accepted/:id')
 	@UseGuards(No2FAGuard)
 	@UseFilters(UnauthorizedFilter)

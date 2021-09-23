@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { nanoid } from 'nanoid';
 import { Observable } from 'rxjs';
 import { MatchGateway } from './match.gateway';
@@ -20,13 +20,17 @@ export interface MatchSettings {
 
 //might be missing an 'accepted' array, for when 'accept' button is pressed
 class Match {
-	private creator: string;
+	private _creator: string;
 	private opponent: null | string = null;
 	private _ready: boolean = false;
 	private _accepted: {[key: string] : boolean} = {};
 
 	constructor(private id: string, creator: string, private settings: MatchSettings, private _private = false) {
-		this.creator = creator;
+		this._creator = creator;
+	}
+
+	get creator() {
+		return this._creator;
 	}
 
 	get ready() {
@@ -85,16 +89,24 @@ export class MatchService {
 		return id;
 	}
 
+	cancelMatch(id: string) {
+		Logger.log(`CANCELED ${id}`);
+		delete this.matches[id];
+	}
+
 	//return the match (either found or created)
 	findMatch(user: string, settings: MatchSettings) {
-		let found = false;
-
+		//BUG: subsequent requests from the same user will make the creator and opponent the same user
 		for (const key in this.matches) {
 			if (this.matches[key].ready || this.matches[key].private)
 				continue ;
 			if (this.matches[key].settingCompare(settings)) {
 				this.matches[key].setOpponent(user);
-				this.server.sendReady(key);
+				//BUG: need this delay to make sure the opponent also has time to listen for the event :sweat_smile:
+				var interval = setInterval(() => {
+					this.server.sendReady(key);
+					clearInterval(interval);
+				},1000);
 				return ({id: key});
 			}
 		}

@@ -35,6 +35,11 @@ export class MatchService {
 		}));
 	}
 
+	cancelMatch() {
+		console.log(`CANCELING MATCH ${this.id}`);
+		this.http.get('api/match/cancel/' + this.id).subscribe(() => {});
+	}
+
 	acceptMatch() {
 		console.log(`ACCEPTING MATCH ${this.id}`);
 		this.http.get('api/match/accept/' + this.id).subscribe(() => {});

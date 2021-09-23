@@ -3,6 +3,7 @@ import { Overlay, OverlayConfig } from '@angular/cdk/overlay';
 import { QueueComponent } from "./queue/queue.component";
 import { ComponentPortal } from '@angular/cdk/portal';
 import { FocusOverlayRef } from "./focus-overlay/focus-overlay.ref";
+import { MatchService } from './match.service';
 
 interface FilePreviewDialogConfig {
 	panelClass?: string;
@@ -18,9 +19,11 @@ const DEFAULT_CONFIG: FilePreviewDialogConfig = {
 
 @Injectable()
 export class QueueService {
+	findDisabled = false;
 	dialogRef: FocusOverlayRef;
 	constructor(
 		private readonly overlay: Overlay,
+		private readonly matchService: MatchService
 	) { }
 	// createInjector(data: any): PortalInjector {
 	// 	const injectorTokens = new WeakMap();
@@ -42,7 +45,7 @@ export class QueueService {
 		
 		return overlayConfig;
 	}
-	
+
 	private createOverlay(config: FilePreviewDialogConfig) {
 		// Returns an OverlayConfig
 		const overlayConfig = this.getOverlayConfig(config);
@@ -52,6 +55,8 @@ export class QueueService {
 	}
 
 	close() {
+		this.matchService.cancelMatch();
+		this.findDisabled = false;
 		this.dialogRef.close();
 	}
 
@@ -64,6 +69,7 @@ export class QueueService {
 			...DEFAULT_CONFIG,
 			...config,
 		}
+		this.findDisabled = true;
 		const overlayRef = this.createOverlay(dialogConfig);
 		const focusOverlayPortal = new ComponentPortal(QueueComponent);
 		this.dialogRef = new FocusOverlayRef(overlayRef);

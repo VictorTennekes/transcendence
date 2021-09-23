@@ -9,13 +9,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer()
 	server;
 
-	@SubscribeMessage('message')
-	handleMessage(client: any, payload: any): string {
-		return 'Hello world!';
-	}
-
 	sendReady(id: string) {
-		Logger.log(`READY ${id}`);
+		Logger.log(`SERVER SENT 'ready${id}'`);
 		this.server.emit(`ready${id}`, {});
 	}
 
