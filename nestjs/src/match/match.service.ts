@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { nanoid } from 'nanoid';
 import { Observable } from 'rxjs';
+import { MatchGateway } from './match.gateway';
 
 //Keep an array of matches internally, with a unique id
 
@@ -72,7 +73,9 @@ class Match {
 
 @Injectable()
 export class MatchService {
-	constructor( ) {}
+	constructor(
+		private readonly server: MatchGateway
+	) {}
 
 	matches: {[key: string] : Match} = {};
 
@@ -91,6 +94,7 @@ export class MatchService {
 				continue ;
 			if (this.matches[key].settingCompare(settings)) {
 				this.matches[key].setOpponent(user);
+				this.server.sendReady(key);
 				return ({id: key});
 			}
 		}
