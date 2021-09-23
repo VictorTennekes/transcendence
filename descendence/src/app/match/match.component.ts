@@ -18,16 +18,19 @@ export class MatchComponent implements OnInit {
 		private readonly acceptService: AcceptService
 	) { }
 	
+	overlay: any;
+
 	findMatch() {
 		//when we receive the match id, we will listen to the event to be notified when the match is ready
-		this.matchService.findMatch().subscribe((id) => {
-			let overlay = this.queueService.open({hasBackdrop: false});
+		this.matchService.findMatch({}).subscribe((id: any) => {
+			console.log(`MATCH ID: ${id}`);
+			this.overlay = this.queueService.open({hasBackdrop: false});
 			//we'll only get a 'ready' notification once
 			// this.socket.once(id as string, (id: string) => {
 				//match is ready
 			var interval = setInterval(() => {
-				this.acceptService.open();
-				overlay.close();
+				this.overlay.close();
+				this.overlay = this.acceptService.open();
 				clearInterval(interval);
 			}, 2000);
 			// });

@@ -36,6 +36,7 @@ import { QueueComponent } from './queue/queue.component';
 import { QueueService } from './queue.service';
 import { AcceptComponent } from './accept/accept.component';
 import { AcceptService } from './accept.service';
+import { CountdownModule } from 'ngx-countdown';
 
 const config: SocketIoConfig = {
 	url: 'http://localhost:3000',
@@ -64,6 +65,7 @@ const config: SocketIoConfig = {
   AcceptComponent
 	],
 	imports: [
+		CountdownModule,
 		CookieModule.forRoot(),
 		BrowserModule,
 		AppRoutingModule,

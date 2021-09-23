@@ -21,18 +21,26 @@ export interface MatchSettings {
 class Match {
 	private creator: string;
 	private opponent: null | string = null;
-	private _accepted: boolean = false;
+	private _ready: boolean = false;
+	private _accepted: {[key: string] : boolean} = {};
 
 	constructor(private id: string, creator: string, private settings: MatchSettings, private _private = false) {
 		this.creator = creator;
 	}
 
-	get accepted() {
-		return this._accepted;
+	get ready() {
+		return this._ready;
 	}
 
 	get private() {
 		return this._private;
+	}
+
+	get accepted() {
+		return (
+			this._ready && 
+			this._accepted[this.creator] === true &&
+			this._accepted[this.opponent] === true);
 	}
 
 	setOpponent(opponent: string) {
@@ -40,7 +48,13 @@ class Match {
 			//error;
 		}
 		this.opponent = opponent;
-		this._accepted = true;
+		this._accepted[this.opponent] = false;
+		this._accepted[this.creator] = false;
+		this._ready = true;
+	}
+
+	setAccepted(user: string) {
+		this._accepted[user] = true;
 	}
 
 	settingCompare(setting: MatchSettings): boolean {
@@ -68,27 +82,30 @@ export class MatchService {
 		return id;
 	}
 
-	//probably needs a different name, as there is a difference between 'accepting' the match
-	// and actually pressing the accept button on a queue-pop (which is done through the socket)
-	acceptMatch(user: string, matchId: string) {
-		this.matches[matchId].setOpponent(user);
-
-		//notify the creator and the opponent that the match is accepted
-	}
-
 	//return the match (either found or created)
-	async findMatch(user: string, settings: MatchSettings) {
+	findMatch(user: string, settings: MatchSettings) {
 		let found = false;
 
 		for (const key in this.matches) {
-			if (this.matches[key].accepted || this.matches[key].private)
+			if (this.matches[key].ready || this.matches[key].private)
 				continue ;
 			if (this.matches[key].settingCompare(settings)) {
 				this.matches[key].setOpponent(user);
-				found = true;
-				break ;
+				return ({id: key});
 			}
 		}
-		this.createMatch(user, settings);
+		return ({
+			id: this.createMatch(user, settings)
+		});
+	}
+
+	acceptMatch(id: string, user: string) {
+		if (!this.matches[id])
+			return ;
+		this.matches[id].setAccepted(user);
+	}
+
+	isAccepted(id: string) {
+		return (this.matches[id]?.accepted);
 	}
 }

@@ -1,0 +1,29 @@
+.container {
+	display: flex;
+	place-content: center;
+	place-items: center;
+	flex-direction: column;
+	width: 20rem;
+	height: 10rem;
+
+	border-radius: 2rem;
+	background-color: rgb(22, 45, 84);
+}
+
+.selection-container {
+	display: flex;
+	place-content: center;
+	flex-direction: row;
+	width: 20rem;
+}
+
+.countdown-container {
+	display: flex;
+	place-content: center;
+}
+
+.timer {
+	color: white;
+	font-size: 3rem;
+}
+

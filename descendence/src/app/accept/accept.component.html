@@ -1,8 +1,13 @@
 <div class="container">
-	<button>
-		ACCEPT
-	</button>
-	<button>
-		DECLINE
-	</button>
+	<div class="countdown-container">
+		<countdown class="timer" [config]="config" #cd (event)="handleEvent($event)"></countdown>
+	</div>
+	<div class="selection-container">
+		<button (click)="accept()">
+			ACCEPT
+		</button>
+		<button (click)="close()">
+			DECLINE
+		</button>
+	</div>
 </div>
