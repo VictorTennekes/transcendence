@@ -31,7 +31,7 @@ export class chatGuardService implements CanActivate {
 				return of(false);
 			}
 			console.log(err);
-			// this.router.navigate(['/home', {outlets: {chat: ['search', err]}}])
+			this.router.navigate(['/home', {outlets: {chat: ['search', err.error.message]}}])
 			// throw err;
 			return of(false);
 		}));

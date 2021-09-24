@@ -44,7 +44,7 @@ const routes: Routes = [
 				component: UserSettingsComponent
 			},
 			{
-				path: 'search',
+				path: 'search/:error',
 				component: SearchComponent,
 				outlet: "chat"
 			},

@@ -74,7 +74,7 @@ import { retMessage, newMessage, chatModel } from './message.model';
 	}
 
 	public back() {
-		this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
+		this.router.navigate(['home', {outlets: {chat: ['search', ""]}}], {skipLocationChange: true});
 	}
 
 	public edit() {

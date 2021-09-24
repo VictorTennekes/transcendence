@@ -45,6 +45,7 @@ export class ChatController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async getChatById(@Param("name") name: string, @Req() req): Promise<ChatDTO[]> {
+		//TODO: when searching for a dm, a dm is not created, but it finds chat's by the user
 		let chats: ChatDTO[] = await this.service.getChatByName(name, req.session.passport.user.login);
 		const user = await this.userService.findOne(name);
 		if (user) {
@@ -66,9 +67,12 @@ export class ChatController {
 			}
 			chats.push(dm);
 		}
-		if (!chats) {
+		if (!chats || chats.length < 1) {
+			console.log('no chats');
 			throw new HttpException("No chat by name " + name, HttpStatus.NOT_FOUND);
 		}
+		console.log("returning these chats");
+		console.log(chats);
 		return chats;
 	}
 

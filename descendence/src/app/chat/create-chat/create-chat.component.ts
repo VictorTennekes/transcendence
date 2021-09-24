@@ -62,7 +62,7 @@ export class CreateChatComponent implements OnInit {
 	}
 
 	public back() {
-		this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
+		this.router.navigate(['home', {outlets: {chat: ['search', ""]}}]);
 	}
 
 	public isProtected(): boolean {
