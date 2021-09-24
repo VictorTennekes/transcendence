@@ -36,7 +36,7 @@ export class ChatService {
 	private isCurrent(time: Date) {
 		if (!this.isValidDate(time)) {
 			throw "invalid date";
-			//todo: idk?
+			//todo: idk? Test invalid dates
 		}
 		let now = new Date();
 		console.log("iscurrent: ", time, " < ", now);
@@ -296,15 +296,6 @@ export class ChatService {
 			throw error;
 			//TODO: idk about this man
 		}
-		// for (let ban of chat.bans) {
-			// console.log(ban);
-			// console.log(username);
-			//TODO: umm do i need to load this?
-			// if (ban.user.intra_name === username && this.isCurrent(ban.endTime)) {
-				// console.log("i should be banned");
-				// throw new HttpException("you are banned", HttpStatus.NOT_ACCEPTABLE);
-			// }
-		// }
 		if (chat.visibility !== 'public') {
 			if (this.userExists(username, chat.users)) {
 				return true;
@@ -380,7 +371,6 @@ export class ChatService {
 		}
 		if (!this.userExists(user.intra_name, chat.admins)) {
 			chat.admins.push(user);
-			//TODO: do not add duplicate admins. DOne?
 		}
 		console.log(user);
 		const res = await this.repo.save(chat);
@@ -407,7 +397,6 @@ export class ChatService {
 		if (!user) {
 			throw new HttpException("User not found", HttpStatus.NOT_FOUND);
 		}
-		//TODO: do not multpile bans for same person and chat. just extend the time if needed
 		let b: BanEntity;
 		try {
 			b = await this.banExists(user.intra_name, chat.bans);

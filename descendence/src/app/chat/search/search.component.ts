@@ -6,7 +6,6 @@ import { ChatService } from "../chat-client/chat.service";
 import { chatModel, createChatModel } from "../chat-client/message.model";
 import { SearchService } from "./search.service";
 import {HttpErrorResponse} from '@angular/common/http';
-//TODO: display error when can't access chat
 @Component({
 	selector: 'chat-search',
 	templateUrl: './search.component.html',
@@ -59,7 +58,6 @@ import {HttpErrorResponse} from '@angular/common/http';
 	}
 
 	public submitUser() {
-		//TODO: when searching for a dm, a dm is not created, but it finds chat's by the user
 		const newChat: createChatModel = {
 			name: '',
 			users: [],
@@ -70,17 +68,10 @@ import {HttpErrorResponse} from '@angular/common/http';
 		newChat.users.push(this.userForm.value.username);
 		this.searchService.findMatchingChats(this.userForm.value.username).subscribe(
 			(response: chatModel[]) => {
-				// this.chatNotFound = false;
 				this.errorMessage = "";
 				this.chats = response;
-				console.log("aaaa");
 			},
-			// (error: HttpErrorResponse) => {
 			(error: HttpErrorResponse) => {
-				console.log("in error")
-				console.log(error)
-				// this.chatNotFound = true
-				// this.errorMessage = "Chat not found";
 				this.errorMessage = error.error.message;
 				this.chats = [];
 			},

@@ -159,7 +159,7 @@ export class SettingsComponent implements OnInit {
 			id: this.chat.id,
 			admin: "",
 			bannedUser: this.addMuteForm.controls['username'].value,
-			bannedTime: new Date(this.addMuteForm.controls['time'].value),//TODO: isDate validator
+			bannedTime: new Date(this.addMuteForm.controls['time'].value),
 			banType: 'mute',
 			visibility: "",
 			password: ""
