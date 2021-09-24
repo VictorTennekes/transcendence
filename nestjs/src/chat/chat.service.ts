@@ -161,6 +161,7 @@ export class ChatService {
 		const items = await this.repo
 				.createQueryBuilder("chat")
 				.innerJoinAndSelect("chat.users", "users")
+				.where({visibility: "direct"})
 				.getMany();
 		let item = this.getMatchingUsers(items, users);
 
