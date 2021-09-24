@@ -33,15 +33,14 @@ import { retMessage, newMessage, chatModel } from './message.model';
 		message: "",
 	});
 	public default_avatar_url = "";
-	public sendError: boolean = false;
-
+	public errorMessage: string = "";
 	public userIsAdmin: boolean = false;
+
 	ngOnInit(): void {
 		
-		this.chatService.listenForError().subscribe((error) => {
+		this.chatService.listenForError().subscribe((error: string) => {
 			console.log(error);
-			//TODO: specify error when possinle
-			this.sendError = true;
+			this.errorMessage = error;
 		})
 		console.log(this.chat);
 		this.route.params.subscribe(params => {
@@ -84,7 +83,7 @@ import { retMessage, newMessage, chatModel } from './message.model';
 	}
 
 	public onSubmit() {
-		this.sendError = false;
+		this.errorMessage = "";
 		const newMessage: newMessage = {
 			chat: this.chat.id,
 			message: this.messageForm.controls['message'].value

@@ -90,11 +90,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		const chat = await this.chatService.getChatById(message.chat);
 		const user = await this.getUserFromSocket(client);
 		if (!user) {
-			client.emit('send_message_error');
+			client.emit('send_message_error', "no such user");
 			return;
 		}
 		if (await this.chatService.userIsMuted(user, chat.id)) {
-			client.emit('send_message_error');
+			client.emit('send_message_error', "you are muted");
 			return;
 		}
 		const finalMsg: MessageDTO = await this.chatService.createNewMessageSocket(message.message, user, chat);

@@ -23,4 +23,4 @@
 	</mat-form-field>
 	<button mat-raised-button type="submit" class="button">Send</button>
 </form>
-<p *ngIf="sendError">Error sending message</p>
+<p *ngIf="errorMessage != ''">{{errorMessage}}</p>
