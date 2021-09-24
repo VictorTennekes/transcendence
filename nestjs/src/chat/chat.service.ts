@@ -87,6 +87,7 @@ export class ChatService {
 	}
 
 	private isValidDate(d): boolean {
+		//TODO: instead generate a new valid date from string and error check
 		return d instanceof Date && !isNaN(d.getTime());
 	  }
 
@@ -436,6 +437,7 @@ export class ChatService {
 	}
 
 	async addMutedUser(updateChat: updateChatDTO): Promise<ChatDTO> {
+		//TODO: catch user not found in client
 		if (!this.isValidDate(updateChat.bannedTime)) {
 			console.log("error aa bad date");
 			throw new HttpException("invalid date", HttpStatus.BAD_REQUEST)

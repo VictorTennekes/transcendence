@@ -169,12 +169,12 @@ export class ChatController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async addBan(@Body() data: updateChatDTO) {
-		console.log("add ban");
-		console.log(typeof data.bannedTime)
-		console.log(typeof data.bannedTime.getTime === 'function')
-		data.bannedTime = new Date(data.bannedTime)
-		console.log(typeof data.bannedTime)
-		console.log(typeof data.bannedTime.getTime === 'function')
+		// console.log("add ban");
+		// console.log(typeof data.bannedTime)
+		// console.log(typeof data.bannedTime.getTime === 'function')
+		// data.bannedTime = new Date(data.bannedTime)
+		// console.log(typeof data.bannedTime)
+		// console.log(typeof data.bannedTime.getTime === 'function')
 		return this.service.addBannedUser(data);
 	}
 
@@ -182,7 +182,7 @@ export class ChatController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async addMute(@Body() data: updateChatDTO) {
-		data.bannedTime = new Date(data.bannedTime)
+		// data.bannedTime = new Date(data.bannedTime)
 		return this.service.addMutedUser(data);
 	}
 
