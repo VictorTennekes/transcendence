@@ -1,11 +1,11 @@
-const PADDLE_WIDTH = 20;
-const PADDLE_HEIGHT = 60;
-const BALL_SIZE = 10;
+const PADDLE_WIDTH = 22;
+const PADDLE_HEIGHT = 150;
+const BALL_SIZE = 15;
 const BALL_SPEED = 5;
-const WALL_OFFSET = 20;
+const WALL_OFFSET = 40;
 
-const CANVAS_WIDTH = 700;
-const CANVAS_HEIGHT = 400;
+const CANVAS_WIDTH = 1200;
+const CANVAS_HEIGHT = 750;
 
 enum KeyBindings {
 	UP,

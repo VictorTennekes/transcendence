@@ -7,10 +7,10 @@
 }
 
 .score {
-	width: 700px;
-	height: 6rem;
-	background: linear-gradient(-80deg, #A30E29 1.6%, #D2404B 49.46%, #1C71E6 49.47%, #063EAB 98.33%);
-	border-radius: 0.6rem;
+	width: 1200px;
+	height: 8rem;
+	background: linear-gradient(100deg, #A30E29 1.6%, #D2404B 49.46%, #1C71E6 49.47%, #063EAB 98.33%);
+	border-radius: 1.1rem;
 	background-position: right bottom;
 	transition: background-position .5s ease;
 	margin-bottom: 15px;
@@ -24,5 +24,5 @@ canvas {
 	display: block;
 	margin: 0px auto;
 	background: black;
-	border-radius: 2rem;
+	border-radius: 1.1rem;
 }

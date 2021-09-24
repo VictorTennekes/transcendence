@@ -1,10 +1,11 @@
 import { ClientService } from "./client.service";
+import { SequenceEqualOperator } from 'rxjs/internal/operators/sequenceEqual';
 
-const PADDLE_WIDTH = 20;
-const PADDLE_HEIGHT = 60;
-const BALL_SIZE = 10;
+const PADDLE_WIDTH = 23;
+const PADDLE_HEIGHT = 160;
+const BALL_SIZE = 15;
 const BALL_SPEED = 10;
-const WALL_OFFSET = 20;
+const WALL_OFFSET = 40;
 
 enum KeyBindings {
 	UP,
@@ -52,8 +53,8 @@ export class Game {
 		this.gameContext.fillStyle = "#fff";
 //		this.gameContext.strokeRect(10,10,this.gameCanvas.width - 20 ,this.gameCanvas.height - 20);
 
-		this.gameContext.fillText(this.players['one'].score.toString(), 280, 50);
-		this.gameContext.fillText(this.players['two'].score.toString(), 390, 50);
+		this.gameContext.fillText(this.players['one'].score.toString(), (this.gameCanvas.width / 2) - 80, 50);
+		this.gameContext.fillText(this.players['two'].score.toString(), (this.gameCanvas.width / 2) + 80, 50);
 	}
 	drawBoardDetails() {
 		//draw court outline
@@ -135,6 +136,18 @@ class Paddle extends Entity {
 	constructor(x:number,y:number) {
 		super(PADDLE_WIDTH,PADDLE_HEIGHT,x,y);
 	}
+	drawSide(context: CanvasRenderingContext2D, y: number) {
+		context.fillStyle = "#fff";
+		context.beginPath();
+		context.arc(this.position.x + (this.width / 2), y, this.width / 2, 0, 2 * Math.PI);
+		context.fill();
+	}
+
+	draw(context: CanvasRenderingContext2D) {
+		super.draw(context);
+		this.drawSide(context, this.position.y);
+		this.drawSide(context, this.position.y + this.height);
+	}
 }
 
 class Ball extends Entity {
@@ -155,7 +168,6 @@ class Ball extends Entity {
 
 	draw(context: CanvasRenderingContext2D) {
 		context.fillStyle = "#fff";
-//		context.fillRect(this.position.x,this.position.y,this.width,this.height);
 		context.beginPath();
 		context.arc(this.position.x,this.position.y, this.width, 0, 2 * Math.PI);
 		context.fill();
