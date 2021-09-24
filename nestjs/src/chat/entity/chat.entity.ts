@@ -29,9 +29,6 @@ export class ChatEntity {
 	@OneToMany(() => BanEntity, bans => bans.chat, {cascade: true})
 	bans: BanEntity[];
 
-	@OneToMany(() => BanEntity, bans => bans.chat, {cascade: true})
-	mutes: BanEntity[];
-
 	@OneToMany(type => MessageEntity, message => message.chat)
 	messages: MessageEntity[];
 

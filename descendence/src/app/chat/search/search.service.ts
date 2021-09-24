@@ -66,6 +66,11 @@ export class SearchService {
 	}
 
 	addBan(data: editChatModel): Observable<any> {
+		console.log("SERVICE")
+		console.log(typeof data.bannedTime);
+		console.log("is data object?")
+		console.log(typeof data.bannedTime.getTime === 'function');
+
 		return this.http.post(this.url + 'add-ban', data);
 	}
 

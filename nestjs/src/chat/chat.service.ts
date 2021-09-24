@@ -10,14 +10,11 @@ import { MessageEntity } from "@chat/entity/message.entity";
 import { UserDTO } from "@user/dto/user.dto";
 import { UserEntity } from "@user/entities/user.entity";
 import * as bcrypt from 'bcryptjs';
-import { stringify } from "querystring";
-import { Observable } from "rxjs";
-import { updateChatDTO, updateUsersDTO } from "./chat.controller";
-import { ChatGateway } from "./chat.gateway";
+import { updateChatDTO } from "./chat.controller";
 import { BanEntity } from "./entity/ban.entity";
 
 export class banDTO {
-	// id: string;
+	type: string;
 	user: UserDTO;
 	endTime: Date;
 	chat: ChatEntity;
@@ -37,38 +34,79 @@ export class ChatService {
 	}
 
 	private isCurrent(time: Date) {
-		let now = new Date();
-		if (time < now) {
-			console.log("Selected date is in the past");
-			return false;
-		} else {
-			console.log("Selected date is NOT in the past");
-			return true;
+		if (!this.isValidDate(time)) {
+			throw "invalid date";
+			//todo: idk?
 		}
-
+		let now = new Date();
+		console.log("iscurrent: ", time, " < ", now);
+		return (time.getTime() > now.getTime());
 	}
 
+	private chatEntityToDTOArray(chats: ChatEntity[]): ChatDTO[] {
+		let res: ChatDTO[] = [];
+		for (let chat of chats) {
+			let convertedChat: ChatDTO = {
+				id: chat.id,
+				name: chat.name,
+				visibility: chat.visibility,
+				admins: chat.admins,
+				users: chat.users,
+				messages: chat.messages
+			}
+			res.push(convertedChat);
+		}
+		return res;
+	}
+
+	private chatEntityToDTO(chat: ChatEntity): ChatDTO {
+		let res: ChatDTO = {
+			id: chat.id,
+			name: chat.name,
+			visibility: chat.visibility,
+			admins: chat.admins,
+			users: chat.users,
+			messages: chat.messages
+		}
+		return res;
+	}
+
+	private async banExists(username: string, bans: BanEntity[]): Promise<BanEntity> {
+		for(let ban of bans) {
+			console.log(ban);
+			let fullBan = await this.banRepo.findOne({
+				where: {id: ban.id},
+				relations: ["user"]
+			})
+			console.log("full ban: ")
+			console.log(fullBan);
+			if (fullBan.user.intra_name === username) {
+				return ban;
+			}
+		}
+	}
+
+	private isValidDate(d): boolean {
+		return d instanceof Date && !isNaN(d.getTime());
+	  }
+
 	async getChatById(uuid: string): Promise<ChatDTO> {
-		const item = await this.repo.findOne({
+		const item: ChatEntity = await this.repo.findOne({
 			where: {id: uuid},
 			relations: ["users", "admins"]
 		});
 
-		const msgs = (await this.getMessagesFromChat(uuid)).reverse();
+		let msgs: MessageDTO[] = (await this.getMessagesFromChat(uuid)).reverse();
 		if (!item) {
 			console.log("not finding chat in chatbyId");
 			throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
 		}
-
-		const ret: ChatDTO = {
-			id: item.id,
-			name: item.name,
-			visibility: item.visibility,
-			admins: item.admins,
-			users: item.users,
-			messages: msgs
+		let chat: ChatDTO = this.chatEntityToDTO(item);
+		if (!msgs) {
+			msgs = [];
 		}
-		return toPromise(ret);
+		chat.messages = msgs;
+		return toPromise(chat);
 	}
 
 	private getMatchingUsers(items: ChatEntity[], users: UserDTO[]) {
@@ -99,7 +137,7 @@ export class ChatService {
 	}
 
 	async getAllChatsByUser(username: string): Promise<ChatDTO[]> {
-		const chats = await this.repo
+		const chats: ChatEntity[] = await this.repo
 		.createQueryBuilder('chat')
 		.innerJoin('chat.users', 'users')
 		.where('users.intra_name = :username', { username })
@@ -115,7 +153,8 @@ export class ChatService {
 		if (!chats) {
 			throw new HttpException("no such user", HttpStatus.BAD_REQUEST);
 		}
-		return toPromise(chats)
+		
+		return toPromise(this.chatEntityToDTOArray(chats));
 	}
 
 	async getChatByUsers(users: UserDTO[]): Promise<ChatDTO> {
@@ -128,30 +167,24 @@ export class ChatService {
 		if (!item) {
 			return null;
 		}
-		const ret: ChatDTO = {
-			id: item.id,
-			name: item.name,
-			visibility: item.visibility,
-			admins: item.admins,
-			users: item.users,
-			messages: item.messages
-		}
-		return toPromise(ret);
+		return toPromise(this.chatEntityToDTO(item));
 
 	}
 
 	async getChatByName(name: string, username: string): Promise<ChatDTO[]> {
-		let chats = await this.repo
+		let chats: ChatEntity[] = await this.repo
 		.createQueryBuilder("chat")
 		.innerJoinAndSelect("chat.users", "users")
 		.where("chat.name = :name", {name})
 		.andWhere("(chat.visibility != 'private' OR users.intra_name = :username)", {username})
 		.getMany()
 
-		return toPromise(chats);
+		return toPromise(this.chatEntityToDTOArray(chats));
 	}
 
 	async createNewChat(newChat: NewChatDTO): Promise<ChatDTO> {
+
+		//TODO: ???
 		let item: ChatEntity = await this.repo.create({
 			name: newChat.name,
 			users: newChat.users,
@@ -160,18 +193,12 @@ export class ChatService {
 			password: newChat.password
 		});
 		item = await this.repo.save(item);
+		let ret: ChatDTO = this.chatEntityToDTO(item);
 		let msg: MessageDTO[] = []
 		if (item.messages) {
 			msg = item.messages;
 		}
-		const ret: ChatDTO = {
-			id: item.id,
-			name: item.name,
-			visibility: item.visibility,
-			admins: item.admins,
-			users: item.users,
-			messages: msg
-		}
+		ret.messages = msg;
 		return toPromise(ret);
 	}
 
@@ -242,19 +269,41 @@ export class ChatService {
 
 	async userCanAccessChat(username: string, chatId: string):  Promise<boolean>{
 		// const chat = await this.getChatById(chatId);
-		const chat = await this.repo.findOne({
-			where: {id: chatId},
-			relations: ["bans", "users", "bans.user"]
-		})
+		// const chat = await this.repo.findOne({
+			// where: {id: chatId},
+			// relations: ["bans", "users", "bans.user"]
+		// })
+
+		const chat: ChatEntity = await this.repo
+			.createQueryBuilder('chat')
+			.where('chat.id = :id', {id: chatId})
+			.leftJoinAndSelect('chat.bans', 'bans', 'bans.type = :type', {type: "ban"})
+			.leftJoinAndSelect('chat.users', 'users')
+			.getOne();
+
+
 		console.log(chat);
-		for (let ban of chat.bans) {
-			console.log(ban);
-			console.log(username);
-			if (ban.user.intra_name === username && this.isCurrent(ban.endTime)) {
-				console.log("i should be banned");
-				throw new HttpException("you are banned", HttpStatus.NOT_ACCEPTABLE);
+		try {
+			console.log("bans:");
+			console.log(chat.bans)
+			let ban = await this.banExists(username, chat.bans);
+			if (ban && this.isCurrent(ban.endTime)) {
+				console.log("creep is banned");
+				throw new HttpException("you're banned creep", HttpStatus.NOT_ACCEPTABLE);
 			}
+		} catch (error) {
+			throw error;
+			//TODO: idk about this man
 		}
+		// for (let ban of chat.bans) {
+			// console.log(ban);
+			// console.log(username);
+			//TODO: umm do i need to load this?
+			// if (ban.user.intra_name === username && this.isCurrent(ban.endTime)) {
+				// console.log("i should be banned");
+				// throw new HttpException("you are banned", HttpStatus.NOT_ACCEPTABLE);
+			// }
+		// }
 		if (chat.visibility !== 'public') {
 			if (this.userExists(username, chat.users)) {
 				return true;
@@ -275,11 +324,16 @@ export class ChatService {
 		});
 		if (!this.userExists(user.intra_name, chat.users)) {
 			chat.users.push(user);
-			const lol = await this.repo.manager.save(chat);
-			return lol;
-		} else {
-			return chat;
-		}//TODO: make sure this is the correct format
+			// const lol = await this.repo.manager.save(chat);
+			chat = await this.repo.manager.save(chat);
+			// return lol;
+		}
+		//  else {
+			// return chat;
+			// chat = await this.repo.manager.save(chat);
+		// }//TODO: make sure this is the correct format
+		//TODO: I hope this works. please test
+		return toPromise(this.chatEntityToDTO(chat));
 	}
 
 	async userInChat(username: string, id: string): Promise<boolean> {
@@ -292,6 +346,11 @@ export class ChatService {
 		}
 		return false;
 	}
+			// chat = await this.repo.manager.save(chat);
+		// }
+		//TODO: I hope this works. please test
+		// return toPromise(this.chatEntityToDTO(chat));
+	// }
 
 	async updateAdmins(admins: updateChatDTO): Promise<ChatDTO> {
 		Logger.log("update admins:")
@@ -306,105 +365,144 @@ export class ChatService {
 			throw new HttpException("Chat not found", HttpStatus.NOT_FOUND);
 		}
 		console.log("found chat");
-		// for (let username of admins.admin) {
-			let user = await this.userRepo.findOne({
-				where: {intra_name: admins.admin}
-			})
-			if (!user) {
-				throw new HttpException("User not found", HttpStatus.NOT_FOUND);
-			}
-			console.log("lol");
-			console.log(chat);
-			console.log(user);
-			if (!this.userExists(user.intra_name, chat.users)) {
-				chat.users.push(user);
-			}
-			chat.admins.push(user);
-			console.log(user);
-		// }
-		//TODO: do not add duplicate admins
-		const lol = await this.repo.save(chat);
-		console.log(lol);
-		return lol;
-	}
-
-	async addBannedUser(ban: updateChatDTO): Promise<ChatDTO> {
-		let chat: ChatEntity = await this.repo.findOne({
-			where: {id: ban.id},
-			relations: ["bans"]
-		});
-		// for (let username of ban.users) {
-			let user = await this.userRepo.findOne({
-				where: {intra_name: ban.bannedUser}
-			})
-			if (!user) {
-				throw new HttpException("User not found", HttpStatus.NOT_FOUND);
-			}
-			// chat.admins.push(user);
-			
-			// chat.bans.push(user);
-
-			console.log(user);
-			// let b: banDTO = {
-				// id: "",
-				// user: user,
-				// chat: chat,
-				// endTime: ban.bannedTime,
-
-			// }
-			//TODO: do not multpile bans for same person and chat. just extend the time if needed
-			let b = await this.banRepo.create({
-				chat: chat,
-				user: user,
-				endTime: ban.bannedTime
-			});
-			chat.bans.push(b);
-		// }
-		const lol = await this.repo.save(chat);
-		console.log(lol);
-		return lol;
-	}
-
-	async addMutedUser(ban: updateChatDTO): Promise<ChatDTO> {
-		console.log("muting a user");
-		let chat: ChatEntity = await this.repo.findOne({
-			where: {id: ban.id},
-			relations: ["mutes"]
-		});
+		let user = await this.userRepo.findOne({
+			where: {intra_name: admins.admin}
+		})
+		if (!user) {
+			throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+		}
+		console.log("lol");
 		console.log(chat);
-		console.log(ban);
-		// for (let username of ban.users) {
-			console.log("username: ", ban.mutedUser);
-			let user = await this.userRepo.findOne({
-				where: {intra_name: ban.mutedUser}
-			})
-			console.log(user);
-			if (!user) {
-				throw new HttpException("User not found", HttpStatus.NOT_FOUND);
-			}
-			// chat.admins.push(user);
-			
-			// chat.bans.push(user);
+		console.log(user);
+		if (!this.userExists(user.intra_name, chat.users)) {
+			chat.users.push(user);
+		}
+		if (!this.userExists(user.intra_name, chat.admins)) {
+			chat.admins.push(user);
+			//TODO: do not add duplicate admins. DOne?
+		}
+		console.log(user);
+		const res = await this.repo.save(chat);
+		return toPromise(this.chatEntityToDTO(res));
+	}
 
-			console.log(user);
-			// let b: banDTO = {
-				// id: "",
-				// user: user,
-				// chat: chat,
-				// endTime: ban.bannedTime,
-
+	async addBannedUser(updateChat: updateChatDTO): Promise<ChatDTO> {
+		if (!this.isValidDate(updateChat.bannedTime)) {
+			console.log("error aa bad date");
+			throw new HttpException("invalid date", HttpStatus.BAD_REQUEST)
+		}
+		// let chat: ChatEntity = await this.repo.findOne({
+			// where: {id: updateChat.id},
+			// relations: ["bans"]
+		// });
+		const chat: ChatEntity = await this.repo
+			.createQueryBuilder('chat')
+			.where('chat.id = :id', {id: updateChat.id})
+			.leftJoinAndSelect('chat.bans', 'bans', 'bans.type = :type', {type: "ban"})
+			.getOne();
+		let user = await this.userRepo.findOne({
+			where: {intra_name: updateChat.bannedUser}
+		})
+		if (!user) {
+			throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+		}
+		//TODO: do not multpile bans for same person and chat. just extend the time if needed
+		let b: BanEntity;
+		try {
+			b = await this.banExists(user.intra_name, chat.bans);
+			console.log("ban exists");
+			console.log(b.endTime, " < ", updateChat.bannedTime);
+			console.log(b.endTime < updateChat.bannedTime);
+			// if (typeof b.endTime.getTime === 'function') {
+				// console.log("db item is date")
+				// console.log(typeof updateChat.bannedTime);
+			// if (typeof updateChat.bannedTime.getTime === 'function') {
+				// console.log("input is date");
+				console.log("get time");
+				console.log(b.endTime.getTime(), " ", updateChat.bannedTime.getTime());
+				console.log("compare")
+				console.log(b.endTime.getTime() < updateChat.bannedTime.getTime());
 			// }
-			//TODO: do not multpile bans for same person and chat. just extend the time if needed
-			let b = await this.banRepo.create({
+			// }
+			// if (b.endTime < updateChat.bannedTime) {
+			if (b.endTime.getTime() < updateChat.bannedTime.getTime()) {
+				console.log("updating");
+				b.endTime = updateChat.bannedTime;
+			}
+			b = await this.banRepo.save(b);
+		} catch (error) {
+			b = await this.banRepo.create({
 				chat: chat,
 				user: user,
-				endTime: ban.bannedTime
+				endTime: updateChat.bannedTime,
+				type: "ban"
 			});
-			chat.mutes.push(b);
+			console.log("created new ban");
+		}
+		chat.bans.push(b);
+		console.log(b);
+		const res = await this.repo.save(chat);
+		return toPromise(this.chatEntityToDTO(res));
+	}
+
+	async addMutedUser(updateChat: updateChatDTO): Promise<ChatDTO> {
+		if (!this.isValidDate(updateChat.bannedTime)) {
+			console.log("error aa bad date");
+			throw new HttpException("invalid date", HttpStatus.BAD_REQUEST)
+		}
+		// let chat: ChatEntity = await this.repo.findOne({
+		// 	where: {id: updateChat.id},
+		// 	relations: ["mutes"]
+		// });
+		// let chat: ChatEntity = await this.repo
+			// .createQueryBuilder("chat")
+			// .where({id: updateChat.id})
+			// .leftJoinAndSelect("chat.mutes", "mutes")
+			// .where("chat.mutes.type = mute")
+			// .getOne();
+	
+		//THIS WILL ONLY RETURN CHATS WHEN THEY HAVE BANS TYPE MUTE
+		const chat: ChatEntity = await this.repo
+			.createQueryBuilder('chat')
+			.where('chat.id = :id', {id: updateChat.id})
+			.leftJoinAndSelect('chat.bans', 'bans', 'bans.type = :type', {type: "mute"})
+			.getOne();
+
+		// console.log(chat);
+		// if (!chat) {
+			// throw "yeet";
 		// }
-		const lol = await this.repo.save(chat);
-		console.log(lol);
-		return lol;
+		// throw "aaa";
+		let user = await this.userRepo.findOne({
+			where: {intra_name: updateChat.bannedUser}
+		})
+		console.log(user);
+		if (!user) {
+			throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+		}
+		let mute: BanEntity;
+		try {
+			mute = await this.banExists(user.intra_name, chat.bans);
+			if (mute.endTime.getTime() < updateChat.bannedTime.getTime()) {
+				mute.endTime = updateChat.bannedTime;
+			}
+		} catch (error) {
+			mute = await this.banRepo.create({
+				chat: chat,
+				user: user,
+				endTime: updateChat.bannedTime,
+				type: "mute"
+			});
+		}
+		chat.bans.push(mute);
+		const res = await this.repo.save(chat);
+		console.log(res);
+		const test: ChatEntity = await this.repo.findOne({
+			where: {id: updateChat.id},
+			relations: ["bans", "messages", "users", "admins"]
+		})
+		console.log(test);
+		return toPromise(this.chatEntityToDTO(res));
 	}
 
 	async editVisibility(data: updateChatDTO): Promise<ChatDTO> {
@@ -417,29 +515,31 @@ export class ChatService {
 		}
 		if (data.visibility === 'protected') {
 			chat.password = data.password;
+		} else {
+			chat.password = ""; //TODO: is this gud?
 		}
 		console.log("editing visibility");
 		console.log(data);
 		let res = await this.repo.save(chat);
 		console.log(res);
-		return res;
+		return toPromise(this.chatEntityToDTO(chat));
 	}
 
-	async userIsMuted(user: UserDTO, chatId) {
-		const chatMutes = await this.repo.findOne({
-			where: {id: chatId},
-			relations: ["mutes", "mutes.user"]
-		})
+	async userIsMuted(user: UserDTO, chatId: string) {
+		const chatMutes: ChatEntity = await this.repo
+			.createQueryBuilder('chat')
+			.where('chat.id = :id', {id: chatId})
+			.leftJoinAndSelect('chat.bans', 'bans', 'bans.type = :type', {type: "mute"})
+			.getOne();
 		console.log(chatMutes);
-		for(let mute of chatMutes.mutes) {
-			console.log("mute");
-			console.log(mute);
-			console.log(user);
-			if (mute.user.intra_name === user.intra_name && this.isCurrent(mute.endTime)) {//TODO: make sure mute is current
+		try {
+			let ban = await this.banExists(user.intra_name, chatMutes.bans)
+			if (ban && this.isCurrent(ban.endTime)) {
 				return true;
 			}
-		}	
-		return false;
+		} catch (error) {
+			return false
+		}
 	}
 
 	async userIsAdmin(id: string, username: string): Promise<boolean> {

@@ -39,10 +39,9 @@ export interface createChatModel {
 export interface editChatModel {
 	id: string,
 	admin: string,
-	mutedUser: string,
-	mutedTime: Date,
 	bannedUser: string,
 	bannedTime: Date,
+	banType: string,
 	visibility: string,
 	password: string
 }

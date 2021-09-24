@@ -118,10 +118,9 @@ export class SettingsComponent implements OnInit {
 		let data: editChatModel = {
 			id: this.chat.id,
 			admin: this.addAdminForm.controls['username'].value,
-			mutedUser: "",
-			mutedTime: new Date,
 			bannedUser: "",
 			bannedTime: new Date,
+			banType: "",
 			visibility: "",
 			password: ""
 		}
@@ -139,10 +138,9 @@ export class SettingsComponent implements OnInit {
 			let data: editChatModel = {
 				id: this.chat.id,
 				admin: "",
-				mutedUser: "",
-				mutedTime: new Date,
 				bannedUser: "",
 				bannedTime: new Date,
+				banType: '',
 				visibility: this.editVisibilityForm.controls['visibility'].value,
 				password: this.encryptPassword(this.editVisibilityForm.controls['password'].value)
 			}
@@ -160,10 +158,9 @@ export class SettingsComponent implements OnInit {
 		let data: editChatModel = {
 			id: this.chat.id,
 			admin: "",
-			mutedUser: this.addMuteForm.controls['username'].value,
-			mutedTime: new Date(this.addMuteForm.controls['time'].value),
-			bannedUser: "",
-			bannedTime: new Date,
+			bannedUser: this.addMuteForm.controls['username'].value,
+			bannedTime: new Date(this.addMuteForm.controls['time'].value),//TODO: isDate validator
+			banType: 'mute',
 			visibility: "",
 			password: ""
 		}
@@ -178,15 +175,17 @@ export class SettingsComponent implements OnInit {
 		let data: editChatModel = {
 			id: this.chat.id,
 			admin: "",
-			mutedUser: "",
-			mutedTime: new Date,
 			bannedUser: this.addBanForm.controls['username'].value,
 			bannedTime: new Date(this.addBanForm.controls['time'].value),
+			banType: 'ban',
 			visibility: "",
 			password: ""
 		}
 		console.log("adding ban for:");
 		console.log(data);
+		console.log(typeof data.bannedTime);
+		console.log("is data object?")
+		console.log(typeof data.bannedTime.getTime === 'function');
 		this.searchService.addBan(data).subscribe((result) => {
 			console.log(result);
 		})

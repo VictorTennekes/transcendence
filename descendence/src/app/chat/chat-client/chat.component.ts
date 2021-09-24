@@ -60,6 +60,7 @@ import { retMessage, newMessage, chatModel } from './message.model';
 				this.searchService.userIsAdmin(this.chat.id).subscribe((result) => {
 					this.userIsAdmin = result;
 				});
+				console.log("here?");
 				this.chatService.receiveMessages().subscribe((msg) => {
 						console.log("chat is");
 						console.log(this.chat);

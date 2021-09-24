@@ -22,10 +22,9 @@ export class updateUsersDTO {
 export class updateChatDTO {
 	id: string;
 	admin: string;
-	mutedUser: string;
-	mutedTime: Date;
 	bannedUser: string;
 	bannedTime: Date;
+	banType: string;
 	visibility: string;
 	password: string;
 }
@@ -167,6 +166,12 @@ export class ChatController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async addBan(@Body() data: updateChatDTO) {
+		console.log("add ban");
+		console.log(typeof data.bannedTime)
+		console.log(typeof data.bannedTime.getTime === 'function')
+		data.bannedTime = new Date(data.bannedTime)
+		console.log(typeof data.bannedTime)
+		console.log(typeof data.bannedTime.getTime === 'function')
 		return this.service.addBannedUser(data);
 	}
 
@@ -174,6 +179,7 @@ export class ChatController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async addMute(@Body() data: updateChatDTO) {
+		data.bannedTime = new Date(data.bannedTime)
 		return this.service.addMutedUser(data);
 	}
 

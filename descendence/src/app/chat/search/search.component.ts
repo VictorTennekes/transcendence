@@ -5,7 +5,7 @@ import { ChatComponent } from "../chat-client/chat.component";
 import { ChatService } from "../chat-client/chat.service";
 import { chatModel, createChatModel } from "../chat-client/message.model";
 import { SearchService } from "./search.service";
-
+//TODO: display error when can't access chat
 @Component({
 	selector: 'chat-search',
 	templateUrl: './search.component.html',
