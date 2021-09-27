@@ -110,10 +110,10 @@ export class SettingsComponent implements OnInit {
 
 	public encryptPassword(value: string): string {
 		console.log("encrypting", value);
-		if (value) {
+		if (value && value != "") {
 			return bcrypt.hashSync(value, bcrypt.genSaltSync());
 		}
-		throw "oops";
+		return "";
 	}
 
 
@@ -143,27 +143,28 @@ export class SettingsComponent implements OnInit {
 	public submitVisibility() {
 		console.log(this.editVisibilityForm.value);
 		console.log(this.editVisibilityForm.controls['password'].value);
-		try {
-			let data: editChatModel = {
-				id: this.chat.id,
-				admin: "",
-				bannedUser: "",
-				bannedTime: new Date,
-				banType: '',
-				visibility: this.editVisibilityForm.controls['visibility'].value,
-				password: this.encryptPassword(this.editVisibilityForm.controls['password'].value)
-			}
-			console.log(data);
-			this.searchService.editVisibility(data).subscribe((result) => {
-				console.log(result);
-			})
-			this.editVisibilityForm.controls['password'].reset();
-			this.error = "";
-		} catch (error) {
-			console.log(error);
-			// this.error = "lol";
-			this.error = error.error.message;
+		let data: editChatModel = {
+			id: this.chat.id,
+			admin: "",
+			bannedUser: "",
+			bannedTime: new Date,
+			banType: '',
+			visibility: this.editVisibilityForm.controls['visibility'].value,
+			password: this.encryptPassword(this.editVisibilityForm.controls['password'].value)
 		}
+		console.log(data);
+		this.searchService.editVisibility(data).subscribe((result) => {
+			console.log(result);
+		},
+		(error) => {
+			console.log("error");
+			console.log(error);
+			this.error = error.error.message;
+		})
+			// this.editVisibilityForm.controls['password'].reset();
+			// this.error = "";
+			// this.error = "lol";
+			// this.error = error.error.message;
 	}
 
 	public submitMute() {

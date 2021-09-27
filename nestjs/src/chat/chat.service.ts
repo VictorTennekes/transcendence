@@ -518,6 +518,8 @@ export class ChatService {
 	}
 
 	async editVisibility(data: updateChatDTO): Promise<ChatDTO> {
+		console.log("im here in edit visibility");
+		console.log(data);
 		let chat: ChatEntity = await this.repo.findOne({
 			where: {id: data.id}
 		})
