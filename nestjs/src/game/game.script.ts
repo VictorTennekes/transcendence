@@ -1,3 +1,6 @@
+import { Logger } from "@nestjs/common";
+import { Match } from "src/match/match.class";
+
 const PADDLE_WIDTH = 22;
 const PADDLE_HEIGHT = 150;
 const BALL_SIZE = 15;
@@ -44,10 +47,11 @@ export class Game {
 	}
 
 	constructor(
+		match: Match
 	) {
 		//initializing objects
-		this.players['one'] = new Player(WALL_OFFSET,Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
-		this.players['two'] = new Player(Game.canvas.width - (WALL_OFFSET + PADDLE_WIDTH), Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
+		this.players[match.creator] = new Player(WALL_OFFSET,Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
+		this.players[match.opponent] = new Player(Game.canvas.width - (WALL_OFFSET + PADDLE_WIDTH), Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
 		this.ball = new Ball(Game.canvas.width / 2 - BALL_SIZE / 2, Game.canvas.height / 2 - BALL_SIZE / 2);
 	}
 
@@ -59,9 +63,14 @@ export class Game {
 	}
 
 	update() {
-		this.players['one'].update(Game.canvas);
-		this.players['two'].update(Game.canvas);
-		this.ball.update(this.players['one'], this.players['two'], Game.canvas);
+		for (const player in this.players) {
+			this.players[player].update(Game.canvas);
+		}
+		const keys = Object.keys(this.players);
+		// this.players['one'].update(Game.canvas);
+		// this.players['two'].update(Game.canvas);
+		// Logger.log(keys);
+		this.ball.update(this.players[keys[0]], this.players[keys[1]], Game.canvas);
 	}
 }
 

@@ -46,9 +46,13 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			this.server.to(match).emit('ready');
 			var interval = setInterval(() => {
 				const accepted = this.matchService.isAccepted(match);
-				this.server.emit('accepted', accepted);
+				this.server.to(match).emit('accepted', accepted);
+				if (accepted) {
+					this.matchService.createGame(match);
+				}
+				//send 'accepted' state to the clients
 				clearInterval(interval);
-			},10000)
+			},10000);
 		}
 	}
 
@@ -62,9 +66,9 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleConnection(@ConnectedSocket() client: Socket) {
 //		const user = getUserFromSocket(client, this.userService);
-		Logger.log("MATCH GATEWAY - CLIENT[${client.id}] - JOINED");
+		Logger.log(`MATCH GATEWAY - CLIENT[${client.id}] - JOINED`);
 	}
 	handleDisconnect(@ConnectedSocket() client: Socket) {
-		Logger.log("MATCH GATEWAY - CLIENT[${client.id}] - LEFT");
+		Logger.log(`MATCH GATEWAY - CLIENT[${client.id}] - LEFT`);
 	}
 }

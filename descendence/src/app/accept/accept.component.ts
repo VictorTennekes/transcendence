@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AcceptService } from '../accept.service';
 import { CountdownComponent, CountdownConfig } from 'ngx-countdown';
 import { MatchService } from '../match.service';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-accept',
@@ -20,6 +21,7 @@ export class AcceptComponent implements OnInit {
 	};
 
 	constructor(
+		private readonly router: Router,
 		private readonly acceptService: AcceptService,
 		private readonly matchService: MatchService
 	) { }
@@ -39,7 +41,7 @@ export class AcceptComponent implements OnInit {
 			this.close();
 			if (accepted) {
 				//both players accepted -> direct to game page
-				
+				this.router.navigateByUrl('/home/game');
 			}
 			else {
 				//did this client accept?

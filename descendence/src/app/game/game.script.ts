@@ -20,7 +20,7 @@ interface Coordinate {
 export class Game {
 	private gameContext: CanvasRenderingContext2D;
 	private players: {[id: string] : Player} = {};
-	private ball: Ball;
+	private ball: Ball = new Ball();
 
 	// static setKeyPressed(playerString: string, keyString: string, state: boolean) {
 	// 	if (keyString !== 'ArrowUp' && keyString !== 'ArrowDown') {
@@ -40,11 +40,6 @@ export class Game {
 		}
 		else return ;
 		this.gameContext.font = "30px Orbitron";
-
-		//initializing objects
-		this.players['one'] = new Player(WALL_OFFSET,this.gameCanvas.height / 2 - PADDLE_HEIGHT / 2);
-		this.players['two'] = new Player(this.gameCanvas.width - (WALL_OFFSET + PADDLE_WIDTH), this.gameCanvas.height / 2 - PADDLE_HEIGHT / 2);
-		this.ball = new Ball(this.gameCanvas.width / 2 - BALL_SIZE / 2, this.gameCanvas.height / 2 - BALL_SIZE / 2);
 	}
 
 	drawScore() {
@@ -53,8 +48,9 @@ export class Game {
 		this.gameContext.fillStyle = "#fff";
 //		this.gameContext.strokeRect(10,10,this.gameCanvas.width - 20 ,this.gameCanvas.height - 20);
 
-		this.gameContext.fillText(this.players['one'].score.toString(), (this.gameCanvas.width / 2) - 80, 50);
-		this.gameContext.fillText(this.players['two'].score.toString(), (this.gameCanvas.width / 2) + 80, 50);
+		const keys = Object.keys(this.players);
+		this.gameContext.fillText(this.players[keys[0]].score.toString(), (this.gameCanvas.width / 2) - 80, 50);
+		this.gameContext.fillText(this.players[keys[1]].score.toString(), (this.gameCanvas.width / 2) + 80, 50);
 	}
 	drawBoardDetails() {
 		//draw court outline
@@ -72,8 +68,12 @@ export class Game {
 	}
 
 	updateFromData(data: any) {
-		this.players['one'].updateFromData(data.players['one']);
-		this.players['two'].updateFromData(data.players['two']);
+		for (const key in this.players) {
+			if (!this.players[key]) {
+				this.players[key] = new Player();
+			}
+			this.players[key].updateFromData(data.players[key]);
+		}
 		this.ball.position = data.ball.position;
 //		this.ball.update(Game.players['one'].paddle, Game.players['two'].paddle, this.gameCanvas);
 	}
@@ -84,8 +84,9 @@ export class Game {
 		
 //		this.drawBoardDetails();
 		this.drawScore();
-		this.players['one'].paddle.draw(this.gameContext);
-		this.players['two'].paddle.draw(this.gameContext);
+		for (const key in this.players) {
+			this.players[key].paddle.draw(this.gameContext);
+		}
 		this.ball.draw(this.gameContext);
 	}
 }
@@ -95,17 +96,11 @@ class Entity {
 	height:number;
 	position: Coordinate;
 	velocity: Coordinate;
-	constructor(w:number,h:number,x:number,y:number) {
-		this.width = w;
-		this.height = h;
-		this.position = {
-			x,
-			y
-		};
-		this.velocity = {
-			x: 0,
-			y: 0,
-		};
+	constructor() {
+		this.width = 1;
+		this.height = 1;
+		this.position = {x: 1,y: 1};
+		this.velocity = {x: 1,y: 1};
 	}
 	draw(context: CanvasRenderingContext2D) {
 		context.fillStyle = "#fff";
@@ -119,9 +114,9 @@ class Player {
 
 	score: number;
 
-	constructor(x:number,y:number) {
-		this.score = 0;
-		this.paddle = new Paddle(x,y);
+	constructor() {
+		this.score = 1;
+		this.paddle = new Paddle();
 	}
 	updateFromData(data: any) {
 		this.paddle.position = data.paddle.position;
@@ -133,8 +128,8 @@ class Paddle extends Entity {
 	
 	private speed:number = 10;
 	
-	constructor(x:number,y:number) {
-		super(PADDLE_WIDTH,PADDLE_HEIGHT,x,y);
+	constructor() {
+		super();
 	}
 	drawSide(context: CanvasRenderingContext2D, y: number) {
 		context.fillStyle = "#fff";
@@ -154,8 +149,8 @@ class Ball extends Entity {
 	
 	private speed:number = BALL_SPEED;
 	
-	constructor(x:number,y:number) {
-		super(BALL_SIZE,BALL_SIZE,x,y);
+	constructor() {
+		super();
 
 		var randomDirection = Math.floor(Math.random() * 2) + 1;
 		if (randomDirection % 2) {

@@ -1,8 +1,9 @@
 import { Controller, Get, Post, UseGuards, UseFilters, Req, Param, Logger } from '@nestjs/common';
-import { MatchService, MatchSettings } from './match.service';
 import { No2FAGuard } from 'src/auth/no-2fa.guard';
 import { UnauthorizedFilter } from 'src/auth/unauthorized.filter';
 import { request } from 'http';
+import { MatchService } from './match.service';
+import { MatchSettings } from './match.class';
 
 @Controller('match')
 export class MatchController {

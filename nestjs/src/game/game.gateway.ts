@@ -3,16 +3,16 @@ import { OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketGatew
 import { ConnectedSocket } from "@nestjs/websockets";
 import { Socket } from "socket.io";
 import { Game } from "./game.script";
+import { GameService } from "./game.service";
 
-@WebSocketGateway({ namespace: '/game'})
+@WebSocketGateway({ namespace: '/match'})
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer() server;
-	game: Game;
 	interval: {[key: string] : NodeJS.Timer} = {};
 
-	constructor() {
-		this.game = new Game();
-		this.game.update();
+	constructor(
+		private readonly gameService: GameService
+	) {
 	}
 
 	afterInit() {
@@ -24,33 +24,33 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		clearInterval(this.interval[client.id]);
 	}
 
-	gameLoop() {
-		this.game.update();
-		const data = this.game.data;
-		this.server.emit('gamedata', data);
+	sendGameUpdate(room: string, data: any) {
+		this.server.to(room).emit('gamedata', data);
 	}
+
+	//TODO: validate client IDs first
 
 	@SubscribeMessage('press_up')
 	press_up(@ConnectedSocket() client) {
-		this.game.setKeyPressed('one', 'ArrowUp', true);
+		this.gameService.setKeyPressed(client.id, 'ArrowUp', true);
 	}
 	
 	@SubscribeMessage('release_up')
 	release_up(@ConnectedSocket() client) {
-		this.game.setKeyPressed('one', 'ArrowUp', false);
+		this.gameService.setKeyPressed(client.id, 'ArrowUp', false);
 	}
 	@SubscribeMessage('press_down')
 	press_down(@ConnectedSocket() client) {
-		this.game.setKeyPressed('one', 'ArrowDown', true);
+		this.gameService.setKeyPressed(client.id, 'ArrowDown', true);
 	}
 	
 	@SubscribeMessage('release_down')
 	release_down(@ConnectedSocket() client) {
-		this.game.setKeyPressed('one', 'ArrowDown', false);
+		this.gameService.setKeyPressed(client.id, 'ArrowDown', false);
 	}
 
 	handleConnection(@ConnectedSocket() client: Socket) {
 		Logger.log(`GAME GATEWAY - CLIENT[${client.id}] - JOINED]`);
-		this.interval[client.id] = setInterval(() => this.gameLoop(), 1000/60);
+		// this.interval[client.id] = setInterval(() => this.gameLoop(), 1000/60);
 	}
 }

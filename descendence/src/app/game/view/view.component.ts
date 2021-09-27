@@ -59,7 +59,7 @@ export class ViewComponent implements OnInit, AfterViewInit {
 		const canvas = <HTMLCanvasElement>document.getElementById('game-canvas');
 		this.game = new Game(canvas, this.client);
 		this.client.receiveGameData().subscribe((data) => {
-//			console.log(JSON.stringify(data));
+			console.log(JSON.stringify(data));
 			this.game.updateFromData(data);
 			this.game.draw();
 //			requestAnimationFrame(() => {return ;});
