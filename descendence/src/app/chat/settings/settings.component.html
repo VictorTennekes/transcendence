@@ -1,7 +1,7 @@
 <button mat-icon-button (click)="back()">
 	<mat-icon>arrow_back</mat-icon>
 </button>
-<form [formGroup]="addAdminForm" (ngSubmit)="submitAdmin()" (keyup.enter)="submitAdmin()">
+<form [formGroup]="addAdminForm" (ngSubmit)="submitAdmin()">
 	<h3>Add admin</h3>
 	<mat-form-field class="example-full-width" appearance="fill">
 		<mat-label>intra name</mat-label>
@@ -26,7 +26,7 @@
 	<button mat-raised-button type="submit">Mute</button>
 </form>
 
-<form [formGroup]="addBanForm" (ngSubmit)="submitBan()" (keyup.enter)="submitBan()">
+<form [formGroup]="addBanForm" (ngSubmit)="submitBan()">
 	<h3>Ban a user</h3>
 	<mat-form-field class="example-full-width" appearance="fill">
 		<mat-label>intra name</mat-label>
@@ -42,7 +42,7 @@
 	<button mat-raised-button type="submit">Ban</button>
 </form>
 
-<form [formGroup]="editVisibilityForm" (ngSubmit)="submitVisibility()" (keyup.enter)="submitVisibility()">
+<form [formGroup]="editVisibilityForm" (ngSubmit)="submitVisibility()">
 	<h3>Edit visibility</h3>
 	<mat-label>Edit visibility</mat-label>
 	<mat-radio-group name="visibility" formControlName="visibility">
