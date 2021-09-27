@@ -20,7 +20,7 @@ export interface MatchSettings {
 
 class Match {
 	private _creator: string;
-	private opponent: null | string = null;
+	private _opponent: null | string = null;
 	private _ready: boolean = false;
 	private _accepted: {[key: string] : boolean} = {};
 
@@ -37,6 +37,10 @@ class Match {
 		return this._creator;
 	}
 
+	get opponent() {
+		return this._opponent;
+	}
+
 	get ready() {
 		return this._ready;
 	}
@@ -49,15 +53,15 @@ class Match {
 		return (
 			this._ready && 
 			this._accepted[this.creator] === true &&
-			this._accepted[this.opponent] === true);
+			this._accepted[this._opponent] === true);
 	}
 
 	setOpponent(opponent: string) {
-		if (!!this.opponent) {
+		if (!!this._opponent) {
 			//error;
 		}
-		this.opponent = opponent;
-		this._accepted[this.opponent] = false;
+		this._opponent = opponent;
+		this._accepted[this._opponent] = false;
 		this._accepted[this.creator] = false;
 		this._ready = true;
 	}
@@ -82,7 +86,6 @@ class Match {
 @Injectable()
 export class MatchService {
 	constructor(
-		private readonly server: MatchGateway
 	) {}
 
 	matches: {[key: string] : Match} = {};
@@ -93,50 +96,48 @@ export class MatchService {
 		return id;
 	}
 
-	cancelMatch(id: string) {
-		Logger.log(`CANCELED ${id}`);
+	getMatchID(clientID: string) {
+		for (const key in this.matches) {
+			if (this.matches[key].creator === clientID || this.matches[key].opponent === clientID)
+				return key;
+		}
+		return null;
+	}
+
+	cancelMatch(clientID: string) {
+		const id = this.getMatchID(clientID);
+		if (!id) { //error
+			return ;
+		}
 		delete this.matches[id];
+		this.matches[id] = undefined;
 	}
 
 	//return the match (either found or created)
 	findMatch(user: string, settings: MatchSettings) {
 		//BUG: subsequent requests from the same user will make the creator and opponent the same user
 		for (const key in this.matches) {
+			//loop through all matches, trying to find a compatible match (based on 'settings')
 			if (this.matches[key].ready || this.matches[key].private)
 				continue ;
 			if (this.matches[key].settingCompare(settings)) {
 				this.matches[key].setOpponent(user);
-				//BUG: need this delay to make sure the opponent also has time to listen for the event :sweat_smile:
-				var interval = setInterval(() => {
-					this.server.sendReady(key);
-					var acceptTimer = setInterval(() => {
-						//check if the match is accepted
-						Logger.log(`MATCH ${key} SERVERSIDE ACCEPT CHECK!!`);
-						const accepted: boolean = this.isAccepted(key);
-						if (accepted) {
-							//if the match is accepted, let the players know and create the gimma
-							this.server.matchAccepted(key, true);
-						}
-						else {
-							//match is not accepted by both players, let the players know
-							this.server.matchAccepted(key, false);
-						}
-						clearInterval(acceptTimer);
-					}, 10000);
-					clearInterval(interval);
-				},1000);
-				return ({id: key});
+				return (key);
 			}
 		}
-		return ({
-			id: this.createMatch(user, settings)
-		});
+		//no compatible match found, create one instead
+		return (this.createMatch(user, settings));
 	}
 
-	acceptMatch(id: string, user: string) {
-		if (!this.matches[id])
+	acceptMatch(user: string) {
+		const id = this.getMatchID(user);
+		if (!id || !this.matches[id])
 			return ;
 		this.matches[id].setAccepted(user);
+	}
+
+	isReady(id: string) {
+		return this.matches[id]?.ready;
 	}
 
 	isAccepted(id: string) {

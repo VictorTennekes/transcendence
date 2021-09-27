@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatchService } from '../match.service';
 import { QueueService } from '../queue.service';
 import { AcceptService } from '../accept.service';
-import { Socket } from 'ngx-socket-io';
-import { GameSocket } from '../game/game.socket';
+import { MatchSocket } from './match.socket';
 
 @Component({
 	selector: 'app-match',
@@ -13,7 +12,6 @@ import { GameSocket } from '../game/game.socket';
 export class MatchComponent implements OnInit {
 	
 	constructor(
-		private readonly gameSocket: GameSocket,
 		private readonly matchService: MatchService,
 		private readonly queueService: QueueService,
 		private readonly acceptService: AcceptService
@@ -26,17 +24,14 @@ export class MatchComponent implements OnInit {
 	}
 
 	async findMatch() {
-		//when we receive the match id, we will listen to the event to be notified when the match is ready
-		this.gameSocket.fromEvent('found').subscribe((id: any) => {
-			console.log(`MATCH ID: ${id}`);
-			this.overlay = this.queueService.open({hasBackdrop: false});
-			//we'll only get a 'ready' notification once
-			this.gameSocket.fromOneTimeEvent(`ready${id}`).then(() => {
-				console.log("RECEIVED READY SIGNAL");
-				this.overlay.close();
-				this.overlay = this.acceptService.open();
-			});
-		})
+		this.matchService.findMatch({});
+		this.overlay = this.queueService.open({hasBackdrop: false});
+		//when the
+		this.matchService.matchReady().subscribe(() => {
+			console.log("RECEIVED READY SIGNAL");
+			this.overlay.close();
+			this.overlay = this.acceptService.open();
+		});
 	}
 	
 	ngOnInit(): void {

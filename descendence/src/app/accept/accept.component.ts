@@ -25,9 +25,8 @@ export class AcceptComponent implements OnInit {
 	) { }
 
 	accept() {
-		this.matchService.acceptMatch().subscribe(() => {
-			this.accepted = true;
-		});
+		this.matchService.acceptMatch();
+		this.accepted = true;
 	}
 
 	close() {
@@ -35,7 +34,7 @@ export class AcceptComponent implements OnInit {
 	}
 	
 	ngOnInit(): void {
-		this.matchService.matchAccepted().then((accepted) => {
+		this.matchService.matchAccepted().subscribe((accepted: any) => {
 			console.log(`MATCH ACCEPTED: ${accepted}`);
 			this.close();
 			if (accepted) {

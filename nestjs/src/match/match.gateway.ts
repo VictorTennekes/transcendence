@@ -6,12 +6,12 @@ import { getUserFromSocket } from '@shared/socket-utils';
 import { UserService } from '@user/user.service';
 import { MatchService } from './match.service';
 
-@WebSocketGateway()
+@WebSocketGateway({ namespace: '/match'})
 export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	constructor(
 		private readonly userService: UserService,
-//		private readonly matchService: MatchService //circular dependency :(
+		private readonly matchService: MatchService //circular dependency :(
 	) {}
 
 	@WebSocketServer()
@@ -22,12 +22,42 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.server.emit(`ready${id}`, {});
 	}
 
-	@SubscribeMessage('find')
-	findMatch(client: Socket, settings: any) {
+	@SubscribeMessage('cancel')
+	cancelMatch(client: Socket) {
+		this.matchService.cancelMatch(client.id);
 	}
 
-	matchAccepted(id: string, state: boolean) {
+	@SubscribeMessage('accept')
+	acceptMatch(client: Socket) {
+		this.matchService.acceptMatch(client.id);
+	}
+
+	@SubscribeMessage('find')
+	//listen for 'find' event
+	//find/create a match
+	//send 'ready' to both players once a match is found
+	findMatch(client: Socket, settings: any) {
+		const match: string = this.matchService.findMatch(client.id, settings);
+		Logger.log(`CLIENT ${client.id} -> MATCH ${match}`);
+		client.join(match); //add user to the room identified by the matchID
+		if (this.matchService.isReady(match)) {
+			//when the opponent connects, both players are notified that the match is ready
+			Logger.log(`MATCH ${match} -> ready`);
+			this.server.to(match).emit('ready');
+			var interval = setInterval(() => {
+				const accepted = this.matchService.isAccepted(match);
+				this.server.emit('accepted', accepted);
+				clearInterval(interval);
+			},10000)
+		}
+	}
+
+	notifyMatchState(id: string, state: boolean) {
 		this.server.emit(`accepted${id}`, state);
+	}
+
+	notifyReady(id: string, state: boolean) {
+		this.server.emit('ready', state);
 	}
 
 	handleConnection(@ConnectedSocket() client: Socket) {

@@ -50,6 +50,7 @@ import { MATERIAL_SANITY_CHECKS } from '@angular/material/core';
 import { ChatContainerComponent } from './chat/chat-container/chat-container.component';
 import { GameSocket } from './game/game.socket';
 import { ChatSocket } from './chat/chat.socket';
+import { MatchSocket } from './match/match.socket';
 
 // const config: SocketIoConfig = {
 // 	url: 'http://localhost:3000',
@@ -107,6 +108,7 @@ import { ChatSocket } from './chat/chat.socket';
 		FocusOverlayService,
 		SharedValidatorService,
 		chatGuardService,
+		MatchSocket,
 		ChatSocket,
 		GameSocket,
 		QueueService,
