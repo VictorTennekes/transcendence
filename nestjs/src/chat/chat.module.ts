@@ -14,7 +14,7 @@ import { ChatGateway } from './chat.gateway';
 	providers: [
 		ChatService,
 		UserService,
-		ChatGateway
+		ChatGateway,
 	],
 	imports: [
 		ConfigModule,

@@ -24,9 +24,9 @@ export class SessionSerializer extends PassportSerializer
 
 	async deserializeUser(payload: any, done: (err: any, id?: any) => void) {
 		//fetch the user from the database, using the intra_name;
-		console.log(`Deserializing: ${JSON.stringify(payload)}`);
+		// console.log(`Deserializing: ${JSON.stringify(payload)}`);
 		const user = await this.userService.findOne(payload.login);
-		console.log(`Deserializing: ${JSON.stringify(user)}`);
+		// console.log(`Deserializing: ${JSON.stringify(user)}`);
 		done(null, user);
 	}
 }

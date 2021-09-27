@@ -48,13 +48,15 @@ import { CountdownModule } from 'ngx-countdown';
 import { MATERIAL_SANITY_CHECKS } from '@angular/material/core';
 // import { ChatContainerComponent } from './chat-container/chat-container.component';
 import { ChatContainerComponent } from './chat/chat-container/chat-container.component';
+import { GameSocket } from './game/game.socket';
+import { ChatSocket } from './chat/chat.socket';
 
-const config: SocketIoConfig = {
-	url: 'http://localhost:3000',
-	options: {
-		transports: ['websocket']
-	}
-};
+// const config: SocketIoConfig = {
+// 	url: 'http://localhost:3000',
+// 	options: {
+// 		transports: ['websocket']
+// 	}
+// };
 
 @NgModule({
 	declarations: [
@@ -95,7 +97,7 @@ const config: SocketIoConfig = {
 		MatIconModule,
 		MatButtonModule,
 		MatRadioModule,
-		SocketIoModule.forRoot(config),
+		SocketIoModule,
 		CommonModule
 	],
 	entryComponents: [ FocusOverlayComponent, QueueComponent, AcceptComponent],
@@ -105,6 +107,8 @@ const config: SocketIoConfig = {
 		FocusOverlayService,
 		SharedValidatorService,
 		chatGuardService,
+		ChatSocket,
+		GameSocket,
 		QueueService,
 		AcceptService,
 		{

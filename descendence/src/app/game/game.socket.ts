@@ -5,9 +5,9 @@ import { Socket } from "ngx-socket-io";
 export class GameSocket extends Socket {
   constructor() {
     super({
-		url: 'http://localhost:3000',
+		url: 'http://localhost:3000/game',
 		options: {
-			path: 'game'
+			transports: ['websocket'],
 		},
 	});
   }

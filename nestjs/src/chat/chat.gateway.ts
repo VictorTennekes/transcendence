@@ -17,7 +17,7 @@ class socketData {
 	socket: Socket;
 }
 
-@WebSocketGateway()
+@WebSocketGateway({ namespace: '/chat'})
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer() server;
 

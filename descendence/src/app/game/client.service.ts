@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Socket } from 'ngx-socket-io';
+import { GameSocket } from './game.socket';
+// import { Socket } from 'ngx-socket-io';
 
 interface PlayerData {
 	keysPressed: boolean[];
@@ -15,7 +16,7 @@ interface GameData {
 export class ClientService {
 	initialized: boolean = false;
 	constructor(
-		private readonly socket: Socket,
+		private readonly socket: GameSocket,
 	) {
 	}
 

@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { of, BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Socket } from 'ngx-socket-io';
+import { GameSocket } from './game/game.socket';
+// import { Socket } from 'ngx-socket-io';
 
 enum SpeedMode {
 	SLOW,
@@ -26,7 +27,7 @@ export class MatchService {
 
 	constructor(
 		private readonly http: HttpClient,
-		private readonly socket: Socket
+		private readonly socket: GameSocket
 	) { }
 	
 	//emit the find request with these settings
