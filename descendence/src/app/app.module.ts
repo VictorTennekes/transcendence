@@ -37,8 +37,15 @@ import { MatRadioModule } from '@angular/material/radio';
 import { ChatPassComponent } from './chat/chat-pass/chat-pass.component';
 import { CommonModule } from '@angular/common';
 import { MATERIAL_SANITY_CHECKS } from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
 import { ChatContainerComponent } from './chat/chat-container/chat-container.component';
 import { SettingsComponent } from './chat/settings/settings.component';
+import {
+	NgxMatDatetimePickerModule,
+	NgxMatNativeDateModule,
+	NgxMatTimepickerModule
+  } from '@angular-material-components/datetime-picker';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transports: ['websocket']} };
 
@@ -78,6 +85,11 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transp
 		MatIconModule,
 		MatButtonModule,
 		MatRadioModule,
+		MatDatepickerModule,
+		MatNativeDateModule,
+		NgxMatNativeDateModule,
+		NgxMatTimepickerModule,
+		NgxMatDatetimePickerModule,
 		SocketIoModule.forRoot(config),
 		CommonModule
 	],

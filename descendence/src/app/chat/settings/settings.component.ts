@@ -21,6 +21,7 @@ export class SettingsComponent implements OnInit {
 				private searchService: SearchService) { }
 
 	// chatId: string = "";
+	error: string = "";
 	chat: chatModel = {
 		id: "",
 		name: "",
@@ -47,6 +48,8 @@ export class SettingsComponent implements OnInit {
 		username: new FormControl(''),
 		time: new FormControl('')
 	})
+
+	ummlol: string = "";
 
 	ngOnInit(): void {
 		this.route.params.subscribe((params) => {
@@ -126,6 +129,12 @@ export class SettingsComponent implements OnInit {
 		}
 		this.searchService.updateAdmins(data).subscribe((result) => {
 			console.log(result);
+			this.error = "";
+		},
+		(error) => {
+			console.log(error);
+			// this.error = "lol";
+			this.error = error.error.message;
 		})
 		this.addAdminForm.reset();
 	}
@@ -149,8 +158,11 @@ export class SettingsComponent implements OnInit {
 				console.log(result);
 			})
 			this.editVisibilityForm.controls['password'].reset();
+			this.error = "";
 		} catch (error) {
 			console.log(error);
+			// this.error = "lol";
+			this.error = error.error.message;
 		}
 	}
 
@@ -166,7 +178,15 @@ export class SettingsComponent implements OnInit {
 		}
 		console.log(this.addMuteForm.value);
 		this.searchService.addMute(data).subscribe((result) => {
+			console.log("submit mute response");
 			console.log(result);
+			this.error = "";
+		},
+		(error) => {
+			console.log("error in submitting ban");
+			console.log(error);
+			// this.error = "lol";
+			this.error = error.error.message;
 		})
 		this.addMuteForm.reset();
 	}
@@ -187,7 +207,14 @@ export class SettingsComponent implements OnInit {
 		console.log("is data object?")
 		console.log(typeof data.bannedTime.getTime === 'function');
 		this.searchService.addBan(data).subscribe((result) => {
+			console.log("submit ban response");
 			console.log(result);
+			this.error = "";
+		},
+		(error) => {
+			console.log("error in submitting ban");
+			console.log(error);
+			this.error = error.error.message;
 		})
 
 		this.addBanForm.reset();

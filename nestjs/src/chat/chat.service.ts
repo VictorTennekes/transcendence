@@ -86,6 +86,14 @@ export class ChatService {
 		}
 	}
 
+	private stringToDate(d: string): Date {
+		let dateObj: Date = new Date(d);
+		if (this.isValidDate(dateObj)) {
+			return dateObj;
+		}
+		throw "invalid date";
+	}
+
 	private isValidDate(d): boolean {
 		//TODO: instead generate a new valid date from string and error check
 		return d instanceof Date && !isNaN(d.getTime());
@@ -379,10 +387,16 @@ export class ChatService {
 	}
 
 	async addBannedUser(updateChat: updateChatDTO): Promise<ChatDTO> {
-		if (!this.isValidDate(updateChat.bannedTime)) {
-			console.log("error aa bad date");
-			throw new HttpException("invalid date", HttpStatus.BAD_REQUEST)
+		let date: Date;
+		try {
+			date = this.stringToDate(updateChat.bannedTime);
+		} catch (error) {
+			throw new HttpException(error, HttpStatus.BAD_REQUEST);
 		}
+		// if (!this.isValidDate(updateChat.bannedTime)) {
+			// console.log("error aa bad date");
+			// throw new HttpException("invalid date", HttpStatus.BAD_REQUEST)
+		// }
 		// let chat: ChatEntity = await this.repo.findOne({
 			// where: {id: updateChat.id},
 			// relations: ["bans"]
@@ -401,24 +415,24 @@ export class ChatService {
 		let b: BanEntity;
 		try {
 			b = await this.banExists(user.intra_name, chat.bans);
-			console.log("ban exists");
-			console.log(b.endTime, " < ", updateChat.bannedTime);
-			console.log(b.endTime < updateChat.bannedTime);
+			// console.log("ban exists");
+			// console.log(b.endTime, " < ", date);
+			// console.log(b.endTime < date);
 			// if (typeof b.endTime.getTime === 'function') {
 				// console.log("db item is date")
 				// console.log(typeof updateChat.bannedTime);
 			// if (typeof updateChat.bannedTime.getTime === 'function') {
 				// console.log("input is date");
-				console.log("get time");
-				console.log(b.endTime.getTime(), " ", updateChat.bannedTime.getTime());
-				console.log("compare")
-				console.log(b.endTime.getTime() < updateChat.bannedTime.getTime());
+				// console.log("get time");
+				// console.log(b.endTime.getTime(), " ", date.getTime());
+				// console.log("compare")
+				// console.log(b.endTime.getTime() < date.getTime());
 			// }
 			// }
 			// if (b.endTime < updateChat.bannedTime) {
-			if (b.endTime.getTime() < updateChat.bannedTime.getTime()) {
+			if (b.endTime.getTime() < date.getTime()) {
 				console.log("updating");
-				b.endTime = updateChat.bannedTime;
+				b.endTime = date;
 			}
 			b = await this.banRepo.save(b);
 		} catch (error) {
@@ -437,11 +451,17 @@ export class ChatService {
 	}
 
 	async addMutedUser(updateChat: updateChatDTO): Promise<ChatDTO> {
-		//TODO: catch user not found in client
-		if (!this.isValidDate(updateChat.bannedTime)) {
-			console.log("error aa bad date");
-			throw new HttpException("invalid date", HttpStatus.BAD_REQUEST)
+		let date: Date;
+		try {
+			date = this.stringToDate(updateChat.bannedTime);
+		} catch (error) {
+			throw new HttpException(error, HttpStatus.BAD_REQUEST);
 		}
+		//TODO: catch user not found in client
+		// if (!this.isValidDate(updateChat.bannedTime)) {
+			// console.log("error aa bad date");
+			// throw new HttpException("invalid date", HttpStatus.BAD_REQUEST)
+		// }
 		// let chat: ChatEntity = await this.repo.findOne({
 		// 	where: {id: updateChat.id},
 		// 	relations: ["mutes"]
@@ -475,14 +495,14 @@ export class ChatService {
 		let mute: BanEntity;
 		try {
 			mute = await this.banExists(user.intra_name, chat.bans);
-			if (mute.endTime.getTime() < updateChat.bannedTime.getTime()) {
-				mute.endTime = updateChat.bannedTime;
+			if (mute.endTime.getTime() < date.getTime()) {
+				mute.endTime = date;
 			}
 		} catch (error) {
 			mute = await this.banRepo.create({
 				chat: chat,
 				user: user,
-				endTime: updateChat.bannedTime,
+				endTime: date,
 				type: "mute"
 			});
 		}

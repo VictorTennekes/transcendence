@@ -100,6 +100,8 @@ export class CreateChatComponent implements OnInit {
 				newChat.users.push(item.username);
 			}
 			this.searchService.createNewChat(newChat).subscribe((response) => {
+				console.log("response:");
+				console.log(response);
 				this.router.navigate(['home', {outlets: {chat: ['get-chat', response.id]}}], {state: response});
 			},
 			(error) => {

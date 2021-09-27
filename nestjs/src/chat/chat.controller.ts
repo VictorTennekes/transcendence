@@ -23,7 +23,7 @@ export class updateChatDTO {
 	id: string;
 	admin: string;
 	bannedUser: string;
-	bannedTime: Date;
+	bannedTime: string;
 	banType: string;
 	visibility: string;
 	password: string;

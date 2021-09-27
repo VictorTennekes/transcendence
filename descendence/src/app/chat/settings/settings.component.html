@@ -1,7 +1,6 @@
 <button mat-icon-button (click)="back()">
 	<mat-icon>arrow_back</mat-icon>
 </button>
-
 <form [formGroup]="addAdminForm" (ngSubmit)="submitAdmin()" (keyup.enter)="submitAdmin()">
 	<h3>Add admin</h3>
 	<mat-form-field class="example-full-width" appearance="fill">
@@ -18,7 +17,11 @@
 		<input formControlName="username" matInput placeholder="tbruinem">
 	</mat-form-field>
 	<mat-form-field>
-		<input matInput formControlName="time" type="datetime-local" placeholder="mute until">
+		<input matInput [ngxMatDatetimePicker]="picker" placeholder="ban until" formControlName="time">
+		<mat-datepicker-toggle matSuffix [for]="$any(picker)">
+		</mat-datepicker-toggle>
+		<ngx-mat-datetime-picker #picker >
+		</ngx-mat-datetime-picker>
 	</mat-form-field>
 	<button mat-raised-button type="submit">Mute</button>
 </form>
@@ -30,7 +33,11 @@
 		<input formControlName="username" matInput placeholder="tbruinem">
 	</mat-form-field>
 	<mat-form-field>
-		<input matInput formControlName="time" type="datetime-local" placeholder="ban until">
+		<input matInput [ngxMatDatetimePicker]="picker1" placeholder="ban until" formControlName="time">
+		<mat-datepicker-toggle matSuffix [for]="$any(picker1)">
+		</mat-datepicker-toggle>
+		<ngx-mat-datetime-picker #picker1 >
+		</ngx-mat-datetime-picker>
 	</mat-form-field>
 	<button mat-raised-button type="submit">Ban</button>
 </form>
@@ -52,3 +59,4 @@
 	</mat-form-field>
 	<button mat-raised-button type="submit">Edit visibility</button>
 </form>
+<div *ngIf="error != ''"><p  style="color:red;">{{error}}</p></div>
