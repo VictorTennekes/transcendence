@@ -18,14 +18,18 @@ export interface MatchSettings {
 	}
 };
 
-//might be missing an 'accepted' array, for when 'accept' button is pressed
 class Match {
 	private _creator: string;
 	private opponent: null | string = null;
 	private _ready: boolean = false;
 	private _accepted: {[key: string] : boolean} = {};
 
-	constructor(private id: string, creator: string, private settings: MatchSettings, private _private = false) {
+	constructor(
+		private id: string,
+		creator: string,
+		private settings: MatchSettings,
+		private _private = false)
+	{
 		this._creator = creator;
 	}
 

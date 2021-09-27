@@ -4,7 +4,7 @@ import { ConnectedSocket } from "@nestjs/websockets";
 import { Socket } from "socket.io";
 import { Game } from "./game.script";
 
-@WebSocketGateway()
+@WebSocketGateway({ namespace: '/game'})
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer() server;
 	game: Game;
