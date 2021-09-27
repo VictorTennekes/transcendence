@@ -127,6 +127,10 @@ export class SettingsComponent implements OnInit {
 			visibility: "",
 			password: ""
 		}
+		console.log(this.addAdminForm.controls['username'].value);
+		console.log(this.addAdminForm);
+		console.log("submitAdmin");
+		console.log(data);
 		this.searchService.updateAdmins(data).subscribe((result) => {
 			console.log(result);
 			this.error = "";
@@ -155,6 +159,7 @@ export class SettingsComponent implements OnInit {
 		console.log(data);
 		this.searchService.editVisibility(data).subscribe((result) => {
 			console.log(result);
+			this.error = "";
 		},
 		(error) => {
 			console.log("error");

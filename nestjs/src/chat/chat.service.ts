@@ -523,6 +523,9 @@ export class ChatService {
 		let chat: ChatEntity = await this.repo.findOne({
 			where: {id: data.id}
 		})
+		if (!chat) {
+			throw new HttpException("can't find chat", HttpStatus.NOT_FOUND);
+		}
 		if (chat.visibility != data.visibility
 			&& ['private', 'direct', 'protected', 'public'].includes(data.visibility)) {
 			chat.visibility = data.visibility;
