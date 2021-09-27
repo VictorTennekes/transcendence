@@ -23,13 +23,21 @@ import { QrCodeDirective } from './focus-overlay/qrcode.directive';
 import { OnlyNumber } from './focus-overlay/only-numbers.directive';
 import { SharedValidatorService } from './focus-overlay/shared-validator.service';
 import { TwoFactorComponent } from './two-factor/two-factor.component';
-import { ChatComponent } from './components/chat/chat.component';
+import { ChatComponent } from './chat/chat-client/chat.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import { SearchComponent } from './components/search/search.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+// import { SearchComponent } from './components/search/search.component';
+import { SearchComponent } from './chat/search/search.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
-import { chatGuardService } from './components/chat/chatGuard.service';
+import { chatGuardService } from './chat/chat-client/chatGuard.service';
+// import { CreateChatComponent } from './create-chat/create-chat.component';
+import { CreateChatComponent } from './chat/create-chat/create-chat.component';
+import { MatRadioModule } from '@angular/material/radio';
+// import { ChatPassComponent } from './chat-pass/chat-pass.component';
+import { ChatPassComponent } from './chat/chat-pass/chat-pass.component';
 import { CommonModule } from '@angular/common';
 import { ViewComponent } from './game/view/view.component';
 import { QueueComponent } from './queue/queue.component';
@@ -37,6 +45,9 @@ import { QueueService } from './queue.service';
 import { AcceptComponent } from './accept/accept.component';
 import { AcceptService } from './accept.service';
 import { CountdownModule } from 'ngx-countdown';
+import { MATERIAL_SANITY_CHECKS } from '@angular/material/core';
+// import { ChatContainerComponent } from './chat-container/chat-container.component';
+import { ChatContainerComponent } from './chat/chat-container/chat-container.component';
 
 const config: SocketIoConfig = {
 	url: 'http://localhost:3000',
@@ -54,6 +65,8 @@ const config: SocketIoConfig = {
 		ChatComponent,
 		LoginComponent,
 		FailComponent,
+		CreateChatComponent,
+		ChatPassComponent,
 		UserComponent,
 		UserSettingsComponent,
 		FocusOverlayComponent,
@@ -61,8 +74,9 @@ const config: SocketIoConfig = {
 		OnlyNumber,
 		TwoFactorComponent,
 		ViewComponent,
-  QueueComponent,
-  AcceptComponent
+		QueueComponent,
+		AcceptComponent,
+		ChatContainerComponent
 	],
 	imports: [
 		CountdownModule,
@@ -76,8 +90,11 @@ const config: SocketIoConfig = {
 		OverlayModule,
 		NgxKjuaModule,
 		BrowserAnimationsModule,
-		MatInputModule,
-		MatListModule,
+        MatInputModule,
+        MatListModule,
+		MatIconModule,
+		MatButtonModule,
+		MatRadioModule,
 		SocketIoModule.forRoot(config),
 		CommonModule
 	],
@@ -89,7 +106,11 @@ const config: SocketIoConfig = {
 		SharedValidatorService,
 		chatGuardService,
 		QueueService,
-		AcceptService
+		AcceptService,
+		{
+			provide: MATERIAL_SANITY_CHECKS,//am i really doing this?
+			useValue: false
+		}
 	],
 	bootstrap: [AppComponent]
 })

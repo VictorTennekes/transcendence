@@ -9,23 +9,35 @@ import { TwoFactorGuard } from './two-factor.guard';
 import { TwoFactorComponent } from './two-factor/two-factor.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { UserComponent } from './user/user.component';
-import { ChatComponent } from './components/chat/chat.component';
-import { MatInputModule } from '@angular/material/input'
-import { SearchComponent } from './components/search/search.component';
-import { chatGuardService } from './components/chat/chatGuard.service';
 import { ViewComponent } from './game/view/view.component';
 import { MatchComponent } from './match/match.component';
+import { ChatComponent } from './chat/chat-client/chat.component';
+import { SearchComponent } from './chat/search/search.component';
+import { chatGuardService } from './chat/chat-client/chatGuard.service';
+import { CreateChatComponent } from './chat/create-chat/create-chat.component';
+import { ChatPassComponent } from './chat/chat-pass/chat-pass.component';
+import { SearchService } from './chat/search/search.service';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
 	{
 		canActivate: [LoginGuard],
-		path: '',
+		path: 'home',
 		component: MasterComponent,
 		children: [
+	
 			{
 				path: '',
 				component: MatchComponent
+			},
+			{
+				path: 'pass-chat/:id',
+				component: ChatPassComponent,
+				outlet: "chat"
+			},
+			{
+				path: 'game',
+				component: ViewComponent
 			},
 			{
 				path: 'users',
@@ -36,14 +48,32 @@ const routes: Routes = [
 				component: UserSettingsComponent
 			},
 			{
-				path: 'game',
-				component: ViewComponent
+				path: 'search',
+				component: SearchComponent,
+				outlet: "chat"
+			},
+			{
+				path: 'new-chat',
+				component: CreateChatComponent,
+				outlet: "chat"
+			},
+			{
+				path: 'get-chat/:id',
+				component: ChatComponent,
+				canActivate: [chatGuardService],
+				outlet: "chat"
+			},
+		
+			{
+				path: '',
+				redirectTo: 'game',
+				pathMatch: 'full'
 			}
 		]
 	},
 	//login page
 	{
-		path: 'home',
+		path: 'auth',
 		component: HomeComponent
 	},
 	//2fa page
@@ -52,19 +82,14 @@ const routes: Routes = [
 		path: '2fa',
 		component: TwoFactorComponent
 	},
-	//redirect to '' if nothing is matched
-	{
-		path: 'search',
-		component: SearchComponent
-	},
-	{
-		path: 'chat',
-		component: ChatComponent,
-		canActivate: [chatGuardService]
-	},
 	{
 		path: 'login',
 		component: LoginComponent
+	},
+	{
+		path: '',
+		redirectTo: 'home',
+		pathMatch: 'full'
 	},
 	{
 		path: '**',
@@ -75,6 +100,6 @@ const routes: Routes = [
 @NgModule({
 	imports: [RouterModule.forRoot(routes)],
 	exports: [RouterModule],
-	providers: [ LoginGuard ]
+	providers: [ LoginGuard, chatGuardService, SearchService ]
 })
 export class AppRoutingModule { }

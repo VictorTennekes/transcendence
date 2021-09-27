@@ -41,6 +41,7 @@ export class AuthController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	logout(@Req() req) {
+		console.log('uhh');
 		req.session.destroy();
 	}
 }

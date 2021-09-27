@@ -1,0 +1,24 @@
+<form [formGroup]="userForm" (ngSubmit)="submitUser()">
+	<mat-form-field class="example-full-width" appearance="fill">
+		<mat-label>chat name</mat-label>
+		<input matInput formControlName="username">
+	</mat-form-field>
+	<button mat-raised-button type="submit" class="button">Find</button>
+	<div *ngIf="userNotFound">User not found</div>
+	<div *ngIf="chatNotFound">No chats found</div>
+</form>
+<button mat-raised-button class="button" (click)="redirectCreate()" >
+	<mat-icon>add</mat-icon>
+</button>
+<mat-list>
+	<mat-list-item *ngFor="let chat of chats" (click)="getChat(chat)">
+		<div mat-line>{{chat.name}}</div>
+		<div mat-line>
+			<div *ngFor="let user of chat.users">
+				<p>{{user.intra_name}} &nbsp; </p>
+			</div>
+		</div>
+		<mat-divider></mat-divider>
+	</mat-list-item>
+</mat-list>
+<router-outlet name="chat"></router-outlet>

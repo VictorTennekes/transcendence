@@ -4,7 +4,8 @@
 			<span>PONG</span>
 		</button>
 		<div class=NavContainer>
-			<a routerLink="users" class=NavItem>
+			<!-- <a [routerLink]="['home', {outlets: {primary: 'users'}}]" class=NavItem> -->
+			<a [routerLink]="['/home/users']" class=NavItem>
 				<div class="IconBackground" id="users">
 					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 						aria-hidden="true" role="img" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"
@@ -15,7 +16,7 @@
 				</div>
 				<span>Users</span>
 			</a>
-			<a routerLink="" class=NavItem>
+			<a [routerLink]="['/home/']" class=NavItem>
 				<div class="IconBackground" id="play">
 					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 						aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet"
@@ -50,10 +51,10 @@
 	<div class="RightContainer">
 		<div class="profile-wrapper">
 			<div class="avatar" style="{{avatarStyle}}"></div>
-			<a routerLink="settings">{{ displayName }}</a>
+			<a [routerLink]="['/home', {outlets: {primary: 'settings'}}]" class=NavItem>{{ displayName }}</a>
 		</div>
-		<a class="NavItem">
-			<span>Chat</span>
-		</a>
+		<div>
+			<chat-container></chat-container>
+		</div>
 	</div>
 </div>

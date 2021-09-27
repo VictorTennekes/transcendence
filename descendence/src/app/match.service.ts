@@ -29,12 +29,9 @@ export class MatchService {
 		private readonly socket: Socket
 	) { }
 	
-	//this response contains an id, that I'm gonna need in further requests
+	//emit the find request with these settings
 	findMatch(settings: MatchSettings) {
-		return this.http.post('api/match/find', settings).pipe(map((res: any) => {
-			this.id = res.id as string;
-			return res.id;
-		}));
+		this.socket.emit('find', settings);
 	}
 
 	cancelMatch() {

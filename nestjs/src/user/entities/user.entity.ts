@@ -42,7 +42,6 @@ export class UserEntity {
 	// @JoinTable()
 	// chats: ChatEntity[];
 
-	@ManyToMany((type) => ChatEntity)
-	@JoinTable()
+	@ManyToMany((type) => ChatEntity, ChatEntity => ChatEntity.users)
 	chats: ChatEntity[];
 }
