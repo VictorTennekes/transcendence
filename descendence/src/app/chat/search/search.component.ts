@@ -57,6 +57,10 @@ import {HttpErrorResponse} from '@angular/common/http';
 		this.router.navigate(['home', {outlets: {chat: 'new-chat'}}], {skipLocationChange: true});
 	}
 
+	public back() {
+		this.getChats();
+	}
+
 	public submitUser() {
 		const newChat: createChatModel = {
 			name: '',
