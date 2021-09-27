@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { of, BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Socket } from 'ngx-socket-io';
 
 enum SpeedMode {
 	SLOW,
@@ -24,7 +25,8 @@ export class MatchService {
 	id: string | null = null;
 
 	constructor(
-		private readonly http: HttpClient
+		private readonly http: HttpClient,
+		private readonly socket: Socket
 	) { }
 	
 	//this response contains an id, that I'm gonna need in further requests
@@ -42,16 +44,10 @@ export class MatchService {
 
 	acceptMatch() {
 		console.log(`ACCEPTING MATCH ${this.id}`);
-		this.http.get('api/match/accept/' + this.id).subscribe(() => {});
+		return this.http.get('api/match/accept/' + this.id);
 	}
 
 	matchAccepted() {
-		console.log(`MATCH ${this.id} IS:`);
-		if (this.id) {
-			return this.http.get('api/match/accepted/' + this.id);
-		}
-		else {
-			return of('false');
-		}
+		return this.socket.fromOneTimeEvent(`accepted${this.id}`);
 	}
 }

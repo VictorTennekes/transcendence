@@ -14,7 +14,12 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.server.emit(`ready${id}`, {});
 	}
 
+	matchAccepted(id: string, state: boolean) {
+		this.server.emit(`accepted${id}`, state);
+	}
+
 	handleConnection(@ConnectedSocket() client: Socket) {
+		
 		Logger.log("MATCH GATEWAY - CLIENT[${client.id}] - JOINED");
 	}
 	handleDisconnect(@ConnectedSocket() client: Socket) {

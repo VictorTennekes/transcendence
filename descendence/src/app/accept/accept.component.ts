@@ -10,6 +10,8 @@ import { MatchService } from '../match.service';
 })
 export class AcceptComponent implements OnInit {
 	
+	accepted: boolean = false;
+
 	@ViewChild('cd', { static: false })
 	private countdown: CountdownComponent;
 	public config: CountdownConfig = {
@@ -21,28 +23,11 @@ export class AcceptComponent implements OnInit {
 		private readonly acceptService: AcceptService,
 		private readonly matchService: MatchService
 	) { }
-	
-	handleEvent(event: any) {
-		if (event["action"] == "done") {
-			var interval = setInterval(() => {
-				this.matchService.matchAccepted().subscribe((accepted) => {
-					if (accepted) {
-						//redirect to game page
-						console.log("ACCEPTED");
-					}
-					else {
-						console.log("NOT ACCEPTED");
-						//bring back to queue
-					}
-				});
-				this.close();
-				clearInterval(interval);
-			}, 1000);
-		}
-	}
 
 	accept() {
-		this.matchService.acceptMatch();
+		this.matchService.acceptMatch().subscribe(() => {
+			this.accepted = true;
+		});
 	}
 
 	close() {
@@ -50,6 +35,22 @@ export class AcceptComponent implements OnInit {
 	}
 	
 	ngOnInit(): void {
-
+		this.matchService.matchAccepted().then((accepted) => {
+			console.log(`MATCH ACCEPTED: ${accepted}`);
+			this.close();
+			if (accepted) {
+				//both players accepted -> direct to game page
+				
+			}
+			else {
+				//did this client accept?
+				if (this.accepted) {
+					//keep the client in the queue
+				}
+				else {
+					//remove the client from the queue
+				}
+			}
+		});
 	}
 }

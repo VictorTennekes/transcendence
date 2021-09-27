@@ -105,6 +105,20 @@ export class MatchService {
 				//BUG: need this delay to make sure the opponent also has time to listen for the event :sweat_smile:
 				var interval = setInterval(() => {
 					this.server.sendReady(key);
+					var acceptTimer = setInterval(() => {
+						//check if the match is accepted
+						Logger.log(`MATCH ${key} SERVERSIDE ACCEPT CHECK!!`);
+						const accepted: boolean = this.isAccepted(key);
+						if (accepted) {
+							//if the match is accepted, let the players know and create the gimma
+							this.server.matchAccepted(key, true);
+						}
+						else {
+							//match is not accepted by both players, let the players know
+							this.server.matchAccepted(key, false);
+						}
+						clearInterval(acceptTimer);
+					}, 10000);
 					clearInterval(interval);
 				},1000);
 				return ({id: key});
