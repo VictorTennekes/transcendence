@@ -1,6 +1,7 @@
 <button mat-icon-button (click)="back()">
 	<mat-icon>arrow_back</mat-icon>
 </button>
+<h1>settings for "{{chat.name}}"</h1>
 <form [formGroup]="addAdminForm" (ngSubmit)="submitAdmin()">
 	<h3>Add admin</h3>
 	<mat-form-field class="example-full-width" appearance="fill">
