@@ -1,7 +1,7 @@
 import { Logger } from "@nestjs/common";
 import { Match } from "src/match/match.class";
 
-const PADDLE_WIDTH = 22;
+const PADDLE_WIDTH = 25;
 const PADDLE_HEIGHT = 150;
 const BALL_SIZE = 15;
 const BALL_SPEED = 5;
@@ -53,6 +53,10 @@ export class Game {
 		this.players[match.creator] = new Player(WALL_OFFSET,Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
 		this.players[match.opponent] = new Player(Game.canvas.width - (WALL_OFFSET + PADDLE_WIDTH), Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
 		this.ball = new Ball(Game.canvas.width / 2 - BALL_SIZE / 2, Game.canvas.height / 2 - BALL_SIZE / 2);
+	}
+
+	get users() {
+		return Object.keys(this.players);
 	}
 
 	get data(): GameData {
@@ -119,7 +123,7 @@ class Paddle extends Entity {
 	update(canvas: Canvas, keysPressed: boolean[]) {
 		if ( keysPressed[KeyBindings.UP] ) {
 			this.velocity.y = -1;
-			if (this.position.y <= WALL_OFFSET) {
+			if (this.position.y <= BALL_SIZE) {
 				this.velocity.y = 0
 			}
 		}
@@ -178,8 +182,14 @@ class Ball extends Entity {
 			playerOne.score += 1;
 		}
 		
+		const COLLISION_RADIUS = playerOne.paddle.width + (this.width / 2);
+
 		//check player collision
-		if (this.position.x <= playerOne.paddle.position.x + playerOne.paddle.width) {
+		//check if X position is colliding with the player's X position
+		const playerOnePositionDifference = this.position.x - playerOne.paddle.position.x;
+		// if ((this.position.x - this.width / 2) <= playerOne.paddle.position.x + playerOne.paddle.width)
+		if (playerOnePositionDifference <= COLLISION_RADIUS && playerOnePositionDifference >= -COLLISION_RADIUS)
+		{
 			if (this.position.y >= playerOne.paddle.position.y && this.position.y + this.height <= playerOne.paddle.position.y + playerOne.paddle.height) {
 				this.velocity.x = 1;
 			}

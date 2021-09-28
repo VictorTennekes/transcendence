@@ -1,7 +1,7 @@
 import { ClientService } from "./client.service";
 import { SequenceEqualOperator } from 'rxjs/internal/operators/sequenceEqual';
 
-const PADDLE_WIDTH = 23;
+const PADDLE_WIDTH = 22;
 const PADDLE_HEIGHT = 160;
 const BALL_SIZE = 15;
 const BALL_SPEED = 10;
@@ -20,7 +20,7 @@ interface Coordinate {
 export class Game {
 	private gameContext: CanvasRenderingContext2D;
 	private players: {[id: string] : Player} = {};
-	private ball: Ball = new Ball();
+	private ball: Ball;
 
 	// static setKeyPressed(playerString: string, keyString: string, state: boolean) {
 	// 	if (keyString !== 'ArrowUp' && keyString !== 'ArrowDown') {
@@ -40,6 +40,7 @@ export class Game {
 		}
 		else return ;
 		this.gameContext.font = "30px Orbitron";
+		this.ball = new Ball(this.gameCanvas.width / 2 - BALL_SIZE / 2, this.gameCanvas.height / 2 - BALL_SIZE / 2);
 	}
 
 	drawScore() {
@@ -49,6 +50,7 @@ export class Game {
 //		this.gameContext.strokeRect(10,10,this.gameCanvas.width - 20 ,this.gameCanvas.height - 20);
 
 		const keys = Object.keys(this.players);
+		// console.log(keys);
 		this.gameContext.fillText(this.players[keys[0]].score.toString(), (this.gameCanvas.width / 2) - 80, 50);
 		this.gameContext.fillText(this.players[keys[1]].score.toString(), (this.gameCanvas.width / 2) + 80, 50);
 	}
@@ -68,9 +70,10 @@ export class Game {
 	}
 
 	updateFromData(data: any) {
-		for (const key in this.players) {
+		for (const key in data.players) {
+			// console.log(`UPDATE_FROM_DATA PLAYER[${key}]`);
 			if (!this.players[key]) {
-				this.players[key] = new Player();
+				this.players[key] = new Player(WALL_OFFSET,this.gameCanvas.height / 2 - PADDLE_HEIGHT / 2);
 			}
 			this.players[key].updateFromData(data.players[key]);
 		}
@@ -79,7 +82,7 @@ export class Game {
 	}
 
 	draw() {
-		this.gameContext.fillStyle = "#000";
+		this.gameContext.fillStyle = "#D2E4E9";
 		this.gameContext.fillRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
 		
 //		this.drawBoardDetails();
@@ -96,14 +99,22 @@ class Entity {
 	height:number;
 	position: Coordinate;
 	velocity: Coordinate;
-	constructor() {
-		this.width = 1;
-		this.height = 1;
-		this.position = {x: 1,y: 1};
-		this.velocity = {x: 1,y: 1};
+	color: string;
+	constructor(w:number,h:number,x:number,y:number,color:string) {
+		this.width = w;
+		this.height = h;
+		this.position = {
+			x,
+			y
+		};
+		this.color = color;
+		this.velocity = {
+			x: 0,
+			y: 0,
+		};
 	}
 	draw(context: CanvasRenderingContext2D) {
-		context.fillStyle = "#fff";
+		context.fillStyle = this.color;
 		context.fillRect(this.position.x,this.position.y,this.width,this.height);
 	}
 }
@@ -114,9 +125,9 @@ class Player {
 
 	score: number;
 
-	constructor() {
-		this.score = 1;
-		this.paddle = new Paddle();
+	constructor(x:number,y:number) {
+		this.score = 0;
+		this.paddle = new Paddle(x,y);
 	}
 	updateFromData(data: any) {
 		this.paddle.position = data.paddle.position;
@@ -128,11 +139,11 @@ class Paddle extends Entity {
 	
 	private speed:number = 10;
 	
-	constructor() {
-		super();
+	constructor(x:number,y:number) {
+		super(PADDLE_WIDTH,PADDLE_HEIGHT,x,y, '#213D5D');
 	}
 	drawSide(context: CanvasRenderingContext2D, y: number) {
-		context.fillStyle = "#fff";
+		context.fillStyle = this.color;
 		context.beginPath();
 		context.arc(this.position.x + (this.width / 2), y, this.width / 2, 0, 2 * Math.PI);
 		context.fill();
@@ -149,8 +160,8 @@ class Ball extends Entity {
 	
 	private speed:number = BALL_SPEED;
 	
-	constructor() {
-		super();
+	constructor(x: number, y: number) {
+		super(BALL_SIZE,BALL_SIZE,x,y, '#50E5EF');
 
 		var randomDirection = Math.floor(Math.random() * 2) + 1;
 		if (randomDirection % 2) {
@@ -162,7 +173,7 @@ class Ball extends Entity {
 	}
 
 	draw(context: CanvasRenderingContext2D) {
-		context.fillStyle = "#fff";
+		context.fillStyle = this.color;
 		context.beginPath();
 		context.arc(this.position.x,this.position.y, this.width, 0, 2 * Math.PI);
 		context.fill();
