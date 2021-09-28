@@ -17,8 +17,18 @@ interface Coordinate {
 	y: number
 }
 
+interface User {
+	login: string,
+	id: string
+};
+
 export class Game {
+	private _users: {
+		one: User,
+		two: User
+	};
 	private gameContext: CanvasRenderingContext2D;
+	private scoreContext: CanvasRenderingContext2D;
 	private players: {[id: string] : Player} = {};
 	private ball: Ball;
 
@@ -32,27 +42,31 @@ export class Game {
 
 	constructor(
 		private gameCanvas: HTMLCanvasElement,
+		private scoreCanvas: HTMLCanvasElement,
 		private readonly client: ClientService
 	) {
 		const context = this.gameCanvas.getContext("2d");
 		if (context) {
 			this.gameContext = context;
 		}
+		const context2 = this.scoreCanvas.getContext("2d");
+		if (context2) {
+			this.scoreContext = context2;
+		}
 		else return ;
-		this.gameContext.font = "30px Orbitron";
+		this.scoreContext.font = "36px Fredoka-One";
 		this.ball = new Ball(this.gameCanvas.width / 2 - BALL_SIZE / 2, this.gameCanvas.height / 2 - BALL_SIZE / 2);
 	}
 
 	drawScore() {
-		this.gameContext.strokeStyle = "#fff";
-		this.gameContext.lineWidth = 5;
-		this.gameContext.fillStyle = "#fff";
+		this.scoreContext.clearRect(0, 0, this.scoreCanvas.width, this.scoreCanvas.height);
+		this.scoreContext.strokeStyle = "#fff";
+		this.scoreContext.lineWidth = 10;
+		this.scoreContext.fillStyle = "#fff";
 //		this.gameContext.strokeRect(10,10,this.gameCanvas.width - 20 ,this.gameCanvas.height - 20);
 
-		const keys = Object.keys(this.players);
-		// console.log(keys);
-		this.gameContext.fillText(this.players[keys[0]].score.toString(), (this.gameCanvas.width / 2) - 80, 50);
-		this.gameContext.fillText(this.players[keys[1]].score.toString(), (this.gameCanvas.width / 2) + 80, 50);
+		this.scoreContext.fillText(this._users.one.login + " " + this.players[this._users.one.id].score.toString(), (this.scoreCanvas.width / 2) - 80, 50);
+		this.scoreContext.fillText(this._users.two.login + " " + this.players[this._users.two.id].score.toString(), (this.scoreCanvas.width / 2) + 80, 50);
 	}
 	drawBoardDetails() {
 		//draw court outline
@@ -70,15 +84,18 @@ export class Game {
 	}
 
 	updateFromData(data: any) {
-		for (const key in data.players) {
-			// console.log(`UPDATE_FROM_DATA PLAYER[${key}]`);
-			if (!this.players[key]) {
-				this.players[key] = new Player(WALL_OFFSET,this.gameCanvas.height / 2 - PADDLE_HEIGHT / 2);
-			}
-			this.players[key].updateFromData(data.players[key]);
+		if (!this._users) {
+			this._users = data.users;
+			this.players[this._users.one.id] = new Player(WALL_OFFSET,this.gameCanvas.height / 2 - PADDLE_HEIGHT / 2);
+			this.players[this._users.two.id] = new Player(WALL_OFFSET,this.gameCanvas.height / 2 - PADDLE_HEIGHT / 2);
 		}
+		this._users = data.users;
+		//update player one
+		this.players[this._users.one.id].updateFromData(data.players[this._users.one.id]);
+
+		//update player two
+		this.players[this._users.two.id].updateFromData(data.players[this._users.two.id]);
 		this.ball.position = data.ball.position;
-//		this.ball.update(Game.players['one'].paddle, Game.players['two'].paddle, this.gameCanvas);
 	}
 
 	draw() {

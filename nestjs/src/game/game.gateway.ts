@@ -8,7 +8,6 @@ import { GameService } from "./game.service";
 @WebSocketGateway({ namespace: '/match'})
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer() server;
-	interval: {[key: string] : NodeJS.Timer} = {};
 
 	constructor(
 		@Inject(forwardRef(() => GameService))
@@ -22,7 +21,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	handleDisconnect(@ConnectedSocket() client) {
 		console.log(`CLIENT[${client.id} - LEFT]`);
-		clearInterval(this.interval[client.id]);
 	}
 
 	sendGameUpdate(room: string, data: any) {

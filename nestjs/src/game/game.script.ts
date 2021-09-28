@@ -25,15 +25,28 @@ interface Canvas {
 	height: number
 };
 
+export interface User {
+	login: string;
+	id: string; //socket.id
+}
+
 interface GameData {
 	ball: Ball,
 	players: {[id: string] : Player},
+	users: {
+		one: User,
+		two: User
+	}
 }
 
 export class Game {
 	public static canvas: Canvas = {
 		width: CANVAS_WIDTH,
 		height: CANVAS_HEIGHT
+	};
+	private _users: {
+		one: User,
+		two: User,
 	};
 	private players: {[id: string] : Player} = {};
 	private ball: Ball;
@@ -49,20 +62,28 @@ export class Game {
 	constructor(
 		match: Match
 	) {
+		this._users = {
+			one: match.creator,
+			two: match.opponent
+		};
 		//initializing objects
-		this.players[match.creator] = new Player(WALL_OFFSET,Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
-		this.players[match.opponent] = new Player(Game.canvas.width - (WALL_OFFSET + PADDLE_WIDTH), Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
+		this.players[match.creator.id] = new Player(WALL_OFFSET,Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
+		this.players[match.opponent.id] = new Player(Game.canvas.width - (WALL_OFFSET + PADDLE_WIDTH), Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
 		this.ball = new Ball(Game.canvas.width / 2 - BALL_SIZE / 2, Game.canvas.height / 2 - BALL_SIZE / 2);
 	}
 
 	get users() {
-		return Object.keys(this.players);
+		return ({
+			one: this._users.one,
+			two: this._users.two,
+		});
 	}
 
 	get data(): GameData {
 		return {
 			ball: this.ball,
-			players: this.players
+			players: this.players,
+			users: this._users,
 		};
 	}
 
@@ -70,11 +91,7 @@ export class Game {
 		for (const player in this.players) {
 			this.players[player].update(Game.canvas);
 		}
-		const keys = Object.keys(this.players);
-		// this.players['one'].update(Game.canvas);
-		// this.players['two'].update(Game.canvas);
-		// Logger.log(keys);
-		this.ball.update(this.players[keys[0]], this.players[keys[1]], Game.canvas);
+		this.ball.update(this.players[this.users.one.id], this.players[this.users.two.id], Game.canvas);
 	}
 }
 

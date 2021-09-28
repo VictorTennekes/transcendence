@@ -1,7 +1,8 @@
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
+import { getUserFromSocket } from '@shared/socket-utils';
 import { Match } from 'src/match/match.class';
 import { GameGateway } from './game.gateway';
-import { Game } from './game.script';
+import { Game, User } from './game.script';
 
 @Injectable()
 export class GameService {
@@ -18,11 +19,8 @@ export class GameService {
 		for (const key in this.games) {
 			const players = this.games[key].users;
 			// Logger.log(`players: ${JSON.stringify(players)}`);
-			for (const index in players) {
-				// Logger.log(`${players[index]} - ${clientID}`);
-				if (clientID === players[index])
-					return key;
-			}
+			if (players.one.id == clientID || players.two.id == clientID)
+				return key;
 		}
 		return null;
 	}

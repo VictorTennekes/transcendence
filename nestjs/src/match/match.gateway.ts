@@ -5,6 +5,7 @@ import { SocketAddress } from 'net';
 import { getUserFromSocket } from '@shared/socket-utils';
 import { UserService } from '@user/user.service';
 import { MatchService } from './match.service';
+import { User } from 'src/game/game.script';
 
 @WebSocketGateway({ namespace: '/match'})
 export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -36,8 +37,14 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	//listen for 'find' event
 	//find/create a match
 	//send 'ready' to both players once a match is found
-	findMatch(client: Socket, settings: any) {
-		const match: string = this.matchService.findMatch(client.id, settings);
+	async findMatch(client: Socket, settings: any) {
+		const userItem = await getUserFromSocket(client, this.userService);
+		const user: User = {
+			login: userItem.display_name,
+			id: client.id,
+		};
+		Logger.log(`USER INTRA NAME = ${user.login}`);
+		const match: string = this.matchService.findMatch(user, settings);
 		Logger.log(`CLIENT ${client.id} -> MATCH ${match}`);
 		client.join(match); //add user to the room identified by the matchID
 		if (this.matchService.isReady(match)) {
@@ -49,6 +56,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				this.server.to(match).emit('accepted', accepted);
 				if (accepted) {
 					this.matchService.createGame(match);
+					delete(this.matchService.matches[match]);
+					this.matchService.matches[match] = undefined;
 				}
 				//send 'accepted' state to the clients
 				clearInterval(interval);
