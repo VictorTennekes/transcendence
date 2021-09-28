@@ -190,8 +190,6 @@ export class ChatService {
 	}
 
 	async createNewChat(newChat: NewChatDTO): Promise<ChatDTO> {
-
-		//TODO: ???
 		let item: ChatEntity = await this.repo.create({
 			name: newChat.name,
 			users: newChat.users,
@@ -288,7 +286,6 @@ export class ChatService {
 			}
 		} catch (error) {
 			throw error;
-			//TODO: idk about this man
 		}
 		if (chat.visibility !== 'public') {
 			if (this.userExists(username, chat.users)) {
@@ -395,9 +392,6 @@ export class ChatService {
 		} catch (error) {
 			throw new HttpException(error, HttpStatus.BAD_REQUEST);
 		}
-		//TODO: catch user not found in client
-	
-		// TODO: THIS WILL ONLY RETURN CHATS WHEN THEY HAVE BANS TYPE MUTE
 		const chat: ChatEntity = await this.repo
 			.createQueryBuilder('chat')
 			.where('chat.id = :id', {id: updateChat.id})
