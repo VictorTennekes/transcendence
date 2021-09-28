@@ -18,8 +18,6 @@ import {HttpErrorResponse} from '@angular/common/http';
 		private router: Router,
 		private route: ActivatedRoute) {}
 
-	// public userNotFound: boolean = false;
-	// public chatNotFound: boolean = false;
 	public chats: chatModel[] = [];
 	public errorMessage: string = "";
 
@@ -59,6 +57,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 
 	public back() {
 		this.getChats();
+		this.userForm.reset();
 	}
 
 	public submitUser() {

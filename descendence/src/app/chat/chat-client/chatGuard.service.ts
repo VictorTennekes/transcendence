@@ -34,6 +34,7 @@ export class chatGuardService implements CanActivate {
 			this.router.navigate(['/home', {outlets: {chat: ['search', err.error.message]}}])
 			// throw err;
 			return of(false);
+			//TODO: prevent error message on console
 		}));
 	}
 }

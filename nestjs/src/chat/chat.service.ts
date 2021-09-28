@@ -36,10 +36,8 @@ export class ChatService {
 	private isCurrent(time: Date) {
 		if (!this.isValidDate(time)) {
 			throw "invalid date";
-			//todo: idk? Test invalid dates
 		}
 		let now = new Date();
-		console.log("iscurrent: ", time, " < ", now);
 		return (time.getTime() > now.getTime());
 	}
 
@@ -95,7 +93,6 @@ export class ChatService {
 	}
 
 	private isValidDate(d): boolean {
-		//TODO: instead generate a new valid date from string and error check
 		return d instanceof Date && !isNaN(d.getTime());
 	  }
 
@@ -278,27 +275,15 @@ export class ChatService {
 	}
 
 	async userCanAccessChat(username: string, chatId: string):  Promise<boolean>{
-		// const chat = await this.getChatById(chatId);
-		// const chat = await this.repo.findOne({
-			// where: {id: chatId},
-			// relations: ["bans", "users", "bans.user"]
-		// })
-
 		const chat: ChatEntity = await this.repo
 			.createQueryBuilder('chat')
 			.where('chat.id = :id', {id: chatId})
 			.leftJoinAndSelect('chat.bans', 'bans', 'bans.type = :type', {type: "ban"})
 			.leftJoinAndSelect('chat.users', 'users')
 			.getOne();
-
-
-		console.log(chat);
 		try {
-			console.log("bans:");
-			console.log(chat.bans)
 			let ban = await this.banExists(username, chat.bans);
 			if (ban && this.isCurrent(ban.endTime)) {
-				console.log("creep is banned");
 				throw new HttpException("you're banned creep", HttpStatus.NOT_ACCEPTABLE);
 			}
 		} catch (error) {
@@ -325,15 +310,8 @@ export class ChatService {
 		});
 		if (!this.userExists(user.intra_name, chat.users)) {
 			chat.users.push(user);
-			// const lol = await this.repo.manager.save(chat);
 			chat = await this.repo.manager.save(chat);
-			// return lol;
 		}
-		//  else {
-			// return chat;
-			// chat = await this.repo.manager.save(chat);
-		// }//TODO: make sure this is the correct format
-		//TODO: I hope this works. please test
 		return toPromise(this.chatEntityToDTO(chat));
 	}
 
@@ -347,41 +325,27 @@ export class ChatService {
 		}
 		return false;
 	}
-			// chat = await this.repo.manager.save(chat);
-		// }
-		//TODO: I hope this works. please test
-		// return toPromise(this.chatEntityToDTO(chat));
-	// }
 
 	async updateAdmins(admins: updateChatDTO): Promise<ChatDTO> {
-		Logger.log("update admins:")
-		console.log(admins.id);
-		console.log(admins);
 		let chat: ChatEntity = await this.repo.findOne({
 			where: {id: admins.id},
 			relations: ["users", "admins"]
 		});
-		console.log("chat is: ", chat);
 		if (!chat) {
 			throw new HttpException("Chat not found", HttpStatus.NOT_FOUND);
 		}
-		console.log("found chat");
 		let user = await this.userRepo.findOne({
 			where: {intra_name: admins.admin}
 		})
 		if (!user) {
 			throw new HttpException("User not found", HttpStatus.NOT_FOUND);
 		}
-		console.log("lol");
-		console.log(chat);
-		console.log(user);
 		if (!this.userExists(user.intra_name, chat.users)) {
 			chat.users.push(user);
 		}
 		if (!this.userExists(user.intra_name, chat.admins)) {
 			chat.admins.push(user);
 		}
-		console.log(user);
 		const res = await this.repo.save(chat);
 		return toPromise(this.chatEntityToDTO(res));
 	}
@@ -393,14 +357,6 @@ export class ChatService {
 		} catch (error) {
 			throw new HttpException(error, HttpStatus.BAD_REQUEST);
 		}
-		// if (!this.isValidDate(updateChat.bannedTime)) {
-			// console.log("error aa bad date");
-			// throw new HttpException("invalid date", HttpStatus.BAD_REQUEST)
-		// }
-		// let chat: ChatEntity = await this.repo.findOne({
-			// where: {id: updateChat.id},
-			// relations: ["bans"]
-		// });
 		const chat: ChatEntity = await this.repo
 			.createQueryBuilder('chat')
 			.where('chat.id = :id', {id: updateChat.id})
@@ -415,23 +371,7 @@ export class ChatService {
 		let b: BanEntity;
 		try {
 			b = await this.banExists(user.intra_name, chat.bans);
-			// console.log("ban exists");
-			// console.log(b.endTime, " < ", date);
-			// console.log(b.endTime < date);
-			// if (typeof b.endTime.getTime === 'function') {
-				// console.log("db item is date")
-				// console.log(typeof updateChat.bannedTime);
-			// if (typeof updateChat.bannedTime.getTime === 'function') {
-				// console.log("input is date");
-				// console.log("get time");
-				// console.log(b.endTime.getTime(), " ", date.getTime());
-				// console.log("compare")
-				// console.log(b.endTime.getTime() < date.getTime());
-			// }
-			// }
-			// if (b.endTime < updateChat.bannedTime) {
 			if (b.endTime.getTime() < date.getTime()) {
-				console.log("updating");
 				b.endTime = date;
 			}
 			b = await this.banRepo.save(b);
@@ -442,10 +382,8 @@ export class ChatService {
 				endTime: updateChat.bannedTime,
 				type: "ban"
 			});
-			console.log("created new ban");
 		}
 		chat.bans.push(b);
-		console.log(b);
 		const res = await this.repo.save(chat);
 		return toPromise(this.chatEntityToDTO(res));
 	}
@@ -458,37 +396,17 @@ export class ChatService {
 			throw new HttpException(error, HttpStatus.BAD_REQUEST);
 		}
 		//TODO: catch user not found in client
-		// if (!this.isValidDate(updateChat.bannedTime)) {
-			// console.log("error aa bad date");
-			// throw new HttpException("invalid date", HttpStatus.BAD_REQUEST)
-		// }
-		// let chat: ChatEntity = await this.repo.findOne({
-		// 	where: {id: updateChat.id},
-		// 	relations: ["mutes"]
-		// });
-		// let chat: ChatEntity = await this.repo
-			// .createQueryBuilder("chat")
-			// .where({id: updateChat.id})
-			// .leftJoinAndSelect("chat.mutes", "mutes")
-			// .where("chat.mutes.type = mute")
-			// .getOne();
 	
-		//THIS WILL ONLY RETURN CHATS WHEN THEY HAVE BANS TYPE MUTE
+		// TODO: THIS WILL ONLY RETURN CHATS WHEN THEY HAVE BANS TYPE MUTE
 		const chat: ChatEntity = await this.repo
 			.createQueryBuilder('chat')
 			.where('chat.id = :id', {id: updateChat.id})
 			.leftJoinAndSelect('chat.bans', 'bans', 'bans.type = :type', {type: "mute"})
 			.getOne();
 
-		// console.log(chat);
-		// if (!chat) {
-			// throw "yeet";
-		// }
-		// throw "aaa";
 		let user = await this.userRepo.findOne({
 			where: {intra_name: updateChat.bannedUser}
 		})
-		console.log(user);
 		if (!user) {
 			throw new HttpException("User not found", HttpStatus.NOT_FOUND);
 		}
@@ -508,18 +426,10 @@ export class ChatService {
 		}
 		chat.bans.push(mute);
 		const res = await this.repo.save(chat);
-		console.log(res);
-		const test: ChatEntity = await this.repo.findOne({
-			where: {id: updateChat.id},
-			relations: ["bans", "messages", "users", "admins"]
-		})
-		console.log(test);
 		return toPromise(this.chatEntityToDTO(res));
 	}
 
 	async editVisibility(data: updateChatDTO): Promise<ChatDTO> {
-		console.log("im here in edit visibility");
-		console.log(data);
 		let chat: ChatEntity = await this.repo.findOne({
 			where: {id: data.id}
 		})
@@ -533,13 +443,10 @@ export class ChatService {
 		if (data.visibility === 'protected') {
 			chat.password = data.password;
 		} else {
-			chat.password = ""; //TODO: is this gud?
+			chat.password = "";
 		}
-		console.log("editing visibility");
-		console.log(data);
 		let res = await this.repo.save(chat);
-		console.log(res);
-		return toPromise(this.chatEntityToDTO(chat));
+		return toPromise(this.chatEntityToDTO(res));
 	}
 
 	async userIsMuted(user: UserDTO, chatId: string) {
@@ -548,7 +455,6 @@ export class ChatService {
 			.where('chat.id = :id', {id: chatId})
 			.leftJoinAndSelect('chat.bans', 'bans', 'bans.type = :type', {type: "mute"})
 			.getOne();
-		console.log(chatMutes);
 		try {
 			let ban = await this.banExists(user.intra_name, chatMutes.bans)
 			if (ban && this.isCurrent(ban.endTime)) {
@@ -564,7 +470,6 @@ export class ChatService {
 			where: {id: id},
 			relations: ["admins"]
 		})
-		console.log(chat);
 		if (this.userExists(username, chat.admins)) {
 			return true;
 		}
