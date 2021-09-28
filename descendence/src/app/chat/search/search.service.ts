@@ -11,10 +11,6 @@ export class SearchService {
 	private url = 'api/chat/';
 	constructor(private http: HttpClient) {}
 
-	getChat(newChat: createChatModel): Observable<chatModel> {
-		return this.http.post<chatModel>(this.url + 'get', newChat);
-	}
-
 	getMessagesFromChat(chatId: string): Observable<retMessage[]> {
 		return this.http.get<retMessage[]>(this.url + 'msg/' + chatId);
 	}
@@ -85,11 +81,7 @@ export class SearchService {
 	userIsAdmin(id: string): Observable<boolean> {
 		return this.http.get<boolean>(this.url + 'user-is-admin/' + id);
 	}
-	// updateChat(data: editChatModel): Observable<any> {
-		// console.log(data);
-		// console.log(this.url + "update-admins");
-		// return this.http.post(this.url + "update-chat", data)
-	// }
+	
 	userInChat(id: string): Observable<boolean> {
 		return this.http.get<any>(this.url + 'user-in-chat/' + id);
 	}

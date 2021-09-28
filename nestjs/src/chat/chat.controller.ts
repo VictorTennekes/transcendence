@@ -18,7 +18,6 @@ export class updateUsersDTO {
 	users: string[];
 }
 
-
 export class updateChatDTO {
 	id: string;
 	admin: string;
@@ -82,28 +81,6 @@ export class ChatController {
 		return await this.service.getChatById(id);
 	}
 	
-	@Post('get')
-	@UseGuards(AuthenticatedGuard)
-	@UseFilters(UnauthorizedFilter)
-	async createDirectChat(@Body() newChat: ReceiveNewChatDTO, @Req() req): Promise<ChatDTO> {
-		let user: UserDTO = await this.userService.findOne(req.session.passport.user.login);
-		Logger.log(`${newChat.users}`);
-		let nc: NewChatDTO = {
-			name: newChat.name,
-			visibility: newChat.visibility,
-			users: [],
-			admins: [],
-			password: newChat.password
-		}
-		nc.users.push(user);
-		user = await this.userService.findOne(newChat.users[0]);//TODO: do this in a loop for the whole array
-		if (user.intra_name !== nc.users[0].intra_name) {
-			Logger.log("a different user found")
-			nc.users.push(user);
-		}
-		return await this.service.createNewChat(nc);
-	}
-
 	@Post('new')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
