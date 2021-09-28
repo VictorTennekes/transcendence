@@ -6,6 +6,17 @@ import { ChatService } from "../chat-client/chat.service";
 import { chatModel, createChatModel } from "../chat-client/message.model";
 import { SearchService } from "./search.service";
 import {HttpErrorResponse} from '@angular/common/http';
+// import {catchError} from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+// import { map } from 'rxjs/operators';
+
+import { catchError, map } from "rxjs/operators";
+// import 'rxjs/add/observable/throw';
+// import 'rxjs/Rx';
+
+
+
+
 @Component({
 	selector: 'chat-search',
 	templateUrl: './search.component.html',
@@ -26,17 +37,16 @@ import {HttpErrorResponse} from '@angular/common/http';
 		})
 	})
 
-	private getChats(): chatModel[] {
+	private getChats() {
 		this.route.params.subscribe(params => {
-			console.log(params);
 			this.errorMessage = params['error'];
 		})
 		this.searchService.getChats().subscribe(response => {
 			this.chats = response;
-			console.log(response);
-			return response
+		},
+		(error) => {
+			this.errorMessage = error.error.message;
 		});
-		return [];
 	}
 
 	ngOnInit(): void {
@@ -69,15 +79,60 @@ import {HttpErrorResponse} from '@angular/common/http';
 			password: ""
 		}
 		newChat.users.push(this.userForm.value.username);
-		this.searchService.findMatchingChats(this.userForm.value.username).subscribe(
+		console.log("whyyyy");
+		let lol = this.searchService.findMatchingChats(this.userForm.value.username)
+		// .pipe(
+			// catchError( (err: any, caught: Observable<any>) => {
+
+				// console.log('Handling error locally and rethrowing it...', err);
+
+				// this.errorMessage = err.error.message;
+				// return;
+				// console.log(err);
+
+				// return Observable.throw(err);
+
+
+
+
+			// })
+		// )
+
+
+		// .pipe(map((response: chatModel[]) => {
+		// 	console.log("got response:")
+		// 	console.log(response);
+		// 	this.chats = response;
+		// 	return (response);
+		// }),
+		// catchError((e: any, caught: Observable<any>) => {
+		// 	console.log("caught error");
+		// 	console.log(e);
+		// 	return Observable.throw(this.errorHandler(e))
+		// }));
+
+		// if (typeof lol === Observable) {
+		// 	console.log("error has happeneds");
+		// } else {
+		// 	this.chats = lol;
+		// }
+
+		
+		.subscribe(
 			(response: chatModel[]) => {
 				this.errorMessage = "";
 				this.chats = response;
 			},
 			(error: HttpErrorResponse) => {
+				console.log("um?");
+				console.log(error);
 				this.errorMessage = error.error.message;
 				this.chats = [];
 			},
 		)
+	}
+	errorHandler(error: any): void {
+		console.log("caught error")
+		console.log(error)
 	}
 }
