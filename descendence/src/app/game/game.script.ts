@@ -53,20 +53,23 @@ export class Game {
 		if (context2) {
 			this.scoreContext = context2;
 		}
-		else return ;
-		this.scoreContext.font = "36px Fredoka-One";
 		this.ball = new Ball(this.gameCanvas.width / 2 - BALL_SIZE / 2, this.gameCanvas.height / 2 - BALL_SIZE / 2);
 	}
-
+	
 	drawScore() {
 		this.scoreContext.clearRect(0, 0, this.scoreCanvas.width, this.scoreCanvas.height);
 		this.scoreContext.strokeStyle = "#fff";
 		this.scoreContext.lineWidth = 10;
 		this.scoreContext.fillStyle = "#fff";
-//		this.gameContext.strokeRect(10,10,this.gameCanvas.width - 20 ,this.gameCanvas.height - 20);
-
-		this.scoreContext.fillText(this._users.one.login + " " + this.players[this._users.one.id].score.toString(), (this.scoreCanvas.width / 2) - 80, 50);
-		this.scoreContext.fillText(this._users.two.login + " " + this.players[this._users.two.id].score.toString(), (this.scoreCanvas.width / 2) + 80, 50);
+		//		this.gameContext.strokeRect(10,10,this.gameCanvas.width - 20 ,this.gameCanvas.height - 20);
+		
+		this.scoreContext.font = "2rem Biryani, bold";
+		this.scoreContext.fillText(this._users.one.login, (this.scoreCanvas.width / 4), (this.scoreCanvas.height / 4) * 3);
+		this.scoreContext.fillText(this._users.two.login, (this.scoreCanvas.width / 4) * 3, (this.scoreCanvas.height / 4) * 3);
+		
+		this.scoreContext.font = "3.4rem Biryani, bold";
+		this.scoreContext.fillText(this.players[this._users.two.id].score.toString(), (this.scoreCanvas.width / 2) + 40, (this.scoreCanvas.height / 4) * 3);
+		this.scoreContext.fillText(this.players[this._users.one.id].score.toString(), (this.scoreCanvas.width / 2) - 70, (this.scoreCanvas.height / 4) * 3);
 	}
 	drawBoardDetails() {
 		//draw court outline

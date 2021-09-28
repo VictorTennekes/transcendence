@@ -61,7 +61,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				}
 				//send 'accepted' state to the clients
 				clearInterval(interval);
-			},10000);
+			},3000);
 		}
 	}
 

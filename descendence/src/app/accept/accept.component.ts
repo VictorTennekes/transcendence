@@ -16,7 +16,7 @@ export class AcceptComponent implements OnInit {
 	@ViewChild('cd', { static: false })
 	private countdown: CountdownComponent;
 	public config: CountdownConfig = {
-		leftTime: 10,
+		leftTime: 3,
 		format: 's',
 	};
 
