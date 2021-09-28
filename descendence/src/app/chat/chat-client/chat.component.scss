@@ -99,7 +99,7 @@
 }
 
 .submit {
-  width: 5.3vh;
+  width: 4.1vh;
   text-align: center;
   padding: 0px;
   font-weight: 700;
@@ -111,4 +111,25 @@
   vertical-align: middle;
   padding-bottom: 3px;
   color: rgb(176, 200, 209);
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #326B7D;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #4EA6C1;
+  border-radius: 8px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(176, 200, 209);
 }
