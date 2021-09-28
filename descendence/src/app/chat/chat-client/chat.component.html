@@ -1,6 +1,6 @@
 <div class="chatHeader">
 	<div class="leaveChat">
-		<button mat-icon-button aria-label="Example icon button with a home icon" (click)="back()">
+		<button aria-label="Example icon button with a home icon" (click)="back()">
 				<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="40" height="40" preserveAspectRatio="xMidYMid meet" viewBox="0 0 20 20"><g transform="rotate(180 10 10)"><g fill="none"><path clip-rule="evenodd" d="M15.667 8l2.083 2.5L15.667 8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path clip-rule="evenodd" d="M15.667 13l2.083-2.5l-2.083 2.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 10.5H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 3.5h9"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 17.5h9"/><path d="M13 3.5v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M13 13.5v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 3.5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g></g></svg>
 		</button>
 	</div>
@@ -8,7 +8,7 @@
 </div>
 <ul #scrollMe id="chatList" class="chatList">
 	<li id="chatItem" class="chatItem" *ngFor="let msg of chat.messages">
-		<img src={{msg.owner.avatar_url}} alt="pfp">
+		<div class="avatar" style="background-image: url('cdn/assets/{{msg.owner.avatar_url}}');"></div>
 		<div class="infoContainer">
 			<div class="dateName">
 				<p class="name"> {{msg.owner.display_name}}	</p>
