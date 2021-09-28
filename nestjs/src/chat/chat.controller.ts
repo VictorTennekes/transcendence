@@ -99,8 +99,9 @@ export class ChatController {
 			let item = await this.userService.findOne(usr);
 			if (item) {
 				nc.users.push(item);
+			} else {
+				throw new HttpException("User " + usr + " not found", HttpStatus.NOT_FOUND);
 			}
-			//TODO: do i error if i cant find a user?
 		}
 		return await this.service.createNewChat(nc);
 	}
