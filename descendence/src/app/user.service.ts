@@ -42,4 +42,8 @@ export class UserService {
 	logout(): any {
 		return this.http.get('api/auth/logout').pipe(take(1));
 	}
+
+	addBlockedUser(username: string) : void {
+		//TODO: add block for user. Add validator i guess?
+	}
 }

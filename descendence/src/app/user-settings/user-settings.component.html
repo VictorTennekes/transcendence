@@ -47,7 +47,21 @@
 				Yeet
 			</div>
 		</div>
+		<div id="displayname">
+			<label for="name">
+				<div class="bar">
+					<span>Block user</span>
+				</div>
+			</label>
+			<input type="text" id="block" formControlName="block" class="displayname" spellcheck="false" [ngClass]="{
+				'available' : settingsForm.controls['displayName'].valid && settingsForm.controls['displayName'].dirty,
+				'taken' :  !settingsForm.controls['displayName'].valid && settingsForm.controls['displayName'].dirty
+			}">
+		</div>
+
 	</div>
+
+
 	<div class="action-container">
 		<a>
 			<button type="submit" class="save">

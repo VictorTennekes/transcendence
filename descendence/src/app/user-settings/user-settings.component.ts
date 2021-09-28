@@ -147,13 +147,18 @@ export class UserSettingsComponent implements OnInit {
 		if (this.initialTwoFactorState !== formValues['twoFactorEnabled']) {
 			this.userService.updateTwoFactor(formValues['twoFactorEnabled']);
 		}
+
+		if (this.settingsForm.controls['block'].value !== "") {
+			this.userService.addBlockedUser(this.settingsForm.controls['block'].value);
+		}
 	}
 
 	ngOnInit(): void {
 		this.settingsForm = new FormGroup({
 			displayName: new FormControl(""),
 			twoFactorEnabled: new FormControl(false),
-			avatar: new FormControl("")
+			avatar: new FormControl(""),
+			block: new FormControl("")
 		});
 		this.addValidator();
 		//remove me
