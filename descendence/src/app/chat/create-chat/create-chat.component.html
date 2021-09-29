@@ -4,7 +4,7 @@
 <form [formGroup]="createChatForm" (ngSubmit)="submitCreateChatForm()">
 	<mat-form-field class="example-full-width" appearance="fill">
 		<mat-label>Chat name</mat-label>
-		<textarea formControlName="name" matInput placeholder="Ex. Hi!"></textarea>
+		<input formControlName="name" matInput placeholder="general" >
 	</mat-form-field>
 	 <table class="table table-bordered" formArrayName="users">  
 		<tr>  
