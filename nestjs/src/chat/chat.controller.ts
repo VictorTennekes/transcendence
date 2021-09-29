@@ -40,7 +40,7 @@ export class ChatController {
 			let dm = await this.service.getChatByUsers(users);
 			if (!dm) {
 				let chatdto: NewChatDTO = {
-					name: "",
+					name: `${users[0].intra_name} & ${users[1].intra_name}`,
 					visibility: "direct",
 					admins: [],
 					users: users,
@@ -70,7 +70,7 @@ export class ChatController {
 		let user: UserDTO = await this.userService.findOne(req.session.passport.user.login);
 		Logger.log(`${newChat.users}`);
 		let nc: NewChatDTO = {
-			name: `${newChat.users[0]} & ${newChat.users[1]}`,
+			name: newChat.name,
 			visibility: newChat.visibility,
 			users: [],
 			admins: [],

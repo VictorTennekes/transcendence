@@ -8,7 +8,9 @@ export class ChatEntity {
 	@PrimaryGeneratedColumn("uuid")
 	id: string;
 
-	@Column()
+	@Column({
+		nullable: false
+	})
 	name: string;
 
 	@Column()
