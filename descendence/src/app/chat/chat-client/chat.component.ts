@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, ElementRef, AfterViewChecked, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SearchService } from '../search/search.service';
@@ -10,7 +10,14 @@ import { retMessage, newMessage, chatModel } from './message.model';
 	styleUrls: ['./chat.component.scss'],
 	providers: [ChatService, SearchService]
   })
-  export class ChatComponent implements OnInit {
+  export class ChatComponent implements OnInit, AfterViewChecked {
+	@ViewChild('scrollMe') private myScrollContainer!: ElementRef;
+
+	scrollToBottom(): void {
+        try {
+            this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+        } catch(err) { }                 
+    }
 
 	constructor(
 		  private formBuilder: FormBuilder,
@@ -64,11 +71,15 @@ import { retMessage, newMessage, chatModel } from './message.model';
 						console.log(this.chat);
 					if (msg.chat.id === this.chat.id) {
 						this.chat.messages.push(msg);
-						this.chat.messages.splice(0, this.chat.messages.length - 6);
 					}
+					this.scrollToBottom();
 				})
 			});
 		});
+	}
+
+	ngAfterViewChecked() : void {
+		this.scrollToBottom();
 	}
 
 	public back() {
@@ -89,5 +100,5 @@ import { retMessage, newMessage, chatModel } from './message.model';
 		}
 		this.chatService.sendMessage(newMessage);
 		this.messageForm.reset();
-	  }
-  }
+	}
+}
