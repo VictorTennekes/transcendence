@@ -58,6 +58,26 @@ export class UserService {
 		console.log(`updated user: ${JSON.stringify(user)}`);
 	}
 
+
+	async blockUser(username: string, blockedUsername: string) {
+		console.log("username: ", username);
+		let user: UserEntity = await this.userRepository.findOne({
+			where: {intra_name: username},
+			relations: ["blockedUsers"]
+		});
+		let blockedUser: UserEntity = await this.userRepository.findOne({
+			where: {intra_name: blockedUsername},
+			relations: ["blockedByUsers"]
+		});
+		console.log("these are the users");
+		console.log(user);
+		console.log(blockedUser);
+		user.blockedUsers.push(blockedUser);
+		blockedUser.blockedByUsers.push(user);
+		this.userRepository.save(user);
+		this.userRepository.save(blockedUser);
+	}
+
 	async create(login: string) {
 		const intra_name = login;
 		const display_name = intra_name;

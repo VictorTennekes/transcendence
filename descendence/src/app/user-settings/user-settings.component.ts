@@ -115,8 +115,26 @@ export class UserSettingsComponent implements OnInit {
 			}));
 		}
 	}
-	addValidator() {
+
+	blockedUserIsValid(): AsyncValidatorFn {
+		return (control: AbstractControl): Observable<ValidationErrors | null> => {
+			let err: ValidationErrors = {
+				'notValid': true
+			}
+			return of(control.value).pipe(delay(500),switchMap(() => {
+				return this.userService.userExists(control.value).pipe(map((available) => {
+					if (!available) {
+						return err;
+					}
+					return null;
+				}))
+			}))
+		}
+	}	
+
+	addValidators() {
 		this.settingsForm.controls['displayName'].setAsyncValidators([this.displayNameIsUnique()]);
+		this.settingsForm.controls['block'].setAsyncValidators([this.blockedUserIsValid()]);
 	}
 	
 	get twoFactorState(): string {
@@ -148,8 +166,9 @@ export class UserSettingsComponent implements OnInit {
 			this.userService.updateTwoFactor(formValues['twoFactorEnabled']);
 		}
 
-		if (this.settingsForm.controls['block'].value !== "") {
+		if (this.settingsForm.controls['block'].valid) {
 			this.userService.addBlockedUser(this.settingsForm.controls['block'].value);
+			this.settingsForm.controls['block'].reset();
 		}
 	}
 
@@ -160,7 +179,7 @@ export class UserSettingsComponent implements OnInit {
 			avatar: new FormControl(""),
 			block: new FormControl("")
 		});
-		this.addValidator();
+		this.addValidators();
 		//remove me
 		this.settingsForm.controls['twoFactorEnabled'].valueChanges.subscribe((value) => {
 			console.log(value);

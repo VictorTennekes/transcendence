@@ -110,6 +110,30 @@ export class UserController {
 		await this.userService.update(request.session.passport.user.login, two_factor_enabled);
 	}
 
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	@Get('user_exists/:username')
+	async userExists(@Param("username") username: string) {
+		await this.userService.findOne(username);
+		if (await this.userService.findOne(username)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	@Post('block_user')
+	async blockUser(@Req() request, @Body() username: any) {
+		console.log("um");
+		console.log("blocking users controller: ", username);
+		console.log("blocking users controller: ", username.username);
+		await this.userService.blockUser(request.session.passport.user.login, username.username);
+	}
+
+
+
 	@Post('login')
 //	@UsePipes(new ValidationPipe())
 	async login(@Body() loginDetails: LoginUserDto)
