@@ -1,10 +1,10 @@
 <button mat-icon-button aria-label="Example icon button with a home icon" (click)="back()">
 	<mat-icon>arrow_back</mat-icon>
 </button>
-<form [formGroup]="createChatForm" (ngSubmit)="otherSubmit()" (keyup.enter)="otherSubmit()">
+<form [formGroup]="createChatForm" (ngSubmit)="submitCreateChatForm()">
 	<mat-form-field class="example-full-width" appearance="fill">
 		<mat-label>Chat name</mat-label>
-		<textarea formControlName="name" matInput placeholder="Ex. Hi!"></textarea>
+		<input formControlName="name" matInput placeholder="general" >
 	</mat-form-field>
 	 <table class="table table-bordered" formArrayName="users">  
 		<tr>  
@@ -16,7 +16,7 @@
 				<mat-label>username</mat-label>
 				<input formControlName="username" matInput placeholder="Ex. Hi!">
 			</mat-form-field>
-			<button mat-raised-button (click)="removeUser(i)" class="btn btn-danger">Remove</button>  
+			<button mat-raised-button type="button" (click)="removeUser(i)" class="btn btn-danger">Remove</button>  
 		</tr>  
 	  </table>
 	<mat-radio-group name="visibility" formControlName="visibility">
@@ -34,3 +34,4 @@
     <mat-error *ngIf="createChatForm.invalid && submitted">{{getErrorMessage()}}</mat-error>
 	<button mat-raised-button type="submit" class="button">Send</button>
 </form>
+<div *ngIf="errorMessage != ''"><p  style="color:red;">{{errorMessage}}</p></div>

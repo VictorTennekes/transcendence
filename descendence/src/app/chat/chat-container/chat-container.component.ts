@@ -17,7 +17,7 @@ export class ChatContainerComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.router.navigate(['/home', {outlets: {chat: 'search'}}])
+		this.router.navigate(['/home', {outlets: {chat: ['search', ""]}}])
 	}
 
 }

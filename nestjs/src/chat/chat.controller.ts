@@ -13,6 +13,21 @@ class validatePassDTO {
 	chatId: string;
 }
 
+export class updateUsersDTO {
+	chatId: string;
+	users: string[];
+}
+
+export class updateChatDTO {
+	id: string;
+	admin: string;
+	bannedUser: string;
+	bannedTime: string;
+	banType: string;
+	visibility: string;
+	password: string;
+}
+
 @Controller('chat')
 export class ChatController {
 	constructor(private readonly service: ChatService,
@@ -50,9 +65,12 @@ export class ChatController {
 			}
 			chats.push(dm);
 		}
-		if (!chats) {
+		if (!chats || chats.length < 1) {
+			console.log('no chats');
 			throw new HttpException("No chat by name " + name, HttpStatus.NOT_FOUND);
 		}
+		console.log("returning these chats");
+		console.log(chats);
 		return chats;
 	}
 
@@ -63,28 +81,6 @@ export class ChatController {
 		return await this.service.getChatById(id);
 	}
 	
-	@Post('get')
-	@UseGuards(AuthenticatedGuard)
-	@UseFilters(UnauthorizedFilter)
-	async createDirectChat(@Body() newChat: ReceiveNewChatDTO, @Req() req): Promise<ChatDTO> {
-		let user: UserDTO = await this.userService.findOne(req.session.passport.user.login);
-		Logger.log(`${newChat.users}`);
-		let nc: NewChatDTO = {
-			name: newChat.name,
-			visibility: newChat.visibility,
-			users: [],
-			admins: [],
-			password: newChat.password
-		}
-		nc.users.push(user);
-		user = await this.userService.findOne(newChat.users[0]);//TODO: do this in a loop for the whole array
-		if (user.intra_name !== nc.users[0].intra_name) {
-			Logger.log("a different user found")
-			nc.users.push(user);
-		}
-		return await this.service.createNewChat(nc);
-	}
-
 	@Post('new')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
@@ -103,8 +99,9 @@ export class ChatController {
 			let item = await this.userService.findOne(usr);
 			if (item) {
 				nc.users.push(item);
+			} else {
+				throw new HttpException("User " + usr + " not found", HttpStatus.NOT_FOUND);
 			}
-			//TODO: do i error if i cant find a user?
 		}
 		return await this.service.createNewChat(nc);
 	}
@@ -115,7 +112,6 @@ export class ChatController {
     async getMessagesFromChat(@Param("id") id: string): Promise<MessageDTO[]> {
         return await this.service.getMessagesFromChat(id);
     }
-
 
 	@Post('validate-pass')
 	@UseGuards(AuthenticatedGuard)
@@ -140,6 +136,40 @@ export class ChatController {
 		return this.service.addUserToChat(id.id, user);
 	}
 
+	@Post('update-admins')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async updateAdmins(@Body() admins: updateChatDTO) {
+		return this.service.updateAdmins(admins);
+	}
+
+	@Post('add-ban')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async addBan(@Body() data: updateChatDTO) {
+		return this.service.addBannedUser(data);
+	}
+
+	@Post('add-mute')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async addMute(@Body() data: updateChatDTO) {
+		return this.service.addMutedUser(data);
+	}
+
+	@Post('edit-visibility')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async editVisibility(@Body() data: updateChatDTO) {
+		return this.service.editVisibility(data);
+	}
+
+	@Get('user-is-admin/:id')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async userIsAdmin(@Param("id") id: string, @Req() req): Promise<boolean> {
+		return this.service.userIsAdmin(id, req.user.intra_name);
+	}
 	@Get('user-in-chat/:id')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)

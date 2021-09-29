@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SearchService } from '../search/search.service';
 import { ChatService } from './chat.service';
 import { retMessage, newMessage, chatModel } from './message.model';
-
 @Component({
 	selector: 'app-chat',
 	templateUrl: './chat.component.html',
@@ -40,17 +39,22 @@ import { retMessage, newMessage, chatModel } from './message.model';
 		message: "",
 	});
 	public default_avatar_url = "";
-	public sendError: boolean = false;
+	public errorMessage: string = "";
+	public userIsAdmin: boolean = false;
 
 	ngOnInit(): void {
-		this.chatService.listenForError().subscribe((error) => {
+		
+		this.chatService.listenForError().subscribe((error: string) => {
 			console.log(error);
-			this.sendError = true;
+			this.errorMessage = error;
 		})
 		console.log(this.chat);
 		this.route.params.subscribe(params => {
-			this.searchService.findChatById(params['id']).subscribe((fullChat: chatModel) => {
-				this.chat = fullChat;
+			this.searchService.findChatById(params['id']).subscribe((response) => {
+				console.log("found chat by id");
+				// console.log(response);
+				this.chat = response;
+				console.log(this.chat);
 				this.searchService.userInChat(this.chat.id).subscribe((isTrue: boolean) => {
 					if (isTrue === false) {
 						this.searchService.addUserToChat(this.chat.id).subscribe((updatedChat: chatModel) => {
@@ -58,7 +62,13 @@ import { retMessage, newMessage, chatModel } from './message.model';
 						})
 					}
 				})
-				this.chatService.receiveMessages().subscribe((msg: retMessage) => {
+				this.searchService.userIsAdmin(this.chat.id).subscribe((result) => {
+					this.userIsAdmin = result;
+				});
+				console.log("here?");
+				this.chatService.receiveMessages().subscribe((msg) => {
+						console.log("chat is");
+						console.log(this.chat);
 					if (msg.chat.id === this.chat.id) {
 						this.chat.messages.push(msg);
 					}
@@ -73,11 +83,17 @@ import { retMessage, newMessage, chatModel } from './message.model';
 	}
 
 	public back() {
-		this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
+		this.router.navigate(['home', {outlets: {chat: ['search', ""]}}], {skipLocationChange: true});
+	}
+
+	public edit() {
+		if (this.userIsAdmin) {
+			this.router.navigate(['/home', {outlets: {chat: ['settings', this.chat.id]}}])
+		}
 	}
 
 	public onSubmit() {
-		this.sendError = false;
+		this.errorMessage = "";
 		const newMessage: newMessage = {
 			chat: this.chat.id,
 			message: this.messageForm.controls['message'].value

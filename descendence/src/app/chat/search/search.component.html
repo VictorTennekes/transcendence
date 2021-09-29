@@ -1,15 +1,17 @@
+<button mat-icon-button (click)="back()">
+	<mat-icon>arrow_back</mat-icon>
+</button>
 <form [formGroup]="userForm" (ngSubmit)="submitUser()">
 	<mat-form-field class="example-full-width" appearance="fill">
 		<mat-label>chat name</mat-label>
 		<input matInput formControlName="username">
 	</mat-form-field>
 	<button mat-raised-button type="submit" class="button">Find</button>
-	<div *ngIf="userNotFound">User not found</div>
-	<div *ngIf="chatNotFound">No chats found</div>
 </form>
 <button mat-raised-button class="button" (click)="redirectCreate()" >
 	<mat-icon>add</mat-icon>
 </button>
+<div *ngIf="errorMessage != ''">{{errorMessage}}</div>
 <mat-list>
 	<mat-list-item *ngFor="let chat of chats" (click)="getChat(chat)">
 		<div mat-line>{{chat.name}}</div>

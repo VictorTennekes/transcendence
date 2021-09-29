@@ -1,5 +1,6 @@
 import { UserDTO } from "@user/dto/user.dto";
 import { MessageDTO } from "./message.dto";
+import { ChatEntity } from "@chat/entity/chat.entity";
 
 export class ChatDTO {
 	id: string;
