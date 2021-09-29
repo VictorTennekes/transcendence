@@ -90,6 +90,13 @@ export class UserService {
 		return await this.userRepository.findOne({where: { intra_name: login }});
 	}
 
+	async findUserWithBlocks(login: string) {
+		return await this.userRepository.findOne({
+			where: { intra_name: login },
+			relations: ["blockedUsers", "blockedByUsers"]
+		});
+	}
+
 	async login(loginInformation: LoginUserDto): Promise<LoginStatus> {
 		const intra_name = loginInformation.intra_name;
 		const user = await this.findOrCreateByLogin(intra_name);

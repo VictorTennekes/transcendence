@@ -27,7 +27,7 @@ export class ChatService {
 				@InjectRepository(UserEntity) private readonly userRepo: Repository<UserEntity>,
 				@InjectRepository(BanEntity) private readonly banRepo: Repository<BanEntity>) {}
 
-	private userExists(username: string, users: UserDTO[]) {
+	public userExists(username: string, users: UserDTO[]) {
 		return users.some(function(el) {
 			return el.intra_name === username;
 		});
@@ -257,6 +257,7 @@ export class ChatService {
 			skip: 0,
 			// take: 6,
 		});
+		//TODO: get current user as parameter, and filter chat messages by blockedUser
 
 		if (!items) {
 			throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);

@@ -59,7 +59,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		if (!otherRes[0].sess.passport) return null;
 
 		const user = otherRes[0].sess.passport.user;
-		const sessUser = this.userService.findOne(user.login);
+		// const sessUser = this.userService.findOne(user.login);
+		const sessUser = this.userService.findUserWithBlocks(user.login);
 		return sessUser;
 	}
 
@@ -89,6 +90,21 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	async sendMessage(@ConnectedSocket() client: Socket, @MessageBody() message: newMessageDTO) {
 		const chat = await this.chatService.getChatById(message.chat);
 		const user = await this.getUserFromSocket(client);
+		console.log("send msg");
+		console.log(chat);
+		console.log(user);
+		let blockedByNames: string = "";
+		for (let chatUser of chat.users) {
+			if (this.chatService.userExists(chatUser.intra_name, user.blockedByUsers)) {
+				console.log(chatUser.intra_name, " is blocked by ", chatUser.intra_name);
+				blockedByNames += " " + chatUser.intra_name;
+			}
+		}
+		if (blockedByNames !== "") {
+			console.log("blocked by users:")
+			console.log(blockedByNames);
+			client.emit("send_message_error", "you are muted by" + blockedByNames + ". This message will not be shown to them");
+		}
 		if (!user) {
 			client.emit('send_message_error', "no such user");
 			return;
@@ -101,6 +117,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		for (let sock of this.connectedSockets) {
 			console.log(sock.user);
 			if (chat.users.findIndex(x => x.intra_name === sock.user.intra_name) !== -1) {
+				if (blockedByNames !== "") {
+					//TODO: if sock.user is blocked by chat.user, continue;
+				}
 				console.log("emitting receive messages to ", sock.user.intra_name);
 				sock.socket.emit('receive_message', finalMsg);
 			}

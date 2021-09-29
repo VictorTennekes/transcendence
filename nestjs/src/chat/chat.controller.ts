@@ -43,7 +43,7 @@ export class ChatController {
 	@Get("find/:name")
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async getChatById(@Param("name") name: string, @Req() req): Promise<ChatDTO[]> {
+	async findChatByName(@Param("name") name: string, @Req() req): Promise<ChatDTO[]> {
 		let chats: ChatDTO[] = await this.service.getChatByName(name, req.session.passport.user.login);
 		const user = await this.userService.findOne(name);
 		if (user) {
@@ -77,7 +77,7 @@ export class ChatController {
 	@Get("get-chat/:id")
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async getChatByIdTwo(@Param("id") id: string) {
+	async getChatById(@Param("id") id: string) {
 		return await this.service.getChatById(id);
 	}
 	
