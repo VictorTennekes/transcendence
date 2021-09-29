@@ -70,7 +70,7 @@ export class ChatController {
 		let user: UserDTO = await this.userService.findOne(req.session.passport.user.login);
 		Logger.log(`${newChat.users}`);
 		let nc: NewChatDTO = {
-			name: newChat.name,
+			name: `${newChat.users[0]} & ${newChat.users[1]}`,
 			visibility: newChat.visibility,
 			users: [],
 			admins: [],
