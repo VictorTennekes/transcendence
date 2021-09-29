@@ -255,7 +255,7 @@ export class ChatService {
 				time: "DESC"
 			},
 			skip: 0,
-			take: 6,
+			// take: 6,
 		});
 
 		if (!items) {

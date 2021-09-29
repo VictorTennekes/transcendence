@@ -1,3 +1,135 @@
-  .example-full-width {
-	margin-right: 10px
+.chatHeader {
+  display: flex;
+  flex-direction: row;
+  background: #1C768F;
+  border-radius: 10px 10px 0px 0px;
+}
+
+.chatTitle {
+  margin: 0 auto;
+  position: relative;
+  font-weight: 700;
+  text-align: center;
+  font-size: 2rem;
+  font-family: Poppins;
+  color: rgb(176, 200, 209);
+}
+
+.leaveChat {
+  position: absolute;
+  color: rgb(176, 200, 209);
+  svg {
+    display: block;
+    padding-top: 7px;
   }
+  button {
+    outline: none;
+  }
+}
+
+.chatList {
+  overflow-y: auto;
+  max-height: 58vh;
+  bottom: 0;
+  flex-grow: 1;
+  background: #164960;
+}
+
+.chatItem {
+  height: auto !important;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  float: left;
+  clear: left;
+  padding-left: 5px;
+}
+
+.avatar {
+  width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background-size: cover;
+  background-position: 50%;
+  margin-left: 2px;
+  border: 1px solid rgb(176, 200, 209);
+}
+
+.infoContainer {
+  flex-direction: column;
+  display: flex;
+  flex-wrap: nowrap;
+  padding-left: 10px;
+}
+
+.dateName {
+  flex-direction: row;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.name {
+  font-size: 1rem;
+}
+
+.time {
+  font-size: 0.6rem;
+}
+
+.chatMessage {
+  word-break: break-all !important;
+  word-wrap: break-word !important; 
+  white-space: pre-line  !important;
+  width: 20vh;
+}
+
+.messageForm {
+  background: #1C768F;
+  height: 40px;
+  border-radius: 0px 0px 10px 10px;
+}
+
+.input {
+  outline: none;
+  padding-left: 10px;
+  width: 22vh;
+  background-color: rgba(0,0,0,0.1);
+  height: 40px;
+  border-radius: 0px 0px 0px 10px;
+}
+
+.submit {
+  width: 4.1vh;
+  text-align: center;
+  padding: 0px;
+  font-weight: 700;
+  outline: none;
+}
+
+.sendButton {
+  display: inline-block;
+  vertical-align: middle;
+  padding-bottom: 3px;
+  color: rgb(176, 200, 209);
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #326B7D;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #4EA6C1;
+  border-radius: 8px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(176, 200, 209);
+}
