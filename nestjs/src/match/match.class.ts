@@ -1,3 +1,5 @@
+import { User } from "src/game/game.script";
+
 export enum SpeedMode {
 	SLOW,
 	NORMAL,
@@ -12,14 +14,14 @@ export interface MatchSettings {
 };
 
 export class Match {
-	private _creator: string;
-	private _opponent: null | string = null;
+	private _creator: User;
+	private _opponent: User | null;
 	private _ready: boolean = false;
 	private _accepted: {[key: string] : boolean} = {};
 
 	constructor(
 		private _id: string,
-		creator: string,
+		creator: User,
 		private _settings: MatchSettings,
 		private _private = false)
 	{
@@ -53,17 +55,17 @@ export class Match {
 	get accepted() {
 		return (
 			this._ready && 
-			this._accepted[this.creator] === true &&
-			this._accepted[this._opponent] === true);
+			this._accepted[this.creator.id] === true &&
+			this._accepted[this._opponent.id] === true);
 	}
 
-	setOpponent(opponent: string) {
+	setOpponent(opponent: User) {
 		if (!!this._opponent) {
 			//error;
 		}
 		this._opponent = opponent;
-		this._accepted[this._opponent] = false;
-		this._accepted[this.creator] = false;
+		this._accepted[this._opponent.id] = false;
+		this._accepted[this.creator.id] = false;
 		this._ready = true;
 	}
 

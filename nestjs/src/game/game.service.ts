@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
+import { getUserFromSocket } from '@shared/socket-utils';
 import { Match } from 'src/match/match.class';
 import { GameGateway } from './game.gateway';
-import { Game } from './game.script';
+import { Game, User } from './game.script';
 
 @Injectable()
 export class GameService {
@@ -10,13 +11,27 @@ export class GameService {
 	gameIntervals: {[key: string] : NodeJS.Timer} = {};
 
 	constructor(
+		@Inject(forwardRef(() => GameGateway))
 		private readonly gameGateway: GameGateway
 	) {}
 
-	setKeyPressed(id: string, arrow: string, state: boolean) {
-		
+	getGameID(clientID: string) {
+		for (const key in this.games) {
+			const players = this.games[key].users;
+			// Logger.log(`players: ${JSON.stringify(players)}`);
+			if (players.one.id == clientID || players.two.id == clientID)
+				return key;
+		}
+		return null;
 	}
 
+	setKeyPressed(id: string, arrow: string, state: boolean) {
+		const gameID = this.getGameID(id);
+		Logger.log(`PLAYER ID: ${id} -> GAME ${gameID}`);
+		this.games[gameID].setKeyPressed(id, arrow, state);
+	}
+
+	//the service needs to interact with the gateway to send updates to the users
 	gameLoop(id: string) {
 		this.games[id].update();
 		const data = this.games[id].data;

@@ -1,4 +1,4 @@
-import { Logger } from "@nestjs/common";
+import { forwardRef, Inject, Logger } from "@nestjs/common";
 import { OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody } from "@nestjs/websockets";
 import { ConnectedSocket } from "@nestjs/websockets";
 import { Socket } from "socket.io";
@@ -8,9 +8,9 @@ import { GameService } from "./game.service";
 @WebSocketGateway({ namespace: '/match'})
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer() server;
-	interval: {[key: string] : NodeJS.Timer} = {};
 
 	constructor(
+		@Inject(forwardRef(() => GameService))
 		private readonly gameService: GameService
 	) {
 	}
@@ -21,7 +21,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	handleDisconnect(@ConnectedSocket() client) {
 		console.log(`CLIENT[${client.id} - LEFT]`);
-		clearInterval(this.interval[client.id]);
 	}
 
 	sendGameUpdate(room: string, data: any) {
@@ -30,8 +29,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	//TODO: validate client IDs first
 
+	//the gateway needs the service to interact with the running Game
 	@SubscribeMessage('press_up')
 	press_up(@ConnectedSocket() client) {
+		Logger.log("PRESS UP");
 		this.gameService.setKeyPressed(client.id, 'ArrowUp', true);
 	}
 	

@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { nanoid } from 'nanoid';
 import { Observable } from 'rxjs';
+import { User } from 'src/game/game.script';
 import { GameService } from 'src/game/game.service';
 import { Match, MatchSettings } from './match.class';
 import { MatchGateway } from './match.gateway';
@@ -15,7 +16,7 @@ export class MatchService {
 
 	matches: {[key: string] : Match} = {};
 
-	createMatch(creator: string, settings: MatchSettings, privateFlag = false): string {
+	createMatch(creator: User, settings: MatchSettings, privateFlag = false): string {
 		let id = nanoid();
 		this.matches[id] = new Match(id, creator, settings, privateFlag);
 		return id;
@@ -23,7 +24,7 @@ export class MatchService {
 
 	getMatchID(clientID: string) {
 		for (const key in this.matches) {
-			if (this.matches[key].creator === clientID || this.matches[key].opponent === clientID)
+			if (this.matches[key] !== undefined && (this.matches[key].creator.id === clientID || this.matches[key].opponent.id === clientID))
 				return key;
 		}
 		return null;
@@ -44,11 +45,11 @@ export class MatchService {
 	}
 
 	//return the match (either found or created)
-	findMatch(user: string, settings: MatchSettings) {
+	findMatch(user: User, settings: MatchSettings) {
 		//BUG: subsequent requests from the same user will make the creator and opponent the same user
 		for (const key in this.matches) {
 			//loop through all matches, trying to find a compatible match (based on 'settings')
-			if (this.matches[key].ready || this.matches[key].private)
+			if (this.matches[key] === undefined || this.matches[key].ready || this.matches[key].private)
 				continue ;
 			if (this.matches[key].settingCompare(settings)) {
 				this.matches[key].setOpponent(user);

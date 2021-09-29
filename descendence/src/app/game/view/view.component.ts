@@ -56,8 +56,9 @@ export class ViewComponent implements OnInit, AfterViewInit {
 	}
 
 	ngAfterViewInit() {
-		const canvas = <HTMLCanvasElement>document.getElementById('game-canvas');
-		this.game = new Game(canvas, this.client);
+		const gameCanvas = <HTMLCanvasElement>document.getElementById('game-canvas');
+		const scoreCanvas = <HTMLCanvasElement>document.getElementById('score-canvas');
+		this.game = new Game(gameCanvas, scoreCanvas, this.client);
 		this.client.receiveGameData().subscribe((data) => {
 			console.log(JSON.stringify(data));
 			this.game.updateFromData(data);

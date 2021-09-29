@@ -16,7 +16,7 @@ export class AcceptComponent implements OnInit {
 	@ViewChild('cd', { static: false })
 	private countdown: CountdownComponent;
 	public config: CountdownConfig = {
-		leftTime: 10,
+		leftTime: 3,
 		format: 's',
 	};
 
@@ -37,7 +37,7 @@ export class AcceptComponent implements OnInit {
 	
 	ngOnInit(): void {
 		this.matchService.matchAccepted().subscribe((accepted: any) => {
-			console.log(`MATCH ACCEPTED: ${accepted}`);
+			// console.log(`MATCH ACCEPTED: ${accepted}`);
 			this.close();
 			if (accepted) {
 				//both players accepted -> direct to game page
