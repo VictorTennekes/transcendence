@@ -9,23 +9,6 @@ import { LoginGuard } from './login.guard';
 import { No2FAGuard } from './no-2fa.guard';
 import { UnauthorizedFilter } from './unauthorized.filter';
 
-// function redirectPage(url: string) {
-// 	return (`<html><body>
-// 	<h1>Redirecting...</h1>
-// 	<p>Press button below if you are not redirected</p>
-// 	<button onclick="redirect()">To the app</button>
-	
-// 	<script>
-// 	var toRedirect = "${url}";
-// 	function redirect() {
-// 	  window.location.href = toRedirect;
-// 	}
-// 	window.addEventListener("load", redirect);
-// 	redirect();
-// 	</script>
-// 	</html></body>`);
-// }
-
 @Controller('auth')
 export class AuthController {
 	constructor(
