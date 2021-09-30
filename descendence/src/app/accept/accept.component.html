@@ -1,0 +1,13 @@
+<div class="container">
+	<div class="countdown-container">
+		<countdown class="timer" [config]="config" #cd></countdown>
+	</div>
+	<div class="selection-container">
+		<button (click)="accept()">
+			ACCEPT
+		</button>
+		<button (click)="close()">
+			DECLINE
+		</button>
+	</div>
+</div>

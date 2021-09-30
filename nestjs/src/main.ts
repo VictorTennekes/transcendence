@@ -25,7 +25,7 @@ async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
 	//useful for debugging requests - used to see which url requests are made
-	app.use(morgan(':method :url :status :res[content-length] - :response-time ms :req[Cookie]'));
+	// app.use(morgan(':method :url :status :res[content-length] - :response-time ms :req[Cookie]'));
 
 	//serving static files (avatars)
 	app.useStaticAssets(join(__dirname, '..', 'assets'), {

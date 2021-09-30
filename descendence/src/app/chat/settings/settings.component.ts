@@ -92,7 +92,7 @@ export class SettingsComponent implements OnInit {
 	}
 
 	public back() {
-		this.router.navigate(['home', {outlets: {chat: ["get-chat", this.chat.id]}}], {skipLocationChange: true});
+		this.router.navigate(['', {outlets: {chat: ["get-chat", this.chat.id]}}], {skipLocationChange: true});
 	}
 
 	public isProtected(): boolean {
