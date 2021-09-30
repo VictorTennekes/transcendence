@@ -6,13 +6,15 @@ import { getUserFromSocket } from '@shared/socket-utils';
 import { UserService } from '@user/user.service';
 import { MatchService } from './match.service';
 import { User } from 'src/game/game.script';
+import { GameService } from 'src/game/game.service';
 
 @WebSocketGateway({ namespace: '/match'})
 export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	constructor(
 		private readonly userService: UserService,
-		private readonly matchService: MatchService //circular dependency :(
+		private readonly matchService: MatchService, //circular dependency :(
+		private readonly gameService: GameService,
 	) {}
 
 	@WebSocketServer()
@@ -31,6 +33,11 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('accept')
 	acceptMatch(client: Socket) {
 		this.matchService.acceptMatch(client.id);
+	}
+
+	@SubscribeMessage('join')
+	joinMatch(client: Socket, id: string) {
+		client.join(id);
 	}
 
 	@SubscribeMessage('find')
@@ -74,7 +81,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	handleConnection(@ConnectedSocket() client: Socket) {
-//		const user = getUserFromSocket(client, this.userService);
+		//no reference to a gameID here, cant join the match room
 		Logger.log(`MATCH GATEWAY - CLIENT[${client.id}] - JOINED`);
 	}
 	handleDisconnect(@ConnectedSocket() client: Socket) {

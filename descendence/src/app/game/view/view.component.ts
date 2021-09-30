@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { request } from 'http';
 import { Socket } from 'ngx-socket-io';
 import { runInThisContext } from 'vm';
@@ -13,6 +14,7 @@ import { Game } from '../game.script';
 export class ViewComponent implements OnInit, AfterViewInit {
 	game: Game;
 	constructor(
+		private readonly route: ActivatedRoute,
 		private readonly client: ClientService,
 	) { }
 	
@@ -59,6 +61,8 @@ export class ViewComponent implements OnInit, AfterViewInit {
 		const gameCanvas = <HTMLCanvasElement>document.getElementById('game-canvas');
 		const scoreCanvas = <HTMLCanvasElement>document.getElementById('score-canvas');
 		this.game = new Game(gameCanvas, scoreCanvas, this.client);
+		const gameID = this.route.snapshot.params.id;
+		this.client.join(gameID);
 		this.client.receiveGameData().subscribe((data) => {
 			console.log(JSON.stringify(data));
 			this.game.updateFromData(data);

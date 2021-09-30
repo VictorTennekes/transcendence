@@ -29,6 +29,9 @@ export class ClientService {
 		return this.socket.fromEvent('gamedata');
 	}
 
+	join(id: string) {
+		this.socket.emit('join', id);
+	}
 	pressUp() {
 		this.socket.emit('press_up', {});
 	}
