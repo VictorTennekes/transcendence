@@ -1,3 +1,50 @@
 .example-full-width {
 	margin-right: 10px
-  }
+}
+
+.chatHeader {
+	background: #1C768F;
+	border-radius: 10px;
+	width: 25vh;
+}
+
+.input {
+	width: 25vh;
+	outline: none;
+	padding-left: 10px;
+	background-color: rgba(0,0,0,0.1);
+	height: 40px;
+	border-radius: 10px;
+}
+
+button {
+	background-color: white;
+	border-radius: 10px;
+}
+
+.interfaceButton {
+	background-color: transparent;
+}
+
+.backButton {
+	background-color: transparent;
+}
+
+.rowFlex {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.colFlex {
+	display: flex;
+	flex-direction: row;
+}
+
+.radioOption {
+	padding-right: 5px;
+}
+
+.chatOption {
+	padding-right: 5px;
+}

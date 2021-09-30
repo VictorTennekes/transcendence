@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SearchService } from '../search/search.service';
@@ -6,14 +6,15 @@ import { createChatModel } from '../chat-client/message.model';
 import * as bcrypt from 'bcryptjs';
 
 @Component({
-  selector: 'app-create-chat',
-  templateUrl: './create-chat.component.html',
-  styleUrls: ['./create-chat.component.scss'],
+  	selector: 'app-create-chat',
+  	templateUrl: './create-chat.component.html',
+  	styleUrls: ['./create-chat.component.scss'],
 	providers: [SearchService]
 })
 export class CreateChatComponent implements OnInit {
 	hide = true;
 	submitted: boolean = false;
+	show: boolean = false;
 
 	constructor(
 		private formBuilder: FormBuilder,
@@ -110,4 +111,7 @@ export class CreateChatComponent implements OnInit {
 		}
 	}
 
+	public togglePassword() {
+		this.show = !this.show;
+	}
 }
