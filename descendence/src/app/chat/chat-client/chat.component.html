@@ -11,7 +11,8 @@
 </div>
 <ul #scrollMe id="chatList" class="chatList">
 	<li id="chatItem" class="chatItem" *ngFor="let msg of chat.messages">
-		<div class="avatar" style="background-image: url('cdn/assets/{{msg.owner.avatar_url}}');"></div>
+		<!-- <div class="avatar" style="background-image: url('cdn/assets/{{msg.owner.avatar_url}}');"></div> -->
+		<div class="avatar" style="{{getUserAvatar(msg.owner.avatar_url)}}"></div>
 		<div class="infoContainer">
 			<div class="dateName">
 				<p class="name"> {{msg.owner.display_name}}	</p>

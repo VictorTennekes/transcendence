@@ -89,7 +89,7 @@ export class TwoFactorComponent implements OnInit, AfterViewInit {
 		}
 		console.log(code);
 		this.authService.authenticate(code).subscribe((result: any) => {
-			this.router.navigate(['/']);
+			this.router.navigate(['']);
 			console.log("succes");
 		},
 		(err) => {

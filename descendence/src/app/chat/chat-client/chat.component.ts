@@ -83,13 +83,24 @@ import { retMessage, newMessage, chatModel } from './message.model';
 	}
 
 	public back() {
-		this.router.navigate(['home', {outlets: {chat: ['search', ""]}}], {skipLocationChange: true});
+		this.router.navigate(['', {outlets: {chat: ['search', ""]}}], {skipLocationChange: true});
 	}
 
 	public edit() {
 		if (this.userIsAdmin) {
-			this.router.navigate(['/home', {outlets: {chat: ['settings', this.chat.id]}}])
+			this.router.navigate(['', {outlets: {chat: ['settings', this.chat.id]}}])
 		}
+	}
+
+	public getUserAvatar(avatar_url: string | null) {
+		let style = "background-image: ";
+		
+		if (avatar_url) {
+			style += `url(cdn/assets/${avatar_url});`
+		}
+		else
+			style += 'linear-gradient(135.2deg, #C4377B -6.4%, #6839B5 49.35%, #0D6EFF 104.83%, #0D6EFF 104.84%, #0D6EFF 104.85%);'
+		return style;
 	}
 
 	public onSubmit() {

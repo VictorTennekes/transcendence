@@ -44,7 +44,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 	}
 
 	private redirectToChat(chat: chatModel) {
-		this.router.navigate(['home', {outlets: {chat: ['get-chat', chat.id]}}]);
+		this.router.navigate(['', {outlets: {chat: ['get-chat', chat.id]}}]);
 	}
 
 	public getChat(chat: chatModel) {
@@ -52,7 +52,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 	}
 
 	public redirectCreate() {
-		this.router.navigate(['home', {outlets: {chat: 'new-chat'}}], {skipLocationChange: true});
+		this.router.navigate(['', {outlets: {chat: 'new-chat'}}], {skipLocationChange: true});
 	}
 
 	public back() {

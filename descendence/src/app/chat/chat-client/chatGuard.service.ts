@@ -27,11 +27,11 @@ export class chatGuardService implements CanActivate {
 		catchError((err: HttpErrorResponse, caught: Observable<boolean>) => {
 			console.log("caught error in guard")
 			if (err.status === 403) {
-				this.router.navigate(['/home', {outlets: {chat: ['pass-chat', id]}}])
+				this.router.navigate(['', {outlets: {chat: ['pass-chat', id]}}])
 				return of(false);
 			}
 			console.log(err);
-			this.router.navigate(['/home', {outlets: {chat: ['search', err.error.message]}}])
+			this.router.navigate(['', {outlets: {chat: ['search', err.error.message]}}])
 			// throw err;
 			return of(false);
 			//TODO: prevent error message on console

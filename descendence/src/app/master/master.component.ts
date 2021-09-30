@@ -50,6 +50,6 @@ export class MasterComponent implements OnInit {
 		console.log('where is the error');
 		this.router.navigate(['auth']);
 		console.log('is error here');
-		// this.router.navigate(['home', {outlets: {primary: 'home'}}]);
+		// this.router.navigate([{outlets: {primary: 'home'}}]);
 	}
 }

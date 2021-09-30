@@ -24,10 +24,9 @@ const routes: Routes = [
 	//guard the main page by LoginGuard
 	{
 		canActivate: [LoginGuard],
-		path: 'home',
+		path: '',
 		component: MasterComponent,
 		children: [
-	
 			{
 				path: 'play',
 				component: MatchComponent
@@ -93,11 +92,11 @@ const routes: Routes = [
 		path: 'login',
 		component: LoginComponent
 	},
-	{
-		path: '',
-		redirectTo: 'home',
-		pathMatch: 'full'
-	},
+	// {
+	// 	path: '',
+	// 	redirectTo: 'home',
+	// 	pathMatch: 'full'
+	// },
 	{
 		path: '**',
 		redirectTo: ''
