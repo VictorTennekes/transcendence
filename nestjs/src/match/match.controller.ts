@@ -4,11 +4,13 @@ import { UnauthorizedFilter } from 'src/auth/unauthorized.filter';
 import { request } from 'http';
 import { MatchService } from './match.service';
 import { MatchSettings } from './match.class';
+import { GameService } from 'src/game/game.service';
 
 @Controller('match')
 export class MatchController {
 	constructor(
-		private readonly matchService: MatchService
+		private readonly matchService: MatchService,
+		private readonly gameService: GameService
 	) {
 
 	}
@@ -21,6 +23,15 @@ export class MatchController {
 		return (id);
 	}
 
+	@Get('ongoing/:id')
+	@UseGuards(No2FAGuard)
+	@UseFilters(UnauthorizedFilter)
+	matchOngoing(@Req() request, @Param('id') id: string) {
+		Logger.log(`MATCHONGOING - ${id}`);
+		const game = this.gameService.games[id];
+		Logger.log(`${!!game}`);
+		return (!!game);
+	}
 	//in the frontend start listening for events on this matchid
 	//then as soon as the match finds an opponent, send an event
 	// @Post('find')

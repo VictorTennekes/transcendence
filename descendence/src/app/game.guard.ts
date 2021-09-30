@@ -1,6 +1,8 @@
-import { CanActivate, UrlTree, ActivatedRoute, RouterStateSnapshot } from '@angular/router';
+import { CanActivate, UrlTree, ActivatedRoute, RouterStateSnapshot, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { GameService } from './game.service';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root',
@@ -8,13 +10,19 @@ import { Observable } from 'rxjs';
 export class GameGuard implements CanActivate {
 
 	constructor(
-		gameService: GameService
+		private readonly gameService: GameService,
+		private readonly router: Router
 	) {}
 
 	canActivate(
-		route: ActivatedRoute,
-		state: RouterStateSnapshot
-	) : Observable<boolean | UrlTree> {
-		return this.
+		route: ActivatedRouteSnapshot,
+		state: RouterStateSnapshot,
+	): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+		return this.gameService.matchOngoing(route.params.id).pipe(map((result: boolean) => {
+			if (!result) {
+				this.router.navigate(['play']);
+			}
+			return result;
+		}),catchError(error => of(false)));
 	}
 };

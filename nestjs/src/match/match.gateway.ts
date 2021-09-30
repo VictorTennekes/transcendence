@@ -53,7 +53,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			this.server.to(match).emit('ready');
 			var interval = setInterval(() => {
 				const accepted = this.matchService.isAccepted(match);
-				this.server.to(match).emit('accepted', accepted);
+				this.server.to(match).emit('accepted', {id: match, accepted: accepted});
 				if (accepted) {
 					this.matchService.createGame(match);
 					delete(this.matchService.matches[match]);
