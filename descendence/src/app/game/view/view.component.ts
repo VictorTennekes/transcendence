@@ -63,6 +63,9 @@ export class ViewComponent implements OnInit, AfterViewInit {
 		this.game = new Game(gameCanvas, scoreCanvas, this.client);
 		const gameID = this.route.snapshot.params.id;
 		this.client.join(gameID);
+		this.client.gameFinished().subscribe(() => {
+			console.log("GAME FINISHED");
+		});
 		this.client.receiveGameData().subscribe((data) => {
 			console.log(JSON.stringify(data));
 			this.game.updateFromData(data);

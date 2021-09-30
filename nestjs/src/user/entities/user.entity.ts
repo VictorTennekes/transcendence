@@ -1,5 +1,6 @@
 import { ChatEntity } from "@chat/entity/chat.entity";
 import { IsNotEmpty, MaxLength } from "class-validator";
+import { GameEntity } from "src/game/entity/game.entity";
 import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn, Unique } from "typeorm";
 
 //These class validator decorators are triggered by @UsePipes(new ValidationPipe()) on routes
@@ -42,6 +43,9 @@ export class UserEntity {
 	// @JoinTable()
 	// chats: ChatEntity[];
 
-	@ManyToMany((type) => ChatEntity, ChatEntity => ChatEntity.users)
+	@ManyToMany((type) => ChatEntity, (chat) => chat.users)
 	chats: ChatEntity[];
+
+	@ManyToMany((type) => GameEntity, (game) => game.players)
+	games: GameEntity[];
 }

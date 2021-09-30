@@ -17,6 +17,11 @@ export interface MatchSettings {
 		speed: SpeedMode,
 		//things
 	}
+	scoreGoal: number
+};
+
+export const defaultMatchSettings: MatchSettings = {
+	scoreGoal: 5,
 };
 
 @Injectable({

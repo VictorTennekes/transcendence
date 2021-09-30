@@ -1,6 +1,12 @@
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { getUserFromSocket } from '@shared/socket-utils';
+import { UserEntity } from '@user/entities/user.entity';
+import { UserService } from '@user/user.service';
+import { match } from 'assert';
 import { Match } from 'src/match/match.class';
+import { Repository } from 'typeorm';
+import { GameEntity } from './entity/game.entity';
 import { GameGateway } from './game.gateway';
 import { Game, User } from './game.script';
 
@@ -11,8 +17,11 @@ export class GameService {
 	gameIntervals: {[key: string] : NodeJS.Timer} = {};
 
 	constructor(
+		@InjectRepository(GameEntity)
+		private readonly gameRepository: Repository<GameEntity>,
 		@Inject(forwardRef(() => GameGateway))
-		private readonly gameGateway: GameGateway
+		private readonly gameGateway: GameGateway,
+		private readonly userService: UserService,
 	) {}
 
 	getGameID(clientID: string) {
@@ -33,8 +42,33 @@ export class GameService {
 		this.games[gameID].setKeyPressed(id, arrow, state);
 	}
 
+	private async saveGameInDatabase(id: string) {
+		const game = this.games[id];
+		if (!game || !game.goalReached)
+			return ;
+		let players: UserEntity[] = [];
+		players.push(await this.userService.findOne(game.users.one.login));
+		players.push(await this.userService.findOne(game.users.two.login));
+		const entry: GameEntity = this.gameRepository.create({
+			duration: game.timeElapsed,
+			start: game.startTime,
+			end: new Date(),
+			players: players,
+			data: {
+				scores: game.scores,
+				winner: game.winner
+			}
+		});
+		await this.gameRepository.save(entry);
+	}
 	//the service needs to interact with the gateway to send updates to the users
-	gameLoop(id: string) {
+	private gameLoop(id: string) {
+		if (this.games[id].goalReached) {
+			this.gameGateway.sendFinished(id);
+			this.saveGameInDatabase(id);
+			clearInterval(this.gameIntervals[id]);
+			return ;
+		}
 		this.games[id].update();
 		const data = this.games[id].data;
 		this.gameGateway.sendGameUpdate(id, data);

@@ -32,16 +32,6 @@ export class MatchController {
 		Logger.log(`${!!game}`);
 		return (!!game);
 	}
-	//in the frontend start listening for events on this matchid
-	//then as soon as the match finds an opponent, send an event
-	// @Post('find')
-	// @UseGuards(No2FAGuard)
-	// @UseFilters(UnauthorizedFilter)
-	// findMatch(@Req() request, settings: MatchSettings) {
-	// 	Logger.log(`API/MATCH/FIND called`);
-	// 	const id = this.matchService.findMatch(request.user.intra_name, settings);
-	// 	return id;
-	// }
 
 	@Get('accepted/:id')
 	@UseGuards(No2FAGuard)

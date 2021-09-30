@@ -10,7 +10,8 @@ export interface MatchSettings {
 	powerups?: {
 		speed: SpeedMode,
 		//things
-	}
+	},
+	scoreGoal: number
 };
 
 export class Match {

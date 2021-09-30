@@ -19,6 +19,11 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		console.log("Initialized game gateway");
 	}
 
+	//notify the watchers (players + spectators) of the game that the game is finished
+	sendFinished(room: string) {
+		this.server.to(room).emit('finished');
+	}
+
 	handleDisconnect(@ConnectedSocket() client) {
 		console.log(`CLIENT[${client.id} - LEFT]`);
 	}
@@ -30,6 +35,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	//TODO: validate client IDs first
 
 	//the gateway needs the service to interact with the running Game
+
 	@SubscribeMessage('press_up')
 	press_up(@ConnectedSocket() client) {
 		Logger.log("PRESS UP");

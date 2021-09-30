@@ -25,6 +25,9 @@ export class ClientService {
 		this.socket.emit('sendPlayerData', data);
 	}
 
+	gameFinished() {
+		return this.socket.fromEvent('finished');
+	}
 	receiveGameData() {
 		return this.socket.fromEvent('gamedata');
 	}
