@@ -1,17 +1,15 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { chatModel, createChatModel, retMessage } from "../chat-client/message.model";
+import { chatModel, createChatModel, editChatModel, retMessage } from "../chat-client/message.model";
 import { Observable } from "rxjs";
+// import { updateUsers } from "../settings.component";
+
 import {map} from 'rxjs/operators';
 
 @Injectable()
 export class SearchService {
 	private url = 'api/chat/';
 	constructor(private http: HttpClient) {}
-
-	getChat(newChat: createChatModel): Observable<chatModel> {
-		return this.http.post<chatModel>(this.url + 'get', newChat);
-	}
 
 	getMessagesFromChat(chatId: string): Observable<retMessage[]> {
 		return this.http.get<retMessage[]>(this.url + 'msg/' + chatId);
@@ -57,6 +55,33 @@ export class SearchService {
 		return this.http.post<chatModel>(this.url + "add-user", chat);
 	}
 
+	updateAdmins(data: editChatModel): Observable<any> {
+		console.log(data);
+		console.log(this.url + "update-admins");
+		return this.http.post(this.url + "update-admins", data)
+	}
+
+	addBan(data: editChatModel): Observable<any> {
+		console.log("SERVICE")
+		console.log(typeof data.bannedTime);
+		console.log("is data object?")
+		console.log(typeof data.bannedTime.getTime === 'function');
+
+		return this.http.post(this.url + 'add-ban', data);
+	}
+
+	addMute(data: editChatModel): Observable<any> {
+		return this.http.post(this.url + 'add-mute', data);
+	}
+
+	editVisibility(data: editChatModel): Observable<any> {
+		return this.http.post(this.url + 'edit-visibility', data);
+	}
+
+	userIsAdmin(id: string): Observable<boolean> {
+		return this.http.get<boolean>(this.url + 'user-is-admin/' + id);
+	}
+	
 	userInChat(id: string): Observable<boolean> {
 		return this.http.get<any>(this.url + 'user-in-chat/' + id);
 	}

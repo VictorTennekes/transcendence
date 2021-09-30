@@ -16,7 +16,7 @@
 				</div>
 				<span>Users</span>
 			</a>
-			<a [routerLink]="['/home/']" class=NavItem>
+			<a [routerLink]="['/home/play']" class=NavItem>
 				<div class="IconBackground" id="play">
 					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 						aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet"
@@ -29,9 +29,9 @@
 				</div>
 				<span>Play</span>
 			</a>
-			<a routerLink="game" class=NavItem>
+			<!-- <a [routerLink]="['/home/game']" class=NavItem>
 				<span>Game</span>
-			</a>
+			</a> -->
 		</div>
 		<a (click)="logOut()" type="button" class="NavItem" id="logout-button">
 			<div class="IconBackground">

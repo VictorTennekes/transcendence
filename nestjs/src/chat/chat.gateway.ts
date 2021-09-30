@@ -57,13 +57,18 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		const chat = await this.chatService.getChatById(message.chat);
 		const user = await getUserFromSocket(client, this.userService);
 		if (!user) {
-			client.emit('send_message_error');
+			client.emit('send_message_error', "no such user");
+			return;
+		}
+		if (await this.chatService.userIsMuted(user, chat.id)) {
+			client.emit('send_message_error', "you are muted");
 			return;
 		}
 		const finalMsg: MessageDTO = await this.chatService.createNewMessageSocket(message.message, user, chat);
 		for (let sock of this.connectedSockets) {
+			console.log(sock.user);
 			if (chat.users.findIndex(x => x.intra_name === sock.user.intra_name) !== -1) {
-				console.log("emitting receive messages");
+				console.log("emitting receive messages to ", sock.user.intra_name);
 				sock.socket.emit('receive_message', finalMsg);
 			}
 		}

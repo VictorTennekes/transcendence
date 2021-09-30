@@ -41,7 +41,7 @@ export class AcceptComponent implements OnInit {
 			this.close();
 			if (accepted) {
 				//both players accepted -> direct to game page
-				this.router.navigateByUrl('/home/game');
+				this.router.navigate(['/home/game']);
 			}
 			else {
 				//did this client accept?

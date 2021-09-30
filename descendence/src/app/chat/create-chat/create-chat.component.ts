@@ -14,6 +14,7 @@ import * as bcrypt from 'bcryptjs';
 export class CreateChatComponent implements OnInit {
 	hide = true;
 	submitted: boolean = false;
+	errorMessage: string = "";
 
 	constructor(
 		private formBuilder: FormBuilder,
@@ -62,7 +63,7 @@ export class CreateChatComponent implements OnInit {
 	}
 
 	public back() {
-		this.router.navigate(['home', {outlets: {chat: 'search'}}], {skipLocationChange: true});
+		this.router.navigate(['home', {outlets: {chat: ['search', ""]}}]);
 	}
 
 	public isProtected(): boolean {
@@ -81,16 +82,16 @@ export class CreateChatComponent implements OnInit {
 		return "form Invalid";
 	}
 
-	public otherSubmit() {
+	public submitCreateChatForm() {
 		this.submitted = true;
 		let pw = "";
 		if (this.createChatForm.controls['visibility'].value === 'protected') {
 			pw = this.encryptPassword(this.createChatForm.controls['password'].value);
 		}
-		let newChat: createChatModel
+		let newChat: createChatModel;
 		if (this.createChatForm.valid) {
 			newChat = {
-				name: this.createChatForm.controls['name'].value,
+				name: this.createChatForm.controls['name'].value.replace(/(\r\n|\n|\r)/gm, ""),
 				visibility: this.createChatForm.controls['visibility'].value,
 				password: pw,
 				users: [],
@@ -103,7 +104,8 @@ export class CreateChatComponent implements OnInit {
 				this.router.navigate(['home', {outlets: {chat: ['get-chat', response.id]}}], {state: response});
 			},
 			(error) => {
-				console.log(error);
+				this.submitted = false;
+				this.errorMessage = error.error.message;
 			})
 		} else {
 			console.log('invalid');

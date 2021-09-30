@@ -29,14 +29,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-// import { SearchComponent } from './components/search/search.component';
 import { SearchComponent } from './chat/search/search.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { chatGuardService } from './chat/chat-client/chatGuard.service';
-// import { CreateChatComponent } from './create-chat/create-chat.component';
 import { CreateChatComponent } from './chat/create-chat/create-chat.component';
 import { MatRadioModule } from '@angular/material/radio';
-// import { ChatPassComponent } from './chat-pass/chat-pass.component';
 import { ChatPassComponent } from './chat/chat-pass/chat-pass.component';
 import { CommonModule } from '@angular/common';
 import { ViewComponent } from './game/view/view.component';
@@ -46,11 +43,18 @@ import { AcceptComponent } from './accept/accept.component';
 import { AcceptService } from './accept.service';
 import { CountdownModule } from 'ngx-countdown';
 import { MATERIAL_SANITY_CHECKS } from '@angular/material/core';
-// import { ChatContainerComponent } from './chat-container/chat-container.component';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
 import { ChatContainerComponent } from './chat/chat-container/chat-container.component';
 import { GameSocket } from './game/game.socket';
 import { ChatSocket } from './chat/chat.socket';
 import { MatchSocket } from './match/match.socket';
+import { SettingsComponent } from './chat/settings/settings.component';
+import {
+	NgxMatDatetimePickerModule,
+	NgxMatNativeDateModule,
+	NgxMatTimepickerModule
+} from '@angular-material-components/datetime-picker';
 
 // const config: SocketIoConfig = {
 // 	url: 'http://localhost:3000',
@@ -79,7 +83,8 @@ import { MatchSocket } from './match/match.socket';
 		ViewComponent,
 		QueueComponent,
 		AcceptComponent,
-		ChatContainerComponent
+		ChatContainerComponent,
+		SettingsComponent
 	],
 	imports: [
 		CountdownModule,
@@ -93,12 +98,17 @@ import { MatchSocket } from './match/match.socket';
 		OverlayModule,
 		NgxKjuaModule,
 		BrowserAnimationsModule,
-        MatInputModule,
-        MatListModule,
+		MatInputModule,
+		MatListModule,
 		MatIconModule,
 		MatButtonModule,
 		MatRadioModule,
 		SocketIoModule,
+		MatDatepickerModule,
+		MatNativeDateModule,
+		NgxMatNativeDateModule,
+		NgxMatTimepickerModule,
+		NgxMatDatetimePickerModule,
 		CommonModule
 	],
 	entryComponents: [ FocusOverlayComponent, QueueComponent, AcceptComponent],
