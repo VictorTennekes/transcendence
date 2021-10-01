@@ -1,6 +1,6 @@
 import { Route } from '@angular/compiler/src/core';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { GameService } from 'src/app/game.service';
 import { UserService } from 'src/app/user.service';
 
@@ -53,11 +53,15 @@ export class PostComponent implements OnInit {
 		return secondsToDhms(this.duration);
 	}
 
+	back() {
+		this.router.navigate(['play']);
+	}
 
   constructor(
 	  private readonly userService: UserService,
 	  private readonly gameService: GameService,
 	  private readonly route: ActivatedRoute,
+	  private readonly router: Router
   ) {
 	  this.gameService.get(this.route.snapshot.params.id).subscribe((game: any) => {
 		const data: PostGameData = game;
