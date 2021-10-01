@@ -125,9 +125,6 @@ export class UserController {
 	@UseFilters(UnauthorizedFilter)
 	@Post('block_user')
 	async blockUser(@Req() request, @Body() username: any) {
-		console.log("um");
-		console.log("blocking users controller: ", username);
-		console.log("blocking users controller: ", username.username);
 		await this.userService.blockUser(request.session.passport.user.login, username.username);
 	}
 
