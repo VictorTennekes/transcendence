@@ -18,6 +18,16 @@ export class GameService {
 		}));
 	}
 
+	get(id: string) {
+		return this.http.get('api/match/' + id);
+	}
+
+	matchFinished(id: string) {
+		return this.http.get('api/match/finished/' + id).pipe(map((value) => {
+			return !!value;
+		}));
+	}
+
 	async matchData() {
 		return this.http.get('match/@me');
 	}

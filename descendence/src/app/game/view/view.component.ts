@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { request } from 'http';
 import { Socket } from 'ngx-socket-io';
 import { runInThisContext } from 'vm';
@@ -16,6 +16,7 @@ export class ViewComponent implements OnInit, AfterViewInit {
 	constructor(
 		private readonly route: ActivatedRoute,
 		private readonly client: ClientService,
+		private readonly router: Router
 	) { }
 	
 	ngOnInit(): void {
@@ -65,6 +66,7 @@ export class ViewComponent implements OnInit, AfterViewInit {
 		this.client.join(gameID);
 		this.client.gameFinished().subscribe(() => {
 			console.log("GAME FINISHED");
+			this.router.navigate(['post/' + gameID]);
 		});
 		this.client.receiveGameData().subscribe((data) => {
 			console.log(JSON.stringify(data));

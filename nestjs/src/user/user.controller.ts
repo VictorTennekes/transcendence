@@ -45,6 +45,14 @@ export class UserController {
 		return user;
 	}
 
+	@Post('get')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async getUser(@Req() request, @Body() body: any) {
+		Logger.log(`GET USER - ${JSON.stringify(body)}`);
+		return this.userService.findOne(body.login);
+	}
+
 	//TODO: add guard to prevent anything other than images to be uploaded
 	//https://gabrieltanner.org/blog/nestjs-file-uploading-using-multer
 	@UseGuards(AuthenticatedGuard)

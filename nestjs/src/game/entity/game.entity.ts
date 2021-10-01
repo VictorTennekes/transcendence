@@ -3,7 +3,7 @@ import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn, PrimaryGeneratedC
 
 @Entity()
 export class GameEntity {
-	@PrimaryGeneratedColumn("uuid")
+	@PrimaryColumn({type: 'varchar'})
 	id: string;
 
 	@Column({type: 'bigint'})

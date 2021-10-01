@@ -21,6 +21,7 @@ import { SettingsComponent } from './chat/settings/settings.component';
 import { chatAdminGuard } from './chat/chat-client/chatAdminGuard.service';
 import { GameGuard } from './game.guard';
 import { PostComponent } from './game/post/post.component';
+import { PostGameGuard } from './post-game.guard';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -30,7 +31,8 @@ const routes: Routes = [
 		component: MasterComponent,
 		children: [
 			{
-				path: 'post',
+				canActivate: [PostGameGuard],
+				path: 'post/:id',
 				component: PostComponent
 			},
 			{
@@ -99,11 +101,11 @@ const routes: Routes = [
 		path: 'login',
 		component: LoginComponent
 	},
-	// {
-	// 	path: '',
-	// 	redirectTo: 'home',
-	// 	pathMatch: 'full'
-	// },
+	{
+		path: '',
+		redirectTo: 'home',
+		pathMatch: 'full'
+	},
 	{
 		path: '**',
 		redirectTo: ''
@@ -113,6 +115,6 @@ const routes: Routes = [
 @NgModule({
 	imports: [RouterModule.forRoot(routes)],
 	exports: [RouterModule],
-	providers: [ LoginGuard, GameGuard, chatGuardService, SearchService, chatAdminGuard ]
+	providers: [ LoginGuard, GameGuard, PostGameGuard, chatGuardService, SearchService, chatAdminGuard ]
 })
 export class AppRoutingModule { }

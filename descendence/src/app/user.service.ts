@@ -39,6 +39,10 @@ export class UserService {
 		return this.http.get('api/user/fetch_current').pipe(take(1));
 	}
 
+	getUserByLogin(login: string) {
+		return this.http.post('api/user/get', {login});
+	}
+
 	logout(): any {
 		return this.http.get('api/auth/logout').pipe(take(1));
 	}

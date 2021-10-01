@@ -4,6 +4,7 @@ import { getUserFromSocket } from '@shared/socket-utils';
 import { UserEntity } from '@user/entities/user.entity';
 import { UserService } from '@user/user.service';
 import { match } from 'assert';
+import { getDefaultSettings } from 'http2';
 import { Match } from 'src/match/match.class';
 import { Repository } from 'typeorm';
 import { GameEntity } from './entity/game.entity';
@@ -23,6 +24,18 @@ export class GameService {
 		private readonly gameGateway: GameGateway,
 		private readonly userService: UserService,
 	) {}
+
+	get(id: string) {
+		return this.gameRepository.findOne({where: {id: id}});
+	}
+
+	async gameFinished(id: string): Promise<boolean> {
+		const game = await this.gameRepository.findOne({where: {id: id}});
+		Logger.log(`GAME OBJECT = ${game}`);
+		if (game === undefined)
+			return false;
+		return true;
+	}
 
 	getGameID(clientID: string) {
 		for (const key in this.games) {
@@ -50,6 +63,7 @@ export class GameService {
 		players.push(await this.userService.findOne(game.users.one.login));
 		players.push(await this.userService.findOne(game.users.two.login));
 		const entry: GameEntity = this.gameRepository.create({
+			id: id,
 			duration: game.timeElapsed,
 			start: game.startTime,
 			end: new Date(),

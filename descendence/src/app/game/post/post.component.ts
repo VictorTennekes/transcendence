@@ -1,4 +1,8 @@
+import { Route } from '@angular/compiler/src/core';
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { GameService } from 'src/app/game.service';
+import { UserService } from 'src/app/user.service';
 
 interface Player {
 	display_name: string,
@@ -18,6 +22,17 @@ function secondsToDhms(seconds: number) {
 	var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
 	return dDisplay + hDisplay + mDisplay + sDisplay;
 }
+
+interface PostGameData {
+	id: string,
+	duration: number,
+	start: Date,
+	end: Date,
+	data: {
+		scores: {[key: string] : number},
+		winner: string
+	}
+};
 
 @Component({
   selector: 'app-post',
@@ -39,20 +54,35 @@ export class PostComponent implements OnInit {
 	}
 
 
-  constructor() {
-	  this.duration = (3 * 60) + 14;
-	  this.players.push({
-		  display_name: 'Tishj',
-		  score: 5
+  constructor(
+	  private readonly userService: UserService,
+	  private readonly gameService: GameService,
+	  private readonly route: ActivatedRoute,
+  ) {
+	  this.gameService.get(this.route.snapshot.params.id).subscribe((game: any) => {
+		const data: PostGameData = game;
+		this.duration = (data.duration / 1000);
+		const playerNames = Object.keys(data.data.scores);
+		this.userService.getUserByLogin(playerNames[0]).subscribe((user: any) => {
+			this.players.push({
+				display_name: user.display_name,
+				score: data.data.scores[playerNames[0]]
+			});
+			this.winner = this.getWinningPlayer();
+		});
+		this.userService.getUserByLogin(playerNames[1]).subscribe((user: any) => {
+			this.players.push({
+				display_name: user.display_name,
+				score: data.data.scores[playerNames[1]]
+			});
+			this.winner = this.getWinningPlayer();
+			
+		});
 	  });
-	  this.players.push({
-		  display_name: 'MaxTheorum',
-		  score: 3
-	  });
-	  this.winner = this.getWinningPlayer();
   }
 
   ngOnInit(): void {
+	  document.clear();
   }
 
 }
