@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { ElementRef, Injectable } from "@angular/core";
 import { Overlay, OverlayConfig } from '@angular/cdk/overlay';
 import { QueueComponent } from "./queue/queue.component";
 import { ComponentPortal } from '@angular/cdk/portal';
@@ -33,9 +33,14 @@ export class QueueService {
 
 	private getOverlayConfig(config: FilePreviewDialogConfig): OverlayConfig {
 		const positionStrategy = this.overlay.position()
-		.global()
-		.centerHorizontally()
-		.centerVertically();
+		.flexibleConnectedTo(new ElementRef(document.getElementById("view")))
+		.withPositions([{
+			offsetX: -240,
+			originX: 'center',
+			originY: 'top',
+			overlayX: 'end',
+			overlayY: 'top',
+		  }]);
 		
 		const overlayConfig = new OverlayConfig({
 			...config,
