@@ -139,28 +139,28 @@ export class ChatController {
 	@Post('update-admins')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async updateAdmins(@Body() admins: updateChatDTO) {
+	async updateAdmins(@Body() admins: updateChatDTO) { //TODO: should I confirm user is owner
 		return this.service.updateAdmins(admins);
 	}
 
 	@Post('add-ban')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async addBan(@Body() data: updateChatDTO) {
+	async addBan(@Body() data: updateChatDTO) {//TODO: should I confirm user is admin
 		return this.service.addBannedUser(data);
 	}
 
 	@Post('add-mute')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async addMute(@Body() data: updateChatDTO) {
+	async addMute(@Body() data: updateChatDTO) {//TODO: should i confirm user is admin
 		return this.service.addMutedUser(data);
 	}
 
 	@Post('edit-visibility')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async editVisibility(@Body() data: updateChatDTO) {
+	async editVisibility(@Body() data: updateChatDTO) {//TODO: should i confirm user is owner
 		return this.service.editVisibility(data);
 	}
 
@@ -175,6 +175,13 @@ export class ChatController {
 	@UseFilters(UnauthorizedFilter)
 	async userInChat(@Param("id") id: string, @Req() req): Promise<boolean> {
 		return this.service.userInChat(req.user.intra_name, id);
+	}
+
+	@Post('leave-chat')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async leaveChat(@Body() id: any, @Req() req) {
+		await this.service.leaveChat(id.chatId, req.user.intra_name);
 	}
 
 }

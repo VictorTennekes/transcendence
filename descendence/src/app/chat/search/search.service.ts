@@ -85,4 +85,8 @@ export class SearchService {
 	userInChat(id: string): Observable<boolean> {
 		return this.http.get<any>(this.url + 'user-in-chat/' + id);
 	}
+
+	async leaveChat(id: string) {
+		await this.http.post(this.url + 'leave-chat', {chatId: id}).toPromise();
+	}
 }
