@@ -71,13 +71,10 @@ export class ChatService {
 
 	private async banExists(username: string, bans: BanEntity[]): Promise<BanEntity> {
 		for(let ban of bans) {
-			console.log(ban);
 			let fullBan = await this.banRepo.findOne({
 				where: {id: ban.id},
 				relations: ["user"]
 			})
-			console.log("full ban: ")
-			console.log(fullBan);
 			if (fullBan.user.intra_name === username) {
 				return ban;
 			}
@@ -102,9 +99,6 @@ export class ChatService {
 			where: {intra_name: target_name},
 			relations: ["blockedUsers"]
 		});
-		if (!user) {
-			//something bad
-		}
 		for (let msg of msgs) {
 			if (!this.userExists(msg.owner.intra_name, user.blockedUsers)) {
 				filteredMessages.push(msg);
@@ -121,7 +115,6 @@ export class ChatService {
 
 		let msgs: MessageDTO[] = (await this.getMessagesFromChat(uuid, intra_name)).reverse();
 		if (!item) {
-			console.log("not finding chat in chatbyId");
 			throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
 		}
 		let chat: ChatDTO = this.chatEntityToDTO(item);
@@ -272,9 +265,7 @@ export class ChatService {
 				time: "DESC"
 			},
 			skip: 0,
-			// take: 6,
 		});
-		//TODO: get current user as parameter, and filter chat messages by blockedUser
 		if (!items) {
 			throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
 		}
