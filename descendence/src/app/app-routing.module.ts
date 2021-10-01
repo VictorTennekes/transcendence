@@ -20,6 +20,7 @@ import { SearchService } from './chat/search/search.service';
 import { SettingsComponent } from './chat/settings/settings.component';
 import { chatAdminGuard } from './chat/chat-client/chatAdminGuard.service';
 import { GameGuard } from './game.guard';
+import { PostComponent } from './game/post/post.component';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -28,6 +29,10 @@ const routes: Routes = [
 		path: '',
 		component: MasterComponent,
 		children: [
+			{
+				path: 'post',
+				component: PostComponent
+			},
 			{
 				path: 'play',
 				component: MatchComponent
