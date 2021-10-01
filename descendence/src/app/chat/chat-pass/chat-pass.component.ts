@@ -25,7 +25,7 @@ export class ChatPassComponent implements OnInit {
 	}
 
 	public back() {
-		this.router.navigate(['home', {outlets: {chat: ['search', ""]}}]);
+		this.router.navigate(['', {outlets: {chat: ['search', ""]}}]);
 	}
 	
 	public onSubmit() {
@@ -37,7 +37,7 @@ export class ChatPassComponent implements OnInit {
 				console.log(response);
 				if (response === true) {
 					this.searchService.addUserToChat(id).subscribe((response) => {
-						this.router.navigate(['home', {outlets: {chat: ['get-chat', id]}}]);
+						this.router.navigate(['', {outlets: {chat: ['get-chat', id]}}]);
 					});
 				} else {
 					console.log("wrong pass");

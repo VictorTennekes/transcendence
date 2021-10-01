@@ -63,7 +63,7 @@ export class CreateChatComponent implements OnInit {
 	}
 
 	public back() {
-		this.router.navigate(['home', {outlets: {chat: ['search', ""]}}]);
+		this.router.navigate(['', {outlets: {chat: ['search', ""]}}]);
 	}
 
 	public isProtected(): boolean {
@@ -101,7 +101,7 @@ export class CreateChatComponent implements OnInit {
 				newChat.users.push(item.username);
 			}
 			this.searchService.createNewChat(newChat).subscribe((response) => {
-				this.router.navigate(['home', {outlets: {chat: ['get-chat', response.id]}}], {state: response});
+				this.router.navigate(['', {outlets: {chat: ['get-chat', response.id]}}], {state: response});
 			},
 			(error) => {
 				this.submitted = false;

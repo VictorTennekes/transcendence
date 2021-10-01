@@ -15,7 +15,7 @@ import { BanEntity } from './entity/ban.entity';
 	providers: [
 		ChatService,
 		UserService,
-		ChatGateway
+		ChatGateway,
 	],
 	imports: [
 		ConfigModule,

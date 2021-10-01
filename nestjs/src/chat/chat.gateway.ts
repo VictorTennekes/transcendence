@@ -1,4 +1,4 @@
-import { Logger, UseFilters, UseGuards } from "@nestjs/common";
+import { Logger, Req, UseFilters, UseGuards } from "@nestjs/common";
 import { OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody } from "@nestjs/websockets";
 import { ConnectedSocket } from "@nestjs/websockets";
 import { Socket } from "socket.io";
@@ -9,13 +9,15 @@ import { UserDTO } from "@user/dto/user.dto";
 import { AuthenticatedGuard } from "src/auth/authenticated.guard";
 import { UnauthorizedFilter } from "src/auth/unauthorized.filter";
 import { MessageDTO, newMessageDTO } from "./dto/message.dto";
+import { request } from "http";
+import { getUserFromSocket } from "@shared/socket-utils";
 
 class socketData {
 	user: UserDTO;
 	socket: Socket;
 }
 
-@WebSocketGateway()
+@WebSocketGateway({ namespace: '/chat'})
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer() server;
 
@@ -28,45 +30,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		Logger.log("yo");
 	}
 
-	async getUserFromSocket(socket: Socket): Promise<UserDTO> {
-		const cookie = socket.handshake.headers.cookie;
-		if (!cookie) return null;
-		const parsedCookie = parse(cookie);
-		const cookieData = parsedCookie['connect.sid'];
-
-		let sid = cookieData.substr(2, cookieData.indexOf(".") - 2);
-
-		const postgresConnection = 
-		{
-			user: process.env.POSTGRES_USER,
-			password: process.env.POSTGRES_PASSWORD,
-			host: process.env.POSTGRES_HOST,
-			port: process.env.POSTGRES_PORT,
-			database: process.env.POSTGRES_DB
-		};
-				
-		const knex = require('knex')({
-			client: 'pg',
-			connection: postgresConnection,
-		});
-
-		const res = await knex.select("*").from("session");
-
-		const otherRes = await knex("session").where("sid", sid);
-		if (!otherRes) return null;
-		if (!otherRes[0]) return null;
-		if (!otherRes[0].sess) return null;
-		if (!otherRes[0].sess.passport) return null;
-
-		const user = otherRes[0].sess.passport.user;
-		// const sessUser = this.userService.findOne(user.login);
-		const sessUser = this.userService.findUserWithBlocks(user.login);
-		return sessUser;
-	}
-
 	async handleConnection(@ConnectedSocket() client: Socket) {
 		Logger.log("new connection");
-		const user: UserDTO = await this.getUserFromSocket(client);
+		const user: UserDTO = await getUserFromSocket(client, this.userService);
 		if (!user) {
 			Logger.log("something's wrong, can't find user")
 			return;
@@ -89,7 +55,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage('send_message')
 	async sendMessage(@ConnectedSocket() client: Socket, @MessageBody() message: newMessageDTO) {
 		const chat = await this.chatService.getChatById(message.chat);
-		const user = await this.getUserFromSocket(client);
+		const user = await getUserFromSocket(client, this.userService);
 		console.log("send msg");
 		console.log(chat);
 		console.log(user);
@@ -124,7 +90,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				sock.socket.emit('receive_message', finalMsg);
 			}
 		}
-
 	}
 
 	@SubscribeMessage('request_message')
@@ -132,7 +97,5 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		let messages = this.chatService.getMessagesFromChat(chatId);
 		console.log("emitting send_msg messages");
 		client.emit('send_messages_by_chatid', messages);
-		
 	}
-
 }

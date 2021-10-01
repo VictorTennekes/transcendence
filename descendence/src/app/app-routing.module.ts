@@ -9,6 +9,8 @@ import { TwoFactorGuard } from './two-factor.guard';
 import { TwoFactorComponent } from './two-factor/two-factor.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { UserComponent } from './user/user.component';
+import { ViewComponent } from './game/view/view.component';
+import { MatchComponent } from './match/match.component';
 import { ChatComponent } from './chat/chat-client/chat.component';
 import { SearchComponent } from './chat/search/search.component';
 import { chatGuardService } from './chat/chat-client/chatGuard.service';
@@ -22,10 +24,13 @@ const routes: Routes = [
 	//guard the main page by LoginGuard
 	{
 		canActivate: [LoginGuard],
-		path: 'home',
+		path: '',
 		component: MasterComponent,
 		children: [
-	
+			{
+				path: 'play',
+				component: MatchComponent
+			},
 			{
 				path: 'pass-chat/:id',
 				component: ChatPassComponent,
@@ -33,7 +38,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'game',
-				component: FailComponent
+				component: ViewComponent
 			},
 			{
 				path: 'users',
@@ -67,7 +72,7 @@ const routes: Routes = [
 			},
 			{
 				path: '',
-				redirectTo: 'game',
+				redirectTo: 'play',
 				pathMatch: 'full'
 			}
 		]
@@ -87,11 +92,11 @@ const routes: Routes = [
 		path: 'login',
 		component: LoginComponent
 	},
-	{
-		path: '',
-		redirectTo: 'home',
-		pathMatch: 'full'
-	},
+	// {
+	// 	path: '',
+	// 	redirectTo: 'home',
+	// 	pathMatch: 'full'
+	// },
 	{
 		path: '**',
 		redirectTo: ''
