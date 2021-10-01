@@ -28,6 +28,7 @@ interface Canvas {
 
 export interface User {
 	login: string;
+	display_name: string;
 	id: string; //socket.id
 }
 

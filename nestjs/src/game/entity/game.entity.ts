@@ -16,6 +16,7 @@ export class GameEntity {
 	end: Date;
 
 	@ManyToMany((type) => UserEntity, (player) => player.games)
+	@JoinTable({name: 'user_games'})
 	players: UserEntity[];
 
 	@Column({type: 'jsonb'})

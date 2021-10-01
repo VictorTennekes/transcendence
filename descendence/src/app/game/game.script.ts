@@ -19,6 +19,7 @@ interface Coordinate {
 
 interface User {
 	login: string,
+	display_name: string,
 	id: string
 };
 
@@ -64,8 +65,8 @@ export class Game {
 		//		this.gameContext.strokeRect(10,10,this.gameCanvas.width - 20 ,this.gameCanvas.height - 20);
 		
 		this.scoreContext.font = "2rem Biryani, bold";
-		this.scoreContext.fillText(this._users.one.login, (this.scoreCanvas.width / 4), (this.scoreCanvas.height / 4) * 3);
-		this.scoreContext.fillText(this._users.two.login, (this.scoreCanvas.width / 4) * 3, (this.scoreCanvas.height / 4) * 3);
+		this.scoreContext.fillText(this._users.one.display_name, (this.scoreCanvas.width / 4), (this.scoreCanvas.height / 4) * 3);
+		this.scoreContext.fillText(this._users.two.display_name, (this.scoreCanvas.width / 4) * 3, (this.scoreCanvas.height / 4) * 3);
 		
 		this.scoreContext.font = "3.4rem Biryani, bold";
 		this.scoreContext.fillText(this.players[this._users.two.id].score.toString(), (this.scoreCanvas.width / 2) + 40, (this.scoreCanvas.height / 4) * 3);

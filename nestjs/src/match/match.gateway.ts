@@ -47,7 +47,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async findMatch(client: Socket, settings: any) {
 		const userItem = await getUserFromSocket(client, this.userService);
 		const user: User = {
-			login: userItem.display_name,
+			login: userItem.intra_name,
+			display_name: userItem.display_name,
 			id: client.id,
 		};
 		Logger.log(`USER INTRA NAME = ${user.login}`);
