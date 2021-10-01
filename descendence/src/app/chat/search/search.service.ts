@@ -85,4 +85,8 @@ export class SearchService {
 	userInChat(id: string): Observable<boolean> {
 		return this.http.get<any>(this.url + 'user-in-chat/' + id);
 	}
+
+	userIsOwner(id: string): Observable<boolean> {
+		return this.http.get<boolean>(this.url + 'user-is-owner/' + id);
+	}
 }

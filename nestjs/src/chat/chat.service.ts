@@ -326,13 +326,17 @@ export class ChatService {
 		return false;
 	}
 
-	async updateAdmins(admins: updateChatDTO): Promise<ChatDTO> {
+	async updateAdmins(admins: updateChatDTO, username: string): Promise<ChatDTO> {
+		//TODO: if user is owner
 		let chat: ChatEntity = await this.repo.findOne({
 			where: {id: admins.id},
-			relations: ["users", "admins"]
+			relations: ["users", "admins", "owner"]
 		});
 		if (!chat) {
 			throw new HttpException("Chat not found", HttpStatus.NOT_FOUND);
+		}
+		if (chat.owner.intra_name !== username) {
+			throw new HttpException("you're not the owner", HttpStatus.FORBIDDEN)
 		}
 		let user = await this.userRepo.findOne({
 			where: {intra_name: admins.admin}
@@ -350,7 +354,8 @@ export class ChatService {
 		return toPromise(this.chatEntityToDTO(res));
 	}
 
-	async addBannedUser(updateChat: updateChatDTO): Promise<ChatDTO> {
+	async addBannedUser(updateChat: updateChatDTO, username: string): Promise<ChatDTO> {
+		//TODO: if user is admin
 		let date: Date;
 		try {
 			date = this.stringToDate(updateChat.bannedTime);
@@ -361,7 +366,11 @@ export class ChatService {
 			.createQueryBuilder('chat')
 			.where('chat.id = :id', {id: updateChat.id})
 			.leftJoinAndSelect('chat.bans', 'bans', 'bans.type = :type', {type: "ban"})
+			.leftJoinAndSelect('chat.admins', 'admins')
 			.getOne();
+		if (!this.userExists(username, chat.admins)) {
+			throw new HttpException("you're not an admin", HttpStatus.FORBIDDEN)
+		}
 		let user = await this.userRepo.findOne({
 			where: {intra_name: updateChat.bannedUser}
 		})
@@ -388,7 +397,8 @@ export class ChatService {
 		return toPromise(this.chatEntityToDTO(res));
 	}
 
-	async addMutedUser(updateChat: updateChatDTO): Promise<ChatDTO> {
+	async addMutedUser(updateChat: updateChatDTO, username: string): Promise<ChatDTO> {
+		//TODO: if user is admin
 		let date: Date;
 		try {
 			date = this.stringToDate(updateChat.bannedTime);
@@ -399,8 +409,12 @@ export class ChatService {
 			.createQueryBuilder('chat')
 			.where('chat.id = :id', {id: updateChat.id})
 			.leftJoinAndSelect('chat.bans', 'bans', 'bans.type = :type', {type: "mute"})
+			.leftJoinAndSelect('chat.admins', 'admins')
 			.getOne();
 
+		if (!this.userExists(username, chat.admins)) {
+			throw new HttpException("you're not an admin", HttpStatus.FORBIDDEN)
+		}
 		let user = await this.userRepo.findOne({
 			where: {intra_name: updateChat.bannedUser}
 		})
@@ -426,12 +440,17 @@ export class ChatService {
 		return toPromise(this.chatEntityToDTO(res));
 	}
 
-	async editVisibility(data: updateChatDTO): Promise<ChatDTO> {
+	async editVisibility(data: updateChatDTO, username: string): Promise<ChatDTO> {
+		//TODO: if user is owner
 		let chat: ChatEntity = await this.repo.findOne({
-			where: {id: data.id}
+			where: {id: data.id},
+			relations: ["owner"]
 		})
 		if (!chat) {
 			throw new HttpException("can't find chat", HttpStatus.NOT_FOUND);
+		}
+		if (chat.owner.intra_name !== username) {
+			throw new HttpException("you're not the owner", HttpStatus.FORBIDDEN)
 		}
 		if (chat.visibility != data.visibility
 			&& ['private', 'direct', 'protected', 'public'].includes(data.visibility)) {
@@ -471,6 +490,15 @@ export class ChatService {
 			return true;
 		}
 		return false;
+	}
+
+	async userIsOwner(id: string, username: string): Promise<boolean> {
+		console.log("emm hi?")
+		const chat = await this.repo.findOne({
+			where: {id: id},
+			relations: ["owner"]
+		})
+		return (chat.owner.intra_name === username);
 	}
 
 }
