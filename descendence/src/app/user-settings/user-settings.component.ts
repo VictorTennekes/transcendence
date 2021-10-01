@@ -119,15 +119,18 @@ export class UserSettingsComponent implements OnInit {
 	blockedUserIsValid(): AsyncValidatorFn {
 		return (control: AbstractControl): Observable<ValidationErrors | null> => {
 			let err: ValidationErrors = {
-				'notValid': true
+				'noSuchUser': true
 			}
 			return of(control.value).pipe(delay(500),switchMap(() => {
-				return this.userService.userExists(control.value).pipe(map((available) => {
-					if (!available) {
-						return err;
-					}
-					return null;
-				}))
+				if (control.value) {
+					return this.userService.userExists(control.value).pipe(map((available) => {
+						if (!available) {
+							return err;
+						}
+						return null;
+					}))
+				}
+				return of(null);
 			}))
 		}
 	}	
@@ -166,7 +169,7 @@ export class UserSettingsComponent implements OnInit {
 			this.userService.updateTwoFactor(formValues['twoFactorEnabled']);
 		}
 
-		if (this.settingsForm.controls['block'].valid) {
+		if (formValues['block'] && this.settingsForm.controls['block'].valid) {
 			this.userService.addBlockedUser(this.settingsForm.controls['block'].value);
 			this.settingsForm.controls['block'].reset();
 		}

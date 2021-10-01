@@ -114,7 +114,6 @@ export class UserController {
 	@UseFilters(UnauthorizedFilter)
 	@Get('user_exists/:username')
 	async userExists(@Param("username") username: string) {
-		await this.userService.findOne(username);
 		if (await this.userService.findOne(username)) {
 			return true;
 		} else {
