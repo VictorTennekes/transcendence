@@ -48,6 +48,7 @@ export class ChatService {
 				id: chat.id,
 				name: chat.name,
 				visibility: chat.visibility,
+				owner: chat.owner,
 				admins: chat.admins,
 				users: chat.users,
 				messages: chat.messages
@@ -62,6 +63,7 @@ export class ChatService {
 			id: chat.id,
 			name: chat.name,
 			visibility: chat.visibility,
+			owner: chat.owner,
 			admins: chat.admins,
 			users: chat.users,
 			messages: chat.messages
@@ -192,6 +194,7 @@ export class ChatService {
 	async createNewChat(newChat: NewChatDTO): Promise<ChatDTO> {
 		let item: ChatEntity = await this.repo.create({
 			name: newChat.name,
+			owner: newChat.owner,
 			users: newChat.users,
 			visibility: newChat.visibility,
 			admins: newChat.admins,

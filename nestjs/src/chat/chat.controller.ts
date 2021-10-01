@@ -57,6 +57,7 @@ export class ChatController {
 				let chatdto: NewChatDTO = {
 					name: `${users[0].intra_name} & ${users[1].intra_name}`,
 					visibility: "direct",
+					owner: null,
 					admins: [],
 					users: users,
 					password: ""
@@ -89,6 +90,7 @@ export class ChatController {
 		let nc: NewChatDTO = {
 			name: newChat.name,
 			visibility: newChat.visibility,
+			owner: user,
 			users: [],
 			admins: [],
 			password: newChat.password
