@@ -77,8 +77,8 @@ export class ChatController {
 	@Get("get-chat/:id")
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async getChatById(@Param("id") id: string) {
-		return await this.service.getChatById(id);
+	async getChatById(@Param("id") id: string, @Req() req) {
+		return await this.service.getChatById(id, req.user.intra_name);
 	}
 	
 	@Post('new')
@@ -109,8 +109,8 @@ export class ChatController {
 	@Get('msg/:id')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-    async getMessagesFromChat(@Param("id") id: string): Promise<MessageDTO[]> {
-        return await this.service.getMessagesFromChat(id);
+    async getMessagesFromChat(@Param("id") id: string, @Req() req): Promise<MessageDTO[]> {
+        return await this.service.getMessagesFromChat(id, req.user.intra_name);
     }
 
 	@Post('validate-pass')
