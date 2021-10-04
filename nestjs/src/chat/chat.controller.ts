@@ -57,6 +57,7 @@ export class ChatController {
 				let chatdto: NewChatDTO = {
 					name: `${users[0].intra_name} & ${users[1].intra_name}`,
 					visibility: "direct",
+					owner: null,
 					admins: [],
 					users: users,
 					password: ""
@@ -89,6 +90,7 @@ export class ChatController {
 		let nc: NewChatDTO = {
 			name: newChat.name,
 			visibility: newChat.visibility,
+			owner: user,
 			users: [],
 			admins: [],
 			password: newChat.password
@@ -139,29 +141,30 @@ export class ChatController {
 	@Post('update-admins')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async updateAdmins(@Body() admins: updateChatDTO) { //TODO: should I confirm user is owner
-		return this.service.updateAdmins(admins);
+	async updateAdmins(@Body() admins: updateChatDTO, @Req() req) {
+		return this.service.updateAdmins(admins, req.user.intra_name);
 	}
 
 	@Post('add-ban')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async addBan(@Body() data: updateChatDTO) {//TODO: should I confirm user is admin
-		return this.service.addBannedUser(data);
+	async addBan(@Body() data: updateChatDTO, @Req() req) {
+		return this.service.addBannedUser(data, req.user.intra_name);
 	}
 
 	@Post('add-mute')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async addMute(@Body() data: updateChatDTO) {//TODO: should i confirm user is admin
-		return this.service.addMutedUser(data);
+
+	async addMute(@Body() data: updateChatDTO, @Req() req) {
+		return this.service.addMutedUser(data, req.user.intra_name);
 	}
 
 	@Post('edit-visibility')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async editVisibility(@Body() data: updateChatDTO) {//TODO: should i confirm user is owner
-		return this.service.editVisibility(data);
+	async editVisibility(@Body() data: updateChatDTO, @Req() req) {
+		return this.service.editVisibility(data, req.user.intra_name);
 	}
 
 	@Get('user-is-admin/:id')
@@ -184,4 +187,11 @@ export class ChatController {
 		await this.service.leaveChat(id.chatId, req.user.intra_name);
 	}
 
+
+	@Get('user-is-owner/:id')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async userIsOwner(@Param("id") id: string, @Req() req): Promise<boolean> {
+		return this.service.userIsOwner(id, req.user.intra_name);
+	}
 }

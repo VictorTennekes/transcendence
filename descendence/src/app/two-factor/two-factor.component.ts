@@ -77,6 +77,18 @@ export class TwoFactorComponent implements OnInit, AfterViewInit {
 		inputs[0].focus();
 	}
 
+	setWrong(state: boolean) {
+		const inputs = document.querySelectorAll<HTMLInputElement>('#code-container > *[id]');
+		for (let i = 0; i < inputs.length; i++) {
+			if (inputs[i].classList.contains('wrong') && state == false) {
+				inputs[i].classList.remove('wrong');
+			}
+			else if (!inputs[i].classList.contains('wrong') && state == true) {
+				inputs[i].classList.add('wrong');
+			}
+		}
+	}
+
 	sendCode() {
 		const inputFields = this.codeForm.controls;
 		let code = "";
@@ -91,10 +103,12 @@ export class TwoFactorComponent implements OnInit, AfterViewInit {
 		this.authService.authenticate(code).subscribe((result: any) => {
 			this.router.navigate(['']);
 			console.log("succes");
+			this.setWrong(false);
 		},
 		(err) => {
 			console.log("CODE IS NOT VALID");
 			this.clearField();
+			this.setWrong(true);
 		})
 	}
 }

@@ -88,5 +88,9 @@ export class SearchService {
 
 	async leaveChat(id: string) {
 		await this.http.post(this.url + 'leave-chat', {chatId: id}).toPromise();
+  }
+
+	userIsOwner(id: string): Observable<boolean> {
+		return this.http.get<boolean>(this.url + 'user-is-owner/' + id);
 	}
 }

@@ -2,12 +2,12 @@
 	<div class="tab">
 		<form [formGroup]="codeForm" (ngSubmit)="sendCode()">
 			<div class="code-container" id="code-container">
-				<input [OnlyNumber]=true id="code1" formControlName="code1" maxlength="1" class="w-12 h-12 bg-gray-100 border-gray-100 outline-none focus:bg-gray-200 m-2 text-center rounded focus:border-blue-400 focus:shadow-outline" type="text" name="2fa" autocomplete="off"/>
-				<input [OnlyNumber]=true id="code2" formControlName="code2" maxlength="1" class="w-12 h-12 bg-gray-100 border-gray-100 outline-none focus:bg-gray-200 m-2 text-center rounded focus:border-blue-400 focus:shadow-outline" type="text" name="2fa" autocomplete="off"/>
-				<input [OnlyNumber]=true id="code3" formControlName="code3" maxlength="1" class="w-12 h-12 bg-gray-100 border-gray-100 outline-none focus:bg-gray-200 m-2 text-center rounded focus:border-blue-400 focus:shadow-outline" type="text" name="2fa" autocomplete="off" style="margin-right: 1.4rem"/>
-				<input [OnlyNumber]=true id="code4" formControlName="code4" maxlength="1" class="w-12 h-12 bg-gray-100 border-gray-100 outline-none focus:bg-gray-200 m-2 text-center rounded focus:border-blue-400 focus:shadow-outline" type="text" name="2fa" autocomplete="off"/>
-				<input [OnlyNumber]=true id="code5" formControlName="code5" maxlength="1" class="w-12 h-12 bg-gray-100 border-gray-100 outline-none focus:bg-gray-200 m-2 text-center rounded focus:border-blue-400 focus:shadow-outline" type="text" name="2fa" autocomplete="off"/>
-				<input [OnlyNumber]=true id="code6" formControlName="code6" maxlength="1" class="w-12 h-12 bg-gray-100 border-gray-100 outline-none focus:bg-gray-200 m-2 text-center rounded focus:border-blue-400 focus:shadow-outline" type="text" name="2fa" autocomplete="off"/>
+				<input [OnlyNumber]=true id="code1" formControlName="code1" maxlength="1" class="tfa-code" type="text" name="2fa" autocomplete="off"/>
+				<input [OnlyNumber]=true id="code2" formControlName="code2" maxlength="1" class="tfa-code" type="text" name="2fa" autocomplete="off"/>
+				<input [OnlyNumber]=true id="code3" formControlName="code3" maxlength="1" class="tfa-code" type="text" name="2fa" autocomplete="off" style="margin-right: 1.4rem"/>
+				<input [OnlyNumber]=true id="code4" formControlName="code4" maxlength="1" class="tfa-code" type="text" name="2fa" autocomplete="off"/>
+				<input [OnlyNumber]=true id="code5" formControlName="code5" maxlength="1" class="tfa-code" type="text" name="2fa" autocomplete="off"/>
+				<input [OnlyNumber]=true id="code6" formControlName="code6" maxlength="1" class="tfa-code" type="text" name="2fa" autocomplete="off"/>
 			</div>
 			<div class="button-container">
 				<button type="submit" id="submit-button">
