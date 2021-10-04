@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { ValidationError } from 'ajv';
 import { Observable, of, timer } from 'rxjs';
-import { delay, map, switchMap } from 'rxjs/operators';
+import { delay, filter, first, map, switchMap } from 'rxjs/operators';
 import { FocusOverlayRef } from '../focus-overlay/focus-overlay.ref';
 import { FocusOverlayService } from '../focus-overlay/focus-overlay.service';
 import { SharedValidatorService } from '../focus-overlay/shared-validator.service';
@@ -26,6 +26,7 @@ export class UserSettingsComponent implements OnInit {
 	changedAvatarPreview: any;
 	selectedAvatarFile: File | null = null;
 	initialTwoFactorState: boolean;
+	currentUserIntra: string;
 	
 	constructor(
 		private overlay: FocusOverlayService,
@@ -124,7 +125,7 @@ export class UserSettingsComponent implements OnInit {
 			return of(control.value).pipe(delay(500),switchMap(() => {
 				if (control.value) {
 					return this.userService.userExists(control.value).pipe(map((available) => {
-						if (!available) {
+						if (!available || control.value == this.currentUserIntra) {
 							return err;
 						}
 						return null;
@@ -133,7 +134,7 @@ export class UserSettingsComponent implements OnInit {
 				return of(null);
 			}))
 		}
-	}	
+	}
 
 	addValidators() {
 		this.settingsForm.controls['displayName'].setAsyncValidators([this.displayNameIsUnique()]);
@@ -188,6 +189,7 @@ export class UserSettingsComponent implements OnInit {
 			console.log(value);
 		});
 		this.userService.userSubject.subscribe((user:any) => {
+			this.currentUserIntra = user.intra_name;
 			this.currentAvatarUrl = user.avatar_url;
 			this.initialTwoFactorState = user.two_factor_enabled;
 			this.settingsForm.patchValue({'twoFactorEnabled': this.initialTwoFactorState});

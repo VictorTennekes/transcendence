@@ -44,6 +44,7 @@ export class UserService {
 	}
 
 	userExists(username: string) {
+		console.log(`USEREXISTS - ${username}`);
 		return this.http.get('api/user/user_exists/' + username);
 	}
 

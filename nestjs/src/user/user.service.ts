@@ -65,6 +65,8 @@ export class UserService {
 			where: {intra_name: username},
 			relations: ["blockedUsers"]
 		});
+		if (username == blockedUsername)
+			return ;
 		let blockedUser: UserEntity = await this.userRepository.findOne({
 			where: {intra_name: blockedUsername},
 			relations: ["blockedByUsers"]

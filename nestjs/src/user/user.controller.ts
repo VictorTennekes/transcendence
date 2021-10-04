@@ -115,6 +115,7 @@ export class UserController {
 	@Get('user_exists/:username')
 	async userExists(@Param("username") username: string) {
 		if (await this.userService.findOne(username)) {
+			Logger.log(`USER EXISTS`);
 			return true;
 		} else {
 			return false;
@@ -125,6 +126,8 @@ export class UserController {
 	@UseFilters(UnauthorizedFilter)
 	@Post('block_user')
 	async blockUser(@Req() request, @Body() username: any) {
+		if (request.user.login === username.username)
+			return ;
 		await this.userService.blockUser(request.session.passport.user.login, username.username);
 	}
 

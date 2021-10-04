@@ -52,9 +52,14 @@ export class ChatController {
 			if (name !== req.session.passport.user.login) {
 				users.push(await this.userService.findOne(req.session.passport.user.login));
 			}
+			else {
+				//
+				return ;
+			}
 			let dm = await this.service.getChatByUsers(users);
 			if (!dm) {
 				let chatdto: NewChatDTO = {
+					//BUG: if dm is with yourself, [1].intra_name is undefined
 					name: `${users[0].intra_name} & ${users[1].intra_name}`,
 					visibility: "direct",
 					admins: [],
