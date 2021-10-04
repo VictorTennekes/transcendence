@@ -155,6 +155,7 @@ export class ChatController {
 	@Post('add-mute')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
+
 	async addMute(@Body() data: updateChatDTO, @Req() req) {
 		return this.service.addMutedUser(data, req.user.intra_name);
 	}
@@ -178,6 +179,14 @@ export class ChatController {
 	async userInChat(@Param("id") id: string, @Req() req): Promise<boolean> {
 		return this.service.userInChat(req.user.intra_name, id);
 	}
+
+	@Post('leave-chat')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async leaveChat(@Body() id: any, @Req() req) {
+		await this.service.leaveChat(id.chatId, req.user.intra_name);
+	}
+
 
 	@Get('user-is-owner/:id')
 	@UseGuards(AuthenticatedGuard)

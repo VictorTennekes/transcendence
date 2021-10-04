@@ -492,6 +492,28 @@ export class ChatService {
 		return false;
 	}
 
+	async leaveChat(chatId: string, username: string): Promise<boolean> {
+		let chat = await this.repo.findOne({
+			where: {id: chatId},
+			relations: ["users", "admins"] //TODO: add owner
+		})
+		for (let idx = 0; idx < chat.users.length; idx++) {
+			if (chat.users[idx].intra_name === username) {
+				chat.users.splice(idx);
+				break;
+			}
+		}
+		for (let idx = 0; idx < chat.admins.length; idx++) {
+			if (chat.admins[idx].intra_name === username) {
+				chat.admins.splice(idx);
+				break;
+			}
+		}
+		console.log(chat);
+		console.log("trying to save this? ", await this.repo.save(chat));
+		return true;
+  }
+
 	async userIsOwner(id: string, username: string): Promise<boolean> {
 		console.log("emm hi?")
 		const chat = await this.repo.findOne({

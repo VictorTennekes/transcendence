@@ -39,3 +39,4 @@ export class ChatEntity {
 	messages: MessageEntity[];
 
 }
+//TODO: also add an owner. Only owner can change privacy and add new admins. Admins can only mute and ban
