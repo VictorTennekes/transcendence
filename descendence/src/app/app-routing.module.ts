@@ -28,7 +28,7 @@ const routes: Routes = [
 		component: MasterComponent,
 		children: [
 			{
-				path: 'play',
+				path: 'play/:intra_name',
 				component: MatchComponent
 			},
 			{
@@ -72,7 +72,7 @@ const routes: Routes = [
 			},
 			{
 				path: '',
-				redirectTo: 'play',
+				redirectTo: 'play/',
 				pathMatch: 'full'
 			}
 		]

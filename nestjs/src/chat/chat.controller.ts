@@ -177,4 +177,11 @@ export class ChatController {
 		return this.service.userInChat(req.user.intra_name, id);
 	}
 
+	@Get('is-logged-in-user/:username')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async isLoggedInUser(@Param("usernaem") username: string, @Req() req): Promise<boolean> {
+		return (username === req.user.intra_name);
+	}
+
 }

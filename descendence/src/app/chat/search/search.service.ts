@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { chatModel, createChatModel, editChatModel, retMessage } from "../chat-client/message.model";
-import { Observable } from "rxjs";
+import { Observable, pipe } from "rxjs";
 // import { updateUsers } from "../settings.component";
 
-import {map} from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 
 @Injectable()
 export class SearchService {
@@ -84,5 +84,17 @@ export class SearchService {
 	
 	userInChat(id: string): Observable<boolean> {
 		return this.http.get<any>(this.url + 'user-in-chat/' + id);
+	}
+
+	isLoggedInUser(username: string): any {
+		return this.http.get<boolean>(this.url + 'is-logged-in-user/' + username).subscribe((res) => {
+			console.log(res);
+		})
+		// .pipe(map((res) => {
+		// 	console.log("result");
+		// 	console.log(res)
+		// 	return res;
+		// }));
+		return false;
 	}
 }

@@ -11,6 +11,7 @@ export interface MatchSettings {
 		speed: SpeedMode,
 		//things
 	}
+	opponent_username?: string
 };
 
 export class Match {
@@ -73,7 +74,12 @@ export class Match {
 		this._accepted[user] = true;
 	}
 
-	settingCompare(setting: MatchSettings): boolean {
+	settingCompare(setting: MatchSettings, user: User): boolean {
+		if (setting?.opponent_username) {
+			if (setting?.opponent_username !== user.login) {
+				return false;
+			}
+		}
 		if (this._settings?.powerups) {
 			for (const item in this._settings.powerups) {
 				if (!setting.powerups[item] || this._settings.powerups[item] != setting.powerups[item]) {

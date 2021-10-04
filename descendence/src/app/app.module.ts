@@ -55,6 +55,8 @@ import {
 	NgxMatNativeDateModule,
 	NgxMatTimepickerModule
 } from '@angular-material-components/datetime-picker';
+import {MatMenuModule} from '@angular/material/menu';
+
 
 // const config: SocketIoConfig = {
 // 	url: 'http://localhost:3000',
@@ -106,6 +108,7 @@ import {
 		SocketIoModule,
 		MatDatepickerModule,
 		MatNativeDateModule,
+		MatMenuModule,
 		NgxMatNativeDateModule,
 		NgxMatTimepickerModule,
 		NgxMatDatetimePickerModule,

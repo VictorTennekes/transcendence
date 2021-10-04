@@ -6,6 +6,7 @@ import { getUserFromSocket } from '@shared/socket-utils';
 import { UserService } from '@user/user.service';
 import { MatchService } from './match.service';
 import { User } from 'src/game/game.script';
+import { MatchSettings } from './match.class';
 
 @WebSocketGateway({ namespace: '/match'})
 export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -38,6 +39,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	//find/create a match
 	//send 'ready' to both players once a match is found
 	async findMatch(client: Socket, settings: any) {
+		console.log("in find match. maybe it'll send the response?")
 		const userItem = await getUserFromSocket(client, this.userService);
 		const user: User = {
 			login: userItem.display_name,
@@ -65,6 +67,17 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 	}
 
+	@SubscribeMessage('invite_user')
+	async inviteUser(client: Socket, settings: MatchSettings) {
+		//send invite to other user
+		console.log("inviting: ", settings);
+		//TODO:find connected socket
+		//TODO: error if not connnected
+		//TODO: send invite if connected
+		
+		this.findMatch(client, settings);
+	}
+
 	notifyMatchState(id: string, state: boolean) {
 		this.server.emit(`accepted${id}`, state);
 	}
@@ -75,9 +88,11 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleConnection(@ConnectedSocket() client: Socket) {
 //		const user = getUserFromSocket(client, this.userService);
+//TODO: store connected users
 		Logger.log(`MATCH GATEWAY - CLIENT[${client.id}] - JOINED`);
 	}
 	handleDisconnect(@ConnectedSocket() client: Socket) {
+		//TODO: yeet disconnected users
 		Logger.log(`MATCH GATEWAY - CLIENT[${client.id}] - LEFT`);
 	}
 }

@@ -48,16 +48,33 @@ export class MatchService {
 	findMatch(user: User, settings: MatchSettings) {
 		//BUG: subsequent requests from the same user will make the creator and opponent the same user
 		for (const key in this.matches) {
+			console.log("findMatch");
 			//loop through all matches, trying to find a compatible match (based on 'settings')
 			if (this.matches[key] === undefined || this.matches[key].ready || this.matches[key].private)
 				continue ;
-			if (this.matches[key].settingCompare(settings)) {
+			if (this.matches[key].settingCompare(settings, user)) {
 				this.matches[key].setOpponent(user);
 				return (key);
 			}
 		}
 		//no compatible match found, create one instead
 		return (this.createMatch(user, settings));
+	}
+
+	findConnectedSocket(user: User, settings: MatchSettings) {
+		//BUG: subsequent requests from the same user will make the creator and opponent the same user
+		for (const key in this.matches) {
+			console.log("findMatch");
+			//loop through all matches, trying to find a compatible match (based on 'settings')
+			if (this.matches[key] === undefined || this.matches[key].ready || this.matches[key].private)
+				continue ;
+			if (this.matches[key].settingCompare(settings, user)) {
+				this.matches[key].setOpponent(user);
+				return (key);
+			}
+		}
+		//no compatible match found, emit error?
+		return (null)
 	}
 
 	acceptMatch(user: string) {

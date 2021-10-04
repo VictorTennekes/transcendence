@@ -17,6 +17,7 @@ export interface MatchSettings {
 		speed: SpeedMode,
 		//things
 	}
+	opponent_username?: string
 };
 
 @Injectable({
@@ -34,6 +35,10 @@ export class MatchService {
 		this.matchSocket.emit('find', settings);
 	}
 
+	inviteUser(settings: MatchSettings) {
+		this.matchSocket.emit('find', settings);
+	}
+
 	cancelMatch() {
 		this.matchSocket.emit('cancel');
 	}
@@ -48,5 +53,9 @@ export class MatchService {
 
 	acceptMatch() {
 		this.matchSocket.emit('accept');
+	}
+
+	receiveGameInvite() {
+		return this.matchSocket.fromEvent('receive_game_invite');
 	}
 }

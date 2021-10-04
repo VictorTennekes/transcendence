@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import "@fontsource/fredoka-one";
 import { CookieService } from 'ngx-cookie';
 import { UserService } from '../user.service';
+import { MatchSettings, MatchService } from '../match.service';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
 	selector: 'app-master',
@@ -19,6 +21,8 @@ export class MasterComponent implements OnInit {
 		private readonly router: Router,
 		private userService: UserService,
 		private cookies: CookieService,
+		private matchService: MatchService,
+		public dialog: MatDialog
 	) { }
 
 	updateAvatar(url: string | null) {
@@ -37,6 +41,18 @@ export class MasterComponent implements OnInit {
 			this.displayName = user.display_name;
 			this.avatarStyle = this.updateAvatar(user.avatar_url);
 		});
+
+		this.matchService.receiveGameInvite().subscribe((res: any) => {
+			this.openDialog(res);
+			// this.router.navigate(['play', res]);
+		})
+	}
+
+	openDialog(user: any) {
+		const dialogRef = this.dialog.open(DialogContentExampleDialog);
+		dialogRef.afterClosed().subscribe(result => {
+			console.log(`Dialog result: ${result}`);
+		});
 	}
 
 	logOut(): void {
@@ -53,3 +69,9 @@ export class MasterComponent implements OnInit {
 		// this.router.navigate([{outlets: {primary: 'home'}}]);
 	}
 }
+
+@Component({
+	selector: 'dialog-content-example-dialog',
+	templateUrl: './invite.html',
+  })
+  export class DialogContentExampleDialog {}

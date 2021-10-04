@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { MatchService } from '../match.service';
+import { MatchService, MatchSettings } from '../match.service';
 import { QueueService } from '../queue.service';
 import { AcceptService } from '../accept.service';
 import { MatchSocket } from './match.socket';
+import {ActivatedRoute} from '@angular/router'
 
 @Component({
 	selector: 'app-match',
@@ -14,7 +15,8 @@ export class MatchComponent implements OnInit {
 	constructor(
 		private readonly matchService: MatchService,
 		private readonly queueService: QueueService,
-		private readonly acceptService: AcceptService
+		private readonly acceptService: AcceptService,
+		private route: ActivatedRoute
 	) { }
 	
 	overlay: any;
@@ -35,6 +37,28 @@ export class MatchComponent implements OnInit {
 	}
 	
 	ngOnInit(): void {
+
+		this.route.params.subscribe(params => {
+			console.log("params in match: ", params);
+			console.log(params['intra_name']);
+			if (params['intra_name'] !== '') {
+				// this.matchService.
+				console.log("start match with: ", params['intra_name']);
+				let settings: MatchSettings = {
+					opponent_username: params['intra_name']
+				}
+				this.matchService.inviteUser(settings);
+				this.overlay = this.queueService.open({hasBackdrop: false});
+				//when the
+				console.log("here man");
+				this.matchService.matchReady().subscribe(() => {
+					console.log("RECEIVED READY SIGNAL");
+					this.overlay.close();
+					this.overlay = this.acceptService.open();
+				});
+			}
+		})
+		
 	}
 	
 }
