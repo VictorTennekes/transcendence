@@ -1,11 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { ChatComponent } from "../chat-client/chat.component";
 import { ChatService } from "../chat-client/chat.service";
 import { chatModel, createChatModel } from "../chat-client/message.model";
 import { SearchService } from "./search.service";
-
+import {HttpErrorResponse} from '@angular/common/http';
 @Component({
 	selector: 'chat-search',
 	templateUrl: './search.component.html',
@@ -15,12 +15,11 @@ import { SearchService } from "./search.service";
   export class SearchComponent implements OnInit {
 
 	constructor(private searchService: SearchService,
-		private router: Router) {}
+		private router: Router,
+		private route: ActivatedRoute) {}
 
-	public userNotFound: boolean = false;
-	public chatNotFound: boolean = false;
 	public chats: chatModel[] = [];
-
+	public errorMessage: string = "";
 
 	userForm = new FormGroup ({
 		username: new FormControl('', {
@@ -28,8 +27,13 @@ import { SearchService } from "./search.service";
 	})
 
 	private getChats(): chatModel[] {
+		this.route.params.subscribe(params => {
+			console.log(params);
+			this.errorMessage = params['error'];
+		})
 		this.searchService.getChats().subscribe(response => {
 			this.chats = response;
+			console.log(response);
 			return response
 		});
 		return [];
@@ -40,7 +44,7 @@ import { SearchService } from "./search.service";
 	}
 
 	private redirectToChat(chat: chatModel) {
-		this.router.navigate(['home', {outlets: {chat: ['get-chat', chat.id]}}]);
+		this.router.navigate(['', {outlets: {chat: ['get-chat', chat.id]}}]);
 	}
 
 	public getChat(chat: chatModel) {
@@ -48,7 +52,12 @@ import { SearchService } from "./search.service";
 	}
 
 	public redirectCreate() {
-		this.router.navigate(['home', {outlets: {chat: 'new-chat'}}], {skipLocationChange: true});
+		this.router.navigate(['', {outlets: {chat: 'new-chat'}}], {skipLocationChange: true});
+	}
+
+	public back() {
+		this.getChats();
+		this.userForm.reset();
 	}
 
 	public submitUser() {
@@ -61,13 +70,14 @@ import { SearchService } from "./search.service";
 		}
 		newChat.users.push(this.userForm.value.username);
 		this.searchService.findMatchingChats(this.userForm.value.username).subscribe(
-			(response) => {
-				this.chatNotFound = false;
+			(response: chatModel[]) => {
+				this.errorMessage = "";
 				this.chats = response;
 			},
-			(error) => {
-				this.chatNotFound = true;
-			}
+			(error: HttpErrorResponse) => {
+				this.errorMessage = error.error.message;
+				this.chats = [];
+			},
 		)
 	}
 }

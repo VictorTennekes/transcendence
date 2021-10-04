@@ -5,10 +5,14 @@
 		</button>
 	</div>
 	<div class="chatTitle">{{chat.name}}</div>
+	<button mat-icon-button *ngIf="userIsAdmin" (click)="edit()" style="color: rgb(176, 200, 209)">
+		<mat-icon>settings</mat-icon>
+	</button> 
 </div>
 <ul #scrollMe id="chatList" class="chatList">
 	<li id="chatItem" class="chatItem" *ngFor="let msg of chat.messages">
-		<div class="avatar" style="background-image: url('cdn/assets/{{msg.owner.avatar_url}}');"></div>
+		<!-- <div class="avatar" style="background-image: url('cdn/assets/{{msg.owner.avatar_url}}');"></div> -->
+		<div class="avatar" style="{{getUserAvatar(msg.owner.avatar_url)}}"></div>
 		<div class="infoContainer">
 			<div class="dateName">
 				<p class="name"> {{msg.owner.display_name}}	</p>
@@ -18,11 +22,10 @@
 		</div>
 	</li>
 </ul>
-
-<form class="messageForm" [formGroup]="messageForm" (ngSubmit)="onSubmit()" (keyup.enter)="onSubmit()">
+<form class="messageForm" [formGroup]="messageForm" (ngSubmit)="onSubmit()">
 	<input class="input" formControlName="message" type="text" placeholder="Message">
 	<button type="submit" class="submit">
 			<svg class="sendButton" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="30" height="30" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M1.513 1.96a1.374 1.374 0 0 1 1.499-.21l19.335 9.215a1.146 1.146 0 0 1 0 2.07L3.012 22.25a1.374 1.374 0 0 1-1.947-1.46L2.49 12L1.065 3.21a1.374 1.374 0 0 1 .448-1.25zm2.375 10.79l-1.304 8.042L21.031 12L2.584 3.208l1.304 8.042h7.362a.75.75 0 0 1 0 1.5H3.888z" fill="currentColor"/></svg>
 	</button>
 </form>
-<p *ngIf="sendError">Error sending message</p>
+<p *ngIf="errorMessage != ''">{{errorMessage}}</p>

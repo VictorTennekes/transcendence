@@ -19,7 +19,7 @@ export class TwoFactorGuard implements CanActivate {
 	): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 		return this.authService.isLoggedIn(false).pipe(map((result) => {
 			if (!result) {
-				this.router.navigateByUrl('/home');
+				this.router.navigate(['']);
 			}
 			return result;
 		}),catchError(error => of(false)));

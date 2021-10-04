@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Logger, Post, Req, Res, Session, UnauthorizedException, UseFilters, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { redirectPage } from '@shared/redirect';
 import { Response } from 'express';
 import { authenticate } from 'passport';
 import { AuthService } from './auth.service';
@@ -18,11 +19,11 @@ export class AuthController {
 	@Get('redirect')
 	@UseGuards(LoginGuard)
 	@UseFilters(UnauthorizedFilter)
-	async login(@Req() req, @Res() res: Response) {
+	async login(@Req() req) {
 		if (req.user.two_factor_enabled) {
-			res.redirect('http://localhost:4200/2fa');
+			return(redirectPage('http://localhost:4200/2fa'));
 		}
-		res.redirect('http://localhost:4200/');
+		return (redirectPage('http://localhost:4200/'));
 	}
 
 	@Get('@session')

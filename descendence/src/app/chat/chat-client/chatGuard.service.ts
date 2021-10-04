@@ -16,17 +16,25 @@ export class chatGuardService implements CanActivate {
 		console.log(next.params);
 		const id: string = next.params['id'];
 		return this.searchService.canAccessChat(id).pipe(map((response)=>{
-			return true;
+			console.log("doing stuf, response:")
+			console.log(response);
+			return response;
 		},
 		// (error: any) => {
 		// return false;
 		// }
 		),
 		catchError((err: HttpErrorResponse, caught: Observable<boolean>) => {
+			console.log("caught error in guard")
 			if (err.status === 403) {
-				this.router.navigate(['/home', {outlets: {chat: ['pass-chat', id]}}])
+				this.router.navigate(['', {outlets: {chat: ['pass-chat', id]}}])
+				return of(false);
 			}
+			console.log(err);
+			this.router.navigate(['', {outlets: {chat: ['search', err.error.message]}}])
+			// throw err;
 			return of(false);
+			//TODO: prevent error message on console
 		}));
 	}
 }

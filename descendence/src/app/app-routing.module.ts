@@ -9,21 +9,28 @@ import { TwoFactorGuard } from './two-factor.guard';
 import { TwoFactorComponent } from './two-factor/two-factor.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { UserComponent } from './user/user.component';
+import { ViewComponent } from './game/view/view.component';
+import { MatchComponent } from './match/match.component';
 import { ChatComponent } from './chat/chat-client/chat.component';
 import { SearchComponent } from './chat/search/search.component';
 import { chatGuardService } from './chat/chat-client/chatGuard.service';
 import { CreateChatComponent } from './chat/create-chat/create-chat.component';
 import { ChatPassComponent } from './chat/chat-pass/chat-pass.component';
 import { SearchService } from './chat/search/search.service';
+import { SettingsComponent } from './chat/settings/settings.component';
+import { chatAdminGuard } from './chat/chat-client/chatAdminGuard.service';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
 	{
 		canActivate: [LoginGuard],
-		path: 'home',
+		path: '',
 		component: MasterComponent,
 		children: [
-	
+			{
+				path: 'play',
+				component: MatchComponent
+			},
 			{
 				path: 'pass-chat/:id',
 				component: ChatPassComponent,
@@ -31,7 +38,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'game',
-				component: FailComponent
+				component: ViewComponent
 			},
 			{
 				path: 'users',
@@ -42,7 +49,7 @@ const routes: Routes = [
 				component: UserSettingsComponent
 			},
 			{
-				path: 'search',
+				path: 'search/:error',
 				component: SearchComponent,
 				outlet: "chat"
 			},
@@ -57,10 +64,15 @@ const routes: Routes = [
 				canActivate: [chatGuardService],
 				outlet: "chat"
 			},
-		
+			{
+				path: 'settings/:id',
+				component: SettingsComponent,
+				canActivate: [chatAdminGuard],
+				outlet: "chat"
+			},
 			{
 				path: '',
-				redirectTo: 'game',
+				redirectTo: 'play',
 				pathMatch: 'full'
 			}
 		]
@@ -80,11 +92,11 @@ const routes: Routes = [
 		path: 'login',
 		component: LoginComponent
 	},
-	{
-		path: '',
-		redirectTo: 'home',
-		pathMatch: 'full'
-	},
+	// {
+	// 	path: '',
+	// 	redirectTo: 'home',
+	// 	pathMatch: 'full'
+	// },
 	{
 		path: '**',
 		redirectTo: ''
@@ -94,6 +106,6 @@ const routes: Routes = [
 @NgModule({
 	imports: [RouterModule.forRoot(routes)],
 	exports: [RouterModule],
-	providers: [ LoginGuard, chatGuardService, SearchService ]
+	providers: [ LoginGuard, chatGuardService, SearchService, chatAdminGuard ]
 })
 export class AppRoutingModule { }
