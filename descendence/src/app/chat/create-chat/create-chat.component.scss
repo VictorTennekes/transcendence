@@ -4,7 +4,7 @@
 
 .chatHeader {
 	background: #1C768F;
-	border-radius: 10px;
+	border-radius: 99em;
 	width: 25vh;
 }
 
@@ -14,12 +14,17 @@
 	padding-left: 10px;
 	background-color: rgba(0,0,0,0.1);
 	height: 40px;
-	border-radius: 10px;
+	border-radius: 99em;
 }
 
 button {
-	background-color: white;
-	border-radius: 10px;
+	background-color: rgba(0,0,0,0.1);
+	padding: 0.375em;
+	border-radius: 99em;
+	font-size: 14px;
+	&:hover {
+		background-color: mix(#fff, #E5C387, 84%);
+	}
 }
 
 .interfaceButton {
@@ -47,4 +52,50 @@ button {
 
 .chatOption {
 	padding-right: 5px;
+}
+
+.radioButton {
+
+}
+
+.radioLabel {
+	font-size: 14px;
+	display: flex;
+	cursor: pointer;
+	font-weight: 400;
+	position: relative;
+	overflow: hidden;
+	margin-bottom: 0.375em;
+	padding-right: 5px;
+	input {
+		position: absolute;
+		left: -9999px;
+		&:checked + span {
+			background-color: mix(#fff, #E5C387, 84%);
+			&:before {
+				box-shadow: inset 0 0 0 0.4375em #E5C387;
+			}
+		}
+	}
+	span {
+		display: flex;
+		align-items: center;
+		padding: 0.375em 0.75em 0.375em 0.375em;
+		border-radius: 99em; // or something higher...
+		transition: 0.25s ease;
+		&:hover {
+			background-color: mix(#fff, #E5C387, 84%);
+		}
+		&:before {
+			display: flex;
+			flex-shrink: 0;
+			content: "";
+			width: 1.5em;
+			height: 1.5em;
+			border-radius: 50%;
+			margin-right: 0.375em;
+			transition: 0.25s ease;
+			box-shadow: inset 0 0 0 0.125em #E5C387;
+		}
+	}
 }

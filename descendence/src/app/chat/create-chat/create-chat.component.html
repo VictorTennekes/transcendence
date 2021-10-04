@@ -2,13 +2,13 @@
 		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="30" height="30" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none"><path d="M8 5l-5 5l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 10h8c5.523 0 10 4.477 10 10v1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
 </button>
 
-<form [formGroup]="createChatForm" (ngSubmit)="otherSubmit()" (keyup.enter)="otherSubmit()">
+<form [formGroup]="createChatForm">
 	<div class="chatHeader">
 		<input class="input" formControlName="name" type="text" placeholder="Chat name">
 	</div>
 	<br>
 	<div class="rowFlex">
-		<p style="padding-right: 10px">Users: </p>
+		<p style="padding-right: 0.375em; padding-left: 0.375em;">Users: </p>
 		<button class="interfaceButton" type="button" (click)="addUser()">
 				<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="25" height="25" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none"><path d="M12 20v-8m0 0V4m0 8h8m-8 0H4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g></svg>
 		</button>
@@ -24,20 +24,20 @@
 	<br>
 </form>
 
-<form [formGroup]="createChatForm" (ngSubmit)="otherSubmit()" (keyup.enter)="otherSubmit()">
+<form [formGroup]="createChatForm" (keyup.enter)="otherSubmit()">
 	<div class="rowFlex">
-		<div class="radioOption">
-			<input type="radio" id="public" formControlName="visibility" name="visibility" value="public" checked>
-			<label for="public"> public</label>
-		</div>
-		<div class="radioOption">
-			<input type="radio" id="private" formControlName="visibility" name="visibility" value="private">
-			<label for="private"> private</label>
-		</div>
-		<div class="radioOption">
-			<input type="radio" id="protected" formControlName="visibility" name="visibility" value="protected">
-			<label for="protected"> password protected</label>
-		</div>
+		<label class="radioLabel">
+			<input class="radioButton" type="radio" id="public" formControlName="visibility" name="visibility" value="public" checked>
+			<span>Public</span>
+		</label>
+		<label class="radioLabel">
+			<input class="radioButton" type="radio" id="private" formControlName="visibility" name="visibility" value="private">
+			<span>Private</span>
+		</label>
+		<label class="radioLabel">
+			<input class="radioButton" type="radio" id="protected" formControlName="visibility" name="visibility" value="protected">
+			<span>Password protected</span>
+		</label>
 	</div>
 	<div class="colFlex" style="align-items: center" *ngIf=isProtected()>
 		<input class="input"  formControlName="password" style="width: 20vh; padding-right: 3vh" [type]="show ? 'text' : 'password'" />
@@ -47,5 +47,5 @@
 	</div>
 	<br>
 	<p style="color: red" *ngIf="createChatForm.invalid && submitted">{{getErrorMessage()}}</p>
-	<button type="submit">Send</button>
+	<button (click)="otherSubmit()" type="submit">Create chat</button>
 </form>
