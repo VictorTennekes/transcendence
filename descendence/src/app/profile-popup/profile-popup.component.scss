@@ -1,0 +1,78 @@
+button {
+    background-color: #42ECE2;
+    padding: 0.2rem;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    border-radius: 0.3rem;
+    margin-right: 0.4rem;
+    font-family: 'Poppins';
+    font-weight: 600;
+    font-size: 1rem;
+    color: white;
+}
+
+.container {
+    background-color: #133E52;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    place-content: start;
+    place-items: start;
+    padding: 0.6rem;
+}
+
+.avatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background-color: black;
+    margin-right: 0.6rem;
+    background: linear-gradient(135.2deg, #C4377B -6.4%, #6839B5 49.35%, #0D6EFF 104.83%, #0D6EFF 104.84%, #0D6EFF 104.85%);
+    position: relative;
+
+    .cutout {
+        position: absolute;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50%;
+        bottom: 0;
+        right: 0;
+        background-color: #133E52;
+        
+        .status {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+        }
+    }
+}
+
+.online {
+    background-color: rgb(18, 196, 18);
+}
+.offline {
+    background-color: rgb(163, 141, 135);
+}
+.away {
+    background-color: rgb(216, 153, 35);
+}
+.ingame {
+    background-color: rgb(51, 205, 243);
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    place-content: center;
+}
+
+.display-name {
+    font-family: 'Fredoka One';
+    font-size: 1.15rem;
+    color: #E2F4FC;
+    margin-bottom: 0.2rem;
+}

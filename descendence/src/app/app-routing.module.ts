@@ -19,6 +19,7 @@ import { ChatPassComponent } from './chat/chat-pass/chat-pass.component';
 import { SearchService } from './chat/search/search.service';
 import { SettingsComponent } from './chat/settings/settings.component';
 import { chatAdminGuard } from './chat/chat-client/chatAdminGuard.service';
+import { ProfilePopupComponent } from './profile-popup/profile-popup.component';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -35,6 +36,10 @@ const routes: Routes = [
 				path: 'pass-chat/:id',
 				component: ChatPassComponent,
 				outlet: "chat"
+			},
+			{
+				path: 'popup',
+				component: ProfilePopupComponent
 			},
 			{
 				path: 'game',

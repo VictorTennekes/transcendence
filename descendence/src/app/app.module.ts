@@ -55,6 +55,7 @@ import {
 	NgxMatNativeDateModule,
 	NgxMatTimepickerModule
 } from '@angular-material-components/datetime-picker';
+import { ProfilePopupComponent } from './profile-popup/profile-popup.component';
 
 // const config: SocketIoConfig = {
 // 	url: 'http://localhost:3000',
@@ -84,7 +85,8 @@ import {
 		QueueComponent,
 		AcceptComponent,
 		ChatContainerComponent,
-		SettingsComponent
+		SettingsComponent,
+  ProfilePopupComponent
 	],
 	imports: [
 		CountdownModule,
