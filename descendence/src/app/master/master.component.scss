@@ -5,6 +5,10 @@ button {
 	padding: 0;
 	margin: 0;
 	border: none;
+	background: transparent;
+	-webkit-appearance: none;
+	-moz-appearance:    none;
+	appearance:         none;
 }
 
 a {
@@ -39,6 +43,7 @@ a {
 	width: 90%;
 	height: 90%;
 	background-color: transparent;
+	position: relative;
 
 	margin: 0;
 	padding: 0;
@@ -149,6 +154,10 @@ a.NavItem {
 
 #logout-button {
 	height: 80%;
+	background: transparent;
+	-webkit-appearance: none;
+	-moz-appearance:    none;
+	appearance:         none;
 }
 
 //Text inside of the button

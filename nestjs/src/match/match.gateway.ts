@@ -6,13 +6,15 @@ import { getUserFromSocket } from '@shared/socket-utils';
 import { UserService } from '@user/user.service';
 import { MatchService } from './match.service';
 import { User } from 'src/game/game.script';
+import { GameService } from 'src/game/game.service';
 
 @WebSocketGateway({ namespace: '/match'})
 export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	constructor(
 		private readonly userService: UserService,
-		private readonly matchService: MatchService //circular dependency :(
+		private readonly matchService: MatchService, //circular dependency :(
+		private readonly gameService: GameService,
 	) {}
 
 	@WebSocketServer()
@@ -33,6 +35,11 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.matchService.acceptMatch(client.id);
 	}
 
+	@SubscribeMessage('join')
+	joinMatch(client: Socket, id: string) {
+		client.join(id);
+	}
+
 	@SubscribeMessage('find')
 	//listen for 'find' event
 	//find/create a match
@@ -40,7 +47,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async findMatch(client: Socket, settings: any) {
 		const userItem = await getUserFromSocket(client, this.userService);
 		const user: User = {
-			login: userItem.display_name,
+			login: userItem.intra_name,
+			display_name: userItem.display_name,
 			id: client.id,
 		};
 		Logger.log(`USER INTRA NAME = ${user.login}`);
@@ -53,7 +61,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			this.server.to(match).emit('ready');
 			var interval = setInterval(() => {
 				const accepted = this.matchService.isAccepted(match);
-				this.server.to(match).emit('accepted', accepted);
+				this.server.to(match).emit('accepted', {id: match, accepted: accepted});
 				if (accepted) {
 					this.matchService.createGame(match);
 					delete(this.matchService.matches[match]);
@@ -74,7 +82,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	handleConnection(@ConnectedSocket() client: Socket) {
-//		const user = getUserFromSocket(client, this.userService);
+		//no reference to a gameID here, cant join the match room
 		Logger.log(`MATCH GATEWAY - CLIENT[${client.id}] - JOINED`);
 	}
 	handleDisconnect(@ConnectedSocket() client: Socket) {

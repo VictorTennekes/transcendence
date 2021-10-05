@@ -48,7 +48,7 @@ export class MasterComponent implements OnInit {
 		this.cookies.remove('connect.sid');
 		// this.router.navigate(['home']);
 		console.log('where is the error');
-		this.router.navigate(['auth']);
+		location.reload();
 		console.log('is error here');
 		// this.router.navigate([{outlets: {primary: 'home'}}]);
 	}

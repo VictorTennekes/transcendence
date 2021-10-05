@@ -1,0 +1,99 @@
+.container {
+	background-color: #D6E6EB;
+	border-radius: 1.6rem;
+	width: 80rem;
+	height: 50rem;
+	display: flex;
+	flex-direction: column;
+	place-content: center;
+	place-items: center;
+}
+
+.overview {
+	display: flex;
+	flex-direction: row;
+	margin-bottom: 2rem;
+
+	.win {
+		border: 5px solid #BEB396;
+		box-sizing: border-box;
+		position: relative;
+		&::after {
+			position: absolute;
+			content: url('data:image/svg+xml; utf8, <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="3.5rem" height="2.75rem" preserveAspectRatio="xMidYMid meet" viewBox="0 0 640 512"><path d="M528 448H112c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm64-320c-26.5 0-48 21.5-48 48c0 7.1 1.6 13.7 4.4 19.8L476 239.2c-15.4 9.2-35.3 4-44.2-11.6L350.3 85C361 76.2 368 63 368 48c0-26.5-21.5-48-48-48s-48 21.5-48 48c0 15 7 28.2 17.7 37l-81.5 142.6c-8.9 15.6-28.9 20.8-44.2 11.6l-72.3-43.4c2.7-6 4.4-12.7 4.4-19.8c0-26.5-21.5-48-48-48S0 149.5 0 176s21.5 48 48 48c2.6 0 5.2-.4 7.7-.8L128 416h384l72.3-192.8c2.5.4 5.1.8 7.7.8c26.5 0 48-21.5 48-48s-21.5-48-48-48z" fill="rgb(233, 197, 105)"/></svg>');
+			top: -60px;
+		}
+	}
+}
+
+.player-container {
+	width: 20rem;
+	height: 13rem;
+	border-radius: 1rem;
+	background-color: #B6D0D8;
+	margin: 2rem;
+	display: flex;
+	flex-direction: column;
+	place-content: center;
+	place-items: center;
+
+
+	.name {
+		font-family: 'Poppins';
+		font-size: 2.1rem;
+		color: #2F7998;
+		font-weight: bold;
+	}
+	.score-container {
+		width: 5rem;
+		height: 5rem;
+		border-radius: 1.5rem;
+		background-color: #2F7998;
+		display: flex;
+		place-content: center;
+		place-items: center;
+		font-family: 'Poppins';
+		font-weight: bold;
+		font-size: 2rem;
+		color: white;
+	}
+}
+
+.back-button {
+	width: 20rem;
+	height: 4rem;
+	outline: none;
+	border-radius: 0.8rem;
+	background-color: #3891AD;
+	font-family: 'Poppins';
+	font-size: 1.75rem;
+	font-weight: bold;
+	color: white;
+}
+
+.duration {
+	font-family: 'Poppins';
+	font-size: 1rem;
+	color: rgba(34, 61, 94, 0.6)
+}
+
+.winner {
+	h1 {
+		font-family: 'Fredoka One';
+		font-size: 4rem;
+		color: #355E7B;
+		text-align: center;
+		margin: auto;
+		margin-bottom: 0;
+		line-height: 3.5rem;
+	}
+	p {
+		font-family: 'Fredoka One';
+		text-align: center;
+		font-size: 2rem;
+		color: #6994B4;
+		margin: auto;
+		margin-bottom: 2rem;
+	}
+
+}

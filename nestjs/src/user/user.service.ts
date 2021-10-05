@@ -89,7 +89,9 @@ export class UserService {
 	}
 	
 	async findOne(login: string) {
-		return await this.userRepository.findOne({where: { intra_name: login }});
+		const user =  await this.userRepository.findOne({where: { intra_name: login }});
+		Logger.log(`FINDONE - LOGIN: ${login} - ${JSON.stringify(user)}`);
+		return user;
 	}
 
 	async findUserWithBlocks(login: string) {
