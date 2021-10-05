@@ -37,11 +37,15 @@ export class UserEntity {
 		nullable: true
 	})
 	two_factor_secret?: string;
-	
-	// @ManyToMany((type) => ChatEntity, (chat: ChatEntity) => chat.users)
-	// @JoinTable()
-	// chats: ChatEntity[];
 
 	@ManyToMany((type) => ChatEntity, ChatEntity => ChatEntity.users)
 	chats: ChatEntity[];
+
+	@ManyToMany((type) => UserEntity, UserEntity => UserEntity.blockedByUsers)
+	@JoinTable()
+	blockedUsers: UserEntity[];
+
+	@ManyToMany((type) => UserEntity, UserEntity => UserEntity.blockedUsers)
+	blockedByUsers: UserEntity[];
+
 }

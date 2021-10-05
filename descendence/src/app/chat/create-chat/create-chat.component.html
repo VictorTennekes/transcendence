@@ -1,37 +1,51 @@
-<button mat-icon-button aria-label="Example icon button with a home icon" (click)="back()">
-	<mat-icon>arrow_back</mat-icon>
+<button class="backButton" (click)="back()">
+	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="30" height="30" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none"><path d="M8 5l-5 5l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 10h8c5.523 0 10 4.477 10 10v1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
 </button>
-<form [formGroup]="createChatForm" (ngSubmit)="submitCreateChatForm()">
-	<mat-form-field class="example-full-width" appearance="fill">
-		<mat-label>Chat name</mat-label>
-		<input formControlName="name" matInput placeholder="general" >
-	</mat-form-field>
-	 <table class="table table-bordered" formArrayName="users">  
-		<tr>  
-		  <th colspan="2">Users:</th>  
-		  <button mat-raised-button type="button" (click)="addUser()" class="btn btn-primary">Add More</button>
-		</tr>  
-		<tr *ngFor="let user of users().controls; let i=index" [formGroupName]="i">  
-			<mat-form-field class="example-full-width" appearance="fill">
-				<mat-label>username</mat-label>
-				<input formControlName="username" matInput placeholder="Ex. Hi!">
-			</mat-form-field>
-			<button mat-raised-button type="button" (click)="removeUser(i)" class="btn btn-danger">Remove</button>  
-		</tr>  
-	  </table>
-	<mat-radio-group name="visibility" formControlName="visibility">
-		<mat-radio-button type="radio" [checked]='true' value="public">public</mat-radio-button>
-		<mat-radio-button type="radio" value="private">private</mat-radio-button>
-		<mat-radio-button type="radio" value="protected">password protected</mat-radio-button>
-	</mat-radio-group>
-	<mat-form-field *ngIf=isProtected() class="example-full-width" appearance="fill">
-		<mat-label>password</mat-label>
-		<input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
-		<button mat-icon-button type="button" matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-			<mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+
+<form [formGroup]="createChatForm">
+	<div class="chatHeader">
+		<input class="input" formControlName="name" type="text" placeholder="Chat name">
+	</div>
+	<br>
+	<div class="rowFlex">
+		<p style="padding-right: 0.375em; padding-left: 0.375em;">Users: </p>
+		<button class="interfaceButton" type="button" (click)="addUser()">
+				<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="25" height="25" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none"><path d="M12 20v-8m0 0V4m0 8h8m-8 0H4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g></svg>
 		</button>
-	</mat-form-field>
-    <mat-error *ngIf="createChatForm.invalid && submitted">{{getErrorMessage()}}</mat-error>
-	<button mat-raised-button type="submit" class="button">Send</button>
+	</div>
+	<table formArrayName="users">
+			<tr class="rowFlex" *ngFor="let user of users().controls; let i=index" [formGroupName]="i">  
+				<input formControlName="username" matInput placeholder="Username">
+				<button class="interfaceButton" (click)="removeUser(i)">
+					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="25" height="25" transform="rotate(45)" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none"><path d="M12 20v-8m0 0V4m0 8h8m-8 0H4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g></svg>
+				</button>  
+			</tr>  
+	</table>
+	<br>
 </form>
-<div *ngIf="errorMessage != ''"><p  style="color:red;">{{errorMessage}}</p></div>
+
+<form [formGroup]="createChatForm" (keyup.enter)="submitCreateChatForm()">
+	<div class="rowFlex">
+		<label class="radioLabel">
+			<input class="radioButton" type="radio" id="public" formControlName="visibility" name="visibility" value="public" checked>
+			<span>Public</span>
+		</label>
+		<label class="radioLabel">
+			<input class="radioButton" type="radio" id="private" formControlName="visibility" name="visibility" value="private">
+			<span>Private</span>
+		</label>
+		<label class="radioLabel">
+			<input class="radioButton" type="radio" id="protected" formControlName="visibility" name="visibility" value="protected">
+			<span>Password protected</span>
+		</label>
+	</div>
+	<div class="colFlex" style="align-items: center" *ngIf=isProtected()>
+		<input class="input"  formControlName="password" style="width: 20vh; padding-right: 3vh" [type]="show ? 'text' : 'password'" />
+		<button class="interfaceButton" (click)="togglePassword()">
+				<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="30" height="21.43" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1792 1280"><path d="M1664 704q-152-236-381-353q61 104 61 225q0 185-131.5 316.5T896 1024T579.5 892.5T448 576q0-121 61-225q-229 117-381 353q133 205 333.5 326.5T896 1152t434.5-121.5T1664 704zM944 320q0-20-14-34t-34-14q-125 0-214.5 89.5T592 576q0 20 14 34t34 14t34-14t14-34q0-86 61-147t147-61q20 0 34-14t14-34zm848 384q0 34-20 69q-140 230-376.5 368.5T896 1280t-499.5-139T20 773Q0 738 0 704t20-69q140-229 376.5-368T896 128t499.5 139T1772 635q20 35 20 69z" fill="currentColor"/></svg>
+		</button>
+	</div>
+	<br>
+	<p style="color: red" *ngIf="createChatForm.invalid && submitted">{{errorMessage}}</p>
+	<button (click)="submitCreateChatForm()" type="submit">Create chat</button>
+</form>
