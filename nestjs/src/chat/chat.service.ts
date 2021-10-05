@@ -27,7 +27,7 @@ export class ChatService {
 				@InjectRepository(UserEntity) private readonly userRepo: Repository<UserEntity>,
 				@InjectRepository(BanEntity) private readonly banRepo: Repository<BanEntity>) {}
 
-	private userExists(username: string, users: UserDTO[]) {
+	public userExists(username: string, users: UserDTO[]) {
 		return users.some(function(el) {
 			return el.intra_name === username;
 		});
@@ -73,13 +73,10 @@ export class ChatService {
 
 	private async banExists(username: string, bans: BanEntity[]): Promise<BanEntity> {
 		for(let ban of bans) {
-			console.log(ban);
 			let fullBan = await this.banRepo.findOne({
 				where: {id: ban.id},
 				relations: ["user"]
 			})
-			console.log("full ban: ")
-			console.log(fullBan);
 			if (fullBan.user.intra_name === username) {
 				return ban;
 			}
@@ -96,17 +93,30 @@ export class ChatService {
 
 	private isValidDate(d): boolean {
 		return d instanceof Date && !isNaN(d.getTime());
-	  }
+	}
 
-	async getChatById(uuid: string): Promise<ChatDTO> {
+	private async filterMessagesByBlocks(msgs: MessageEntity[], target_name: string): Promise<MessageEntity[]> {
+		let filteredMessages: MessageEntity[] = [];
+		const user: UserDTO = await this.userRepo.findOne({
+			where: {intra_name: target_name},
+			relations: ["blockedUsers"]
+		});
+		for (let msg of msgs) {
+			if (!this.userExists(msg.owner.intra_name, user.blockedUsers)) {
+				filteredMessages.push(msg);
+			}
+		}
+		return filteredMessages;
+	}
+
+	async getChatById(uuid: string, intra_name: string): Promise<ChatDTO> {
 		const item: ChatEntity = await this.repo.findOne({
 			where: {id: uuid},
 			relations: ["users", "admins"]
 		});
 
-		let msgs: MessageDTO[] = (await this.getMessagesFromChat(uuid)).reverse();
+		let msgs: MessageDTO[] = (await this.getMessagesFromChat(uuid, intra_name)).reverse();
 		if (!item) {
-			console.log("not finding chat in chatbyId");
 			throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
 		}
 		let chat: ChatDTO = this.chatEntityToDTO(item);
@@ -250,20 +260,19 @@ export class ChatService {
 		return await this.msgRepo.find();
 	}
 
-	async getMessagesFromChat(id: string): Promise<MessageDTO[]> {
-		const items = await this.msgRepo.find({
+	async getMessagesFromChat(id: string, intra_name: string): Promise<MessageDTO[]> {
+		let items = await this.msgRepo.find({
 			where: {chat: id},
 			relations: ["owner"],
 			order: {
 				time: "DESC"
 			},
 			skip: 0,
-			// take: 6,
 		});
-
 		if (!items) {
 			throw new HttpException("can't find chat", HttpStatus.BAD_REQUEST,);
 		}
+		items = await this.filterMessagesByBlocks(items, intra_name);
 		return items;
 	}
 
