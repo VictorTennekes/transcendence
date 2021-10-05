@@ -499,18 +499,18 @@ export class ChatService {
 		})
 		for (let idx = 0; idx < chat.users.length; idx++) {
 			if (chat.users[idx].intra_name === username) {
-				chat.users.splice(idx);
+				chat.users.splice(idx, 1);
 				break;
 			}
 		}
 		for (let idx = 0; idx < chat.admins.length; idx++) {
 			if (chat.admins[idx].intra_name === username) {
-				chat.admins.splice(idx);
+				chat.admins.splice(idx, 1);
 				break;
 			}
 		}
 		console.log(chat);
-		console.log("trying to save this? ", await this.repo.save(chat));
+		await this.repo.save(chat);
 		return true;
   }
 
