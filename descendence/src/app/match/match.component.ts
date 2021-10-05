@@ -59,8 +59,8 @@ export class MatchComponent implements OnInit {
 	ngOnInit(): void {
 		this.findgame = new FormGroup({
 			condition: new FormControl(pointbased),
-			points: new FormControl(5),
-			minutes: new FormControl(3),
+			points: new FormControl("5"),
+			minutes: new FormControl("3"),
 			ball_speed: new FormControl(BallSpeedLabelMapping["NORMAL"]),
 		});
 	}

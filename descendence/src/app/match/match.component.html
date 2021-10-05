@@ -25,15 +25,15 @@
 					<span>3</span>
 				</label>
 				<label class="radio">
-					<input type="radio" class="option" formControlName="points" id="point-amount" name="points" value="4">
+					<input type="radio" class="option" formControlName="points" id="point-amount" name="points" value="5">
 					<span>5</span>
 				</label>
 				<label class="radio">
-					<input type="radio" class="option" formControlName="points" id="point-amount" name="points" value="5">
+					<input type="radio" class="option" formControlName="points" id="point-amount" name="points" value="10">
 					<span>10</span>
 				</label>
 				<label class="radio">
-					<input type="radio" class="option" formControlName="points" id="point-amount" name="points" value="10">
+					<input type="radio" class="option" formControlName="points" id="point-amount" name="points" value="20">
 					<span>20</span>
 				</label>
 			</div>
@@ -62,7 +62,7 @@
 				<p class="section-title">
 					Ball speed: 
 				</p>
-				<select formControlName="ball_speed" id="speeds" name="speeds">
+				<select class="selector" formControlName="ball_speed" id="speeds" name="speeds">
 					<option [value]="speed" *ngFor="let speed of speeds">{{ speedMappings[speed] }}</option>
 				</select>
 			</div>

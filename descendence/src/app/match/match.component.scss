@@ -3,8 +3,10 @@
 	flex-direction: column;
 	place-content: center;
 	place-items: center;
-	width: 60rem;
-	height: 30rem;
+	// width: 60rem;
+	// height: 30rem;
+	padding: 2rem;
+	width: 50rem;
 	border-radius: 2rem;
 	background-color: #185265;
 }
@@ -14,6 +16,7 @@
 	flex-direction: column;
 	place-items: center;
 	place-content: center;
+	margin-bottom: 1.5rem;
 }
 
 .end-condition-slider {
@@ -37,12 +40,16 @@
 .option-container {
 	display: flex;
 	flex-direction: column;
+	place-items: flex-start;
 }
 
 .radio-choice-container {
 	display: flex;
 	flex-direction: row;
-	place-content: start;
+	margin-bottom: 1rem;
+	padding: 1.75rem;
+	margin: auto;
+	position: relative;
 }
 
 .selected {
@@ -99,8 +106,9 @@
 	font-family: 'Roboto';
 }
 
-label {
+.radio {
 	display: inline-block;
+	cursor: pointer;
 	position: relative;
 	margin-right: 3.2rem;
 
@@ -126,6 +134,27 @@ label {
 	}
 }
 
+.selector {
+	width: 12rem;
+	border-radius: 1.5rem;
+	height: 3.4rem;
+	background-color: #92CBD8;
+	font-family: 'Poppins';
+	font-weight: bold;
+	font-size: 1.4rem;
+	color: white;
+	text-align: center;
+	text-align-last:center;
+    direction: ltr;
+	-moz-appearance:none; /* Firefox */
+    -webkit-appearance:none; /* Safari and Chrome */
+    appearance:none;
+	background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1.8rem" height="1.8rem" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z" fill="rgba(255, 255, 255, 0.4)"/></svg>');
+	background-repeat: no-repeat;
+	background-position-x: 90%;
+	background-position-y: 12px;
+}
+
 input:checked + span {
 	background-color: white;
 	font-weight: bold;
@@ -135,12 +164,18 @@ input:checked + span {
 }
 
 .speed-container {
+	position: relative;
 	display: flex;
 	flex-direction: row;
 	place-content: start;
+	margin-bottom: 1.5rem;
+	padding: 1.75rem;
+	margin: auto;
 }
 
 .section-title {
+	position: absolute;
+	left: -12rem;
 	font-family: 'Poppins';
 	font-weight: bold;
 	color: #BACBD1;
