@@ -495,7 +495,7 @@ export class ChatService {
 	async leaveChat(chatId: string, username: string): Promise<boolean> {
 		let chat = await this.repo.findOne({
 			where: {id: chatId},
-			relations: ["users", "admins"] //TODO: add owner
+			relations: ["users", "admins", "owner"]
 		})
 		for (let idx = 0; idx < chat.users.length; idx++) {
 			if (chat.users[idx].intra_name === username) {
@@ -509,8 +509,14 @@ export class ChatService {
 				break;
 			}
 		}
-		console.log(chat);
 		await this.repo.save(chat);
+		if (chat.owner.intra_name === username) {
+			await this.repo
+			.createQueryBuilder()
+			.relation(ChatEntity, "owner")
+			.of(chat)
+			.set(null);
+		}		
 		return true;
   }
 
