@@ -55,13 +55,16 @@ export class ChatController {
 			let dm = await this.service.getChatByUsers(users);
 			if (!dm) {
 				let chatdto: NewChatDTO = {
-					name: `${users[0].intra_name} & ${users[1].intra_name}`,
+					name: `${users[0].intra_name}`,
 					visibility: "direct",
 					owner: null,
 					admins: [],
 					users: users,
 					password: ""
 				};
+				if (users.length != 1) {
+					chatdto.name += ` & ${users[1].intra_name}`
+				}
 				dm = await this.service.createNewChat(chatdto);
 			}
 			chats.push(dm);
