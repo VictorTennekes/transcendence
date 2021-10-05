@@ -36,7 +36,7 @@ export class MatchService {
 	}
 
 	inviteUser(settings: MatchSettings) {
-		this.matchSocket.emit('find', settings);
+		this.matchSocket.emit('invite_user', settings);
 	}
 
 	cancelMatch() {
@@ -58,4 +58,9 @@ export class MatchService {
 	receiveGameInvite() {
 		return this.matchSocket.fromEvent('receive_game_invite');
 	}
+
+	receiveGameInviteError() {
+		return this.matchSocket.fromEvent('invite_not_sent');
+	}
+
 }

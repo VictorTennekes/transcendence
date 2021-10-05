@@ -7,6 +7,8 @@ import { UserService } from '@user/user.service';
 import { MatchService } from './match.service';
 import { User } from 'src/game/game.script';
 import { MatchSettings } from './match.class';
+import { socketData } from '@chat/chat.gateway';
+import { UserDTO } from '@user/dto/user.dto';
 
 @WebSocketGateway({ namespace: '/match'})
 export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -18,6 +20,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@WebSocketServer()
 	server;
+
+	connectedUsers: socketData[] = []
 
 	sendReady(id: string) {
 		Logger.log(`SERVER SENT 'ready${id}'`);
@@ -74,7 +78,17 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		//TODO:find connected socket
 		//TODO: error if not connnected
 		//TODO: send invite if connected
-		
+		let inviteSent: boolean = false;
+		for (let user of this.connectedUsers) {
+			if (user.user.intra_name === settings.opponent_username) {
+				//TODO: find which user and emit username
+				user.socket.emit('receive_game_invite', "username");
+				inviteSent = true;
+			}
+		}
+		if (inviteSent === false) {
+			client.emit('invite_not_sent');
+		}
 		this.findMatch(client, settings);
 	}
 
@@ -86,13 +100,22 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.server.emit('ready', state);
 	}
 
-	handleConnection(@ConnectedSocket() client: Socket) {
-//		const user = getUserFromSocket(client, this.userService);
-//TODO: store connected users
+	async handleConnection(@ConnectedSocket() client: Socket) {
+		const user: UserDTO = await getUserFromSocket(client, this.userService);
+		if (!user) {
+			Logger.log("something's wrong, can't find user")
+			return;
+		}
+		let newSocket: socketData = {
+			user: user,
+			socket: client
+		};
+		this.connectedUsers.push(newSocket);
 		Logger.log(`MATCH GATEWAY - CLIENT[${client.id}] - JOINED`);
 	}
 	handleDisconnect(@ConnectedSocket() client: Socket) {
-		//TODO: yeet disconnected users
 		Logger.log(`MATCH GATEWAY - CLIENT[${client.id}] - LEFT`);
+		const index = this.connectedUsers.findIndex(x => x.socket.id === client.id);
+		this.connectedUsers.splice(index, 1);
 	}
 }

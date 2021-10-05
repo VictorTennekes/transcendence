@@ -12,7 +12,7 @@ import { MessageDTO, newMessageDTO } from "./dto/message.dto";
 import { request } from "http";
 import { getUserFromSocket } from "@shared/socket-utils";
 
-class socketData {
+export class socketData {
 	user: UserDTO;
 	socket: Socket;
 }
