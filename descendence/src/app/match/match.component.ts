@@ -3,6 +3,22 @@ import { defaultMatchSettings, MatchService } from '../match.service';
 import { QueueService } from '../queue.service';
 import { AcceptService } from '../accept.service';
 import { MatchSocket } from './match.socket';
+import { FormControl, FormGroup } from '@angular/forms';
+
+const timebased = true;
+const pointbased = false;
+
+enum BallSpeed {
+	NORMAL = "NORMAL",
+	FAST = "FAST",
+	SANIC = "SANIC"
+};
+
+const BallSpeedLabelMapping: Record<BallSpeed, string> = {
+    [BallSpeed.NORMAL]: "NORMAL",
+    [BallSpeed.FAST]: "FAST",
+    [BallSpeed.SANIC]: "SANIC",
+};
 
 @Component({
 	selector: 'app-match',
@@ -11,10 +27,14 @@ import { MatchSocket } from './match.socket';
 })
 export class MatchComponent implements OnInit {
 	
+	findgame: FormGroup;
+	public speedMappings = BallSpeedLabelMapping;
+	public speeds = Object.values(BallSpeed);
+
 	constructor(
 		private readonly matchService: MatchService,
 		private readonly queueService: QueueService,
-		private readonly acceptService: AcceptService
+		private readonly acceptService: AcceptService,
 	) { }
 	
 	overlay: any;
@@ -24,6 +44,8 @@ export class MatchComponent implements OnInit {
 	}
 
 	async findMatch() {
+		console.table(JSON.stringify(this.findgame.value));
+		return ;
 		this.matchService.findMatch(defaultMatchSettings);
 		this.overlay = this.queueService.open({hasBackdrop: false});
 		//when the
@@ -35,6 +57,11 @@ export class MatchComponent implements OnInit {
 	}
 	
 	ngOnInit(): void {
+		this.findgame = new FormGroup({
+			condition: new FormControl(pointbased),
+			points: new FormControl(5),
+			minutes: new FormControl(3),
+			ball_speed: new FormControl(BallSpeedLabelMapping["NORMAL"]),
+		});
 	}
-	
 }

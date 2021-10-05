@@ -1,3 +1,28 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	place-content: center;
+	place-items: center;
+	width: 60rem;
+	height: 30rem;
+	border-radius: 2rem;
+	background-color: #185265;
+}
+
+.end-condition-container {
+	display: flex;
+	flex-direction: column;
+	place-items: center;
+	place-content: center;
+}
+
+.end-condition-slider {
+	display: flex;
+	flex-direction: row;
+	place-items: center;
+	place-content: center;
+}
+
 .find {
 	width: 18rem;
 	height: 6rem;
@@ -7,4 +32,120 @@
 	font-family: 'Poppins';
 	font-weight: bold;
 	color: #32C3E2;
+}
+
+.option-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.radio-choice-container {
+	display: flex;
+	flex-direction: row;
+	place-content: start;
+}
+
+.selected {
+	color: white;
+	font-weight: bold;
+}
+.not-selected {
+	color: #A3BAC1;
+	font-weight: regular;
+}
+
+.switch {
+	cursor: pointer;
+	display: block;
+	margin: 1em;
+	> input {
+		display: none;
+	}
+	
+	span {
+		color: #6A759B;
+	}
+	
+	i {
+		display: inline-block;
+		width: 70px;
+		height: 40px;
+		border-radius: 20px;
+		vertical-align: middle;
+		transition: .25s .09s;
+		background: #92CBD8;
+		&:after {
+			content: "";
+			display: block;
+			width: 39px;
+			height: 39px;
+			border-radius: 50%;
+			background: #fff;
+			transition: .20s;
+		}
+	}
+	
+	// Checked-state
+	> input:checked + i {
+		background: #92CBD8;
+	}
+	
+	> input:checked + i:after {
+		transform: translateX(35px);
+	}
+}
+
+.condition-title {
+	font-family: 'Roboto';
+}
+
+label {
+	display: inline-block;
+	position: relative;
+	margin-right: 3.2rem;
+
+	input {
+		display: none;
+	}
+
+	span {
+		position: absolute;
+		overflow: hidden;
+		line-height: 2;
+		text-align: center;
+		font-size: 1.5rem;
+		left: 0;
+		top: 0;
+		width: 2.8rem;
+		height: 2.8rem;
+		border-radius: 50%;
+		background-color: #92CBD8;
+		color: #EDFBFF;
+		font-weight: regular;
+		font-family: 'Poppins';
+	}
+}
+
+input:checked + span {
+	background-color: white;
+	font-weight: bold;
+	color: #235673;
+	font-size: 1.6rem;
+	line-height: 1.8;
+}
+
+.speed-container {
+	display: flex;
+	flex-direction: row;
+	place-content: start;
+}
+
+.section-title {
+	font-family: 'Poppins';
+	font-weight: bold;
+	color: #BACBD1;
+	font-size: 2rem;
+	text-align: right;
+	width: 12rem;
+	margin-right: 1rem;
 }
