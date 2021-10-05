@@ -6,6 +6,7 @@ export class ChatDTO {
 	id: string;
 	name: string;
 	visibility: string;
+	owner: UserDTO;
 	admins: UserDTO[];
 	users: UserDTO[];
 	messages: MessageDTO[];
@@ -15,6 +16,7 @@ export class ChatPassDTO {
 	id: string;
 	name: string;
 	visibility: string;
+	owner: UserDTO;
 	admins: UserDTO[];
 	users: UserDTO[];
 	messages: MessageDTO[];

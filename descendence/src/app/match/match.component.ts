@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatchService, MatchSettings } from '../match.service';
+import { defaultMatchSettings, MatchService } from '../match.service';
 import { QueueService } from '../queue.service';
 import { AcceptService } from '../accept.service';
 import { MatchSocket } from './match.socket';
@@ -27,7 +28,7 @@ export class MatchComponent implements OnInit {
 	}
 
 	async findMatch() {
-		this.matchService.findMatch({});
+		this.matchService.findMatch(defaultMatchSettings);
 		this.overlay = this.queueService.open({hasBackdrop: false});
 		//when the
 		this.matchService.matchReady().subscribe(() => {

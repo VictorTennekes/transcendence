@@ -22,6 +22,7 @@ export class SettingsComponent implements OnInit {
 
 	// chatId: string = "";
 	error: string = "";
+	public isOwner: boolean = false;
 	chat: chatModel = {
 		id: "",
 		name: "",
@@ -55,6 +56,9 @@ export class SettingsComponent implements OnInit {
 		this.route.params.subscribe((params) => {
 			this.searchService.findChatById(params['id']).subscribe((result) => {
 				this.chat = result;
+				this.searchService.userIsOwner(this.chat.id).subscribe((res: boolean) => {
+					this.isOwner = res;
+				});
 			});
 		})
 		// this.editVisibilityForm.setValue({visibility: this.chat.visibility});
@@ -66,7 +70,6 @@ export class SettingsComponent implements OnInit {
 				this.editVisibilityForm.get('password')?.clearValidators();
 			}
 			this.editVisibilityForm.get('password')?.updateValueAndValidity();
-
 		})
 	}
 

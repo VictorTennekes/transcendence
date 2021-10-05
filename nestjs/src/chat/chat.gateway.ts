@@ -54,8 +54,17 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage('send_message')
 	async sendMessage(@ConnectedSocket() client: Socket, @MessageBody() message: newMessageDTO) {
-		const chat = await this.chatService.getChatById(message.chat);
 		const user = await getUserFromSocket(client, this.userService);
+		const chat = await this.chatService.getChatById(message.chat, user.intra_name);
+		let blockedByNames: string = "";
+		for (let chatUser of chat.users) {
+			if (this.chatService.userExists(chatUser.intra_name, user.blockedByUsers)) {
+				blockedByNames += " " + chatUser.intra_name;
+			}
+		}
+		if (blockedByNames !== "") {
+			client.emit("send_message_error", "you are muted by" + blockedByNames + ". This message will not be shown to them");
+		}
 		if (!user) {
 			client.emit('send_message_error', "no such user");
 			return;
@@ -66,18 +75,14 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		}
 		const finalMsg: MessageDTO = await this.chatService.createNewMessageSocket(message.message, user, chat);
 		for (let sock of this.connectedSockets) {
-			console.log(sock.user);
 			if (chat.users.findIndex(x => x.intra_name === sock.user.intra_name) !== -1) {
-				console.log("emitting receive messages to ", sock.user.intra_name);
+				if (blockedByNames !== "") {
+					if (this.chatService.userExists(sock.user.intra_name, user.blockedByUsers)) {
+						continue;
+					}
+				}
 				sock.socket.emit('receive_message', finalMsg);
 			}
 		}
-	}
-
-	@SubscribeMessage('request_message')
-	async getMessages(@ConnectedSocket() client: Socket, chatId: string) {
-		let messages = this.chatService.getMessagesFromChat(chatId);
-		console.log("emitting send_msg messages");
-		client.emit('send_messages_by_chatid', messages);
 	}
 }

@@ -1,4 +1,5 @@
 import { Logger } from "@nestjs/common";
+import { match } from "assert";
 import { Match } from "src/match/match.class";
 
 const PADDLE_WIDTH = 25;
@@ -27,6 +28,7 @@ interface Canvas {
 
 export interface User {
 	login: string;
+	display_name: string;
 	id: string; //socket.id
 }
 
@@ -51,6 +53,7 @@ export class Game {
 	private players: {[id: string] : Player} = {};
 	private ball: Ball;
 
+	private scoreGoal: number;
 	setKeyPressed(player: string, keyString: string, state: boolean) {
 		if (keyString !== 'ArrowUp' && keyString !== 'ArrowDown') {
 			return ;
@@ -58,6 +61,7 @@ export class Game {
 		const key: KeyBindings = (keyString === 'ArrowUp') ? KeyBindings.UP : KeyBindings.DOWN;
 		this.players[player].keysPressed[key] = state;
 	}
+	startTime: Date;
 
 	constructor(
 		match: Match
@@ -66,6 +70,8 @@ export class Game {
 			one: match.creator,
 			two: match.opponent
 		};
+		this.scoreGoal = match.settings.scoreGoal;
+		this.startTime = new Date();
 		//initializing objects
 		this.players[match.creator.id] = new Player(WALL_OFFSET,Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
 		this.players[match.opponent.id] = new Player(Game.canvas.width - (WALL_OFFSET + PADDLE_WIDTH), Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
@@ -79,12 +85,33 @@ export class Game {
 		});
 	}
 
+	get winner() {
+		if (!this.goalReached)
+			return (null);
+		return this.players[this._users.one.id].score > this.players[this._users.two.id].score ? this._users.one.login : this._users.two.login;
+	}
+
+	get scores(): {[key: string] : number} {
+		let scores: {[key: string] : number} = {};
+		scores[this._users.one.login] = this.players[this._users.one.id].score;
+		scores[this._users.two.login] = this.players[this._users.two.id].score;
+		return (scores);
+	}
+	get timeElapsed() {
+		const now = new Date();
+		const duration = now.valueOf() - this.startTime.valueOf();
+		return duration;
+	}
 	get data(): GameData {
 		return {
 			ball: this.ball,
 			players: this.players,
 			users: this._users,
 		};
+	}
+
+	get goalReached() {
+		return this.players[this._users.one.id].score === this.scoreGoal || this.players[this._users.two.id].score === this.scoreGoal;
 	}
 
 	update() {

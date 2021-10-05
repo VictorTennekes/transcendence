@@ -58,6 +58,28 @@ export class UserService {
 		console.log(`updated user: ${JSON.stringify(user)}`);
 	}
 
+
+	async blockUser(username: string, blockedUsername: string) {
+		console.log("username: ", username);
+		let user: UserEntity = await this.userRepository.findOne({
+			where: {intra_name: username},
+			relations: ["blockedUsers"]
+		});
+		if (username == blockedUsername)
+			return ;
+		let blockedUser: UserEntity = await this.userRepository.findOne({
+			where: {intra_name: blockedUsername},
+			relations: ["blockedByUsers"]
+		});
+		console.log("these are the users");
+		console.log(user);
+		console.log(blockedUser);
+		user.blockedUsers.push(blockedUser);
+		blockedUser.blockedByUsers.push(user);
+		this.userRepository.save(user);
+		this.userRepository.save(blockedUser);
+	}
+
 	async create(login: string) {
 		const intra_name = login;
 		const display_name = intra_name;
@@ -67,7 +89,16 @@ export class UserService {
 	}
 	
 	async findOne(login: string) {
-		return await this.userRepository.findOne({where: { intra_name: login }});
+		const user =  await this.userRepository.findOne({where: { intra_name: login }});
+		Logger.log(`FINDONE - LOGIN: ${login} - ${JSON.stringify(user)}`);
+		return user;
+	}
+
+	async findUserWithBlocks(login: string) {
+		return await this.userRepository.findOne({
+			where: { intra_name: login },
+			relations: ["blockedUsers", "blockedByUsers"]
+		});
 	}
 
 	async login(loginInformation: LoginUserDto): Promise<LoginStatus> {

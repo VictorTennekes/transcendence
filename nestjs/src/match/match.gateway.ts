@@ -9,13 +9,15 @@ import { User } from 'src/game/game.script';
 import { MatchSettings } from './match.class';
 import { socketData } from '@chat/chat.gateway';
 import { UserDTO } from '@user/dto/user.dto';
+import { GameService } from 'src/game/game.service';
 
 @WebSocketGateway({ namespace: '/match'})
 export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	constructor(
 		private readonly userService: UserService,
-		private readonly matchService: MatchService //circular dependency :(
+		private readonly matchService: MatchService, //circular dependency :(
+		private readonly gameService: GameService,
 	) {}
 
 	@WebSocketServer()
@@ -40,6 +42,11 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.matchService.acceptMatch(client.id);
 	}
 
+	@SubscribeMessage('join')
+	joinMatch(client: Socket, id: string) {
+		client.join(id);
+	}
+
 	@SubscribeMessage('find')
 	//listen for 'find' event
 	//find/create a match
@@ -48,7 +55,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		console.log("in find match. maybe it'll send the response?")
 		const userItem = await getUserFromSocket(client, this.userService);
 		const user: User = {
-			login: userItem.display_name,
+			login: userItem.intra_name,
+			display_name: userItem.display_name,
 			id: client.id,
 		};
 		Logger.log(`USER INTRA NAME = ${user.login}`);
@@ -61,7 +69,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			this.server.to(match).emit('ready');
 			var interval = setInterval(() => {
 				const accepted = this.matchService.isAccepted(match);
-				this.server.to(match).emit('accepted', accepted);
+				this.server.to(match).emit('accepted', {id: match, accepted: accepted});
 				if (accepted) {
 					this.matchService.createGame(match);
 					delete(this.matchService.matches[match]);
@@ -88,7 +96,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const usr = await getUserFromSocket(client, this.userService);
 
 		const user: User = {
-			login: usr.display_name,
+			login: usr.intra_name,
+			display_name: usr.display_name,
 			id: client.id
 		}
 		console.log("invite user:")
@@ -171,6 +180,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			socket: client
 		};
 		this.connectedUsers.push(newSocket);
+		//no reference to a gameID here, cant join the match room
 		Logger.log(`MATCH GATEWAY - CLIENT[${client.id}] - JOINED`);
 	}
 

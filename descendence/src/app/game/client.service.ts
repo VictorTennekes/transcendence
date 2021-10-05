@@ -25,10 +25,16 @@ export class ClientService {
 		this.socket.emit('sendPlayerData', data);
 	}
 
+	gameFinished() {
+		return this.socket.fromEvent('finished');
+	}
 	receiveGameData() {
 		return this.socket.fromEvent('gamedata');
 	}
 
+	join(id: string) {
+		this.socket.emit('join', id);
+	}
 	pressUp() {
 		this.socket.emit('press_up', {});
 	}

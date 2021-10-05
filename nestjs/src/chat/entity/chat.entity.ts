@@ -1,5 +1,5 @@
 import { UserEntity } from "@user/entities/user.entity";
-import { Check, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Check, Column, Entity, JoinTable, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { BanEntity } from "./ban.entity";
 import { MessageEntity } from "./message.entity";
 
@@ -20,6 +20,9 @@ export class ChatEntity {
 	@Column()
 	password: string;
 
+	@ManyToOne(() => UserEntity, {onDelete: "SET NULL"})
+	owner: UserEntity;
+
 	@ManyToMany(type => UserEntity, UserEntity => UserEntity.chats, {cascade: true})
 	@JoinTable()
 	admins: UserEntity[]
@@ -35,3 +38,4 @@ export class ChatEntity {
 	messages: MessageEntity[];
 
 }
+//TODO: also add an owner. Only owner can change privacy and add new admins. Admins can only mute and ban

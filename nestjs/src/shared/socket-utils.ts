@@ -34,6 +34,6 @@ export async function getUserFromSocket(socket: Socket, userService: UserService
 	if (!otherRes[0].sess.passport) return null;
 
 	const user = otherRes[0].sess.passport.user;
-	const sessUser = userService.findOne(user.login);
+	const sessUser = userService.findUserWithBlocks(user.login);
 	return sessUser;
 }

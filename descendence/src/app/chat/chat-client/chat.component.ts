@@ -99,7 +99,7 @@ import { UserService } from 'src/app/user.service';
 	}
 
 	public back() {
-		this.router.navigate(['', {outlets: {chat: ['search', ""]}}], {skipLocationChange: true});
+		this.router.navigate(['', {outlets: {chat: ['search', ""]}}]);
 	}
 
 	public edit() {
@@ -121,6 +121,11 @@ import { UserService } from 'src/app/user.service';
 
 	public inviteToGame(username: string) {
 		this.router.navigate(['play', username])
+	}
+
+	public async leave() {
+		await this.searchService.leaveChat(this.chat.id);
+		this.back();
 	}
 
 	public onSubmit() {

@@ -50,6 +50,6 @@ export class AuthService {
 
 	logout() {
 		this.cookie.delete('access_token');
-		this._router.navigate(['/login']);
+		this._router.navigate(['auth']);
 	}
 }

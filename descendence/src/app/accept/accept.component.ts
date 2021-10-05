@@ -36,12 +36,12 @@ export class AcceptComponent implements OnInit {
 	}
 	
 	ngOnInit(): void {
-		this.matchService.matchAccepted().subscribe((accepted: any) => {
+		this.matchService.matchAccepted().subscribe((match: any) => {
 			// console.log(`MATCH ACCEPTED: ${accepted}`);
 			this.close();
-			if (accepted) {
+			if (match.accepted) {
 				//both players accepted -> direct to game page
-				this.router.navigate(['game']);
+				this.router.navigate(['game/' + match.id]);
 			}
 			else {
 				//did this client accept?

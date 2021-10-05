@@ -45,6 +45,14 @@ export class UserController {
 		return user;
 	}
 
+	@Post('get')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async getUser(@Req() request, @Body() body: any) {
+		Logger.log(`GET USER - ${JSON.stringify(body)}`);
+		return this.userService.findOne(body.login);
+	}
+
 	//TODO: add guard to prevent anything other than images to be uploaded
 	//https://gabrieltanner.org/blog/nestjs-file-uploading-using-multer
 	@UseGuards(AuthenticatedGuard)
@@ -109,6 +117,29 @@ export class UserController {
 	async update_two_factor(@Req() request, @Body() two_factor_enabled: string) {
 		await this.userService.update(request.session.passport.user.login, two_factor_enabled);
 	}
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	@Get('user_exists/:username')
+	async userExists(@Param("username") username: string) {
+		if (await this.userService.findOne(username)) {
+			Logger.log(`USER EXISTS`);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	@Post('block_user')
+	async blockUser(@Req() request, @Body() username: any) {
+		if (request.user.login === username.username)
+			return ;
+		await this.userService.blockUser(request.session.passport.user.login, username.username);
+	}
+
+
 
 	@Post('login')
 //	@UsePipes(new ValidationPipe())

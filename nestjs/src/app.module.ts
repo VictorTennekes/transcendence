@@ -9,6 +9,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { GameModule } from './game/game.module';
 import { MatchModule } from './match/match.module';
+import { GameEntity } from './game/entity/game.entity';
 
 @Module({
 	controllers: [],

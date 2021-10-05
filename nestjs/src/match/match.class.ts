@@ -12,6 +12,7 @@ export interface MatchSettings {
 		//things
 	}
 	opponent_username?: string
+	scoreGoal: number
 };
 
 export class Match {

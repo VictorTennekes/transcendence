@@ -18,6 +18,11 @@ export interface MatchSettings {
 		//things
 	}
 	opponent_username?: string
+	scoreGoal: number
+};
+
+export const defaultMatchSettings: MatchSettings = {
+	scoreGoal: 5,
 };
 
 @Injectable({
