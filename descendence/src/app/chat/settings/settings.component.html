@@ -2,7 +2,7 @@
 	<mat-icon>arrow_back</mat-icon>
 </button>
 <h1>settings for "{{chat.name}}"</h1>
-<form [formGroup]="addAdminForm" (ngSubmit)="submitAdmin()">
+<form *ngIf="isOwner" [formGroup]="addAdminForm" (ngSubmit)="submitAdmin()">
 	<h3>Add admin</h3>
 	<mat-form-field class="example-full-width" appearance="fill">
 		<mat-label>intra name</mat-label>
@@ -43,7 +43,7 @@
 	<button mat-raised-button type="submit">Ban</button>
 </form>
 
-<form [formGroup]="editVisibilityForm" (ngSubmit)="submitVisibility()">
+<form *ngIf="isOwner" [formGroup]="editVisibilityForm" (ngSubmit)="submitVisibility()">
 	<h3>Edit visibility</h3>
 	<mat-label>Edit visibility</mat-label>
 	<mat-radio-group name="visibility" formControlName="visibility">

@@ -83,7 +83,7 @@ import { retMessage, newMessage, chatModel } from './message.model';
 	}
 
 	public back() {
-		this.router.navigate(['', {outlets: {chat: ['search', ""]}}], {skipLocationChange: true});
+		this.router.navigate(['', {outlets: {chat: ['search', ""]}}]);
 	}
 
 	public edit() {
@@ -101,6 +101,11 @@ import { retMessage, newMessage, chatModel } from './message.model';
 		else
 			style += 'linear-gradient(135.2deg, #C4377B -6.4%, #6839B5 49.35%, #0D6EFF 104.83%, #0D6EFF 104.84%, #0D6EFF 104.85%);'
 		return style;
+	}
+
+	public async leave() {
+		await this.searchService.leaveChat(this.chat.id);
+		this.back();
 	}
 
 	public onSubmit() {

@@ -43,7 +43,7 @@ export class ChatController {
 	@Get("find/:name")
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async getChatById(@Param("name") name: string, @Req() req): Promise<ChatDTO[]> {
+	async findChatByName(@Param("name") name: string, @Req() req): Promise<ChatDTO[]> {
 		let chats: ChatDTO[] = await this.service.getChatByName(name, req.session.passport.user.login);
 		const user = await this.userService.findOne(name);
 		if (user) {
@@ -52,15 +52,23 @@ export class ChatController {
 			if (name !== req.session.passport.user.login) {
 				users.push(await this.userService.findOne(req.session.passport.user.login));
 			}
+			else {
+				//
+				return ;
+			}
 			let dm = await this.service.getChatByUsers(users);
 			if (!dm) {
 				let chatdto: NewChatDTO = {
-					name: `${users[0].intra_name} & ${users[1].intra_name}`,
+					name: `${users[0].intra_name}`,
 					visibility: "direct",
+					owner: null,
 					admins: [],
 					users: users,
 					password: ""
 				};
+				if (users.length > 1) {
+					chatdto.name += ` & ${users[1].intra_name}`
+				}
 				dm = await this.service.createNewChat(chatdto);
 			}
 			chats.push(dm);
@@ -77,8 +85,8 @@ export class ChatController {
 	@Get("get-chat/:id")
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async getChatByIdTwo(@Param("id") id: string) {
-		return await this.service.getChatById(id);
+	async getChatById(@Param("id") id: string, @Req() req) {
+		return await this.service.getChatById(id, req.user.intra_name);
 	}
 	
 	@Post('new')
@@ -89,6 +97,7 @@ export class ChatController {
 		let nc: NewChatDTO = {
 			name: newChat.name,
 			visibility: newChat.visibility,
+			owner: user,
 			users: [],
 			admins: [],
 			password: newChat.password
@@ -109,8 +118,8 @@ export class ChatController {
 	@Get('msg/:id')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-    async getMessagesFromChat(@Param("id") id: string): Promise<MessageDTO[]> {
-        return await this.service.getMessagesFromChat(id);
+    async getMessagesFromChat(@Param("id") id: string, @Req() req): Promise<MessageDTO[]> {
+        return await this.service.getMessagesFromChat(id, req.user.intra_name);
     }
 
 	@Post('validate-pass')
@@ -139,29 +148,30 @@ export class ChatController {
 	@Post('update-admins')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async updateAdmins(@Body() admins: updateChatDTO) {
-		return this.service.updateAdmins(admins);
+	async updateAdmins(@Body() admins: updateChatDTO, @Req() req) {
+		return this.service.updateAdmins(admins, req.user.intra_name);
 	}
 
 	@Post('add-ban')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async addBan(@Body() data: updateChatDTO) {
-		return this.service.addBannedUser(data);
+	async addBan(@Body() data: updateChatDTO, @Req() req) {
+		return this.service.addBannedUser(data, req.user.intra_name);
 	}
 
 	@Post('add-mute')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async addMute(@Body() data: updateChatDTO) {
-		return this.service.addMutedUser(data);
+
+	async addMute(@Body() data: updateChatDTO, @Req() req) {
+		return this.service.addMutedUser(data, req.user.intra_name);
 	}
 
 	@Post('edit-visibility')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-	async editVisibility(@Body() data: updateChatDTO) {
-		return this.service.editVisibility(data);
+	async editVisibility(@Body() data: updateChatDTO, @Req() req) {
+		return this.service.editVisibility(data, req.user.intra_name);
 	}
 
 	@Get('user-is-admin/:id')
@@ -177,4 +187,18 @@ export class ChatController {
 		return this.service.userInChat(req.user.intra_name, id);
 	}
 
+	@Post('leave-chat')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async leaveChat(@Body() id: any, @Req() req) {
+		await this.service.leaveChat(id.chatId, req.user.intra_name);
+	}
+
+
+	@Get('user-is-owner/:id')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async userIsOwner(@Param("id") id: string, @Req() req): Promise<boolean> {
+		return this.service.userIsOwner(id, req.user.intra_name);
+	}
 }
