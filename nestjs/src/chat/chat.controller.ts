@@ -62,7 +62,7 @@ export class ChatController {
 					users: users,
 					password: ""
 				};
-				if (users.length != 1) {
+				if (users.length > 1) {
 					chatdto.name += ` & ${users[1].intra_name}`
 				}
 				dm = await this.service.createNewChat(chatdto);
