@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatchService, MatchSettings } from '../match.service';
-import { defaultMatchSettings, MatchService } from '../match.service';
+import { MatchService, MatchSettings, defaultMatchSettings } from '../match.service';
 import { QueueService } from '../queue.service';
 import { AcceptService } from '../accept.service';
 import { MatchSocket } from './match.socket';
@@ -54,9 +53,8 @@ export class MatchComponent implements OnInit {
 			if (params['intra_name'] !== '') {
 				// this.matchService.
 				console.log("start match with: ", params['intra_name']);
-				let settings: MatchSettings = {
-					opponent_username: params['intra_name']
-				}
+				let settings = defaultMatchSettings;
+				settings.opponent_username =params['intra_name']
 
 				this.matchService.inviteUser(settings);
 				this.overlay = this.queueService.open({hasBackdrop: false});

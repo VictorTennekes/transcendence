@@ -128,6 +128,9 @@ import { UserService } from 'src/app/user.service';
 		this.back();
 	}
 
+
+
+
 	public onSubmit() {
 		this.errorMessage = "";
 		const newMessage: newMessage = {
