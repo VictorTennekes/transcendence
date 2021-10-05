@@ -60,7 +60,11 @@ export class MatchService {
 	}
 
 	receiveGameInviteError() {
-		return this.matchSocket.fromEvent('invite_not_sent');
+		return this.matchSocket.fromEvent('game_invite_failure');
+	}
+
+	inviteDeclined(username: string) {
+		this.matchSocket.emit('invite_declined', username);
 	}
 
 }
