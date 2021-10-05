@@ -22,6 +22,7 @@ import { chatAdminGuard } from './chat/chat-client/chatAdminGuard.service';
 import { GameGuard } from './game.guard';
 import { PostComponent } from './game/post/post.component';
 import { PostGameGuard } from './post-game.guard';
+import { AcceptComponent } from './accept/accept.component';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -34,6 +35,10 @@ const routes: Routes = [
 				canActivate: [PostGameGuard],
 				path: 'post/:id',
 				component: PostComponent
+			},
+			{
+				path: 'accept',
+				component: AcceptComponent
 			},
 			{
 				path: 'play',

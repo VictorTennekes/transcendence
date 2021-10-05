@@ -1,13 +1,21 @@
 <div class="container">
 	<div class="countdown-container">
-		<countdown class="timer" [config]="config" #cd></countdown>
+		<p>
+			MATCH FOUND!
+		</p>
 	</div>
 	<div class="selection-container">
-		<button (click)="accept()">
+		<button class="button accept" (click)="accept()">
 			ACCEPT
 		</button>
-		<button (click)="close()">
+		<button class="button decline" (click)="close()">
 			DECLINE
 		</button>
+	</div>
+	<countdown class="timer" [config]="config" #cd></countdown>
+	<div class="wrapper">
+		<!-- THIS IS WHERE I LEFT OFF -->
+		<div class="arc arc_end"></div>
+		<div class="arc arc_start"></div>
 	</div>
 </div>
