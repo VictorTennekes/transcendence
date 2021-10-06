@@ -4,6 +4,7 @@ import { QueueService } from '../queue.service';
 import { AcceptService } from '../accept.service';
 import { MatchSocket } from './match.socket';
 import {ActivatedRoute, Router} from '@angular/router'
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
 	selector: 'app-match',

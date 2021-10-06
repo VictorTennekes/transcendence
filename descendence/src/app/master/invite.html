@@ -1,7 +1,4 @@
-<div class="container">
-	<h1>You've been invited to a game by {{data.opponent_username}}</h1>
-	<div class="selection-container">
-		<button mat-stroked-button class="button" color="primary" (click)="accept()">Accept</button>
-		<button mat-stroked-button class="button" color="primary" (click)="close()">Decline</button>
-	</div>
-</div>
+<p>You've been invited to a game by &nbsp;</p>
+<p class="invite-opponent-name">{{data.opponent_username}}</p>
+<button mat-stroked-button class="button" (click)="accept()">Accept</button>
+<button mat-stroked-button class="button" (click)="close()">Decline</button>

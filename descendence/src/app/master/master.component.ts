@@ -10,12 +10,13 @@ import { AcceptComponent } from '../accept/accept.component';
 // import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 // import {DialogData}
 // import {Component, Inject} from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatDialog, MatDialogRef, MatDialogContainer, MAT_DIALOG_DATA, MatDialogConfig} from '@angular/material/dialog';
 
 @Component({
 	selector: 'app-master',
 	templateUrl: './master.component.html',
-	styleUrls: ['./master.component.scss']
+	styleUrls: ['./master.component.scss',
+				'./invite.scss']
 })
 export class MasterComponent implements OnInit {
 	
@@ -54,8 +55,11 @@ export class MasterComponent implements OnInit {
 	}
 
 	openDialog(settings: MatchSettings) {
-		const dialogRef = this.dialog.open(DialogContentExampleDialog, {
-			data: settings
+		const dialogConfig: MatDialogConfig = new MatDialogConfig();
+
+		const dialogRef = this.dialog.open(InviteComponent, {
+			data: settings,
+			panelClass: 'invite-dialog'
 		});
 		dialogRef.afterClosed().subscribe(result => {
 			console.log(`Dialog result: ${result}`);
@@ -93,16 +97,17 @@ export class MasterComponent implements OnInit {
 
 
 @Component({
-	selector: 'dialog-content-example-dialog',
+	selector: 'invite-component',
 	templateUrl: './invite.html',
-	styleUrls: ['./invite.scss']
+	styleUrls: ['./invite.scss'],
+	providers: [MatDialogContainer, MatDialogConfig]
   })
-  export class DialogContentExampleDialog {
+  export class InviteComponent {
 	//   @Input()
 	//   username: string = "";
 
 	constructor(
-		public dialogRef: MatDialogRef<DialogContentExampleDialog>,
+		public dialogRef: MatDialogRef<InviteComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: MatchSettings) {}
 
 	  public accept() {
