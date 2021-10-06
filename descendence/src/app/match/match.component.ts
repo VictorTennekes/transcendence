@@ -45,7 +45,6 @@ export class MatchComponent implements OnInit {
 
 	async findMatch() {
 		console.table(JSON.stringify(this.findgame.value));
-		return ;
 		this.matchService.findMatch(defaultMatchSettings);
 		this.overlay = this.queueService.open({hasBackdrop: false});
 		//when the

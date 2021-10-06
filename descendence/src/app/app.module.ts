@@ -57,6 +57,7 @@ import {
 } from '@angular-material-components/datetime-picker';
 import { PostComponent } from './game/post/post.component';
 import { MatchComponent } from './match/match.component';
+import { LoadcircleComponent } from './accept/loadcircle/loadcircle.component';
 
 // const config: SocketIoConfig = {
 // 	url: 'http://localhost:3000',
@@ -89,6 +90,7 @@ import { MatchComponent } from './match/match.component';
 		SettingsComponent,
   		PostComponent,
 		MatchComponent,
+  		LoadcircleComponent,
 	],
 	imports: [
 		CountdownModule,

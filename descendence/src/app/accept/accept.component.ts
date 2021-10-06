@@ -3,6 +3,7 @@ import { AcceptService } from '../accept.service';
 import { CountdownComponent, CountdownConfig } from 'ngx-countdown';
 import { MatchService } from '../match.service';
 import { Router } from '@angular/router';
+import { LoadcircleComponent } from './loadcircle/loadcircle.component';
 
 @Component({
 	selector: 'app-accept',
@@ -34,7 +35,7 @@ export class AcceptComponent implements OnInit {
 	close() {
 		this.acceptService.close();
 	}
-	
+
 	ngOnInit(): void {
 		this.matchService.matchAccepted().subscribe((match: any) => {
 			// console.log(`MATCH ACCEPTED: ${accepted}`);
