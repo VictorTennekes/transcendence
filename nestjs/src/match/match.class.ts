@@ -1,17 +1,24 @@
 import { User } from "src/game/game.script";
 
 export enum SpeedMode {
-	SLOW,
 	NORMAL,
+	FAST,
 	SANIC
 };
 
+export enum EndConditionTypes {
+	POINT,
+	TIME
+};
+
+export interface EndCondition {
+	type: EndConditionTypes,
+	value: number
+};
+
 export interface MatchSettings {
-	powerups?: {
-		speed: SpeedMode,
-		//things
-	},
-	scoreGoal: number
+	endCondition: EndCondition,
+	ballSpeed: SpeedMode
 };
 
 export class Match {
@@ -75,14 +82,8 @@ export class Match {
 	}
 
 	settingCompare(setting: MatchSettings): boolean {
-		if (this._settings?.powerups) {
-			for (const item in this._settings.powerups) {
-				if (!setting.powerups[item] || this._settings.powerups[item] != setting.powerups[item]) {
-					return false;
-				}
-			}
-			return true;
-		}
-		return true;
+		return (this.settings.ballSpeed == setting.ballSpeed &&
+			this.settings.endCondition.type == setting.endCondition.type &&
+			this.settings.endCondition.value == setting.endCondition.value);
 	}
 }

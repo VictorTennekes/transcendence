@@ -1,6 +1,6 @@
 import { Logger } from "@nestjs/common";
 import { match } from "assert";
-import { Match } from "src/match/match.class";
+import { EndCondition, EndConditionTypes, Match } from "src/match/match.class";
 
 const PADDLE_WIDTH = 25;
 const PADDLE_HEIGHT = 150;
@@ -53,7 +53,7 @@ export class Game {
 	private players: {[id: string] : Player} = {};
 	private ball: Ball;
 
-	private scoreGoal: number;
+	private goal: EndCondition;
 	setKeyPressed(player: string, keyString: string, state: boolean) {
 		if (keyString !== 'ArrowUp' && keyString !== 'ArrowDown') {
 			return ;
@@ -70,7 +70,7 @@ export class Game {
 			one: match.creator,
 			two: match.opponent
 		};
-		this.scoreGoal = match.settings.scoreGoal;
+		this.goal = match.settings.endCondition;
 		this.startTime = new Date();
 		//initializing objects
 		this.players[match.creator.id] = new Player(WALL_OFFSET,Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
@@ -111,7 +111,17 @@ export class Game {
 	}
 
 	get goalReached() {
-		return this.players[this._users.one.id].score === this.scoreGoal || this.players[this._users.two.id].score === this.scoreGoal;
+		if (this.goal.type == EndConditionTypes.POINT) {
+			// Logger.log("REACHED");
+			return this.players[this._users.one.id].score == this.goal.value || this.players[this._users.two.id].score == this.goal.value;
+		}
+		else {
+			const scoreTied: boolean = (this.players[this._users.one.id].score == this.players[this._users.two.id].score);
+			if (scoreTied)
+				return (false);
+			const duration = this.timeElapsed;
+			return (duration && (duration / 1000) / 60 >= this.goal.value);
+		}
 	}
 
 	update() {

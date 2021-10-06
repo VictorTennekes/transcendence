@@ -6,22 +6,33 @@ import { GameSocket } from './game/game.socket';
 import { MatchSocket } from './match/match.socket';
 // import { Socket } from 'ngx-socket-io';
 
-enum SpeedMode {
-	SLOW,
+export enum SpeedMode {
 	NORMAL,
+	FAST,
 	SANIC
 };
 
+export enum EndConditionTypes {
+	POINT,
+	TIME
+};
+
+export interface EndCondition {
+	type: EndConditionTypes,
+	value: number
+};
+
 export interface MatchSettings {
-	powerups?: {
-		speed: SpeedMode,
-		//things
-	}
-	scoreGoal: number
+	endCondition: EndCondition,
+	ballSpeed: SpeedMode
 };
 
 export const defaultMatchSettings: MatchSettings = {
-	scoreGoal: 5,
+	endCondition: {
+		type: EndConditionTypes.POINT,
+		value: 5
+	},
+	ballSpeed: SpeedMode.NORMAL
 };
 
 @Injectable({

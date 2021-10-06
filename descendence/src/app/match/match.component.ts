@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { defaultMatchSettings, MatchService } from '../match.service';
+import { defaultMatchSettings, EndCondition, EndConditionTypes, MatchService, MatchSettings, SpeedMode } from '../match.service';
 import { QueueService } from '../queue.service';
 import { AcceptService } from '../accept.service';
 import { MatchSocket } from './match.socket';
@@ -43,9 +43,38 @@ export class MatchComponent implements OnInit {
 		return this.queueService.findDisabled;
 	}
 
+	createMatchSettings(): MatchSettings {
+		let settings = defaultMatchSettings;
+		const formInput = this.findgame.value;
+
+		if (formInput.condition === pointbased) {
+			settings.endCondition.type = EndConditionTypes.POINT;
+			settings.endCondition.value = formInput.points;
+		}
+		else {
+			settings.endCondition.type = EndConditionTypes.TIME
+			settings.endCondition.value = formInput.minutes
+		}
+		switch (formInput.ball_speed) {
+			case BallSpeedLabelMapping.NORMAL: {
+				settings.ballSpeed = SpeedMode.NORMAL
+				break ;
+			}
+			case BallSpeedLabelMapping.FAST: {
+				settings.ballSpeed = SpeedMode.FAST
+				break ;
+			}
+			case BallSpeedLabelMapping.SANIC: {
+				settings.ballSpeed = SpeedMode.SANIC
+				break ;
+			}
+		}
+		return settings;
+	}
+
 	async findMatch() {
 		console.table(JSON.stringify(this.findgame.value));
-		this.matchService.findMatch(defaultMatchSettings);
+		this.matchService.findMatch(this.createMatchSettings());
 		this.overlay = this.queueService.open({hasBackdrop: false});
 		//when the
 		this.matchService.matchReady().subscribe(() => {
@@ -54,7 +83,7 @@ export class MatchComponent implements OnInit {
 			this.overlay = this.acceptService.open();
 		});
 	}
-	
+
 	ngOnInit(): void {
 		this.findgame = new FormGroup({
 			condition: new FormControl(pointbased),

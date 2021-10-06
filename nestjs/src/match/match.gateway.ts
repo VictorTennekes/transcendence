@@ -7,6 +7,7 @@ import { UserService } from '@user/user.service';
 import { MatchService } from './match.service';
 import { User } from 'src/game/game.script';
 import { GameService } from 'src/game/game.service';
+import { MatchSettings } from './match.class';
 
 @WebSocketGateway({ namespace: '/match'})
 export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -44,13 +45,15 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	//listen for 'find' event
 	//find/create a match
 	//send 'ready' to both players once a match is found
-	async findMatch(client: Socket, settings: any) {
+	async findMatch(client: Socket, settings: MatchSettings) {
+		Logger.log(JSON.stringify(settings));
 		const userItem = await getUserFromSocket(client, this.userService);
 		const user: User = {
 			login: userItem.intra_name,
 			display_name: userItem.display_name,
 			id: client.id,
 		};
+		Logger.log(JSON.stringify(user));
 		Logger.log(`USER INTRA NAME = ${user.login}`);
 		const match: string = this.matchService.findMatch(user, settings);
 		Logger.log(`CLIENT ${client.id} -> MATCH ${match}`);
