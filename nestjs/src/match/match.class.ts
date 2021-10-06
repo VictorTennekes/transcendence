@@ -10,7 +10,8 @@ export interface MatchSettings {
 	powerups?: {
 		speed: SpeedMode,
 		//things
-	},
+	}
+	opponent_username?: string
 	scoreGoal: number
 };
 
@@ -74,7 +75,16 @@ export class Match {
 		this._accepted[user] = true;
 	}
 
-	settingCompare(setting: MatchSettings): boolean {
+	settingCompare(setting: MatchSettings, user: User): boolean {
+		console.log("setting compare");
+		console.log(setting);
+		if (setting.opponent_username) {
+			console.log("username exists: ", setting.opponent_username);
+			console.log("user username: ", user.login);
+			if (setting?.opponent_username !== this._creator.login) {
+				return false;
+			}
+		}
 		if (this._settings?.powerups) {
 			for (const item in this._settings.powerups) {
 				if (!setting.powerups[item] || this._settings.powerups[item] != setting.powerups[item]) {

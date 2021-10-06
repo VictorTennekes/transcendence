@@ -36,7 +36,7 @@ const routes: Routes = [
 				component: PostComponent
 			},
 			{
-				path: 'play',
+				path: 'play/:intra_name',
 				component: MatchComponent
 			},
 			{
@@ -81,7 +81,7 @@ const routes: Routes = [
 			},
 			{
 				path: '',
-				redirectTo: 'play',
+				redirectTo: 'play/',
 				pathMatch: 'full'
 			}
 		]

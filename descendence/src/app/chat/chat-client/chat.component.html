@@ -13,11 +13,16 @@
 	</div>
 </div>
 <ul #scrollMe id="chatList" class="chatList">
-	<li id="chatItem" class="chatItem" *ngFor="let msg of chat.messages">
+	<li id="chatItem" [matMenuTriggerFor]="beforeMenu" class="chatItem" *ngFor="let msg of chat.messages">
+		<mat-menu #beforeMenu="matMenu" xPosition="before">
+			<button mat-menu-item>Profile</button>
+			<button mat-menu-item *ngIf="!isLoggedInUser(msg.owner.display_name)" (click)="inviteToGame(msg.owner.intra_name)">Invite to game</button>
+		</mat-menu>
 		<div class="avatar" style="{{getUserAvatar(msg.owner.avatar_url)}}"></div>
 		<div class="infoContainer">
 			<div class="dateName">
-				<p class="name"> {{msg.owner.display_name}}	</p>
+				<p class="name" > {{msg.owner.display_name}}	</p>
+
 				<p class="time"> {{msg.time | date:'hh:mm a, MMM dd, YY' }} </p>
 			</div>
 			<p class="chatMessage"> -- {{msg.message}}</p>

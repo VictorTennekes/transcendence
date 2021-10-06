@@ -3,7 +3,8 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SearchService } from '../search/search.service';
 import { ChatService } from './chat.service';
-import { retMessage, newMessage, chatModel } from './message.model';
+import { retMessage, newMessage, chatModel, userModel } from './message.model';
+import { UserService } from 'src/app/user.service';
 @Component({
 	selector: 'app-chat',
 	templateUrl: './chat.component.html',
@@ -23,6 +24,7 @@ import { retMessage, newMessage, chatModel } from './message.model';
 		  private formBuilder: FormBuilder,
 		  private chatService: ChatService,
 		  private searchService: SearchService,
+		  private userService: UserService,
 		  private router: Router,
 		  private route: ActivatedRoute,
 	  ) { }
@@ -41,6 +43,7 @@ import { retMessage, newMessage, chatModel } from './message.model';
 	public default_avatar_url = "";
 	public errorMessage: string = "";
 	public userIsAdmin: boolean = false;
+	public loggedInUser: string = "";
 
 	ngOnInit(): void {
 		
@@ -48,6 +51,12 @@ import { retMessage, newMessage, chatModel } from './message.model';
 			console.log(error);
 			this.errorMessage = error;
 		})
+
+
+		this.userService.getCurrentUser().subscribe((data: any) => {
+			this.loggedInUser = data.display_name;
+		});
+		console.log("logged in user is: ", this.loggedInUser)
 		console.log(this.chat);
 		this.route.params.subscribe(params => {
 			this.searchService.findChatById(params['id']).subscribe((response) => {
@@ -76,10 +85,17 @@ import { retMessage, newMessage, chatModel } from './message.model';
 				})
 			});
 		});
+
 	}
 
 	ngAfterViewChecked() : void {
 		this.scrollToBottom();
+	}
+
+	public isLoggedInUser(username: string): boolean {
+		// return (username === this.loggedInUser.display_name);
+		return (username === this.loggedInUser);
+
 	}
 
 	public back() {
@@ -103,10 +119,17 @@ import { retMessage, newMessage, chatModel } from './message.model';
 		return style;
 	}
 
+	public inviteToGame(username: string) {
+		this.router.navigate(['play', username])
+	}
+
 	public async leave() {
 		await this.searchService.leaveChat(this.chat.id);
 		this.back();
 	}
+
+
+
 
 	public onSubmit() {
 		this.errorMessage = "";
