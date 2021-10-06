@@ -38,7 +38,8 @@ interface GameData {
 	users: {
 		one: User,
 		two: User
-	}
+	},
+	secondsPassed: number
 }
 
 export class Game {
@@ -107,6 +108,7 @@ export class Game {
 			ball: this.ball,
 			players: this.players,
 			users: this._users,
+			secondsPassed: this.timeElapsed / 1000,
 		};
 	}
 
