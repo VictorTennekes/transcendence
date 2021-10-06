@@ -79,6 +79,28 @@ export class UserService {
 		}
 	}
 
+	async unblockUser(username: string, blockedUsername: string) {
+		let user: UserEntity = await this.userRepository.findOne({
+			where: {intra_name: username},
+			relations: ["blockedUsers"]
+		});
+		if (username == blockedUsername)
+			return ;
+		let blockedUser: UserEntity = await this.userRepository.findOne({
+			where: {intra_name: blockedUsername},
+			relations: ["blockedByUsers"]
+		});
+		let index = user.blockedUsers.findIndex(x => x.intra_name === username);
+		if (index !== -1) {
+			user.blockedUsers.splice(index, 1);
+			this.userRepository.save(user);
+		}
+		index = blockedUser.blockedByUsers.findIndex(x => x.intra_name === username);
+		if (index !== -1) {
+			blockedUser.blockedByUsers.splice(index, 1);
+			this.userRepository.save(blockedUser);
+		}
+	}
 
 	async create(login: string) {
 		const intra_name = login;

@@ -132,8 +132,6 @@ import { UserService } from 'src/app/user.service';
 		this.userService.addBlockedUser(username).subscribe(() => {
 			this.route.params.subscribe(params => {
 				this.searchService.findChatById(params['id']).subscribe((response) => {
-					console.log("found chat by id");
-					// console.log(response);
 					this.chat = response;
 					console.log(this.chat);
 				});
