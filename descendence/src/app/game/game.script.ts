@@ -59,12 +59,12 @@ export class Game {
 	}
 	
 	drawTime() {
-		this.gameContext.strokeStyle = "#fff";
+		this.gameContext.strokeStyle = "#89AFBB";
 		this.gameContext.lineWidth = 10;
-		this.gameContext.fillStyle = "#fff";
+		this.gameContext.fillStyle = "#89AFBB";
 		//		this.gameContext.strokeRect(10,10,this.gameCanvas.width - 20 ,this.gameCanvas.height - 20);
 		
-		this.gameContext.font = "2rem Biryani, bold";
+		this.gameContext.font = "2rem Poppins, bold";
 		const timeString = new Date(this.timePassed * 1000).toISOString().substr(11, 8);
 		this.gameContext.fillText(timeString, this.gameCanvas.width / 2, this.gameCanvas.height - 30);
 	}

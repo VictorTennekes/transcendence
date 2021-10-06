@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Socket } from 'socket.io';
 import { nanoid } from 'nanoid';
 import { Observable } from 'rxjs';
 import { User } from 'src/game/game.script';
@@ -24,18 +25,21 @@ export class MatchService {
 
 	getMatchID(clientID: string) {
 		for (const key in this.matches) {
-			if (this.matches[key] !== undefined && (this.matches[key].creator.id === clientID || this.matches[key].opponent.id === clientID))
+			if (this.matches[key] !== undefined && (this.matches[key].creator.id === clientID ||
+				( this.matches[key].opponent !== undefined && this.matches[key].opponent.id === clientID)))
 				return key;
 		}
 		return null;
 	}
 
-	cancelMatch(clientID: string) {
-		const id = this.getMatchID(clientID);
+	cancelMatch(client: Socket) {
+		Logger.log(`CANCELMATCH - ${client.id} - CANCELED`);
+		const id = this.getMatchID(client.id);
 		if (!id) { //error
 			return ;
 		}
 		delete this.matches[id];
+		client.leave(id);
 		this.matches[id] = undefined;
 	}
 

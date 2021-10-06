@@ -4,6 +4,7 @@ import { CountdownComponent, CountdownConfig } from 'ngx-countdown';
 import { MatchService } from '../match.service';
 import { Router } from '@angular/router';
 import { LoadcircleComponent } from './loadcircle/loadcircle.component';
+import { QueueService } from '../queue.service';
 
 @Component({
 	selector: 'app-accept',
@@ -24,7 +25,8 @@ export class AcceptComponent implements OnInit {
 	constructor(
 		private readonly router: Router,
 		private readonly acceptService: AcceptService,
-		private readonly matchService: MatchService
+		private readonly matchService: MatchService,
+		private readonly queueService: QueueService
 	) { }
 
 	accept() {
@@ -45,13 +47,15 @@ export class AcceptComponent implements OnInit {
 				this.router.navigate(['game/' + match.id]);
 			}
 			else {
-				//did this client accept?
-				if (this.accepted) {
-					//keep the client in the queue
-				}
-				else {
-					//remove the client from the queue
-				}
+				// did this client accept?
+				// if (this.accepted) {
+				// 	this.queueService.open({hasBackdrop: false});
+				// }
+				// else {
+				// 	this.queueService.findDisabled = false;
+				// 	this.queueService.timePassed = 0;
+				// }
+				//THIS IS WHERE I LEFT OFF :upside_down:
 			}
 		});
 	}

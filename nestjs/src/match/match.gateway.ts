@@ -28,7 +28,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('cancel')
 	cancelMatch(client: Socket) {
-		this.matchService.cancelMatch(client.id);
+		this.matchService.cancelMatch(client);
 	}
 
 	@SubscribeMessage('accept')
@@ -66,6 +66,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				const accepted = this.matchService.isAccepted(match);
 				this.server.to(match).emit('accepted', {id: match, accepted: accepted});
 				if (accepted) {
+					Logger.log("MATCH ACCEPTED");
 					this.matchService.createGame(match);
 					delete(this.matchService.matches[match]);
 					this.matchService.matches[match] = undefined;

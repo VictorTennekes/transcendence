@@ -79,7 +79,7 @@ export class MatchComponent implements OnInit {
 		//when the
 		this.matchService.matchReady().subscribe(() => {
 			console.log("RECEIVED READY SIGNAL");
-			this.overlay.close();
+			this.queueService.close();
 			this.overlay = this.acceptService.open();
 		});
 	}

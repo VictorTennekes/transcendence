@@ -19,8 +19,11 @@ const DEFAULT_CONFIG: FilePreviewDialogConfig = {
 
 @Injectable()
 export class QueueService {
+	timePassed: number = 0;
 	findDisabled = false;
 	dialogRef: FocusOverlayRef;
+	interval: NodeJS.Timeout;
+
 	constructor(
 		private readonly overlay: Overlay,
 		private readonly matchService: MatchService
@@ -32,10 +35,12 @@ export class QueueService {
 	// }
 
 	private getOverlayConfig(config: FilePreviewDialogConfig): OverlayConfig {
+		const view = document.getElementById("view");
+
 		const positionStrategy = this.overlay.position()
-		.flexibleConnectedTo(new ElementRef(document.getElementById("view")))
+		.flexibleConnectedTo(new ElementRef(view))
 		.withPositions([{
-			offsetX: -240,
+			offsetX: -245,
 			originX: 'center',
 			originY: 'top',
 			overlayX: 'end',
@@ -60,9 +65,10 @@ export class QueueService {
 	}
 
 	close() {
-		this.matchService.cancelMatch();
+		// this.matchService.cancelMatch();
 		this.findDisabled = false;
 		this.dialogRef.close();
+		clearInterval(this.interval);
 	}
 
 	detachments() {
@@ -74,6 +80,7 @@ export class QueueService {
 			...DEFAULT_CONFIG,
 			...config,
 		}
+		this.interval = setInterval(() => {this.timePassed++}, 1000);
 		this.findDisabled = true;
 		const overlayRef = this.createOverlay(dialogConfig);
 		const focusOverlayPortal = new ComponentPortal(QueueComponent);
