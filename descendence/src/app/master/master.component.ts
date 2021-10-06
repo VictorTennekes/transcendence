@@ -53,24 +53,20 @@ export class MasterComponent implements OnInit {
 		})
 	}
 
-	openDialog(user: any) {
+	openDialog(settings: MatchSettings) {
 		const dialogRef = this.dialog.open(DialogContentExampleDialog, {
-			data: {username: user}
+			data: settings
 		});
 		dialogRef.afterClosed().subscribe(result => {
 			console.log(`Dialog result: ${result}`);
 			if (result) {
 				console.log("navigating to game");
-				// let settings: MatchSettings = {
-					// opponent_username: user
-				// }
-				// this.matchService.findMatch(settings);
-				this.router.navigate(['play', user])
-				//navigate to play tag with username
+				this.router.navigate(['play', settings.opponent_username])
 			} else {
-				console.log("declining invite: ", user);
-				this.matchService.inviteDeclined(user);
-				//emit error
+				console.log("declining invite: ", settings);
+				if (settings.opponent_username) {
+					this.matchService.inviteDeclined(settings.opponent_username);
+				}
 			}
 		});
 	}
@@ -107,7 +103,7 @@ export class MasterComponent implements OnInit {
 
 	constructor(
 		public dialogRef: MatDialogRef<DialogContentExampleDialog>,
-		@Inject(MAT_DIALOG_DATA) public data: any) {}
+		@Inject(MAT_DIALOG_DATA) public data: MatchSettings) {}
 
 	  public accept() {
 		  this.dialogRef.close(true);

@@ -115,7 +115,9 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 							target_username = lol.user.display_name;
 						}
 					}
-					user.socket.emit('receive_game_invite', target_username);
+					let sentSettings: MatchSettings = settings;
+					sentSettings.opponent_username = target_username;
+					user.socket.emit('receive_game_invite', sentSettings);
 					inviteSent = true;
 				}
 			}
