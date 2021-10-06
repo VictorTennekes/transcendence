@@ -60,7 +60,6 @@ export class UserService {
 
 
 	async blockUser(username: string, blockedUsername: string) {
-		console.log("username: ", username);
 		let user: UserEntity = await this.userRepository.findOne({
 			where: {intra_name: username},
 			relations: ["blockedUsers"]
@@ -71,14 +70,15 @@ export class UserService {
 			where: {intra_name: blockedUsername},
 			relations: ["blockedByUsers"]
 		});
-		console.log("these are the users");
-		console.log(user);
-		console.log(blockedUser);
-		user.blockedUsers.push(blockedUser);
-		blockedUser.blockedByUsers.push(user);
-		this.userRepository.save(user);
-		this.userRepository.save(blockedUser);
+		const index = user.blockedUsers.findIndex(x => x.intra_name === username);
+		if (index === -1) {
+			user.blockedUsers.push(blockedUser);
+			blockedUser.blockedByUsers.push(user);
+			this.userRepository.save(user);
+			this.userRepository.save(blockedUser);
+		}
 	}
+
 
 	async create(login: string) {
 		const intra_name = login;
