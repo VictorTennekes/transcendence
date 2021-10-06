@@ -32,7 +32,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('cancel')
 	cancelMatch(client: Socket) {
-		console.log("cansel match")
 		console.log(client.id);
 		this.matchService.cancelMatch(client.id);
 	}
@@ -47,11 +46,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		client.join(id);
 	}
 
-	@SubscribeMessage('find')
-	//listen for 'find' event
-	//find/create a match
-	//send 'ready' to both players once a match is found
-	async findMatch(client: Socket, settings: any) {
+	async findMatch(client: Socket, settings: MatchSettings): Promise<string> {
 		console.log("in find match. maybe it'll send the response?")
 		const userItem = await getUserFromSocket(client, this.userService);
 		const user: User = {
@@ -61,6 +56,10 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		};
 		Logger.log(`USER INTRA NAME = ${user.login}`);
 		const match: string = this.matchService.findMatch(user, settings);
+		return match;
+	}
+
+	async initiateMatch(client: Socket, match: string) {
 		Logger.log(`CLIENT ${client.id} -> MATCH ${match}`);
 		client.join(match); //add user to the room identified by the matchID
 		if (this.matchService.isReady(match)) {
@@ -81,8 +80,18 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 	}
 
+	@SubscribeMessage('find')
+	//listen for 'find' event
+	//find/create a match
+	//send 'ready' to both players once a match is found
+	async queueForMatch(client: Socket, settings: any) {
+		const match = await this.findMatch(client, settings);
+		this.initiateMatch(client, match);
+	}
+
 	@SubscribeMessage('invite_user')
 	async inviteUser(client: Socket, settings: MatchSettings) {
+		console.log("inviting a user");
 		const usr = await getUserFromSocket(client, this.userService);
 		const user: User = {
 			login: usr.intra_name,
@@ -90,6 +99,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			id: client.id
 		}
 		let match = this.matchService.matchExists(user, settings);
+		console.log("found match? ", match);
 		if (match === null) {
 			let inviteSent: boolean = false;
 			for (let user of this.connectedUsers) {
@@ -103,30 +113,12 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			if (inviteSent === false) {
 				client.emit('game_invite_failure', 'user not online');
 			}
-			this.findMatch(client, settings);
+			match = await this.findMatch(client, settings);
+			this.initiateMatch(client, match);
 		} else {
-			console.log("match exists already")
-			console.log(match);
-
-			client.join(match); //add user to the room identified by the matchID
-			if (this.matchService.isReady(match)) {
-			//when the opponent connects, both players are notified that the match is ready
-				Logger.log(`MATCH ${match} -> ready`);
-				this.server.to(match).emit('ready');
-				var interval = setInterval(() => {
-					const accepted = this.matchService.isAccepted(match);
-					this.server.to(match).emit('accepted', accepted);
-					if (accepted) {
-						this.matchService.createGame(match);
-						delete(this.matchService.matches[match]);
-						this.matchService.matches[match] = undefined;
-					}
-					//send 'accepted' state to the clients
-					clearInterval(interval);
-				},3000);
-
-			}
+			this.initiateMatch(client, match);
 		}
+
 	}
 
 	@SubscribeMessage('invite_declined')
