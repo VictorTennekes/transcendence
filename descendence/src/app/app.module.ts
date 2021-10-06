@@ -56,6 +56,7 @@ import {
 	NgxMatTimepickerModule
 } from '@angular-material-components/datetime-picker';
 import { PostComponent } from './game/post/post.component';
+import { ProfileComponent } from './profile/profile.component';
 
 // const config: SocketIoConfig = {
 // 	url: 'http://localhost:3000',
@@ -86,7 +87,8 @@ import { PostComponent } from './game/post/post.component';
 		AcceptComponent,
 		ChatContainerComponent,
 		SettingsComponent,
-  PostComponent
+  PostComponent,
+  ProfileComponent
 	],
 	imports: [
 		CountdownModule,

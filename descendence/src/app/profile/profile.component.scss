@@ -1,0 +1,46 @@
+.viewBox {
+	width: 60vw;
+	height: 80vh;
+	background:#235266;
+	border-radius: 3.25rem;
+}
+
+.profileOptions {
+	width: 60vw;
+	height: 15vh;
+	border-radius: 3.25rem 3.25rem 0px 0px;
+	display: table;
+	padding-left: 3rem;
+	padding-top: 3rem;
+}
+
+.avatar {
+	width: 10rem;
+	height: 10rem;
+	border-radius: 50%;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.userName {
+	padding-left: 2rem;
+	height: 100%;
+	align-content: middle;
+	display: table-cell;
+	vertical-align: middle;
+	font-family: Montserrat;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 5rem;
+	line-height: 43px;
+
+	color: #D3E5EF;
+}
+
+.navigationBar {
+
+}
+
+.profileStats {
+
+}

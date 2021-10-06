@@ -22,6 +22,7 @@ import { chatAdminGuard } from './chat/chat-client/chatAdminGuard.service';
 import { GameGuard } from './game.guard';
 import { PostComponent } from './game/post/post.component';
 import { PostGameGuard } from './post-game.guard';
+import { ProfileComponent } from './profile/profile.component';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -38,6 +39,10 @@ const routes: Routes = [
 			{
 				path: 'play',
 				component: MatchComponent
+			},
+			{
+				path: 'profile/:id',
+				component: ProfileComponent
 			},
 			{
 				path: 'pass-chat/:id',
