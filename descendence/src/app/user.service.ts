@@ -52,9 +52,7 @@ export class UserService {
 		return this.http.get('api/user/user_exists/' + username);
 	}
 
-	addBlockedUser(username: string) : void {
-		//TODO: add block for user. Add validator i guess?
-		console.log("doing this thing");
-		this.http.post('api/user/block_user/', {username: username}).subscribe(() => {this.userSource.next('')});
+	addBlockedUser(username: string) {
+		return this.http.post('api/user/block_user/', {username: username})
 	}
 }
