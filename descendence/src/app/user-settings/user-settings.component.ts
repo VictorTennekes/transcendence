@@ -117,7 +117,7 @@ export class UserSettingsComponent implements OnInit {
 		}
 	}
 
-	blockedUserIsValid(): AsyncValidatorFn {
+	unblockedUserIsValid(): AsyncValidatorFn {
 		return (control: AbstractControl): Observable<ValidationErrors | null> => {
 			let err: ValidationErrors = {
 				'noSuchUser': true
@@ -138,7 +138,7 @@ export class UserSettingsComponent implements OnInit {
 
 	addValidators() {
 		this.settingsForm.controls['displayName'].setAsyncValidators([this.displayNameIsUnique()]);
-		this.settingsForm.controls['block'].setAsyncValidators([this.blockedUserIsValid()]);
+		this.settingsForm.controls['unblock'].setAsyncValidators([this.unblockedUserIsValid()]);
 	}
 	
 	get twoFactorState(): string {
@@ -170,9 +170,9 @@ export class UserSettingsComponent implements OnInit {
 			this.userService.updateTwoFactor(formValues['twoFactorEnabled']);
 		}
 
-		if (formValues['block'] && this.settingsForm.controls['block'].valid) {
-			this.userService.addBlockedUser(this.settingsForm.controls['block'].value);
-			this.settingsForm.controls['block'].reset();
+		if (formValues['unblock'] && this.settingsForm.controls['unblock'].valid) {
+			this.userService.unblockedUser(this.settingsForm.controls['unblock'].value);
+			this.settingsForm.controls['unblock'].reset();
 		}
 	}
 
@@ -181,7 +181,7 @@ export class UserSettingsComponent implements OnInit {
 			displayName: new FormControl(""),
 			twoFactorEnabled: new FormControl(false),
 			avatar: new FormControl(""),
-			block: new FormControl("")
+			unblock: new FormControl("")
 		});
 		this.addValidators();
 		//remove me

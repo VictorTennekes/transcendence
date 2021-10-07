@@ -17,6 +17,8 @@
 		<mat-menu #beforeMenu="matMenu" xPosition="before">
 			<button mat-menu-item>Profile</button>
 			<button mat-menu-item *ngIf="!isLoggedInUser(msg.owner.display_name)" (click)="inviteToGame(msg.owner.intra_name)">Invite to game</button>
+			<button mat-menu-item *ngIf="!isLoggedInUser(msg.owner.display_name)">Add friend</button>
+			<button mat-menu-item *ngIf="!isLoggedInUser(msg.owner.display_name)" (click)="blockUser(msg.owner.intra_name)">Block</button>
 		</mat-menu>
 		<div class="avatar" style="{{getUserAvatar(msg.owner.avatar_url)}}"></div>
 		<div class="infoContainer">
