@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { FailComponent } from './fail/fail.component';
 import { HomeComponent } from './home/home.component';
 import { LoginGuard } from './login.guard';
-import { LoginComponent } from './login/login.component';
 import { MasterComponent } from './master/master.component';
 import { TwoFactorGuard } from './two-factor.guard';
 import { TwoFactorComponent } from './two-factor/two-factor.component';
@@ -37,7 +36,7 @@ const routes: Routes = [
 				component: PostComponent
 			},
 			{
-				path: 'play',
+				path: 'play/:intra_name',
 				component: MatchComponent
 			},
 			{
@@ -86,7 +85,7 @@ const routes: Routes = [
 			},
 			{
 				path: '',
-				redirectTo: 'play',
+				redirectTo: 'play/',
 				pathMatch: 'full'
 			}
 		]
@@ -101,10 +100,6 @@ const routes: Routes = [
 		canActivate: [TwoFactorGuard],
 		path: '2fa',
 		component: TwoFactorComponent
-	},
-	{
-		path: 'login',
-		component: LoginComponent
 	},
 	{
 		path: '',

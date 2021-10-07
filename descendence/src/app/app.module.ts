@@ -5,7 +5,6 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MasterComponent } from './master/master.component';
-import { LoginComponent } from './login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FailComponent } from './fail/fail.component';
 import { CookieModule } from 'ngx-cookie';
@@ -55,6 +54,7 @@ import {
 	NgxMatNativeDateModule,
 	NgxMatTimepickerModule
 } from '@angular-material-components/datetime-picker';
+import {MatMenuModule} from '@angular/material/menu';
 import { PostComponent } from './game/post/post.component';
 import { ProfileComponent } from './profile/profile.component';
 
@@ -72,7 +72,6 @@ import { ProfileComponent } from './profile/profile.component';
 		MasterComponent,
 		SearchComponent,
 		ChatComponent,
-		LoginComponent,
 		FailComponent,
 		CreateChatComponent,
 		ChatPassComponent,
@@ -110,6 +109,7 @@ import { ProfileComponent } from './profile/profile.component';
 		SocketIoModule,
 		MatDatepickerModule,
 		MatNativeDateModule,
+		MatMenuModule,
 		NgxMatNativeDateModule,
 		NgxMatTimepickerModule,
 		NgxMatDatetimePickerModule,
