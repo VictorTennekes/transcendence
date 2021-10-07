@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { first, switchMap, take } from 'rxjs/operators';
+import { userModel } from './chat/chat-client/message.model';
 
 // interface User {
 // 	intraName: string;
@@ -62,5 +63,9 @@ export class UserService {
 	addFriend(username: string) {
 		console.log("service??");
 		return this.http.post('api/user/add_friend/', {username: username});
+	}
+
+	getFriends(username: string): Observable<userModel[]> {
+		return this.http.get<userModel[]>('api/user/get_friends/' + username);
 	}
 }

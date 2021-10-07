@@ -54,7 +54,8 @@ import {
 	NgxMatNativeDateModule,
 	NgxMatTimepickerModule
 } from '@angular-material-components/datetime-picker';
-import {MatMenuModule} from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatBadgeModule } from '@angular/material/badge';
 import { PostComponent } from './game/post/post.component';
 
 // const config: SocketIoConfig = {
@@ -108,6 +109,7 @@ import { PostComponent } from './game/post/post.component';
 		MatDatepickerModule,
 		MatNativeDateModule,
 		MatMenuModule,
+		MatBadgeModule,
 		NgxMatNativeDateModule,
 		NgxMatTimepickerModule,
 		NgxMatDatetimePickerModule,

@@ -4,6 +4,7 @@ export interface userModel {
 	intra_name: string;
 	display_name: string;
 	avatar_url: string;
+	friends: userModel[];
 }
 
 export interface retMessage {

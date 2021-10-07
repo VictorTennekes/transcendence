@@ -151,6 +151,14 @@ export class UserController {
 
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
+	@Get('get_friends/:username')
+	async getFriends(@Param("username") username: string, @Req() request): Promise<UserDTO[]> {
+		console.log(request.session.passport);
+		return await this.userService.getFriends(request.session.passport.user.login);
+	}
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
 	@Post('unblock_user')
 	async unblockUser(@Req() request, @Body() username: any) {
 		if (request.user.login === username.username)
