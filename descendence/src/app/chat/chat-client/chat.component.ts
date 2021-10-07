@@ -119,6 +119,10 @@ import { UserService } from 'src/app/user.service';
 		return style;
 	}
 
+	public openProfile(login: string) {
+		this.router.navigate(['profile', login])
+	}
+
 	public inviteToGame(username: string) {
 		this.router.navigate(['play', username])
 	}

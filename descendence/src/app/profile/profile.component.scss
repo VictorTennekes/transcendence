@@ -9,9 +9,27 @@
 	width: 60vw;
 	height: 15vh;
 	border-radius: 3.25rem 3.25rem 0px 0px;
-	display: table;
+	display: flex;
+	flex-direction: row;
 	padding-left: 3rem;
 	padding-top: 3rem;
+}
+
+.profileButtons {
+	border-radius: 10px;
+	padding: 2rem;
+	color: white;
+	margin: 2rem;
+	height: 3rem;
+	display: inline-flex;
+	align-items: center; 
+
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 20px;
+	line-height: 90.3%;
+	text-align: center;
 }
 
 .avatar {
@@ -24,8 +42,8 @@
 
 .userName {
 	padding-left: 2rem;
+	padding-bottom: 0.8rem;
 	height: 100%;
-	align-content: middle;
 	display: table-cell;
 	vertical-align: middle;
 	font-family: Montserrat;

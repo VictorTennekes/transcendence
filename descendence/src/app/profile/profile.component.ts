@@ -1,27 +1,34 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../user.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+	selector: 'app-profile',
+	templateUrl: './profile.component.html',
+	styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-
-  constructor(
-    private userService: UserService,
-  ) { }
-
-  displayName: string = "";
+	
+	constructor(
+		private userService: UserService,
+		private route: ActivatedRoute,
+	) { }
+		
+	id: string | null = "";
+  	displayName: string = "";
 	avatarUrl: string = "";
 	loginId: string ="";
+	user: any;
 
   ngOnInit(): void {
-		this.userService.userSubject.subscribe((user: any) => {
+	this.route.params.subscribe(params => {
+		this.id = params['id'];
+		this.userService.getUserByLogin(this.id!).subscribe((user: any) => {
 			this.displayName = user.display_name;
 			this.avatarUrl = this.updateAvatar(user.avatar_url);
 			this.loginId = user.intra_name;
-		});
+		})
+	})
   }
   
   updateAvatar(url: string | null) {
