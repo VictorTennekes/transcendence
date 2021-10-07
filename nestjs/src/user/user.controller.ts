@@ -141,6 +141,16 @@ export class UserController {
 
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
+	@Post('add_friend')
+	async addFriend(@Req() request, @Body() username: any) {
+		console.log("adding friend controller");
+		if (request.user.login === username.username)
+			return ;
+		await this.userService.addFriend(request.session.passport.user.login, username.username);
+	}
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
 	@Post('unblock_user')
 	async unblockUser(@Req() request, @Body() username: any) {
 		if (request.user.login === username.username)

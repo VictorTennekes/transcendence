@@ -58,4 +58,9 @@ export class UserService {
 	unblockedUser(username: string) {
 		return this.http.post('api/user/unblock_user/', {username: username}).subscribe(() => {this.userSource.next('');});
 	}
+
+	addFriend(username: string) {
+		console.log("service??");
+		return this.http.post('api/user/add_friend/', {username: username});
+	}
 }

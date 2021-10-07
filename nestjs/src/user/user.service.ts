@@ -102,6 +102,27 @@ export class UserService {
 		}
 	}
 
+	async addFriend(username: string, friendUsername: string) {
+		let user: UserEntity = await this.userRepository.findOne({
+			where: {intra_name: username},
+			relations: ["friends"]
+		});
+		if (username === friendUsername) {
+			return ;
+		}
+		let friend: UserEntity = await this.userRepository.findOne({
+			where: {intra_name: friendUsername},
+			relations: ["friends"]
+		})
+		let index = user.friends.findIndex(x => x.intra_name === friendUsername);
+		if (index === -1) {
+			user.friends.push(friend);
+			friend.friends.push(user);
+			this.userRepository.save(user)
+			this.userRepository.save(friend)
+		}
+	}
+
 	async create(login: string) {
 		const intra_name = login;
 		const display_name = intra_name;

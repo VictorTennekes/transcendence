@@ -139,6 +139,10 @@ import { UserService } from 'src/app/user.service';
 		});
 	}
 
+	public addFriend(username: string) {
+		console.log("adding friend ", username)
+		this.userService.addFriend(username).subscribe(() => {});
+	}
 
 	public onSubmit() {
 		this.errorMessage = "";
