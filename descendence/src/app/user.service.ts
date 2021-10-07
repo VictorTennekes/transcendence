@@ -48,13 +48,14 @@ export class UserService {
 	}
 
 	userExists(username: string) {
-		console.log(`USEREXISTS - ${username}`);
 		return this.http.get('api/user/user_exists/' + username);
 	}
 
-	addBlockedUser(username: string) : void {
-		//TODO: add block for user. Add validator i guess?
-		console.log("doing this thing");
-		this.http.post('api/user/block_user/', {username: username}).subscribe(() => {this.userSource.next('')});
+	addBlockedUser(username: string) {
+		return this.http.post('api/user/block_user/', {username: username})
+	}
+
+	unblockedUser(username: string) {
+		return this.http.post('api/user/unblock_user/', {username: username}).subscribe(() => {this.userSource.next('');});
 	}
 }

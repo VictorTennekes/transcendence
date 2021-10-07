@@ -69,7 +69,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 		MasterComponent,
 		SearchComponent,
 		ChatComponent,
-		LoginComponent,
 		FailComponent,
 		CreateChatComponent,
 		ChatPassComponent,

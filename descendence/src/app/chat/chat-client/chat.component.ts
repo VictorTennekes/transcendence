@@ -128,7 +128,16 @@ import { UserService } from 'src/app/user.service';
 		this.back();
 	}
 
-
+	public blockUser(username: string) {
+		this.userService.addBlockedUser(username).subscribe(() => {
+			this.route.params.subscribe(params => {
+				this.searchService.findChatById(params['id']).subscribe((response) => {
+					this.chat = response;
+					console.log(this.chat);
+				});
+			});
+		});
+	}
 
 
 	public onSubmit() {
