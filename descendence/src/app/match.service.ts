@@ -4,6 +4,7 @@ import { of, BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GameSocket } from './game/game.socket';
 import { MatchSocket } from './match/match.socket';
+import { userModel } from './chat/chat-client/message.model';
 // import { Socket } from 'ngx-socket-io';
 
 enum SpeedMode {
@@ -72,4 +73,15 @@ export class MatchService {
 		this.matchSocket.emit('invite_declined', username);
 	}
 
+	requestOnlineFriends() {
+		this.matchSocket.emit('connected_friends');
+	}
+
+	friendDisconnected(): Observable<userModel> {
+		return this.matchSocket.fromEvent('friend_disconnected');
+	}
+
+	friendConnected(): Observable<userModel> {
+		return this.matchSocket.fromEvent('friend_connected');
+	}
 }

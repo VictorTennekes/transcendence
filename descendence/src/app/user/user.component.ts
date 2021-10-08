@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { UserService } from '../user.service';
 import { userModel } from '../chat/chat-client/message.model';
+import { MatchService } from '../match.service';
 
 
 @Component({
@@ -11,13 +12,15 @@ import { userModel } from '../chat/chat-client/message.model';
 })
 
 export class UserComponent implements OnInit {
-	displayName: string = "";
 	loggedInUser: userModel;
 	onlineFriends: userModel[] = [];
 	offlineFriends: userModel[] = [];
+	friends: userModel[] = [];
+
 //	form: NgForm;
 
-	constructor( private readonly userService: UserService) {
+	constructor( private readonly userService: UserService,
+				private matchService: MatchService) {
 	}
 
 	public getUserAvatar(avatar_url: string | null) {
@@ -32,9 +35,17 @@ export class UserComponent implements OnInit {
 	}
 
 	trackFriendStatus() {
-		//subsctibe to friend_connected and friend_disconnected
-		//whenever a friend connects, add to online list and remove from offline list.
-		//vice versa in friend_disconnected
+		this.matchService.friendConnected().subscribe((onlineFriend: userModel) => {
+			const index = this.offlineFriends.findIndex(x => x.intra_name === onlineFriend.intra_name);
+			this.offlineFriends.splice(index, 1);
+			this.onlineFriends.push(onlineFriend);
+		});
+		this.matchService.friendDisconnected().subscribe((offlineFriend: userModel) => {
+			const index = this.offlineFriends.findIndex(x => x.intra_name === offlineFriend.intra_name);
+			this.onlineFriends.splice(index, 1);
+			this.offlineFriends.push(offlineFriend);
+		})
+		this.matchService.requestOnlineFriends();
 	}
 
 	async ngOnInit(): Promise<void> {
@@ -46,7 +57,6 @@ export class UserComponent implements OnInit {
 				console.log(res);
 				if (res) {
 					this.loggedInUser.friends = res;
-					this.offlineFriends = this.loggedInUser.friends;
 					this.trackFriendStatus();
 				} else {
 					this.loggedInUser.friends = [];

@@ -157,8 +157,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				user.socket.emit('game_invite_failure', "invite declined");
 			}
 		}
-		//find user by username
-		//emit game_invite_failure, "invite declined"
 	}
 
 	notifyMatchState(id: string, state: boolean) {
@@ -169,8 +167,22 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.server.emit('ready', state);
 	}
 
+	@SubscribeMessage('connected_friends')
+	async getConnectedFriends(@ConnectedSocket() client: Socket) {
+		let user = await getUserFromSocket(client, this.userService);
+		user.friends = await this.userService.getFriends(user.intra_name);
+
+		for (let friend of user.friends) {
+			for (let connectedUser of this.connectedUsers) {
+				if (friend.intra_name === connectedUser.user.intra_name) {
+					client.emit('friend_connected', friend);
+				}
+			}
+		}
+	}
+
 	async handleConnection(@ConnectedSocket() client: Socket) {
-		const user: UserDTO = await getUserFromSocket(client, this.userService);
+		let user: UserDTO = await getUserFromSocket(client, this.userService);
 		if (!user) {
 			Logger.log("something's wrong, can't find user")
 			return;
@@ -182,11 +194,28 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.connectedUsers.push(newSocket);
 		//no reference to a gameID here, cant join the match room
 		Logger.log(`MATCH GATEWAY - CLIENT[${client.id}] - JOINED`);
+		user.friends = await this.userService.getFriends(user.intra_name);
+		for (let friend of user.friends) {
+			for (let connectedUser of this.connectedUsers) {
+				if (friend.intra_name === connectedUser.user.intra_name) {
+					connectedUser.socket.emit('friend_connected', user);					
+				}
+			}
+		}
 	}
 
-	handleDisconnect(@ConnectedSocket() client: Socket) {
+	async handleDisconnect(@ConnectedSocket() client: Socket) {
 		Logger.log(`MATCH GATEWAY - CLIENT[${client.id}] - LEFT`);
 		const index = this.connectedUsers.findIndex(x => x.socket.id === client.id);
 		this.connectedUsers.splice(index, 1);
+		let user = await getUserFromSocket(client, this.userService);
+		user.friends = await this.userService.getFriends(user.intra_name);  		
+		for (let friend of user.friends) {
+			for (let connectedUser of this.connectedUsers) {
+				if (friend.intra_name === connectedUser.user.intra_name) {
+					connectedUser.socket.emit('friend_disconnected', user);					
+				}
+			}
+		}
 	}
 }
