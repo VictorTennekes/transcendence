@@ -13,6 +13,8 @@ import { userModel } from '../chat/chat-client/message.model';
 export class UserComponent implements OnInit {
 	displayName: string = "";
 	loggedInUser: userModel;
+	onlineFriends: userModel[] = [];
+	offlineFriends: userModel[] = [];
 //	form: NgForm;
 
 	constructor( private readonly userService: UserService) {
@@ -29,16 +31,23 @@ export class UserComponent implements OnInit {
 		return style;
 	}
 
-
+	trackFriendStatus() {
+		//subsctibe to friend_connected and friend_disconnected
+		//whenever a friend connects, add to online list and remove from offline list.
+		//vice versa in friend_disconnected
+	}
 
 	async ngOnInit(): Promise<void> {
 		this.userService.getCurrentUser().subscribe((data: any) => {
 			this.loggedInUser = data;
+			data.friends = [];
 			console.log(this.loggedInUser)
 			this.userService.getFriends(this.loggedInUser.intra_name).subscribe((res: userModel[]) => {
 				console.log(res);
 				if (res) {
 					this.loggedInUser.friends = res;
+					this.offlineFriends = this.loggedInUser.friends;
+					this.trackFriendStatus();
 				} else {
 					this.loggedInUser.friends = [];
 				}

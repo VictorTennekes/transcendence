@@ -43,14 +43,21 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			socket: client
 		};
 		this.connectedSockets.push(newSocket);
+		//TODO: emit friend_connected to all friends of connectedUser
 	}
 
 	async handleDisconnect(@ConnectedSocket() client: Socket) {
 		Logger.log('disconnecting socket');
 		const index = this.connectedSockets.findIndex(x => x.socket.id === client.id);
 		this.connectedSockets.splice(index, 1);
+		//TODO: emit friend_disconnected to all friends of client
 	}
 
+	@SubscribeMessage('connected_friends')
+	async getConnectedFriends(@ConnectedSocket() client: socketData) {
+		//TODO: find all friends of client that are online
+		//emit friend_connected of each connected friend to client
+	}
 
 	@SubscribeMessage('send_message')
 	async sendMessage(@ConnectedSocket() client: Socket, @MessageBody() message: newMessageDTO) {
