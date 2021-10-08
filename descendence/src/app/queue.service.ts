@@ -4,6 +4,7 @@ import { QueueComponent } from "./queue/queue.component";
 import { ComponentPortal } from '@angular/cdk/portal';
 import { FocusOverlayRef } from "./focus-overlay/focus-overlay.ref";
 import { MatchService } from './match.service';
+import { AcceptService } from "./accept.service";
 
 interface FilePreviewDialogConfig {
 	panelClass?: string;
@@ -26,13 +27,15 @@ export class QueueService {
 
 	constructor(
 		private readonly overlay: Overlay,
-		private readonly matchService: MatchService
-	) { }
-	// createInjector(data: any): PortalInjector {
-	// 	const injectorTokens = new WeakMap();
-	// 	injectorTokens.set(INIT_DATA, data);
-	// 	return new PortalInjector(this.injector, injectorTokens);
-	// }
+		private readonly matchService: MatchService,
+		private readonly acceptService: AcceptService
+	) {
+		this.matchService.matchReady().subscribe(() => {
+			console.log("RECEIVED READY SIGNAL");
+			this.close();
+			this.acceptService.open();
+		});
+	}
 
 	private getOverlayConfig(config: FilePreviewDialogConfig): OverlayConfig {
 		const view = document.getElementById("view");
@@ -86,9 +89,9 @@ export class QueueService {
 		const focusOverlayPortal = new ComponentPortal(QueueComponent);
 		this.dialogRef = new FocusOverlayRef(overlayRef);
 		overlayRef.attach(focusOverlayPortal);
-		// overlayRef.backdropClick().subscribe((_) => {
-		// 	this.dialogRef.close();
-		// });
+
+		//listen for 'ready'
+		// this.matchService.sendListen(); //let the server know we're listening
 		
 		return this.dialogRef;
 	}

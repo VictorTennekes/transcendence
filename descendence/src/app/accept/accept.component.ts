@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AcceptService } from '../accept.service';
 import { CountdownComponent, CountdownConfig } from 'ngx-countdown';
 import { MatchService } from '../match.service';
@@ -34,29 +34,34 @@ export class AcceptComponent implements OnInit {
 		this.accepted = true;
 	}
 
-	close() {
+	decline() {
+		// this.matchService.cancelReady();
+		this.matchService.decline();
 		this.acceptService.close();
 	}
 
 	ngOnInit(): void {
 		this.matchService.matchAccepted().subscribe((match: any) => {
-			// console.log(`MATCH ACCEPTED: ${accepted}`);
-			this.close();
 			if (match.accepted) {
-				//both players accepted -> direct to game page
+				this.acceptService.close();
 				this.router.navigate(['game/' + match.id]);
 			}
 			else {
+				this.acceptService.close();
 				// did this client accept?
-				// if (this.accepted) {
-				// 	this.queueService.open({hasBackdrop: false});
-				// }
-				// else {
-				// 	this.queueService.findDisabled = false;
-				// 	this.queueService.timePassed = 0;
-				// }
-				//THIS IS WHERE I LEFT OFF :upside_down:
+				if (this.accepted) {
+					this.queueService.open({hasBackdrop: false});
+				}
+				else {
+					this.queueService.findDisabled = false;
+					this.queueService.timePassed = 0;
+				}
 			}
+			this.accepted = false;
 		});
 	}
+
+	// ngOnDestroy(): void {
+	// 	this.matchService.cancelAccept();
+	// }
 }

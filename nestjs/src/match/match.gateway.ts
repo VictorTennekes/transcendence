@@ -7,7 +7,7 @@ import { UserService } from '@user/user.service';
 import { MatchService } from './match.service';
 import { User } from 'src/game/game.script';
 import { GameService } from 'src/game/game.service';
-import { MatchSettings } from './match.class';
+import { Match, MatchSettings } from './match.class';
 
 @WebSocketGateway({ namespace: '/match'})
 export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -21,19 +21,28 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer()
 	server;
 
-	sendReady(id: string) {
-		Logger.log(`SERVER SENT 'ready${id}'`);
-		this.server.emit(`ready${id}`, {});
-	}
-
 	@SubscribeMessage('cancel')
 	cancelMatch(client: Socket) {
 		this.matchService.cancelMatch(client);
 	}
 
+	@SubscribeMessage('listen')
+	listenMatch(client: Socket) {
+		//set this client to ready
+		this.matchService.listenMatch(client.id);
+
+		//check if both are ready
+
+	}
+
 	@SubscribeMessage('accept')
 	acceptMatch(client: Socket) {
 		this.matchService.acceptMatch(client.id);
+	}
+
+	@SubscribeMessage('decline')
+	declineMatch(client: Socket) {
+		this.matchService.decline(client);
 	}
 
 	@SubscribeMessage('join')
@@ -46,50 +55,67 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	//find/create a match
 	//send 'ready' to both players once a match is found
 	async findMatch(client: Socket, settings: MatchSettings) {
-		Logger.log(JSON.stringify(settings));
+		// Logger.log(JSON.stringify(settings));
 		const userItem = await getUserFromSocket(client, this.userService);
 		const user: User = {
 			login: userItem.intra_name,
 			display_name: userItem.display_name,
-			id: client.id,
+			socket: client
 		};
-		Logger.log(JSON.stringify(user));
-		Logger.log(`USER INTRA NAME = ${user.login}`);
-		const match: string = this.matchService.findMatch(user, settings);
-		Logger.log(`CLIENT ${client.id} -> MATCH ${match}`);
-		client.join(match); //add user to the room identified by the matchID
-		if (this.matchService.isReady(match)) {
-			//when the opponent connects, both players are notified that the match is ready
-			Logger.log(`MATCH ${match} -> ready`);
-			this.server.to(match).emit('ready');
+		// Logger.log(JSON.stringify(user));
+		const matchid: string = this.matchService.findMatch(user, settings);
+		client.join(matchid); //add user to the room identified by the matchID
+		const id = matchid;
+		// Logger.log(`MATCH[${id}] - FINDMATCH`);
+		if (this.matchService.matches[id].ready) {
+			Logger.log(`MATCH ${id} - BOTH ARE LISTENING`);
+			this.server.to(id).emit('ready');
 			var interval = setInterval(() => {
-				const accepted = this.matchService.isAccepted(match);
-				this.server.to(match).emit('accepted', {id: match, accepted: accepted});
-				if (accepted) {
-					Logger.log("MATCH ACCEPTED");
-					this.matchService.createGame(match);
-					delete(this.matchService.matches[match]);
-					this.matchService.matches[match] = undefined;
+				const accepted = this.matchService.isAccepted(id);
+				this.server.to(id).emit('accepted', {id: id, accepted: accepted});
+				const match = this.matchService.matches[id];
+				if (match !== undefined) {
+					if (accepted) {
+						Logger.log(`MATCH ${id} - BOTH ACCEPTED`);
+						this.matchService.createGame(id);
+						this.matchService.deleteMatch(id);
+					}
+					else {
+						this.leaveMatchRooms(match);
+						if (this.matchService.matches[id].bothDidntAccept()) {
+							this.matchService.deleteMatch(id);
+						}
+						else {
+							this.matchService.matches[id].resetMatchData();
+						}
+					}
 				}
 				//send 'accepted' state to the clients
 				clearInterval(interval);
 			},3000);
 		}
+		else {
+			Logger.log(`MATCH[${id}] - LISTENING - ${this.matchService.matches[id].ready}`);
+		}
+		Logger.log(`GAME[${matchid}] - FOUND - USER[${client.id}]`);
 	}
 
-	notifyMatchState(id: string, state: boolean) {
-		this.server.emit(`accepted${id}`, state);
-	}
-
-	notifyReady(id: string, state: boolean) {
-		this.server.emit('ready', state);
+	leaveMatchRooms(match: Match) {
+		if (match === undefined)
+			return ;
+		if (!match.userAccepted(match.creator))
+			match.creator.socket.leave(match.id);
+		if (!match.userAccepted(match.opponent))
+			match.opponent.socket.leave(match.id);
 	}
 
 	handleConnection(@ConnectedSocket() client: Socket) {
 		//no reference to a gameID here, cant join the match room
-		Logger.log(`MATCH GATEWAY - CLIENT[${client.id}] - JOINED`);
+		Logger.log(`MATCH GATEWAY - USER[${client.id}] - JOINED`);
 	}
 	handleDisconnect(@ConnectedSocket() client: Socket) {
-		Logger.log(`MATCH GATEWAY - CLIENT[${client.id}] - LEFT`);
+		this.matchService.cancelMatch(client);
+
+		Logger.log(`MATCH GATEWAY - USER[${client.id}] - LEFT`);
 	}
 }

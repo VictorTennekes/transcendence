@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { defaultMatchSettings, EndCondition, EndConditionTypes, MatchService, MatchSettings, SpeedMode } from '../match.service';
 import { QueueService } from '../queue.service';
 import { AcceptService } from '../accept.service';
@@ -35,7 +35,8 @@ export class MatchComponent implements OnInit {
 		private readonly matchService: MatchService,
 		private readonly queueService: QueueService,
 		private readonly acceptService: AcceptService,
-	) { }
+	) {
+	}
 	
 	overlay: any;
 
@@ -73,15 +74,10 @@ export class MatchComponent implements OnInit {
 	}
 
 	async findMatch() {
-		console.table(JSON.stringify(this.findgame.value));
+		//create the match on the server side
+		console.log("FINDMATCH SENT");
+		this.queueService.open({hasBackdrop: false});
 		this.matchService.findMatch(this.createMatchSettings());
-		this.overlay = this.queueService.open({hasBackdrop: false});
-		//when the
-		this.matchService.matchReady().subscribe(() => {
-			console.log("RECEIVED READY SIGNAL");
-			this.queueService.close();
-			this.overlay = this.acceptService.open();
-		});
 	}
 
 	ngOnInit(): void {
@@ -92,4 +88,7 @@ export class MatchComponent implements OnInit {
 			ball_speed: new FormControl(BallSpeedLabelMapping["NORMAL"]),
 		});
 	}
+	// ngOnDestroy(): void {
+	// 	this.matchService.cancelReady();
+	// }
 }

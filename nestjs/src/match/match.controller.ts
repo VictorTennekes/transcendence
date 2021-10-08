@@ -20,9 +20,7 @@ export class MatchController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async matchFinished(@Req() request, @Param('id') id: string) {
-		Logger.log(`MATCHFINISHED - ${id}`);
 		const result = await this.gameService.gameFinished(id);
-		Logger.log(result);
 		return result;
 	}
 
@@ -45,10 +43,7 @@ export class MatchController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	matchOngoing(@Req() request, @Param('id') id: string) {
-		Logger.log(`MATCHONGOING - ${id}`);
-		const game = this.gameService.games[id];
-		Logger.log(`${!!game}`);
-		return (!!game);
+		return (id in this.gameService.games);
 	}
 
 	@Get('accepted/:id')

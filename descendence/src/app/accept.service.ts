@@ -69,9 +69,8 @@ export class AcceptService {
 		const focusOverlayPortal = new ComponentPortal(AcceptComponent);
 		this.dialogRef = new FocusOverlayRef(overlayRef);
 		overlayRef.attach(focusOverlayPortal);
-		// overlayRef.backdropClick().subscribe((_) => {
-		// 	this.dialogRef.close();
-		// });
+
+		
 		
 		return this.dialogRef;
 	}

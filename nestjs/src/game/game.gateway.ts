@@ -36,28 +36,33 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	//the gateway needs the service to interact with the running Game
 
+	// `MATCH[${id}] - LISTEN - USER[${user}]`
+
 	@SubscribeMessage('press_up')
 	press_up(@ConnectedSocket() client) {
-		Logger.log("PRESS UP");
+		// Logger.log(`USER[${client.id}] - PRESS UP`);
 		this.gameService.setKeyPressed(client.id, 'ArrowUp', true);
 	}
 	
 	@SubscribeMessage('release_up')
 	release_up(@ConnectedSocket() client) {
+		// Logger.log(`USER[${client.id}] - RELEASE UP`);
 		this.gameService.setKeyPressed(client.id, 'ArrowUp', false);
 	}
 	@SubscribeMessage('press_down')
 	press_down(@ConnectedSocket() client) {
+		// Logger.log(`USER[${client.id}] - PRESS DOWN`);
 		this.gameService.setKeyPressed(client.id, 'ArrowDown', true);
 	}
 	
 	@SubscribeMessage('release_down')
 	release_down(@ConnectedSocket() client) {
+		// Logger.log(`USER[${client.id}] - RELEASE DOWN`);
 		this.gameService.setKeyPressed(client.id, 'ArrowDown', false);
 	}
-
+	
 	handleConnection(@ConnectedSocket() client: Socket) {
-		Logger.log(`GAME GATEWAY - CLIENT[${client.id}] - JOINED]`);
+		Logger.log(`GAME GATEWAY - CONNECT - USER[${client.id}]`);
 		// this.interval[client.id] = setInterval(() => this.gameLoop(), 1000/60);
 	}
 }

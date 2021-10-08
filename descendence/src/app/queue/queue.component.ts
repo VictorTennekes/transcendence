@@ -20,11 +20,11 @@ export class QueueComponent implements OnInit {
 		private readonly matchService: MatchService
 	) { }
 	
-	close() {
+	cancel() {
 		//let the server know the user is no longer searching (delete the corresponding Match)
 		this.matchService.cancelMatch();
-		this.queueService.close();
 		this.queueService.timePassed = 0;
+		this.queueService.close();
 	}
 
 	ngOnInit(): void {
