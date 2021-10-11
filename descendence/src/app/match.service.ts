@@ -28,6 +28,11 @@ export interface EndCondition {
 export interface MatchSettings {
 	endCondition: EndCondition,
 	ballSpeed: SpeedMode
+	powerups?: {
+		speed: SpeedMode,
+		//things
+	}
+	opponent_username?: string
 };
 
 export const defaultMatchSettings: MatchSettings = {
@@ -63,6 +68,10 @@ export class MatchService {
 		this.matchSocket.emit('decline');
 	}
 
+	inviteUser(settings: MatchSettings) {
+		this.matchSocket.emit('invite_user', settings);
+	}
+
 	cancelMatch() {
 		this.matchSocket.emit('cancel');
 	}
@@ -87,4 +96,17 @@ export class MatchService {
 	acceptMatch() {
 		this.matchSocket.emit('accept');
 	}
+
+	receiveGameInvite() {
+		return this.matchSocket.fromEvent('receive_game_invite');
+	}
+
+	receiveGameInviteError() {
+		return this.matchSocket.fromEvent('game_invite_failure');
+	}
+
+	inviteDeclined(username: string) {
+		this.matchSocket.emit('invite_declined', username);
+	}
+
 }

@@ -187,13 +187,19 @@ export class ChatController {
 		return this.service.userInChat(req.user.intra_name, id);
 	}
 
+	@Get('is-logged-in-user/:username')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async isLoggedInUser(@Param("usernaem") username: string, @Req() req): Promise<boolean> {
+		return (username === req.user.intra_name);
+	}
+
 	@Post('leave-chat')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async leaveChat(@Body() id: any, @Req() req) {
 		await this.service.leaveChat(id.chatId, req.user.intra_name);
 	}
-
 
 	@Get('user-is-owner/:id')
 	@UseGuards(AuthenticatedGuard)

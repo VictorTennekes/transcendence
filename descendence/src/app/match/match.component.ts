@@ -4,6 +4,7 @@ import { QueueService } from '../queue.service';
 import { AcceptService } from '../accept.service';
 import { MatchSocket } from './match.socket';
 import { FormControl, FormGroup } from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router'
 
 const timebased = true;
 const pointbased = false;
@@ -35,8 +36,9 @@ export class MatchComponent implements OnInit {
 		private readonly matchService: MatchService,
 		private readonly queueService: QueueService,
 		private readonly acceptService: AcceptService,
-	) {
-	}
+		private router: Router,
+		private route: ActivatedRoute
+	) { }
 	
 	overlay: any;
 
@@ -73,20 +75,61 @@ export class MatchComponent implements OnInit {
 		return settings;
 	}
 
-	async findMatch() {
+	async findMatch(username?: string) {
 		//create the match on the server side
+		let matchSettings: MatchSettings = this.createMatchSettings()
+		if (username) {
+			matchSettings.opponent_username = username;
+		}
 		console.log("FINDMATCH SENT");
 		this.queueService.open({hasBackdrop: false});
-		this.matchService.findMatch(this.createMatchSettings());
+		console.log(matchSettings);
+		this.matchService.findMatch(matchSettings);
 	}
 
 	ngOnInit(): void {
+
 		this.findgame = new FormGroup({
 			condition: new FormControl(pointbased),
 			points: new FormControl("5"),
 			minutes: new FormControl("3"),
 			ball_speed: new FormControl(BallSpeedLabelMapping["NORMAL"]),
-		});
+		}); //TODO: this can exist regardless. Maybe run the person through chat settings anyway?
+
+		
+		this.route.params.subscribe(params => {
+			this.matchService.receiveGameInviteError().subscribe((res) => {
+				console.log("invite failed");
+				console.log(res);
+				this.matchService.cancelMatch();
+				// this.overlay.close();
+				this.queueService.close();
+				this.router.navigate(['play']);
+				//TODO: report error
+			});
+			console.log("params in match: ", params);
+			console.log(params['intra_name']);
+			if (params['intra_name'] !== '') {
+				// this.matchService.
+				console.log("start match with: ", params['intra_name']);
+				let settings = defaultMatchSettings;
+				settings.opponent_username =params['intra_name']
+
+				this.matchService.inviteUser(settings);
+				console.log("about to find match for invite")
+				this.findMatch(params['intra_name']);
+				// this.overlay = this.queueService.open({hasBackdrop: false});
+				// //when the
+				// console.log("here man");
+				// this.matchService.matchReady().subscribe(() => {
+				// 	console.log("RECEIVED READY SIGNAL");
+				// 	this.overlay.close();
+				// 	this.overlay = this.acceptService.open();
+				// });
+			}
+
+		})
+		
 	}
 	// ngOnDestroy(): void {
 	// 	this.matchService.cancelReady();

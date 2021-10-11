@@ -36,18 +36,23 @@ export class AcceptComponent implements OnInit {
 
 	decline() {
 		// this.matchService.cancelReady();
+		console.log("decline");
 		this.matchService.decline();
 		this.acceptService.close();
 	}
 
 	ngOnInit(): void {
+		console.log("accept component up")
 		this.matchService.matchAccepted().subscribe((match: any) => {
 			if (match.accepted) {
+				console.log("accepted")
 				this.acceptService.close();
 				this.router.navigate(['game/' + match.id]);
 			}
 			else {
+				console.log("not accepted")
 				this.acceptService.close();
+				console.log("should be closed");
 				// did this client accept?
 				if (this.accepted) {
 					this.queueService.open({hasBackdrop: false});

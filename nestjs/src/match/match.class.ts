@@ -19,6 +19,11 @@ export interface EndCondition {
 export interface MatchSettings {
 	endCondition: EndCondition,
 	ballSpeed: SpeedMode
+	powerups?: {
+		speed: SpeedMode,
+		//things
+	}
+	opponent_username?: string
 };
 
 export class Match {
@@ -110,6 +115,11 @@ export class Match {
 	}
 
 	settingCompare(setting: MatchSettings): boolean {
+		if (setting.opponent_username) {
+			if (setting?.opponent_username !== this._creator.login) {
+				return false;
+			}
+		}
 		return (this.settings.ballSpeed == setting.ballSpeed &&
 			this.settings.endCondition.type == setting.endCondition.type &&
 			this.settings.endCondition.value == setting.endCondition.value);

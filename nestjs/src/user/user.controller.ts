@@ -139,7 +139,14 @@ export class UserController {
 		await this.userService.blockUser(request.session.passport.user.login, username.username);
 	}
 
-
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	@Post('unblock_user')
+	async unblockUser(@Req() request, @Body() username: any) {
+		if (request.user.login === username.username)
+			return ;
+		await this.userService.unblockUser(request.session.passport.user.login, username.username);
+	}
 
 	@Post('login')
 //	@UsePipes(new ValidationPipe())
