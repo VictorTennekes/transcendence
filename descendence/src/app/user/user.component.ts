@@ -25,7 +25,7 @@ export class UserComponent implements OnInit {
 		console.log(f.form.value.new);
 		const newDisplayName = f.form.value.new;
 		this.displayName = newDisplayName;
-		this.userService.updateDisplayName(newDisplayName);
+		this.userService.updateDisplayName(newDisplayName).subscribe(() => {});
 //		this.displayName = f.form.value.new;
 	}
 
