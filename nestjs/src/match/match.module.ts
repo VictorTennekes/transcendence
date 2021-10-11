@@ -6,9 +6,10 @@ import { UserService } from '@user/user.service';
 import { UserModule } from '@user/user.module';
 import { GameModule } from 'src/game/game.module';
 import { GameService } from 'src/game/game.service';
+import { SessionDB } from '@shared/socket-utils';
 
 @Module({
-  providers: [MatchGateway, MatchService],
+  providers: [MatchGateway, MatchService, SessionDB],
   imports: [UserModule, GameModule],
   controllers: [MatchController]
 })

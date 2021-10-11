@@ -2,7 +2,8 @@ import { Logger } from '@nestjs/common';
 import { ConnectedSocket, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { SocketAddress } from 'net';
-import { getUserFromSocket } from '@shared/socket-utils';
+// import { this.sessionDB.getUserFromSocket, SessionDB } from '@shared/socket-utils';
+import { SessionDB } from '@shared/socket-utils';
 import { UserService } from '@user/user.service';
 import { MatchService } from './match.service';
 import { User } from 'src/game/game.script';
@@ -18,6 +19,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		private readonly userService: UserService,
 		private readonly matchService: MatchService, //circular dependency :(
 		private readonly gameService: GameService,
+		private sessionDB: SessionDB,
 	) {}
 
 	@WebSocketServer()
@@ -53,7 +55,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	//send 'ready' to both players once a match is found
 	async findMatch(client: Socket, settings: any) {
 		console.log("in find match. maybe it'll send the response?")
-		const userItem = await getUserFromSocket(client, this.userService);
+		const userItem = await this.sessionDB.getUserFromSocket(client, this.userService);
 		const user: User = {
 			login: userItem.intra_name,
 			display_name: userItem.display_name,
@@ -93,7 +95,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		// if (match of matches) {
 
 		// }
-		const usr = await getUserFromSocket(client, this.userService);
+		const usr = await this.sessionDB.getUserFromSocket(client, this.userService);
 
 		const user: User = {
 			login: usr.intra_name,
@@ -170,7 +172,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	async handleConnection(@ConnectedSocket() client: Socket) {
-		const user: UserDTO = await getUserFromSocket(client, this.userService);
+		const user: UserDTO = await this.sessionDB.getUserFromSocket(client, this.userService);
 		if (!user) {
 			Logger.log("something's wrong, can't find user")
 			return;

@@ -14,6 +14,8 @@ import {HttpErrorResponse} from '@angular/common/http';
   })
   export class SearchComponent implements OnInit {
 
+
+
 	constructor(private searchService: SearchService,
 		private router: Router,
 		private route: ActivatedRoute) {}
@@ -42,6 +44,9 @@ import {HttpErrorResponse} from '@angular/common/http';
 	ngOnInit(): void {
 		this.getChats();
 	}
+
+
+
 
 	private redirectToChat(chat: chatModel) {
 		this.router.navigate(['', {outlets: {chat: ['get-chat', chat.id]}}]);

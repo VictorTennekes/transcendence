@@ -9,6 +9,7 @@ import { UserService } from '@user/user.service';
 import { UserEntity } from '@user/entities/user.entity';
 import { ChatGateway } from './chat.gateway';
 import { BanEntity } from './entity/ban.entity';
+import { SessionDB } from '@shared/socket-utils';
 
 @Module({
 	controllers: [ChatController],
@@ -16,6 +17,7 @@ import { BanEntity } from './entity/ban.entity';
 		ChatService,
 		UserService,
 		ChatGateway,
+		SessionDB
 	],
 	imports: [
 		ConfigModule,
