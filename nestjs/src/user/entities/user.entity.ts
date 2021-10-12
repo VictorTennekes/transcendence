@@ -3,6 +3,23 @@ import { IsNotEmpty, MaxLength } from "class-validator";
 import { GameEntity } from "src/game/entity/game.entity";
 import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn, Unique } from "typeorm";
 
+interface PlayerData {
+	ballHits: number,
+	games: {
+		won: number,
+		lost: number
+	},
+	points: {
+		won: number,
+		lost: number,
+	},
+	gameDurationInSeconds: {
+		total: number,
+		shortest: number | null,
+		longest: number | null
+	}
+};
+
 //These class validator decorators are triggered by @UsePipes(new ValidationPipe()) on routes
 @Entity()
 export class UserEntity {
@@ -13,13 +30,16 @@ export class UserEntity {
 	@MaxLength(50)
 	@Column({
 		type: "varchar",
-		length: '50'
-	})
-	@IsNotEmpty()
-	@Column({
+		length: '50',
 		unique: true
 	})
+	@IsNotEmpty()
 	display_name: string;
+
+	@Column({
+		type: 'jsonb',
+	})
+	gameData: PlayerData;
 
 	@Column({
 		nullable: true,

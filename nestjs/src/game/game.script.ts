@@ -11,6 +11,9 @@ const WALL_OFFSET = 40;
 const CANVAS_WIDTH = 1200;
 const CANVAS_HEIGHT = 750;
 
+const PLAYER_ONE = true;
+const PLAYER_TWO = false;
+
 enum KeyBindings {
 	UP,
 	DOWN
@@ -42,6 +45,7 @@ interface GameData {
 }
 
 export class Game {
+	private lastContact: boolean;
 	public static canvas: Canvas = {
 		width: CANVAS_WIDTH,
 		height: CANVAS_HEIGHT
@@ -144,11 +148,10 @@ class Entity {
 class Player {
 	paddle: Paddle;
 	keysPressed: boolean[] = [];
-
-	score: number;
+	hits: number = 0;
+	score: number = 0;
 
 	constructor(x:number,y:number) {
-		this.score = 0;
 		this.paddle = new Paddle(x,y);
 	}
 	update(canvas: Canvas) {
@@ -187,15 +190,18 @@ class Paddle extends Entity {
 class Ball extends Entity {
 	
 	private speed:number = BALL_SPEED;
-	
+	private lastContact: boolean;
+
 	constructor(x:number,y:number) {
 		super(BALL_SIZE,BALL_SIZE,x,y);
 
 		var randomDirection = Math.floor(Math.random() * 2) + 1;
 		if (randomDirection % 2) {
 			this.velocity.x = 1;
+			this.lastContact = PLAYER_ONE;
 		} else {
 			this.velocity.x = -1;
+			this.lastContact = PLAYER_TWO;
 		}
 		this.velocity.y = 1;
 	}
@@ -216,6 +222,7 @@ class Ball extends Entity {
 		if (this.position.x <= 0) {
 			this.position.x = canvas.width / 2 - this.width / 2;
 			this.velocity.x = 1;
+			this.lastContact = PLAYER_ONE;
 			playerTwo.score += 1;
 		}
 		
@@ -223,6 +230,7 @@ class Ball extends Entity {
 		if (this.position.x + this.width >= canvas.width) {
 			this.position.x = canvas.width / 2 - this.width / 2;
 			this.velocity.x = -1;
+			this.lastContact = PLAYER_TWO;
 			playerOne.score += 1;
 		}
 		
@@ -235,6 +243,10 @@ class Ball extends Entity {
 		if (playerOnePositionDifference <= COLLISION_RADIUS && playerOnePositionDifference >= -COLLISION_RADIUS)
 		{
 			if (this.position.y >= playerOne.paddle.position.y && this.position.y + this.height <= playerOne.paddle.position.y + playerOne.paddle.height) {
+				if (this.lastContact != PLAYER_ONE) {
+					this.lastContact = !this.lastContact;
+					playerOne.hits += 1;
+				}
 				this.velocity.x = 1;
 			}
 		}
@@ -242,6 +254,10 @@ class Ball extends Entity {
 		//check computer collision
 		if (this.position.x + this.width >= playerTwo.paddle.position.x) {
 			if (this.position.y >= playerTwo.paddle.position.y && this.position.y + this.height <= playerTwo.paddle.position.y + playerTwo.paddle.height) {
+				if (this.lastContact != PLAYER_TWO) {
+					this.lastContact = !this.lastContact;
+					playerTwo.hits += 1;
+				}
 				this.velocity.x = -1;
 			}
 		}
