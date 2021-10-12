@@ -66,6 +66,7 @@ export class ViewComponent implements OnInit, AfterViewInit {
 		this.client.join(gameID);
 		this.client.gameFinished().subscribe(() => {
 			console.log("GAME FINISHED");
+			//NAVIGATE ONLY WHEN THE GAME IS SAVED TO THE DATABASE
 			this.router.navigate(['post/' + gameID]);
 		});
 		this.client.receiveGameData().subscribe((data) => {
