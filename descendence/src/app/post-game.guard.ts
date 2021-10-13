@@ -19,7 +19,7 @@ export class PostGameGuard implements CanActivate {
 		state: RouterStateSnapshot,
 	): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 		return this.gameService.matchFinished(route.params.id).pipe(map((result: boolean) => {
-			console.log(`POSTGAMEGUARD - ${result}`);
+			// console.log(`POSTGAMEGUARD - ${result}`);
 			if (!result) {
 				this.router.navigate(['play']);
 				return false;

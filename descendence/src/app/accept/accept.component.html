@@ -1,13 +1,21 @@
 <div class="container">
 	<div class="countdown-container">
-		<countdown class="timer" [config]="config" #cd></countdown>
+		<p>
+			MATCH FOUND!
+		</p>
 	</div>
 	<div class="selection-container">
-		<button (click)="accept()">
+		<button class="button accept" (click)="accept()">
 			ACCEPT
 		</button>
-		<button (click)="close()">
+		<button class="button decline" (click)="decline()">
 			DECLINE
 		</button>
+	</div>
+	<countdown class="timer" [config]="config" #cd></countdown>
+	<div class="wrapper">
+		<div>
+			<app-loadcircle></app-loadcircle>
+		</div>
 	</div>
 </div>

@@ -31,7 +31,7 @@ export class GameService {
 
 	async gameFinished(id: string): Promise<boolean> {
 		const game = await this.gameRepository.findOne({where: {id: id}});
-		Logger.log(`GAME OBJECT = ${game}`);
+		Logger.log(`GAME[${id}] - FINISHED`);
 		if (game === undefined)
 			return false;
 		return true;
@@ -39,9 +39,11 @@ export class GameService {
 
 	getGameID(clientID: string) {
 		for (const key in this.games) {
+			if (this.games[key] === undefined)
+				continue ;
 			const players = this.games[key].users;
 			// Logger.log(`players: ${JSON.stringify(players)}`);
-			if (players.one.id == clientID || players.two.id == clientID)
+			if (players.one.socket.id == clientID || players.two.socket.id == clientID)
 				return key;
 		}
 		return null;
@@ -51,7 +53,7 @@ export class GameService {
 		const gameID = this.getGameID(id);
 		if (!gameID)
 			return ;
-		Logger.log(`PLAYER ID: ${id} -> GAME ${gameID}`);
+		// Logger.log(`PLAYER ID: ${id} -> GAME ${gameID}`);
 		this.games[gameID].setKeyPressed(id, arrow, state);
 	}
 
@@ -78,8 +80,11 @@ export class GameService {
 	//the service needs to interact with the gateway to send updates to the users
 	private gameLoop(id: string) {
 		if (this.games[id].goalReached) {
+			Logger.log(`GAME[${id}] - GOAL REACHED`);
 			this.gameGateway.sendFinished(id);
 			this.saveGameInDatabase(id);
+			delete(this.games[id]);
+			this.games[id] = undefined;
 			clearInterval(this.gameIntervals[id]);
 			return ;
 		}
