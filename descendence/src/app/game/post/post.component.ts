@@ -9,7 +9,7 @@ interface Player {
 	score: number
 }
 
-function secondsToDhms(seconds: number) {
+export function secondsToDhms(seconds: number) {
 	seconds = Number(seconds);
 	var d = Math.floor(seconds / (3600*24));
 	var h = Math.floor(seconds % (3600*24) / 3600);

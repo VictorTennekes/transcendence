@@ -1,22 +1,51 @@
 <div class="viewBox">
 	<div class="profileOptions">
-		<div style="display: table">
-			<div class="avatar" style="{{avatarUrl}}"></div>
-			<p class="userName">{{ displayName }}</p>
+		<div class="avatar" style="{{avatarUrl}}"></div>
+		<p class="userName">{{ displayName }}</p>
+		<div class="button-container">
+			<button class="profileButtons" style="background-color: #42D674">ADD FRIEND</button>
+			<button class="profileButtons" style="background-color: #42BBD6">MESSAGE</button>
+			<button class="profileButtons" style="background-color: #DA5F5F">BLOCK</button>
 		</div>
-		<div style="padding-left: 5rem; display: table">
-			<div style="display: table-cell; vertical-align: middle;"><button class="profileButtons" style="background-color: #42D674">Add friend</button></div>
-			<div style="display: table-cell; vertical-align: middle;"><button class="profileButtons" style="background-color: #42BBD6">Message</button></div>
-			<div style="display: table-cell; vertical-align: middle;"><button class="profileButtons" style="background-color: #DA5F5F">Block</button></div>
-		</div>
-		
 	</div>
 	
 	<div class="navigationBar">
-
+		<a class="navigationItem">
+			STATS
+		</a>
+		<a class="navigationItem">
+			HISTORY
+		</a>
 	</div>
 
-	<div class="profileStats">
-
+	<!-- replace with router-outlet -->
+	<div class="stats-container">
+		<div class="stat-item game-time">
+			<p class="item-title">
+				Game Time
+			</p>
+			<div class="data-container">
+				<p class="data-title">Total:</p>
+				<p class="data-value">{{timeFormattedString(durations.total)}}</p>
+			</div>
+			<div class="data-container">
+				<p class="data-title">Shortest:</p>
+				<p class="data-value">{{timeFormattedString(durations.shortest)}}</p>
+			</div>
+			<div class="data-container">
+				<p class="data-title">Longest:</p>
+				<p class="data-value">{{timeFormattedString(durations.longest)}}</p>
+			</div>
+		</div>
+		<div class="stat-item misc">
+			<p class="item-title">
+				Miscellaneous
+			</p>
+		</div>
+		<div class="stat-item winrate">
+			<p class="item-title">
+				Winrate
+			</p>
+		</div>
 	</div>
 </div>
