@@ -10,10 +10,10 @@
 	</div>
 	
 	<div class="navigationBar">
-		<a class="navigationItem">
+		<a [routerLink]="['stats']" [routerLinkActive]="['active']" class="navigationItem">
 			STATS
 		</a>
-		<a class="navigationItem">
+		<a [routerLink]="['history']" [routerLinkActive]="['active']" class="navigationItem">
 			HISTORY
 		</a>
 	</div>

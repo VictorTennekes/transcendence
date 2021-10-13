@@ -67,6 +67,10 @@
 	place-items: stretch;
 }
 
+.active {
+	background-color: #2B85A3;
+}
+
 .navigationItem {
 	flex-grow: 1;
 	display: inline-block;
