@@ -105,11 +105,10 @@ export class CreateChatComponent implements OnInit {
 				this.router.navigate(['', {outlets: {chat: ['get-chat', response.id]}}], {state: response});
 			},
 			(error) => {
-				this.submitted = false;
 				this.errorMessage = error.error.message;
 			})
 		} else {
-			console.log('invalid');
+			this.errorMessage = "form invalid"
 		}
 	}
 

@@ -53,6 +53,9 @@ import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerMod
 import { MatMenuModule } from '@angular/material/menu';
 import { PostComponent } from './game/post/post.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatchComponent } from './match/match.component';
+import { LoadcircleComponent } from './accept/loadcircle/loadcircle.component';
+import { AccountSetupComponent } from './account-setup/account-setup.component';
 
 // const config: SocketIoConfig = {
 // 	url: 'http://localhost:3000',
@@ -82,8 +85,11 @@ import { MatDialogModule } from '@angular/material/dialog';
 		AcceptComponent,
 		ChatContainerComponent,
 		SettingsComponent,
-		PostComponent,
-		InviteComponent
+		InviteComponent,
+  		PostComponent,
+		MatchComponent,
+  		LoadcircleComponent,
+		AccountSetupComponent
 	],
 	imports: [
 		CountdownModule,

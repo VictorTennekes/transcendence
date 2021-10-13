@@ -15,11 +15,12 @@ export class UserEntity {
 		type: "varchar",
 		length: '50'
 	})
-	@IsNotEmpty()
 	@Column({
-		unique: true
+		unique: true,
+		nullable: true,
+		type: 'varchar'
 	})
-	display_name: string;
+	display_name: string | null;
 
 	@Column({
 		nullable: true,

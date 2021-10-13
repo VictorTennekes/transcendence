@@ -1,3 +1,74 @@
-<button class="find" [disabled]="disabled" (click)="findMatch()">
-	FIND MATCH
-</button>
+<div class="container">
+	<form class="form-container" [formGroup]="findgame" (ngSubmit)="findMatch()">
+		<div class="end-condition-container">
+			<p style="font-family: 'Roboto'; color: white; font-size: 1.4rem;">Game end condition</p>
+			<div class="end-condition-slider">
+				<p class="condition-title" [ngClass]="{'selected' : findgame.controls['condition'].value == false, 'not-selected' : findgame.controls['condition'].value == true}">
+					Points
+				</p>
+				<label class="switch">
+					<input id="checkbox" formControlName="condition" class="checkbox" type="checkbox" name="condition"/>
+					<i></i>
+				</label>
+				<p class="condition-title" [ngClass]="{'selected' : findgame.controls['condition'].value == true, 'not-selected' : findgame.controls['condition'].value == false}">
+					Time
+				</p>
+			</div>
+		</div>
+		<div class="option-container">
+			<div class="radio-choice-container" *ngIf="findgame.controls['condition'].value == false">
+				<p class="section-title">
+					Points: 
+				</p>
+				<label class="radio">
+					<input type="radio" class="option" formControlName="points" id="point-amount" name="points" value="3"/>
+					<span>3</span>
+				</label>
+				<label class="radio">
+					<input type="radio" class="option" formControlName="points" id="point-amount" name="points" value="5">
+					<span>5</span>
+				</label>
+				<label class="radio">
+					<input type="radio" class="option" formControlName="points" id="point-amount" name="points" value="10">
+					<span>10</span>
+				</label>
+				<label class="radio">
+					<input type="radio" class="option" formControlName="points" id="point-amount" name="points" value="20">
+					<span>20</span>
+				</label>
+			</div>
+			<div class="radio-choice-container" *ngIf="findgame.controls['condition'].value == true">
+				<p class="section-title">
+					Minutes: 
+				</p>
+				<label class="radio">
+					<input type="radio" class="option" formControlName="minutes" id="minute-amount" name="minutes" value="3"/>
+					<span>3</span>
+				</label>
+				<label class="radio">
+					<input type="radio" class="option" formControlName="minutes" id="minute-amount" name="minutes" value="4">
+					<span>4</span>
+				</label>
+				<label class="radio">
+					<input type="radio" class="option" formControlName="minutes" id="minute-amount" name="minutes" value="5">
+					<span>5</span>
+				</label>
+				<label class="radio">
+					<input type="radio" class="option" formControlName="minutes" id="minute-amount" name="minutes" value="10">
+					<span>10</span>
+				</label>
+			</div>
+			<div class="speed-container">
+				<p class="section-title">
+					Ball speed: 
+				</p>
+				<select class="selector" formControlName="ball_speed" id="speeds" name="speeds">
+					<option [value]="speed" *ngFor="let speed of speeds">{{ speedMappings[speed] }}</option>
+				</select>
+			</div>
+		</div>
+		<button class="find" [disabled]="disabled" type="submit">
+			FIND MATCH
+		</button>
+	</form>
+</div>

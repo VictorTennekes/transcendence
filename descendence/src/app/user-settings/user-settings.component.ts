@@ -164,7 +164,7 @@ export class UserSettingsComponent implements OnInit {
 				);
 		}
 		if (formValues['displayName']) {
-			this.userService.updateDisplayName(formValues['displayName']);
+			this.userService.updateDisplayName(formValues['displayName']).subscribe(() => {});
 		}
 		if (this.initialTwoFactorState !== formValues['twoFactorEnabled']) {
 			this.userService.updateTwoFactor(formValues['twoFactorEnabled']);
