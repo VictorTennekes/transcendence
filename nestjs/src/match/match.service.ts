@@ -100,13 +100,16 @@ export class MatchService {
 	}	
 
 	findMatch(user: User, settings: MatchSettings) {
+		// console.log("findMatch");
+		// console.log("all existing matches:")
+		// console.log(this.matches);
 		//BUG: subsequent requests from the same user will make the creator and opponent the same user
 		for (const key in this.matches) {
 			//TODO: handle condition for opponent_username differently
 			//loop through all matches, trying to find a compatible match (based on 'settings')
 			if (this.excludedFromSearch(key))
 				continue ;
-			if (this.matches[key].settingCompare(settings)) {
+			if (this.matches[key].settingCompare(settings, user)) {
 				this.matches[key].setOpponent(user);
 				return (key);
 			}
