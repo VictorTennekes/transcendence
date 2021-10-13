@@ -56,6 +56,7 @@ import {
 } from '@angular-material-components/datetime-picker';
 import {MatMenuModule} from '@angular/material/menu';
 import { PostComponent } from './game/post/post.component';
+import { AccountSetupComponent } from './account-setup/account-setup.component';
 
 // const config: SocketIoConfig = {
 // 	url: 'http://localhost:3000',
@@ -85,7 +86,8 @@ import { PostComponent } from './game/post/post.component';
 		AcceptComponent,
 		ChatContainerComponent,
 		SettingsComponent,
-  PostComponent
+  PostComponent,
+  AccountSetupComponent
 	],
 	imports: [
 		CountdownModule,

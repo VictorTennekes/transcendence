@@ -27,19 +27,18 @@ export class UserEntity {
 	@PrimaryColumn()
 	intra_name: string;
 	
-	@MaxLength(50)
-	@Column({
-		type: "varchar",
-		length: '50',
-		unique: true
-	})
-	@IsNotEmpty()
-	display_name: string;
-
 	@Column({
 		type: 'jsonb',
 	})
 	gameData: PlayerData;
+
+	@Column({
+		unique: true,
+		nullable: true,
+		type: 'varchar',
+		length: 50 //SUBJECT TO CHANGE
+	})
+	display_name: string | null;
 
 	@Column({
 		nullable: true,
