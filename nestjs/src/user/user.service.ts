@@ -62,19 +62,29 @@ export class UserService {
 	async blockUser(username: string, blockedUsername: string) {
 		let user: UserEntity = await this.userRepository.findOne({
 			where: {intra_name: username},
-			relations: ["blockedUsers"]
+			relations: ["blockedUsers", "friends"]
 		});
 		if (username == blockedUsername)
 			return ;
 		let blockedUser: UserEntity = await this.userRepository.findOne({
 			where: {intra_name: blockedUsername},
-			relations: ["blockedByUsers"]
+			relations: ["blockedByUsers", "friends"]
 		});
-		const index = user.blockedUsers.findIndex(x => x.intra_name === username);
+		let index = user.blockedUsers.findIndex(x => x.intra_name === username);
 		if (index === -1) {
 			user.blockedUsers.push(blockedUser);
 			blockedUser.blockedByUsers.push(user);
 			this.userRepository.save(user);
+			this.userRepository.save(blockedUser);
+		}
+		index = user.friends.findIndex(x => x.intra_name === blockedUsername);
+		if (index !== -1) {
+			user.friends.splice(index, 1);
+			this.userRepository.save(user);
+		}
+		index = blockedUser.friends.findIndex(x => x.intra_name === username);
+		if (index !== -1) {
+			blockedUser.friends.splice(index, 1);
 			this.userRepository.save(blockedUser);
 		}
 	}

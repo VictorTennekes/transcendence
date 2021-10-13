@@ -7,6 +7,7 @@ import { MatchSocket } from './match/match.socket';
 import { QueueScheduler } from 'rxjs/internal/scheduler/QueueScheduler';
 import { QueueService } from './queue.service';
 import { AcceptService } from './accept.service';
+import { userModel } from './chat/chat-client/message.model'
 // import { Socket } from 'ngx-socket-io';
 
 export enum SpeedMode {
@@ -119,5 +120,17 @@ export class MatchService {
 
 	friendConnected(): Observable<userModel> {
 		return this.matchSocket.fromEvent('friend_connected');
+	}
+
+	receiveFriendRequest(): Observable<userModel> {
+		return this.matchSocket.fromEvent('receive-friend-request');
+	}
+
+	acceptFriendRequest(user: any): void {
+		this.matchSocket.emit('accept-friend-request', user);
+	}
+
+	declineFriendRequest(user: any): void {
+		this.matchSocket.emit('decline-friend-request', user);
 	}
 }

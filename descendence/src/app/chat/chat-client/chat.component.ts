@@ -93,9 +93,16 @@ import { UserService } from 'src/app/user.service';
 	}
 
 	public isLoggedInUser(username: string): boolean {
-		// return (username === this.loggedInUser.display_name);
 		return (username === this.loggedInUser);
+	}
 
+	public isNotBlocked(username: string): boolean {
+		//TODO: check if user is blocked
+		return true;
+	}
+
+	public canInvite(username: string): boolean {
+		return (this.isLoggedInUser(username) && this.isNotBlocked(username))
 	}
 
 	public back() {

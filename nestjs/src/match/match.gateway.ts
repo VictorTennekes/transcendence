@@ -12,6 +12,11 @@ import { UserDTO } from '@user/dto/user.dto';
 import { GameService } from 'src/game/game.service';
 import { Match, MatchSettings } from './match.class';
 
+class FriendRequest {
+	receive: string;
+	submit: string;
+}
+
 @WebSocketGateway({ namespace: '/match'})
 export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
@@ -38,6 +43,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		//check if both are ready
 
 	connectedUsers: socketData[] = []
+	pendingFriendRequests: friendRequest[] = [];
 
 	sendReady(id: string) {
 		Logger.log(`SERVER SENT 'ready${id}'`);
@@ -234,9 +240,10 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.connectedUsers.push(newSocket);
 		//no reference to a gameID here, cant join the match room
 		Logger.log(`MATCH GATEWAY - USER[${client.id}] - JOINED`);
+		//TODO: if pending friend request, send friend request
 	}
 
-	handleDisconnect(@ConnectedSocket() client: Socket) {
+	async handleDisconnect(@ConnectedSocket() client: Socket) {
 		this.matchService.cancelMatch(client);
 
 		Logger.log(`MATCH GATEWAY - USER[${client.id}] - LEFT`);
@@ -253,4 +260,27 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			}
 		}
 	}
+
+	@SubscribeMessage('send-friend-request')
+	async handleFriendRequest(@ConnectedSocket() client: Socket, username: string) {
+		let user: UserDTO = await getUserFromSocket(client, this.userService);
+		if (this.isOnline(username)) {
+			this.sendFriendRequest(client, user.intra_name);
+		} else {
+			const newRequest: FriendRequest = {
+				submit: user.intra_name,
+				receive: username
+			}
+			this.pendingFriendRequests.push(newRequest);
+		}
+	}
+
+	isOnline(username: string): boolean {
+
+	}
+
+	sendFrienRequest(client: socketData, username: string) {
+
+	}
+
 }
