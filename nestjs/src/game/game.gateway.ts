@@ -25,7 +25,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	handleDisconnect(@ConnectedSocket() client) {
-		console.log(`CLIENT[${client.id} - LEFT]`);
+		console.log(`GAME GATEWAY - USER[${client.id} - LEFT]`);
 	}
 
 	sendGameUpdate(room: string, data: any) {
@@ -40,24 +40,24 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage('press_up')
 	press_up(@ConnectedSocket() client) {
-		// Logger.log(`USER[${client.id}] - PRESS UP`);
+		Logger.log(`USER[${client.id}] - PRESS UP`);
 		this.gameService.setKeyPressed(client.id, 'ArrowUp', true);
 	}
 	
 	@SubscribeMessage('release_up')
 	release_up(@ConnectedSocket() client) {
-		// Logger.log(`USER[${client.id}] - RELEASE UP`);
+		Logger.log(`USER[${client.id}] - RELEASE UP`);
 		this.gameService.setKeyPressed(client.id, 'ArrowUp', false);
 	}
 	@SubscribeMessage('press_down')
 	press_down(@ConnectedSocket() client) {
-		// Logger.log(`USER[${client.id}] - PRESS DOWN`);
+		Logger.log(`USER[${client.id}] - PRESS DOWN`);
 		this.gameService.setKeyPressed(client.id, 'ArrowDown', true);
 	}
 	
 	@SubscribeMessage('release_down')
 	release_down(@ConnectedSocket() client) {
-		// Logger.log(`USER[${client.id}] - RELEASE DOWN`);
+		Logger.log(`USER[${client.id}] - RELEASE DOWN`);
 		this.gameService.setKeyPressed(client.id, 'ArrowDown', false);
 	}
 	

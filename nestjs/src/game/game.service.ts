@@ -39,6 +39,8 @@ export class GameService {
 
 	getGameID(clientID: string) {
 		for (const key in this.games) {
+			if (this.games[key] === undefined)
+				continue ;
 			const players = this.games[key].users;
 			// Logger.log(`players: ${JSON.stringify(players)}`);
 			if (players.one.socket.id == clientID || players.two.socket.id == clientID)
@@ -81,6 +83,8 @@ export class GameService {
 			Logger.log(`GAME[${id}] - GOAL REACHED`);
 			this.gameGateway.sendFinished(id);
 			this.saveGameInDatabase(id);
+			delete(this.games[id]);
+			this.games[id] = undefined;
 			clearInterval(this.gameIntervals[id]);
 			return ;
 		}
