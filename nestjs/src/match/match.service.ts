@@ -109,7 +109,7 @@ export class MatchService {
 			//loop through all matches, trying to find a compatible match (based on 'settings')
 			if (this.excludedFromSearch(key))
 				continue ;
-			if (this.matches[key].settingCompare(settings, user)) {
+			if (this.matches[key].settingCompare(settings)) {
 				this.matches[key].setOpponent(user);
 				return (key);
 			}
