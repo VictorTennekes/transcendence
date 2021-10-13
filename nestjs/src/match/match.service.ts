@@ -30,6 +30,7 @@ export class MatchService {
 		let id = nanoid();
 		this.matches[id] = new Match(id, creator, settings, privateFlag);
 		console.log("all existing matches after create match");
+		console.log(this.matches);
 		return id;
 	}
 
@@ -122,11 +123,16 @@ export class MatchService {
 			if (this.excludedFromSearch(key))
 				continue ;
 			if (this.matches[key].settingCompare(settings)) {
+				console.log("returning match");
 				this.matches[key].setOpponent(user);
+				console.log(this.matches[key]);
 				return (key);
 			}
+			console.log("key: ", key);
+			console.log("key: ", this.matches[key]);
 		}
 		//no compatible match found, create one instead
+		console.log("create match from findmatch: ");
 		return (this.createMatch(user, settings));
 	}
 

@@ -138,10 +138,11 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			socket: client
 		}
 		console.log("invite user:")
-		console.log(settings);
+		// console.log(settings);
 		let match = this.matchService.matchExists(user, settings);
 		console.log(match);
 		if (match === null) {
+			console.log("sending invite");
 
 			let inviteSent: boolean = false;
 			for (let user of this.connectedUsers) {
@@ -160,6 +161,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			if (inviteSent === false) {
 				client.emit('game_invite_failure', 'user not online');
 			}
+			console.log("going to find match");
 			this.findMatch(client, settings);
 		} else {
 			console.log("match exists already")

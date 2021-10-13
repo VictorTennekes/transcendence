@@ -84,7 +84,11 @@ export class MatchComponent implements OnInit {
 		console.log("FINDMATCH SENT");
 		this.queueService.open({hasBackdrop: false});
 		console.log(matchSettings);
-		this.matchService.findMatch(matchSettings);
+		if (!username) {
+			this.matchService.findMatch(matchSettings);
+		} else {
+			this.matchService.inviteUser(matchSettings);
+		}
 	}
 
 	ngOnInit(): void {
@@ -112,10 +116,9 @@ export class MatchComponent implements OnInit {
 			if (params['intra_name'] !== '') {
 				// this.matchService.
 				console.log("start match with: ", params['intra_name']);
-				let settings = defaultMatchSettings;
-				settings.opponent_username =params['intra_name']
+				// let settings = defaultMatchSettings;
+				// settings.opponent_username =params['intra_name']
 
-				this.matchService.inviteUser(settings);
 				console.log("about to find match for invite")
 				this.findMatch(params['intra_name']);
 				// this.overlay = this.queueService.open({hasBackdrop: false});

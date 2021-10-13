@@ -115,6 +115,10 @@ export class Match {
 	}
 
 	settingCompare(setting: MatchSettings): boolean {
+		console.log("settingCompare");
+		console.log(setting);
+		console.log(this._settings);
+		console.log("creator:", this._creator);
 		if (setting.opponent_username) {
 			if (setting?.opponent_username !== this._creator.login) {
 				return false;
