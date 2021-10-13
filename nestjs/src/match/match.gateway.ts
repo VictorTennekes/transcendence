@@ -130,12 +130,16 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		if (match === null) {
 
 			let inviteSent: boolean = false;
+			console.log("connected users: ", this.connectedUsers);
 			for (let user of this.connectedUsers) {
-				if (user.user.display_name === settings.opponent_username) {
+				console.log("see user data");
+				console.log(user.user);
+				console.log(settings);
+				if (user.user.intra_name === settings.opponent_username) {
 					let target_username = "";
 					for (let lol of this.connectedUsers) {
 						if (client.id === lol.socket.id) {
-							target_username = lol.user.display_name;
+							target_username = lol.user.intra_name;
 						}
 					}
 					user.socket.emit('receive_game_invite', target_username);
