@@ -46,6 +46,6 @@
 		</button>
 	</div>
 	<br>
-	<p style="color: red" *ngIf="createChatForm.invalid && submitted">{{errorMessage}}</p>
 	<button (click)="submitCreateChatForm()" type="submit">Create chat</button>
 </form>
+<p style="color: red" *ngIf="errorMessage !== ''">{{errorMessage}}</p>

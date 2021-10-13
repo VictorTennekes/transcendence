@@ -1,0 +1,80 @@
+.container {
+	padding: 1.5rem;
+	padding-left: 10rem;
+	padding-right: 10rem;
+	border-radius: 1.5rem;
+	background-color: #1C768F;
+	display: flex;
+	flex-direction: column;
+	place-items: center;
+	place-content: center;
+}
+
+.welcome {
+	font-family: 'Fredoka One';
+	font-size: 3rem;
+	color: white;
+	font-weight: bold;
+	margin-bottom: 2rem;
+}
+
+.description {
+	font-family: 'Poppins';
+	font-size: 1rem;
+	color: rgba(255,255,255, 0.6);
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	place-items: center;
+	place-content: center;
+}
+
+input.name {
+	outline: none;
+	border-radius: 0.8rem;
+	width: 35rem;
+	height: 4rem;
+	margin: auto;
+	margin-bottom: 1.5rem;
+	padding-left: 1rem;
+	font-family: 'Poppins';
+	font-size: 1.7rem;
+	color: white;
+	background-color: #46A0C7;
+	font-weight: bold;
+}
+
+.valid {
+	border: 3px solid rgb(85, 255, 17);
+}
+.invalid {
+	border: 3px solid rgb(255, 53, 17);
+}
+
+button {
+	outline: none;
+	border-radius: 0.4rem;
+	padding: 2rem;
+	padding-top: 0.6rem;
+	padding-bottom: 0.6rem;
+	background-color: white;
+	font-family: 'Poppins';
+	font-weight: bold;
+	font-size: 1.75rem;
+	color: #30A9EE;
+
+	&:disabled {
+		background-color: #35576B;
+		color: #5389A7;
+		cursor: default;
+
+		&:hover {
+			filter: revert;
+		}
+	}
+	&:hover {
+		filter: brightness(1.4);
+	}
+}
