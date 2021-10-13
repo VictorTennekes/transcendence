@@ -77,9 +77,32 @@ export class MatchService {
 		return false;
 	}
 	//return the match (either found or created)
+	// findExistingMatch(user: User, settings: MatchSettings): Match | null {
+	// 	for (const matchKey in this.matches) {
+	// 		if (this.matches[matchKey].opponent)
+	// 	}
+	// 	return null;
+	// }
+
+	matchExists(user: User, settings: MatchSettings) {
+		//BUG: subsequent requests from the same user will make the creator and opponent the same user
+		
+		for (const key in this.matches) {
+			//TODO: handle condition for opponent_username differently
+			if (this.excludedFromSearch(key))
+				continue ;
+			if (this.matches[key].settingCompare(settings)) {
+				this.matches[key].setOpponent(user);
+				return (key);
+			}
+		}
+		return null;
+	}	
+
 	findMatch(user: User, settings: MatchSettings) {
 		//BUG: subsequent requests from the same user will make the creator and opponent the same user
 		for (const key in this.matches) {
+			//TODO: handle condition for opponent_username differently
 			//loop through all matches, trying to find a compatible match (based on 'settings')
 			if (this.excludedFromSearch(key))
 				continue ;
@@ -102,6 +125,22 @@ export class MatchService {
 		this.matches[id].setReady(user);
 	}
 	
+	findConnectedSocket(user: User, settings: MatchSettings) {
+		//BUG: subsequent requests from the same user will make the creator and opponent the same user
+		for (const key in this.matches) {
+			console.log("findMatch");
+			//loop through all matches, trying to find a compatible match (based on 'settings')
+			if (this.matches[key] === undefined || this.matches[key].ready || this.matches[key].private)
+				continue ;
+			if (this.matches[key].settingCompare(settings)) {
+				this.matches[key].setOpponent(user);
+				return (key);
+			}
+		}
+		//no compatible match found, emit error?
+		return (null)
+	}
+
 	acceptMatch(user: string) {
 		const id = this.getMatchID(user);
 		if (!id || !this.matches[id])
