@@ -73,79 +73,40 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	async initiateMatch(client: Socket, match: string) {
-		// Logger.log(`CLIENT ${client.id} -> MATCH ${match}`);
-		// client.join(match); //add user to the room identified by the matchID
-		// if (this.matchService.isReady(match)) {
-		// 	//when the opponent connects, both players are notified that the match is ready
-		// 	Logger.log(`MATCH ${match} -> ready`);
-		// 	this.server.to(match).emit('ready');
-		// 	var interval = setInterval(() => {
-		// 		const accepted = this.matchService.isAccepted(id);
-		// 		this.server.to(id).emit('accepted', {id: id, accepted: accepted});
-		// 		const match = this.matchService.matches[id];
-		// 		if (match !== undefined) {
-		// 			if (accepted) {
-		// 				Logger.log(`MATCH ${id} - BOTH ACCEPTED`);
-		// 				this.matchService.createGame(id);
-		// 				this.matchService.deleteMatch(id);
-		// 			}
-		// 			else {
-		// 				this.leaveMatchRooms(match);
-		// 				if (this.matchService.matches[id].bothDidntAccept()) {
-		// 					this.matchService.deleteMatch(id);
-		// 				}
-		// 				else {
-		// 					this.matchService.matches[id].resetMatchData();
-		// 				}
-		// 			}
-		// 		}
-		// 		//send 'accepted' state to the clients
-		// 		clearInterval(interval);
-		// 	},3000);
-		// }
-		// else {
-		// 	Logger.log(`MATCH[${id}] - LISTENING - ${this.matchService.matches[id].ready}`);
-		// }
-		// Logger.log(`GAME[${matchid}] - FOUND - USER[${client.id}]`);
-
-
-
-
-			client.join(match); //add user to the room identified by the matchID
-				const id = match;
-				// Logger.log(`MATCH[${id}] - FINDMATCH`);
-				if (this.matchService.matches[id].ready) {
-					Logger.log(`MATCH ${id} - BOTH ARE LISTENING`);
-					this.server.to(id).emit('ready');
-					var interval = setInterval(() => {
-						const accepted = this.matchService.isAccepted(id);
-						this.server.to(id).emit('accepted', {id: id, accepted: accepted});
-						const match = this.matchService.matches[id];
-						if (match !== undefined) {
-							if (accepted) {
-								Logger.log(`MATCH ${id} - BOTH ACCEPTED`);
-								this.matchService.createGame(id);
-								this.matchService.deleteMatch(id);
-							}
-							else {
-								this.leaveMatchRooms(match);
-								if (this.matchService.matches[id].bothDidntAccept()) {
-									this.matchService.deleteMatch(id);
-								}
-								else {
-									this.matchService.matches[id].resetMatchData();
-								}
-							}
+		client.join(match); //add user to the room identified by the matchID
+		const id = match;
+		// Logger.log(`MATCH[${id}] - FINDMATCH`);
+		if (this.matchService.matches[id].ready) {
+			Logger.log(`MATCH ${id} - BOTH ARE LISTENING`);
+			this.server.to(id).emit('ready');
+			var interval = setInterval(() => {
+				const accepted = this.matchService.isAccepted(id);
+				this.server.to(id).emit('accepted', {id: id, accepted: accepted});
+				const match = this.matchService.matches[id];
+				if (match !== undefined) {
+					if (accepted) {
+						Logger.log(`MATCH ${id} - BOTH ACCEPTED`);
+						this.matchService.createGame(id);
+						this.matchService.deleteMatch(id);
+					}
+					else {
+						this.leaveMatchRooms(match);
+						if (this.matchService.matches[id].bothDidntAccept()) {
+							this.matchService.deleteMatch(id);
 						}
-						//send 'accepted' state to the clients
-						clearInterval(interval);
-					},3000);
+						else {
+							this.matchService.matches[id].resetMatchData();
+						}
+					}
 				}
-				else {
-					Logger.log(`MATCH[${id}] - LISTENING - ${this.matchService.matches[id].ready}`);
-				}
-				Logger.log(`GAME[${match}] - FOUND - USER[${client.id}]`);
-			// }
+				//send 'accepted' state to the clients
+				clearInterval(interval);
+			},3000);
+		}
+		else {
+			Logger.log(`MATCH[${id}] - LISTENING - ${this.matchService.matches[id].ready}`);
+		}
+		Logger.log(`GAME[${match}] - FOUND - USER[${client.id}]`);
 
 	}
 
@@ -179,11 +140,11 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		if (match === null) {
 			let inviteSent: boolean = false;
 			console.log("connected users: ", this.connectedUsers);
-			for (let user of this.connectedUsers) {
-				if (user.user.intra_name === settings.opponent_username) {
+			for (let connectedUser of this.connectedUsers) {
+				if (connectedUser.user.intra_name === settings.opponent_username) {
 					let sentSettings: MatchSettings = Object.assign({}, settings);
 					sentSettings.opponent_username = usr.intra_name;
-					user.socket.emit('receive_game_invite', sentSettings);
+					connectedUser.socket.emit('receive_game_invite', sentSettings);
 					inviteSent = true;
 				}
 			}
@@ -207,8 +168,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				user.socket.emit('game_invite_failure', "invite declined");
 			}
 		}
-		//find user by username
-		//emit game_invite_failure, "invite declined"
 	}
 
 	notifyMatchState(id: string, state: boolean) {
