@@ -21,11 +21,19 @@ import { chatAdminGuard } from './chat/chat-client/chatAdminGuard.service';
 import { GameGuard } from './game.guard';
 import { PostComponent } from './game/post/post.component';
 import { PostGameGuard } from './post-game.guard';
+import { AcceptComponent } from './accept/accept.component';
+import { LoadcircleComponent } from './accept/loadcircle/loadcircle.component';
+import { SetupGuard } from './setup.guard';
+import { AccountSetupComponent } from './account-setup/account-setup.component';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
 	{
-		canActivate: [LoginGuard],
+		component: AccountSetupComponent,
+		path: 'setup',
+	},
+	{
+		canActivate: [LoginGuard, SetupGuard],
 		path: '',
 		component: MasterComponent,
 		children: [
@@ -44,6 +52,7 @@ const routes: Routes = [
 				outlet: "chat"
 			},
 			{
+				
 				canActivate: [GameGuard],
 				path: 'game/:id',
 				component: ViewComponent
@@ -67,15 +76,15 @@ const routes: Routes = [
 				outlet: "chat"
 			},
 			{
+				canActivate: [chatGuardService],
 				path: 'get-chat/:id',
 				component: ChatComponent,
-				canActivate: [chatGuardService],
 				outlet: "chat"
 			},
 			{
+				canActivate: [chatAdminGuard],
 				path: 'settings/:id',
 				component: SettingsComponent,
-				canActivate: [chatAdminGuard],
 				outlet: "chat"
 			},
 			{

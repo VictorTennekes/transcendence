@@ -1,24 +1,36 @@
 import { User } from "src/game/game.script";
 
 export enum SpeedMode {
-	SLOW,
 	NORMAL,
+	FAST,
 	SANIC
 };
 
+export enum EndConditionTypes {
+	POINT,
+	TIME
+};
+
+export interface EndCondition {
+	type: EndConditionTypes,
+	value: number
+};
+
 export interface MatchSettings {
+	endCondition: EndCondition,
+	ballSpeed: SpeedMode
 	powerups?: {
 		speed: SpeedMode,
 		//things
 	}
 	opponent_username?: string
-	scoreGoal: number
 };
 
 export class Match {
 	private _creator: User;
 	private _opponent: User | null;
-	private _ready: boolean = false;
+	// private _listening: {[key: string] : boolean} = {};
+	private _listening: boolean = false;
 	private _accepted: {[key: string] : boolean} = {};
 
 	constructor(
@@ -47,7 +59,8 @@ export class Match {
 	}
 
 	get ready() {
-		return this._ready;
+		// return (this._listening[this.creator.socket.id] && this._listening[this.opponent.socket.id]);
+		return this._listening;
 	}
 
 	get private() {
@@ -56,43 +69,59 @@ export class Match {
 
 	get accepted() {
 		return (
-			this._ready && 
-			this._accepted[this.creator.id] === true &&
-			this._accepted[this._opponent.id] === true);
+			this.ready && 
+			this._accepted[this.creator.socket.id] === true &&
+			this._accepted[this._opponent.socket.id] === true);
+	}
+
+	bothDidntAccept(): boolean {
+		return (this._accepted[this._creator.socket.id] === this._accepted[this.opponent.socket.id]);
+	}
+
+	resetMatchData() {
+		// this._listening = {};
+		this._listening = false;
+		if (this._accepted[this._creator.socket.id]) {
+			this._opponent = undefined;
+		}
+		else {
+			this._creator = this._opponent;
+			this._opponent = undefined;
+		}
+		this._accepted = {};
+	}
+
+	userAccepted(user: User) {
+		return this._accepted[user.socket.id];
 	}
 
 	setOpponent(opponent: User) {
 		if (!!this._opponent) {
-			//error;
+			return ;
 		}
 		this._opponent = opponent;
-		this._accepted[this._opponent.id] = false;
-		this._accepted[this.creator.id] = false;
-		this._ready = true;
+		this._accepted[this._opponent.socket.id] = false;
+		this._accepted[this.creator.socket.id] = false;
+		// this._ready = true;
+		this._listening = true;
 	}
 
-	setAccepted(user: string) {
-		this._accepted[user] = true;
+	setReady(socketid: string) {
+		this._listening[socketid] = true;
 	}
 
-	settingCompare(setting: MatchSettings, user: User): boolean {
-		console.log("setting compare");
-		console.log(setting);
+	setAccepted(socketid: string) {
+		this._accepted[socketid] = true;
+	}
+
+	settingCompare(setting: MatchSettings): boolean {
 		if (setting.opponent_username) {
-			console.log("username exists: ", setting.opponent_username);
-			console.log("user username: ", user.login);
 			if (setting?.opponent_username !== this._creator.login) {
 				return false;
 			}
 		}
-		if (this._settings?.powerups) {
-			for (const item in this._settings.powerups) {
-				if (!setting.powerups[item] || this._settings.powerups[item] != setting.powerups[item]) {
-					return false;
-				}
-			}
-			return true;
-		}
-		return true;
+		return (this.settings.ballSpeed == setting.ballSpeed &&
+			this.settings.endCondition.type == setting.endCondition.type &&
+			this.settings.endCondition.value == setting.endCondition.value);
 	}
 }

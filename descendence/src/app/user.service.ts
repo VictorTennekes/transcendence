@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { first, switchMap, take } from 'rxjs/operators';
 import { userModel } from './chat/chat-client/message.model';
+import { first, map, switchMap, take } from 'rxjs/operators';
 
 // interface User {
 // 	intraName: string;
@@ -28,8 +28,8 @@ export class UserService {
 		return this.http.post('api/user/check_display_name', {display_name: newDisplayName});
 	}
 
-	updateDisplayName(newDisplayName: string): void {
-		this.http.post('api/user/update_display_name', {display_name: newDisplayName}).subscribe(() => {this.userSource.next('');});
+	updateDisplayName(newDisplayName: string) {
+		return this.http.post('api/user/update_display_name', {display_name: newDisplayName}).pipe(map(() => {this.userSource.next('');}));
 	}
 
 	updateTwoFactor(newState: boolean): void {
@@ -49,6 +49,7 @@ export class UserService {
 	}
 
 	userExists(username: string) {
+		// console.log(`USEREXISTS - ${username}`);
 		return this.http.get('api/user/user_exists/' + username);
 	}
 

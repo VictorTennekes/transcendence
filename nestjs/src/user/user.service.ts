@@ -125,7 +125,7 @@ export class UserService {
 
 	async create(login: string) {
 		const intra_name = login;
-		const display_name = intra_name;
+		const display_name = null;
 		const user: UserEntity = this.userRepository.create({ intra_name, display_name,});
 		await this.userRepository.save(user);
 		return (user);

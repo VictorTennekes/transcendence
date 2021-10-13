@@ -57,6 +57,9 @@ import {
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { PostComponent } from './game/post/post.component';
+import { MatchComponent } from './match/match.component';
+import { LoadcircleComponent } from './accept/loadcircle/loadcircle.component';
+import { AccountSetupComponent } from './account-setup/account-setup.component';
 
 // const config: SocketIoConfig = {
 // 	url: 'http://localhost:3000',
@@ -86,7 +89,10 @@ import { PostComponent } from './game/post/post.component';
 		AcceptComponent,
 		ChatContainerComponent,
 		SettingsComponent,
-  PostComponent
+  		PostComponent,
+		MatchComponent,
+  		LoadcircleComponent,
+  AccountSetupComponent
 	],
 	imports: [
 		CountdownModule,
