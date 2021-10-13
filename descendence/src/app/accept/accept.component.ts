@@ -52,7 +52,6 @@ export class AcceptComponent implements OnInit {
 			else {
 				console.log("not accepted")
 				this.acceptService.close();
-				console.log("should be closed");
 				// did this client accept?
 				if (this.accepted) {
 					this.queueService.open({hasBackdrop: false});

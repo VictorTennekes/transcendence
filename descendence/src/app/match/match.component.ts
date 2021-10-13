@@ -114,21 +114,7 @@ export class MatchComponent implements OnInit {
 			console.log("params in match: ", params);
 			console.log(params['intra_name']);
 			if (params['intra_name'] !== '') {
-				// this.matchService.
-				console.log("start match with: ", params['intra_name']);
-				// let settings = defaultMatchSettings;
-				// settings.opponent_username =params['intra_name']
-
-				console.log("about to find match for invite")
 				this.findMatch(params['intra_name']);
-				// this.overlay = this.queueService.open({hasBackdrop: false});
-				// //when the
-				// console.log("here man");
-				// this.matchService.matchReady().subscribe(() => {
-				// 	console.log("RECEIVED READY SIGNAL");
-				// 	this.overlay.close();
-				// 	this.overlay = this.acceptService.open();
-				// });
 			}
 
 		})

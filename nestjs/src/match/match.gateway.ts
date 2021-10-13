@@ -120,34 +120,18 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('invite_user')
 	async inviteUser(client: Socket, settings: MatchSettings) {
-		//send invite to other user
-		console.log("inviting: ", settings);
-		//TODO:find connected socket
-		//TODO: error if not connnected
-		//TODO: send invite if connected
-		// if (this.matchService.)
-		// const matches:  = this.matchService.matches;
-		// if (match of matches) {
-
-		// }
 		const usr = await getUserFromSocket(client, this.userService);
-
 		const user: User = {
 			login: usr.intra_name,
 			display_name: usr.display_name,
 			socket: client
 		}
-		console.log("invite user:")
-		// console.log(settings);
 		let match = this.matchService.matchExists(user, settings);
-		console.log(match);
 		if (match === null) {
-			console.log("sending invite");
 
 			let inviteSent: boolean = false;
 			for (let user of this.connectedUsers) {
 				if (user.user.display_name === settings.opponent_username) {
-					//TODO: find which user and emit username
 					let target_username = "";
 					for (let lol of this.connectedUsers) {
 						if (client.id === lol.socket.id) {
@@ -161,13 +145,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			if (inviteSent === false) {
 				client.emit('game_invite_failure', 'user not online');
 			}
-			console.log("going to find match");
 			this.findMatch(client, settings);
 		} else {
-			console.log("match exists already")
-			console.log(settings);
-			console.log(match);
-
 				client.join(match); //add user to the room identified by the matchID
 				const id = match;
 				// Logger.log(`MATCH[${id}] - FINDMATCH`);

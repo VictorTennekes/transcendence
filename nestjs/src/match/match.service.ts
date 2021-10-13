@@ -24,13 +24,8 @@ export class MatchService {
 	}
 
 	createMatch(creator: User, settings: MatchSettings, privateFlag = false): string {
-		console.log("create match");
-		console.log("all existing matches");
-		console.log(this.matches);
 		let id = nanoid();
 		this.matches[id] = new Match(id, creator, settings, privateFlag);
-		console.log("all existing matches after create match");
-		console.log(this.matches);
 		return id;
 	}
 
@@ -92,15 +87,8 @@ export class MatchService {
 	matchExists(user: User, settings: MatchSettings) {
 		//BUG: subsequent requests from the same user will make the creator and opponent the same user
 		
-		console.log("findMatch");
-		console.log("all existing matches:")
-		console.log(this.matches);
 		for (const key in this.matches) {
-			// console.log("findMatch");
 			//TODO: handle condition for opponent_username differently
-			//loop through all matches, trying to find a compatible match (based on 'settings')
-			// if (this.matches[key] === undefined || this.matches[key].ready || this.matches[key].private)
-				// continue ;
 			if (this.excludedFromSearch(key))
 				continue ;
 			if (this.matches[key].settingCompare(settings)) {
@@ -108,14 +96,10 @@ export class MatchService {
 				return (key);
 			}
 		}
-		//no compatible match found, create one instead
 		return null;
 	}	
 
 	findMatch(user: User, settings: MatchSettings) {
-		// console.log("findMatch");
-		// console.log("all existing matches:")
-		// console.log(this.matches);
 		//BUG: subsequent requests from the same user will make the creator and opponent the same user
 		for (const key in this.matches) {
 			//TODO: handle condition for opponent_username differently
@@ -123,16 +107,11 @@ export class MatchService {
 			if (this.excludedFromSearch(key))
 				continue ;
 			if (this.matches[key].settingCompare(settings)) {
-				console.log("returning match");
 				this.matches[key].setOpponent(user);
-				console.log(this.matches[key]);
 				return (key);
 			}
-			console.log("key: ", key);
-			console.log("key: ", this.matches[key]);
 		}
 		//no compatible match found, create one instead
-		console.log("create match from findmatch: ");
 		return (this.createMatch(user, settings));
 	}
 
