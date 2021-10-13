@@ -17,35 +17,7 @@
 			HISTORY
 		</a>
 	</div>
-
-	<!-- replace with router-outlet -->
-	<div class="stats-container">
-		<div class="stat-item game-time">
-			<p class="item-title">
-				Game Time
-			</p>
-			<div class="data-container">
-				<p class="data-title">Total:</p>
-				<p class="data-value">{{timeFormattedString(durations.total)}}</p>
-			</div>
-			<div class="data-container">
-				<p class="data-title">Shortest:</p>
-				<p class="data-value">{{timeFormattedString(durations.shortest)}}</p>
-			</div>
-			<div class="data-container">
-				<p class="data-title">Longest:</p>
-				<p class="data-value">{{timeFormattedString(durations.longest)}}</p>
-			</div>
-		</div>
-		<div class="stat-item misc">
-			<p class="item-title">
-				Miscellaneous
-			</p>
-		</div>
-		<div class="stat-item winrate">
-			<p class="item-title">
-				Winrate
-			</p>
-		</div>
+	<div style="padding: 2.5rem">
+		<router-outlet></router-outlet>
 	</div>
 </div>

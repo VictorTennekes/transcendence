@@ -3,12 +3,6 @@ import { UserService } from '../user.service';
 import { ActivatedRoute } from '@angular/router';
 import { secondsToDhms } from '../game/post/post.component';
 
-interface GameDurations {
-	total: number,
-	shortest: number,
-	longest: number
-};
-
 @Component({
 	selector: 'app-profile',
 	templateUrl: './profile.component.html',
@@ -26,7 +20,7 @@ export class ProfileComponent implements OnInit {
 	avatarUrl: string = "";
 	loginId: string ="";
 	user: any;
-	durations: GameDurations;
+
 
 	updateAvatar(url: string | null) {
 		let style = "background-image: ";
@@ -38,10 +32,6 @@ export class ProfileComponent implements OnInit {
 		return style;
 	}
 
-	timeFormattedString(seconds: number) {
-		return (secondsToDhms(seconds));
-	}
-
 	ngOnInit(): void {
 		this.route.params.subscribe(params => {
 			this.id = params['id'];
@@ -51,11 +41,7 @@ export class ProfileComponent implements OnInit {
 				this.loginId = user.intra_name;
 			})
 		})
-		this.durations = {
-			total: 23401,
-			shortest: 324,
-			longest: 764,
-		};
+
 	}
   
 

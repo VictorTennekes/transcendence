@@ -22,6 +22,8 @@ import { GameGuard } from './game.guard';
 import { PostComponent } from './game/post/post.component';
 import { PostGameGuard } from './post-game.guard';
 import { ProfileComponent } from './profile/profile.component';
+import { StatsComponent } from './profile/stats/stats.component';
+import { HistoryComponent } from './profile/history/history.component';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -41,7 +43,22 @@ const routes: Routes = [
 			},
 			{
 				path: 'profile/:id',
-				component: ProfileComponent
+				component: ProfileComponent,
+				children: [
+					{
+						path: 'stats',
+						component: StatsComponent
+					},
+					{
+						path: 'history',
+						component: HistoryComponent
+					},
+					{
+						path: '',
+						redirectTo: 'stats',
+						pathMatch: 'full'
+					}
+				]
 			},
 			{
 				path: 'pass-chat/:id',

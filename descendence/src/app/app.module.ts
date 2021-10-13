@@ -57,6 +57,8 @@ import {
 import {MatMenuModule} from '@angular/material/menu';
 import { PostComponent } from './game/post/post.component';
 import { ProfileComponent } from './profile/profile.component';
+import { StatsComponent } from './profile/stats/stats.component';
+import { HistoryComponent } from './profile/history/history.component';
 
 // const config: SocketIoConfig = {
 // 	url: 'http://localhost:3000',
@@ -87,7 +89,9 @@ import { ProfileComponent } from './profile/profile.component';
 		ChatContainerComponent,
 		SettingsComponent,
   PostComponent,
-  ProfileComponent
+  ProfileComponent,
+  StatsComponent,
+  HistoryComponent
 	],
 	imports: [
 		CountdownModule,
