@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../user.service';
+import { UserEntity, UserService } from '../user.service';
 import { ActivatedRoute } from '@angular/router';
 import { secondsToDhms } from '../game/post/post.component';
 
@@ -35,9 +35,10 @@ export class ProfileComponent implements OnInit {
 	}
 	
 	ngOnInit(): void {
-		
-		this.displayName = this.route.snapshot.data.user.display_name;
-		this.loginId = this.route.snapshot.data.user.intra_name;
-		this.avatarUrl = this.route.snapshot.data.user.avatar_url;
+		this.route.data.subscribe((data: any) => {
+			this.displayName = data.user.display_name;
+			this.loginId = data.user.intra_name;
+			this.avatarUrl = data.user.avatar_url;
+		});
 	}
 }

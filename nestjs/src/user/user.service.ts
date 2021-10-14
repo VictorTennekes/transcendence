@@ -147,6 +147,12 @@ export class UserService {
 		});
 	}
 
+	async getStatsOfUser(login: string) {
+		const user = await this.userRepository.findOne({
+			where: { intra_name: login}});
+		return user.gameData;
+	}
+
 	async login(loginInformation: LoginUserDto): Promise<LoginStatus> {
 		const intra_name = loginInformation.intra_name;
 		const user = await this.findOrCreateByLogin(intra_name);

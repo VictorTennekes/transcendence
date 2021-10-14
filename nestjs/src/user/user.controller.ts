@@ -46,6 +46,13 @@ export class UserController {
 		return user;
 	}
 
+	@Get('stats/:id')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async getStatsOfUser(@Req() request, @Param('id') user: string) {
+		return this.userService.getStatsOfUser(user);
+	}
+
 	@Post('get')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)

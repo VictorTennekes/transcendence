@@ -72,7 +72,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		return match;
 	}
 
-	async initiateMatch(client: Socket, match: string) {
+	initiateMatch(client: Socket, match: string) {
 		client.join(match); //add user to the room identified by the matchID
 		const id = match;
 		// Logger.log(`MATCH[${id}] - FINDMATCH`);

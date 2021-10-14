@@ -9,6 +9,23 @@ import { first, map, switchMap, take } from 'rxjs/operators';
 // 	avatarUrl: string | null;
 // }
 
+export interface UserStats {
+	ballHits: number,
+	games: {
+		won: number,
+		lost: number
+	},
+	points: {
+		won: number,
+		lost: number,
+	},
+	gameDurationInSeconds: {
+		total: number,
+		shortest: number | null,
+		longest: number | null
+	}
+};
+
 export interface UserEntity {
 	display_name: string;
 	intra_name: string
@@ -30,6 +47,10 @@ export class UserService {
 
 	checkDisplayNameAvailability(newDisplayName: string) {
 		return this.http.post('api/user/check_display_name', {display_name: newDisplayName});
+	}
+
+	getStatsOfUser(user: string): Observable<UserStats> {
+		return this.http.get<UserStats>('api/user/stats/' + user);
 	}
 
 	updateDisplayName(newDisplayName: string) {

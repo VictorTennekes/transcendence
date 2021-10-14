@@ -127,10 +127,10 @@ export class GameService {
 		if (this.games[id].goalReached) {
 			Logger.log(`GAME[${id}] - GOAL REACHED`);
 			this.gameGateway.sendFinished(id);
+			clearInterval(this.gameIntervals[id]);
 			await this.saveGameInDatabase(id);
 			delete(this.games[id]);
 			this.games[id] = undefined;
-			clearInterval(this.gameIntervals[id]);
 			return ;
 		}
 		this.games[id].update();

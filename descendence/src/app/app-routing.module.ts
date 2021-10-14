@@ -32,6 +32,7 @@ import { LoadcircleComponent } from './accept/loadcircle/loadcircle.component';
 import { SetupGuard } from './setup.guard';
 import { AccountSetupComponent } from './account-setup/account-setup.component';
 import { ProfileResolver } from './profile/profile.resolver';
+import { StatsResolver } from './profile/stats.resolver';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -58,10 +59,12 @@ const routes: Routes = [
 				path: 'profile/:id',
 				canActivate: [ ProfileGuard ],
 				resolve: {user: ProfileResolver},
+				runGuardsAndResolvers: "always",
 				component: ProfileComponent,
 				children: [
 					{
 						path: 'stats',
+						resolve: { stats: StatsResolver },
 						component: StatsComponent
 					},
 					{
@@ -159,7 +162,8 @@ const routes: Routes = [
 		HistoryResolver,
 		ProfileGuard,
 		PostgameResolver,
-		ProfileResolver
+		ProfileResolver,
+		StatsResolver
 	]
 })
 export class AppRoutingModule { }
