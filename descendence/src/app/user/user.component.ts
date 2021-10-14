@@ -39,9 +39,7 @@ export class UserComponent implements OnInit {
 			this.offlineFriends.push(friend);
 		}
 		this.matchService.friendConnected().subscribe((onlineFriend: userModel) => {
-			console.log("CONNECT: ", onlineFriend)
 			let index = this.offlineFriends.findIndex(x => x.intra_name === onlineFriend.intra_name);
-			console.log("index, ", index);
 			if (index !== -1) {
 				this.offlineFriends.splice(index, 1);
 			}
@@ -52,10 +50,7 @@ export class UserComponent implements OnInit {
 		});
 		this.matchService.friendDisconnected().subscribe((offlineFriend: userModel) => {
 			if (this.friends.findIndex(x => x.intra_name === offlineFriend.intra_name) !== -1) {
-				console.log("DISCONNECT: ", offlineFriend);
 				let index = this.onlineFriends.findIndex(x => x.intra_name === offlineFriend.intra_name);
-				//TODO: if friend, then do all this. Maybe i should do the same with connections
-				console.log("index ", index);
 				if (index !== -1) {
 					this.onlineFriends.splice(index, 1);
 				}
@@ -63,9 +58,6 @@ export class UserComponent implements OnInit {
 				if (index === -1) {
 					this.offlineFriends.push(offlineFriend);
 				}
-				console.log("res:")
-				console.log("online: ", this.onlineFriends);
-				console.log("offline: ", this.offlineFriends);
 			}
 		})
 			
