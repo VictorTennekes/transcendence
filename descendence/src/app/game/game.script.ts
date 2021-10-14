@@ -7,6 +7,15 @@ const BALL_SIZE = 15;
 const BALL_SPEED = 10;
 const WALL_OFFSET = 40;
 
+interface GameData {
+	ball: Ball,
+	players: {[id: string] : Player},
+	users: {
+		one: User,
+		two: User
+	}
+}
+
 enum KeyBindings {
 	UP,
 	DOWN
@@ -58,6 +67,14 @@ export class Game {
 		this.ball = new Ball(this.gameCanvas.width / 2 - BALL_SIZE / 2, this.gameCanvas.height / 2 - BALL_SIZE / 2);
 	}
 	
+	drawDebugData() {
+		this.gameContext.strokeStyle = "#fff";
+		this.gameContext.lineWidth = 10;
+		this.gameContext.fillStyle = "#fff";
+		this.scoreContext.font = "2rem Biryani, bold";
+		this.scoreContext.fillText(this.players[this._users.one.id].hits.toString(), (this.gameCanvas.width / 2) + 40, this.gameCanvas.height - 70);
+		this.scoreContext.fillText(this.players[this._users.two.id].hits.toString(), (this.gameCanvas.width / 2) + 70 ,this.gameCanvas.height - 70);
+	}
 	drawTime() {
 		this.gameContext.strokeStyle = "#89AFBB";
 		this.gameContext.lineWidth = 10;
@@ -122,6 +139,7 @@ export class Game {
 		this.drawTime();
 //		this.drawBoardDetails();
 		this.drawScore();
+		// this.drawDebugData();
 		for (const key in this.players) {
 			this.players[key].paddle.draw(this.gameContext);
 		}
@@ -157,16 +175,16 @@ class Entity {
 class Player {
 	paddle: Paddle;
 	keysPressed: boolean[] = [];
-
-	score: number;
+	hits: number = 0;
+	score: number = 0;
 
 	constructor(x:number,y:number) {
-		this.score = 0;
 		this.paddle = new Paddle(x,y);
 	}
 	updateFromData(data: any) {
 		this.paddle.position = data.paddle.position;
 		this.score = data.score;
+		this.hits = data.hits;
 	}
 }
 

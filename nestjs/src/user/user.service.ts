@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/game/game.script';
 import { comparePasswords, toPromise } from 'src/shared/utils';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -28,6 +29,10 @@ export class UserService {
 			console.log(`FOUND EXISTING USER ${login}`);
 		}
 		return (user);
+	}
+
+	async save(user: UserEntity) {
+		await this.userRepository.save(user);
 	}
 
 	//Might want to add case insensitive checking
@@ -105,7 +110,26 @@ export class UserService {
 	async create(login: string) {
 		const intra_name = login;
 		const display_name = null;
-		const user: UserEntity = this.userRepository.create({ intra_name, display_name,});
+		const user: UserEntity = this.userRepository.create({
+			intra_name,
+			display_name,
+			gameData: {
+				ballHits: 0,
+				games: {
+					won: 0,
+					lost: 0,
+				},
+				points: {
+					won: 0,
+					lost: 0,
+				},
+				gameDurationInSeconds: {
+					total: 0,
+					shortest: null,
+					longest: null
+				}
+			}
+		});
 		await this.userRepository.save(user);
 		return (user);
 	}

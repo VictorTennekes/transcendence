@@ -61,12 +61,46 @@ export class GameService {
 		const game = this.games[id];
 		if (!game || !game.goalReached)
 			return ;
+		const gameDuration = game.timeElapsed;
+		const gameDurationInSeconds = Math.floor(gameDuration / 1000);
 		let players: UserEntity[] = [];
 		players.push(await this.userService.findOne(game.users.one.login));
 		players.push(await this.userService.findOne(game.users.two.login));
+		const gameData = game.data;
+		players[0].gameData.ballHits += gameData.players[game.users.one.socket.id].hits;
+		players[1].gameData.ballHits += gameData.players[game.users.two.socket.id].hits;
+		if (game.winner == game.users.one.login) {
+			players[0].gameData.games.won += 1;
+			players[1].gameData.games.lost += 1;
+		}
+		else {
+			players[1].gameData.games.won += 1;
+			players[0].gameData.games.lost += 1;
+		}
+		players[0].gameData.points.won += gameData.players[game.users.one.socket.id].score;
+		players[0].gameData.points.lost += gameData.players[game.users.two.socket.id].score;
+
+		players[1].gameData.points.won += gameData.players[game.users.two.socket.id].score;
+		players[1].gameData.points.lost += gameData.players[game.users.one.socket.id].score;
+
+		players[0].gameData.gameDurationInSeconds.total += gameDurationInSeconds;
+		players[1].gameData.gameDurationInSeconds.total += gameDurationInSeconds;
+
+		if (!players[0].gameData.gameDurationInSeconds.shortest || players[0].gameData.gameDurationInSeconds.shortest > gameDurationInSeconds) {
+			players[0].gameData.gameDurationInSeconds.shortest = gameDurationInSeconds;
+		}
+		if (!players[1].gameData.gameDurationInSeconds.shortest || players[1].gameData.gameDurationInSeconds.shortest > gameDurationInSeconds) {
+			players[1].gameData.gameDurationInSeconds.shortest = gameDurationInSeconds;
+		}
+		if (!players[0].gameData.gameDurationInSeconds.longest || players[0].gameData.gameDurationInSeconds.longest < gameDurationInSeconds) {
+			players[0].gameData.gameDurationInSeconds.longest = gameDurationInSeconds;
+		}
+		if (!players[1].gameData.gameDurationInSeconds.longest || players[1].gameData.gameDurationInSeconds.longest < gameDurationInSeconds) {
+			players[1].gameData.gameDurationInSeconds.longest = gameDurationInSeconds;
+		}
 		const entry: GameEntity = this.gameRepository.create({
 			id: id,
-			duration: game.timeElapsed,
+			duration: gameDuration,
 			start: game.startTime,
 			end: new Date(),
 			players: players,
@@ -76,6 +110,8 @@ export class GameService {
 			}
 		});
 		await this.gameRepository.save(entry);
+		await this.userService.save(players[0]);
+		await this.userService.save(players[1]);
 	}
 	//the service needs to interact with the gateway to send updates to the users
 	private async gameLoop(id: string) {
