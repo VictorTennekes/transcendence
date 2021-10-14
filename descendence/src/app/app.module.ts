@@ -4,7 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { HttpClientModule } from '@angular/common/http';
-import { MasterComponent } from './master/master.component';
+import { InviteComponent, MasterComponent } from './master/master.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FailComponent } from './fail/fail.component';
 import { CookieModule } from 'ngx-cookie';
@@ -42,20 +42,17 @@ import { AcceptComponent } from './accept/accept.component';
 import { AcceptService } from './accept.service';
 import { CountdownModule } from 'ngx-countdown';
 import { MATERIAL_SANITY_CHECKS } from '@angular/material/core';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatNativeDateModule} from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { ChatContainerComponent } from './chat/chat-container/chat-container.component';
 import { GameSocket } from './game/game.socket';
 import { ChatSocket } from './chat/chat.socket';
 import { MatchSocket } from './match/match.socket';
 import { SettingsComponent } from './chat/settings/settings.component';
-import {
-	NgxMatDatetimePickerModule,
-	NgxMatNativeDateModule,
-	NgxMatTimepickerModule
-} from '@angular-material-components/datetime-picker';
-import {MatMenuModule} from '@angular/material/menu';
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { MatMenuModule } from '@angular/material/menu';
 import { PostComponent } from './game/post/post.component';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatchComponent } from './match/match.component';
 import { LoadcircleComponent } from './accept/loadcircle/loadcircle.component';
 import { AccountSetupComponent } from './account-setup/account-setup.component';
@@ -88,10 +85,11 @@ import { AccountSetupComponent } from './account-setup/account-setup.component';
 		AcceptComponent,
 		ChatContainerComponent,
 		SettingsComponent,
+		InviteComponent,
   		PostComponent,
 		MatchComponent,
   		LoadcircleComponent,
-  AccountSetupComponent
+		AccountSetupComponent
 	],
 	imports: [
 		CountdownModule,
@@ -117,6 +115,7 @@ import { AccountSetupComponent } from './account-setup/account-setup.component';
 		NgxMatNativeDateModule,
 		NgxMatTimepickerModule,
 		NgxMatDatetimePickerModule,
+		MatDialogModule,
 		CommonModule
 	],
 	entryComponents: [ FocusOverlayComponent, QueueComponent, AcceptComponent],
