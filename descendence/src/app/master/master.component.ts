@@ -64,18 +64,7 @@ export class MasterComponent implements OnInit {
 		dialogRef.afterClosed().subscribe((accepted: boolean) => {
 			console.log(`Dialog result: ${accepted}`);
 			if (accepted) {
-				console.log("accepted friend request, ", user);
-				// let settings: MatchSettings = {
-					// opponent_username: user
-				// }
-				// this.matchService.findMatch(settings);
 				this.matchService.acceptFriendRequest(user);
-				// this.router.navigate(['play', user])
-				//navigate to play tag with username
-			} else {
-				console.log("declining invite: ", user);
-				this.matchService.declineFriendRequest(user);
-				//emit error
 			}
 		});
 	}

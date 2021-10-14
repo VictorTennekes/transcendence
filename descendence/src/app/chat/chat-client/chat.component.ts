@@ -5,6 +5,8 @@ import { SearchService } from '../search/search.service';
 import { ChatService } from './chat.service';
 import { retMessage, newMessage, chatModel, userModel } from './message.model';
 import { UserService } from 'src/app/user.service';
+import { MatchComponent } from 'src/app/match/match.component';
+import { MatchService } from 'src/app/match.service';
 @Component({
 	selector: 'app-chat',
 	templateUrl: './chat.component.html',
@@ -27,6 +29,7 @@ import { UserService } from 'src/app/user.service';
 		  private userService: UserService,
 		  private router: Router,
 		  private route: ActivatedRoute,
+		  private matchService: MatchService
 	  ) { }
 
 	public chat: chatModel = {
@@ -147,8 +150,7 @@ import { UserService } from 'src/app/user.service';
 	}
 
 	public addFriend(username: string) {
-		console.log("adding friend ", username)
-		this.userService.addFriend(username).subscribe(() => {});
+		this.matchService.sendFriendRequest(username);
 	}
 
 	public onSubmit() {

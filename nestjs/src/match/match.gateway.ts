@@ -14,7 +14,7 @@ import { Match, MatchSettings } from './match.class';
 
 class FriendRequest {
 	receive: string;
-	submit: string;
+	submit: UserDTO;
 }
 
 @WebSocketGateway({ namespace: '/match'})
@@ -43,7 +43,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		//check if both are ready
 
 	connectedUsers: socketData[] = []
-	pendingFriendRequests: friendRequest[] = [];
+	pendingFriendRequests: FriendRequest[] = [];
 
 	sendReady(id: string) {
 		Logger.log(`SERVER SENT 'ready${id}'`);
@@ -241,6 +241,13 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		//no reference to a gameID here, cant join the match room
 		Logger.log(`MATCH GATEWAY - USER[${client.id}] - JOINED`);
 		//TODO: if pending friend request, send friend request
+		for (let requestIndex = 0; requestIndex < this.pendingFriendRequests.length; requestIndex++) {
+			if (this.pendingFriendRequests[requestIndex].receive === user.intra_name) {
+				client.emit('receive-friend-request', this.pendingFriendRequests[requestIndex].submit);
+				this.pendingFriendRequests.splice(requestIndex, 1);
+				console.log(this.pendingFriendRequests);
+			}
+		}
 	}
 
 	async handleDisconnect(@ConnectedSocket() client: Socket) {
@@ -255,32 +262,48 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		for (let friend of user.friends) {
 			for (let connectedUser of this.connectedUsers) {
 				if (friend.intra_name === connectedUser.user.intra_name) {
-					connectedUser.socket.emit('friend_disconnected', user);					
+					connectedUser.socket.emit('friend_disconnected', user);
 				}
 			}
 		}
 	}
 
 	@SubscribeMessage('send-friend-request')
-	async handleFriendRequest(@ConnectedSocket() client: Socket, username: string) {
+	async handleFriendRequest(client: Socket, username: string) {
 		let user: UserDTO = await getUserFromSocket(client, this.userService);
-		if (this.isOnline(username)) {
-			this.sendFriendRequest(client, user.intra_name);
+		let sender: socketData = {
+			user: user,
+			socket: client
+		};
+		let connectedUser: socketData = this.isOnline(username);
+		if (connectedUser) {
+			this.sendFriendRequest(sender, connectedUser);
 		} else {
 			const newRequest: FriendRequest = {
-				submit: user.intra_name,
+				submit: user,
 				receive: username
 			}
 			this.pendingFriendRequests.push(newRequest);
+			console.log(this.pendingFriendRequests);
 		}
 	}
 
-	isOnline(username: string): boolean {
-
+	isOnline(username: string): socketData | null {
+		for (let user of this.connectedUsers) {
+			if (user.user.intra_name === username) {
+				return user;
+			}
+		}
+		return null;
 	}
 
-	sendFrienRequest(client: socketData, username: string) {
-
+	sendFriendRequest(client: socketData, target: socketData) {
+		target.socket.emit('receive-friend-request', client.user);
 	}
 
+	@SubscribeMessage('accept-friend-request')
+	async acceptFriendRequest(client: Socket, friend: UserDTO) {
+		const user: UserDTO = await getUserFromSocket(client, this.userService);
+		await this.userService.addFriend(user.intra_name, friend.intra_name);
+	}
 }
