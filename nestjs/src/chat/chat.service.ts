@@ -506,26 +506,28 @@ export class ChatService {
 			where: {id: chatId},
 			relations: ["users", "admins", "owner"]
 		})
-		for (let idx = 0; idx < chat.users.length; idx++) {
-			if (chat.users[idx].intra_name === username) {
-				chat.users.splice(idx, 1);
-				break;
+		if (chat.visibility !== "direct") {
+			for (let idx = 0; idx < chat.users.length; idx++) {
+				if (chat.users[idx].intra_name === username) {
+					chat.users.splice(idx, 1);
+					break;
+				}
 			}
-		}
-		for (let idx = 0; idx < chat.admins.length; idx++) {
-			if (chat.admins[idx].intra_name === username) {
-				chat.admins.splice(idx, 1);
-				break;
+			for (let idx = 0; idx < chat.admins.length; idx++) {
+				if (chat.admins[idx].intra_name === username) {
+					chat.admins.splice(idx, 1);
+					break;
+				}
 			}
+			await this.repo.save(chat);
+			if (chat.owner.intra_name === username) {
+				await this.repo
+				.createQueryBuilder()
+				.relation(ChatEntity, "owner")
+				.of(chat)
+				.set(null);
+			}		
 		}
-		await this.repo.save(chat);
-		if (chat.owner.intra_name === username) {
-			await this.repo
-			.createQueryBuilder()
-			.relation(ChatEntity, "owner")
-			.of(chat)
-			.set(null);
-		}		
 		return true;
   }
 
