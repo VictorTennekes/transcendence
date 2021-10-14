@@ -46,9 +46,7 @@ export class HistoryComponent implements OnInit {
 		}
 		
 		ngOnInit(): void {
-			this.userService.getUserByLogin(this.route.parent?.snapshot.params['id']).subscribe((user: any) => {
-				this.intra_name = user.intra_name;
-			});
+			this.intra_name = this.route.snapshot.parent?.data.user.intra_name;
 			this.games = this.route.snapshot.data.history;
 			// const elem1: GameHistory = {
 			// 	winner: "Tishj",

@@ -31,6 +31,7 @@ import { AcceptComponent } from './accept/accept.component';
 import { LoadcircleComponent } from './accept/loadcircle/loadcircle.component';
 import { SetupGuard } from './setup.guard';
 import { AccountSetupComponent } from './account-setup/account-setup.component';
+import { ProfileResolver } from './profile/profile.resolver';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -56,6 +57,7 @@ const routes: Routes = [
 			{
 				path: 'profile/:id',
 				canActivate: [ ProfileGuard ],
+				resolve: {user: ProfileResolver},
 				component: ProfileComponent,
 				children: [
 					{
@@ -156,7 +158,8 @@ const routes: Routes = [
 		chatAdminGuard,
 		HistoryResolver,
 		ProfileGuard,
-		PostgameResolver
+		PostgameResolver,
+		ProfileResolver
 	]
 })
 export class AppRoutingModule { }

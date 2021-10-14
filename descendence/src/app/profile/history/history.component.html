@@ -8,15 +8,15 @@
 		<div class="result">
 			{{isWinner(game.winner.intra_name) ? "WIN" : "LOSS"}}
 		</div>
-		<div class="winner">
+		<a [routerLink]="['/profile', game.winner.intra_name]" class="winner">
 			{{game.winner.display_name}}
-		</div>
+		</a>
 		<div class="score">
 			{{game.score[game.winner.intra_name]}} - {{game.score[game.opponent.intra_name]}}
 		</div>
-		<div class="loser">
+		<a [routerLink]="['/profile', game.opponent.intra_name]" class="loser">
 			{{game.opponent.display_name}}
-		</div>
+		</a>
 	</li>
 </ul>
 <div *ngIf="games.length === 0" class="no-matches">
