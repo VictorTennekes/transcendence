@@ -132,3 +132,12 @@
 		@include history-user();
 	}
 }
+
+.no-matches {
+	text-align: center;
+	padding: 3rem;
+	color: #D3E5EF;
+	font-family: 'Poppins';
+	font-weight: bold;
+	font-size: 3rem;
+}

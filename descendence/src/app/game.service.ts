@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { GameHistory } from './profile/history/history.component';
 
 @Injectable({
 	providedIn: 'root'
@@ -12,6 +13,10 @@ export class GameService {
 		private readonly http: HttpClient
 	) { }
 
+	getHistoryOfUser(user: string) {
+		console.log(`GET HISTORY OF USER`);
+		return this.http.get<GameHistory[]>('api/match/history/' + user);
+	}
 	matchOngoing(id: string) {
 		return this.http.get('api/match/ongoing/' + id).pipe(map((value) => {
 			return !!value;

@@ -11,6 +11,14 @@ import { GameEntity } from './entity/game.entity';
 import { GameGateway } from './game.gateway';
 import { Game, User } from './game.script';
 
+export interface HistoryObject {
+	winner: string,
+	opponent: string,
+	score: {[key: string] : number},
+	date: Date,
+	duration: number
+};
+
 @Injectable()
 export class GameService {
 
@@ -92,5 +100,32 @@ export class GameService {
 		this.games[match.id] = new Game(match);
 		this.gameIntervals[match.id] = setInterval(() => {this.gameLoop(match.id);}, 1000/60);
 		//create a Game for this id, and start a game update interval
+	}
+
+
+	async getHistoryOfUser(user: string) {
+
+		const games = await this.gameRepository
+		.createQueryBuilder("game")
+		.innerJoinAndSelect("game.players", "players")
+		// .where("players.intra_name = :id", {id: user})
+		.getMany();
+
+		Logger.log(`RAW HISTORY RESULTS: ${JSON.stringify(games)}`);
+		let items: HistoryObject[] = [];
+		for (const game of games) {
+			if (game.data.scores.hasOwnProperty(user)) {
+				const item: HistoryObject = {
+					winner: game.data.winner,
+					opponent: game.players[0].intra_name === game.data.winner ? game.players[1].intra_name : game.players[0].intra_name,
+					score: game.data.scores,
+					duration: Math.floor(game.duration / 1000),
+					date: game.start
+				};
+				items.push(item);
+			}
+		}
+		Logger.log(`HISTORY OF USER: ${JSON.stringify(items)}`);
+		return items;
 	}
 }

@@ -1,6 +1,6 @@
 
 <!-- {{login}} -->
-<ul class="history-list">
+<ul *ngIf="games.length >= 1" class="history-list">
 	<li *ngFor="let game of games" [ngClass]="{'history-win': isWinner(game.winner), 'history-loss': !isWinner(game.winner) }">
 		<div class="extra-info">
 			{{formatDateAndTime(game.date, game.duration)}}
@@ -19,3 +19,6 @@
 		</div>
 	</li>
 </ul>
+<div *ngIf="games.length === 0" class="no-matches">
+	This user hasn't played any games yet.
+</div>

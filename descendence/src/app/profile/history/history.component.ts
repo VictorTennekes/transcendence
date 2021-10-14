@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { UserService } from 'src/app/user.service';
 
-interface GameHistory {
+export interface GameHistory {
 	winner: string;
 	opponent: string;
 	duration: number,
@@ -36,7 +37,8 @@ export class HistoryComponent implements OnInit {
 	games: GameHistory[] = [];
 	display_name: string;
 	constructor(
-		private readonly userService: UserService
+		private readonly userService: UserService,
+		private readonly route: ActivatedRoute,
 		) { }
 		
 		isWinner(winner: string) {
@@ -47,40 +49,41 @@ export class HistoryComponent implements OnInit {
 			this.userService.getCurrentUser().subscribe((user: any) => {
 				this.display_name = user.display_name;
 			});
-			const elem1: GameHistory = {
-				winner: "Tishj",
-				opponent: "Max Theorum",
-				duration: 234,
-				date: new Date(),
-				score: {
-					["Max Theorum"]: 3,
-					["Tishj"]: 10
-				},
-			};
-			const elem2: GameHistory = {
-				winner: "Max Theorum",
-				opponent: "Tishj",
-				duration: 142,
-				date: new Date(),
-				score: {
-					["Max Theorum"]: 10,
-					["Tishj"]: 5
-				},
-			};
-			this.games.push(elem1);
-			this.games.push(elem2);
-			this.games.push(elem1);
-			this.games.push(elem2);
-			this.games.push(elem1);
-			this.games.push(elem2);
-			this.games.push(elem1);
-			this.games.push(elem2);
-			this.games.push(elem1);
-			this.games.push(elem2);
-			this.games.push(elem1);
-			this.games.push(elem2);
-			this.games.push(elem1);
-			this.games.push(elem2);
+			this.games = this.route.snapshot.data.history;
+			// const elem1: GameHistory = {
+			// 	winner: "Tishj",
+			// 	opponent: "Max Theorum",
+			// 	duration: 234,
+			// 	date: new Date(),
+			// 	score: {
+			// 		["Max Theorum"]: 3,
+			// 		["Tishj"]: 10
+			// 	},
+			// };
+			// const elem2: GameHistory = {
+			// 	winner: "Max Theorum",
+			// 	opponent: "Tishj",
+			// 	duration: 142,
+			// 	date: new Date(),
+			// 	score: {
+			// 		["Max Theorum"]: 10,
+			// 		["Tishj"]: 5
+			// 	},
+			// };
+			// this.games.push(elem1);
+			console.log(`RESOLVED HISTORY: ${JSON.stringify(this.route.snapshot.data.history)}`);
+			// this.games.push(elem2);
+			// this.games.push(elem1);
+			// this.games.push(elem2);
+			// this.games.push(elem1);
+			// this.games.push(elem2);
+			// this.games.push(elem1);
+			// this.games.push(elem2);
+			// this.games.push(elem1);
+			// this.games.push(elem2);
+			// this.games.push(elem1);
+			// this.games.push(elem2);
+			// this.games.push(elem1);
+			// this.games.push(elem2);
 		}
 	}
-	

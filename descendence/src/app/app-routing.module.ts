@@ -24,6 +24,8 @@ import { PostGameGuard } from './post-game.guard';
 import { ProfileComponent } from './profile/profile.component';
 import { StatsComponent } from './profile/stats/stats.component';
 import { HistoryComponent } from './profile/history/history.component';
+import { HistoryResolver } from './profile/history.resolver';
+import { ProfileGuard } from './profile/profile.guard';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -43,6 +45,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'profile/:id',
+				canActivate: [ ProfileGuard ],
 				component: ProfileComponent,
 				children: [
 					{
@@ -51,6 +54,7 @@ const routes: Routes = [
 					},
 					{
 						path: 'history',
+						resolve: { history: HistoryResolver },
 						component: HistoryComponent
 					},
 					{
@@ -132,6 +136,15 @@ const routes: Routes = [
 @NgModule({
 	imports: [RouterModule.forRoot(routes)],
 	exports: [RouterModule],
-	providers: [ LoginGuard, GameGuard, PostGameGuard, chatGuardService, SearchService, chatAdminGuard ]
+	providers: [
+		LoginGuard,
+		GameGuard,
+		PostGameGuard,
+		chatGuardService,
+		SearchService,
+		chatAdminGuard,
+		HistoryResolver,
+		ProfileGuard
+	]
 })
 export class AppRoutingModule { }
