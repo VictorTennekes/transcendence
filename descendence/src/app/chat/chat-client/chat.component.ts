@@ -30,7 +30,15 @@ import { MatchService } from 'src/app/match.service';
 		  private router: Router,
 		  private route: ActivatedRoute,
 		  private matchService: MatchService
-	  ) { }
+	  ) { 
+		this.loggedInUser = {
+			intra_name: "",
+			display_name: "",
+			avatar_url: "",
+			friends: [],
+			blockedByUsers: []
+		}
+	  }
 
 	public chat: chatModel = {
 		id: "",
@@ -74,16 +82,10 @@ import { MatchService } from 'src/app/match.service';
 					this.loggedInUser.blockedByUsers = blocks;
 				}
 			})
-			// this.userService. TODO: get blockedUsers
 		});
-		console.log("logged in user is: ", this.loggedInUser)
-		console.log(this.chat);
 		this.route.params.subscribe(params => {
 			this.searchService.findChatById(params['id']).subscribe((response) => {
-				console.log("found chat by id");
-				// console.log(response);
 				this.chat = response;
-				console.log(this.chat);
 				this.searchService.userInChat(this.chat.id).subscribe((isTrue: boolean) => {
 					if (isTrue === false) {
 						this.searchService.addUserToChat(this.chat.id).subscribe((updatedChat: chatModel) => {
@@ -94,10 +96,7 @@ import { MatchService } from 'src/app/match.service';
 				this.searchService.userIsAdmin(this.chat.id).subscribe((result) => {
 					this.userIsAdmin = result;
 				});
-				console.log("here?");
 				this.chatService.receiveMessages().subscribe((msg) => {
-						console.log("chat is");
-						console.log(this.chat);
 					if (msg.chat.id === this.chat.id) {
 						this.chat.messages.push(msg);
 					}
@@ -117,19 +116,18 @@ import { MatchService } from 'src/app/match.service';
 	}
 
 	public isBlocked(username: string): boolean {
-		console.log("im ", this.loggedInUser.intra_name, " blocked by ", this.loggedInUser.blockedByUsers);
-		for (let block of this.loggedInUser.blockedByUsers) {
-			if (block.intra_name === username) {
-				return true;
+		if (this.loggedInUser && this.loggedInUser.blockedByUsers) {
+			for (let block of this.loggedInUser.blockedByUsers) {
+				if (block.intra_name === username) {
+					return true;
+				}
 			}
 		}
-		//TODO: check if user is blocked
 		return false;
 	}
 
 	public canInvite(username: string): boolean {
 		if (username === this.loggedInUser.intra_name) {
-			console.log("its a me")
 			return false;
 		}
 		return (!this.isBlocked(username))
@@ -181,14 +179,11 @@ import { MatchService } from 'src/app/match.service';
 	}
 
 	public isFriend(username: string): boolean {
-		console.log(this.loggedInUser);
-		// if (username === this.loggedInUser.intra_name) {
-			// return false;
-		// }
-		console.log("my friends: ", this.loggedInUser.friends);
-		for (let friend of this.loggedInUser.friends) {
-			if (friend.intra_name === username) {
-				return true;
+		if (this.loggedInUser && this.loggedInUser.friends) {
+			for (let friend of this.loggedInUser.friends) {
+				if (friend.intra_name === username) {
+					return true;
+				}
 			}
 		}
 		return false;
