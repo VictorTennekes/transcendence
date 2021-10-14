@@ -2,12 +2,8 @@ import { Route } from '@angular/compiler/src/core';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { GameService } from 'src/app/game.service';
+import { Player, PostGameData, ResolvedPostGame } from 'src/app/postgame.resolver';
 import { UserService } from 'src/app/user.service';
-
-interface Player {
-	display_name: string,
-	score: number
-}
 
 function secondsToDhms(seconds: number) {
 	seconds = Number(seconds);
@@ -22,17 +18,6 @@ function secondsToDhms(seconds: number) {
 	var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
 	return dDisplay + hDisplay + mDisplay + sDisplay;
 }
-
-interface PostGameData {
-	id: string,
-	duration: number,
-	start: Date,
-	end: Date,
-	data: {
-		scores: {[key: string] : number},
-		winner: string
-	}
-};
 
 @Component({
   selector: 'app-post',
@@ -63,30 +48,20 @@ export class PostComponent implements OnInit {
 	  private readonly route: ActivatedRoute,
 	  private readonly router: Router
   ) {
-	  this.gameService.get(this.route.snapshot.params.id).subscribe((game: any) => {
-		const data: PostGameData = game;
-		this.duration = (data.duration / 1000);
-		const playerNames = Object.keys(data.data.scores);
-		this.userService.getUserByLogin(playerNames[0]).subscribe((user: any) => {
-			this.players.push({
-				display_name: user.display_name,
-				score: data.data.scores[playerNames[0]]
-			});
-			this.winner = this.getWinningPlayer();
-		});
-		this.userService.getUserByLogin(playerNames[1]).subscribe((user: any) => {
-			this.players.push({
-				display_name: user.display_name,
-				score: data.data.scores[playerNames[1]]
-			});
-			this.winner = this.getWinningPlayer();
-			
-		});
-	  });
   }
 
   ngOnInit(): void {
 	  document.clear();
+	//   let postgameData = this.route.snapshot.data;
+	//   console.log(`RESOLVED DATA: ${JSON.stringify(postgameData)}`);
+	//   this.route.data.subscribe((data: any) => {
+	// 	  console.log(`RESOLVED DATA - ${JSON.stringify(data)}`);
+	//   });
+		// console.log(`RESOLVED DATA DOUBLE CHECKING: ${JSON.stringify(this.route.snapshot.data.data)}`);
+		const data = this.route.snapshot.data.data;
+		this.winner = data.winner;
+		this.players = data.players;
+		this.winner = this.getWinningPlayer();
+		this.duration = data.duration;
   }
-
 }

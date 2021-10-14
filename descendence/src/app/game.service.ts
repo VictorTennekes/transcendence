@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { PostGameData } from './postgame.resolver';
 
 @Injectable({
 	providedIn: 'root'
@@ -18,8 +19,8 @@ export class GameService {
 		}));
 	}
 
-	get(id: string) {
-		return this.http.get('api/match/' + id);
+	get(id: string): Observable<PostGameData> {
+		return this.http.get<PostGameData>('api/match/' + id);
 	}
 
 	matchFinished(id: string) {

@@ -17,6 +17,7 @@ import { editFileName } from './filters/edit-file-name.middleware';
 import { diskStorage } from 'multer';
 import { join } from 'path';
 import { unlink } from 'fs';
+import { UserEntity } from './entities/user.entity';
 
 const fs = require('fs');
 const { promisify } = require('util')
@@ -51,6 +52,18 @@ export class UserController {
 	async getUser(@Req() request, @Body() body: any) {
 		Logger.log(`GET USER - ${JSON.stringify(body)}`);
 		return this.userService.findOne(body.login);
+	}
+
+	@Post('get_multiple')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async getUsers(@Req() request, @Body() body: any) {
+		Logger.log(`GET USERS - ${JSON.stringify(body)}`);
+		let users: UserEntity[] = [];
+		for (const login of body.logins) {
+			users.push(await this.userService.findOne(login));
+		}
+		return users;
 	}
 
 	//TODO: add guard to prevent anything other than images to be uploaded

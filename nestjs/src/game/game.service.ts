@@ -78,11 +78,11 @@ export class GameService {
 		await this.gameRepository.save(entry);
 	}
 	//the service needs to interact with the gateway to send updates to the users
-	private gameLoop(id: string) {
+	private async gameLoop(id: string) {
 		if (this.games[id].goalReached) {
 			Logger.log(`GAME[${id}] - GOAL REACHED`);
 			this.gameGateway.sendFinished(id);
-			this.saveGameInDatabase(id);
+			await this.saveGameInDatabase(id);
 			delete(this.games[id]);
 			this.games[id] = undefined;
 			clearInterval(this.gameIntervals[id]);
