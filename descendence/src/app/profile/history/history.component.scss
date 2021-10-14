@@ -1,5 +1,5 @@
 .history-list {
-	height: 45rem;
+	height: 35rem;
 	overflow-y: scroll;
 	padding: 0;
 	margin: auto;
@@ -61,12 +61,12 @@
 }
 
 @mixin history-data-base {
-	padding: 1.2rem 1.5rem;
+	padding: 0.8rem 1.5rem;
 	background-color:rgba(0, 0, 0, 0.1);
 	border-radius: 0.8rem;
 	font-family: 'Poppins';
 	font-weight: bold;
-	font-size: 2rem;
+	font-size: 1.5rem;
 	margin-right: 3rem;
 	color: #D3E5EF;
 }
@@ -88,7 +88,7 @@
 
 @mixin history-result-base {
 	@include history-data-base();
-	padding: 1.2rem 2.5rem;
+	padding: 0.8rem 2.5rem;
 	width: 12rem;
 	text-align: center;
 	margin-right: 10rem;
