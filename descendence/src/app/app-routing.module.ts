@@ -21,6 +21,8 @@ import { chatAdminGuard } from './chat/chat-client/chatAdminGuard.service';
 import { GameGuard } from './game.guard';
 import { PostComponent } from './game/post/post.component';
 import { PostGameGuard } from './post-game.guard';
+import { AcceptComponent } from './accept/accept.component';
+import { LoadcircleComponent } from './accept/loadcircle/loadcircle.component';
 import { SetupGuard } from './setup.guard';
 import { AccountSetupComponent } from './account-setup/account-setup.component';
 

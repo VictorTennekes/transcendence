@@ -1,8 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AcceptService } from '../accept.service';
 import { CountdownComponent, CountdownConfig } from 'ngx-countdown';
 import { MatchService } from '../match.service';
 import { Router } from '@angular/router';
+import { LoadcircleComponent } from './loadcircle/loadcircle.component';
+import { QueueService } from '../queue.service';
 
 @Component({
 	selector: 'app-accept',
@@ -23,7 +25,8 @@ export class AcceptComponent implements OnInit {
 	constructor(
 		private readonly router: Router,
 		private readonly acceptService: AcceptService,
-		private readonly matchService: MatchService
+		private readonly matchService: MatchService,
+		private readonly queueService: QueueService
 	) { }
 
 	accept() {
@@ -31,27 +34,38 @@ export class AcceptComponent implements OnInit {
 		this.accepted = true;
 	}
 
-	close() {
+	decline() {
+		// this.matchService.cancelReady();
+		console.log("decline");
+		this.matchService.decline();
 		this.acceptService.close();
 	}
-	
+
 	ngOnInit(): void {
+		console.log("accept component up")
 		this.matchService.matchAccepted().subscribe((match: any) => {
-			// console.log(`MATCH ACCEPTED: ${accepted}`);
-			this.close();
 			if (match.accepted) {
-				//both players accepted -> direct to game page
+				console.log("accepted")
+				this.acceptService.close();
 				this.router.navigate(['game/' + match.id]);
 			}
 			else {
-				//did this client accept?
+				console.log("not accepted")
+				this.acceptService.close();
+				// did this client accept?
 				if (this.accepted) {
-					//keep the client in the queue
+					this.queueService.open({hasBackdrop: false});
 				}
 				else {
-					//remove the client from the queue
+					this.queueService.findDisabled = false;
+					this.queueService.timePassed = 0;
 				}
 			}
+			this.accepted = false;
 		});
 	}
+
+	// ngOnDestroy(): void {
+	// 	this.matchService.cancelAccept();
+	// }
 }

@@ -61,23 +61,26 @@ import {HttpErrorResponse} from '@angular/common/http';
 	}
 
 	public submitUser() {
-		const newChat: createChatModel = {
-			name: '',
-			users: [],
-			admins: [],
-			visibility: 'direct',
-			password: ""
+		if (this.userForm.value.username) {
+			const newChat: createChatModel = {
+				name: '',
+				users: [],
+				admins: [],
+				visibility: 'direct',
+				password: ""
+			}
+			newChat.users.push(this.userForm.value.username);
+			this.searchService.findMatchingChats(this.userForm.value.username).subscribe(
+				(response: chatModel[]) => {
+					this.errorMessage = "";
+					this.chats = response;
+				},
+				(error: HttpErrorResponse) => {
+					this.errorMessage = error.error.message;
+					this.chats = [];
+				},
+			)
 		}
-		newChat.users.push(this.userForm.value.username);
-		this.searchService.findMatchingChats(this.userForm.value.username).subscribe(
-			(response: chatModel[]) => {
-				this.errorMessage = "";
-				this.chats = response;
-			},
-			(error: HttpErrorResponse) => {
-				this.errorMessage = error.error.message;
-				this.chats = [];
-			},
-		)
 	}
+
 }
