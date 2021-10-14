@@ -73,4 +73,8 @@ export class UserService {
 	removeFriend(username: string) {
 		this.http.post('api/user/unfriend/', {username: username}).subscribe(() => {this.userSource.next('');});
 	}
+
+	getBlockedByUser(): Observable<userModel[]> {
+		return this.http.get<userModel[]>('api/user/get_blocked_by_users');
+	}
 }

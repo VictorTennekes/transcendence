@@ -167,6 +167,13 @@ export class UserController {
 
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
+	@Get('get_blocked_by_users')
+	async getBlockedByUsers(@Req() request): Promise<UserDTO[]> {
+		return await this.userService.getBlockedByUsers(request.session.passport.user.login);
+	}
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
 	@Post('unblock_user')
 	async unblockUser(@Req() request, @Body() username: any) {
 		if (request.user.login === username.username)

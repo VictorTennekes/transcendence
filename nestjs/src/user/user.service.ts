@@ -187,6 +187,15 @@ export class UserService {
 		return user.friends;
 	}
 
+	async getBlockedByUsers(username: string): Promise<UserDTO[]> {
+		const user = await this.userRepository.findOne({
+			where: {intra_name: username},
+			relations: ["blockedByUsers"]
+		})
+		console.log(user);
+		return user.blockedByUsers;
+	}
+
 	async login(loginInformation: LoginUserDto): Promise<LoginStatus> {
 		const intra_name = loginInformation.intra_name;
 		const user = await this.findOrCreateByLogin(intra_name);

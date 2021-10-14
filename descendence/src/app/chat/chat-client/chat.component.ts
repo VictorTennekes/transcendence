@@ -46,7 +46,13 @@ import { MatchService } from 'src/app/match.service';
 	public default_avatar_url = "";
 	public errorMessage: string = "";
 	public userIsAdmin: boolean = false;
-	public loggedInUser: string = "";
+	public loggedInUser: userModel = {
+		intra_name: "",
+		display_name: "",
+		avatar_url: "",
+		friends: [],
+		blockedByUsers: []
+	}
 
 	ngOnInit(): void {
 		
@@ -57,7 +63,18 @@ import { MatchService } from 'src/app/match.service';
 
 
 		this.userService.getCurrentUser().subscribe((data: any) => {
-			this.loggedInUser = data.display_name;
+			this.loggedInUser = data;
+			this.userService.getFriends(this.loggedInUser.intra_name).subscribe((friends: userModel[]) => {
+				if (friends) {
+					this.loggedInUser.friends = friends;
+				}
+			})
+			this.userService.getBlockedByUser().subscribe((blocks: userModel[]) => {
+				if (blocks) {
+					this.loggedInUser.blockedByUsers = blocks;
+				}
+			})
+			// this.userService. TODO: get blockedUsers
 		});
 		console.log("logged in user is: ", this.loggedInUser)
 		console.log(this.chat);
@@ -96,16 +113,26 @@ import { MatchService } from 'src/app/match.service';
 	}
 
 	public isLoggedInUser(username: string): boolean {
-		return (username === this.loggedInUser);
+		return (username === this.loggedInUser.intra_name);
 	}
 
-	public isNotBlocked(username: string): boolean {
+	public isBlocked(username: string): boolean {
+		console.log("im ", this.loggedInUser.intra_name, " blocked by ", this.loggedInUser.blockedByUsers);
+		for (let block of this.loggedInUser.blockedByUsers) {
+			if (block.intra_name === username) {
+				return true;
+			}
+		}
 		//TODO: check if user is blocked
-		return true;
+		return false;
 	}
 
 	public canInvite(username: string): boolean {
-		return (this.isLoggedInUser(username) && this.isNotBlocked(username))
+		if (username === this.loggedInUser.intra_name) {
+			console.log("its a me")
+			return false;
+		}
+		return (!this.isBlocked(username))
 	}
 
 	public back() {
@@ -153,13 +180,27 @@ import { MatchService } from 'src/app/match.service';
 		this.matchService.sendFriendRequest(username);
 	}
 
-	public isFriend(username: string) {
-		//TODO: implement
-		return true;
+	public isFriend(username: string): boolean {
+		console.log(this.loggedInUser);
+		// if (username === this.loggedInUser.intra_name) {
+			// return false;
+		// }
+		console.log("my friends: ", this.loggedInUser.friends);
+		for (let friend of this.loggedInUser.friends) {
+			if (friend.intra_name === username) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public removeFriend(username: string) {
 		this.userService.removeFriend(username);
+		this.userService.getFriends(this.loggedInUser.intra_name).subscribe((friends: userModel[]) => {
+			if (friends) {
+				this.loggedInUser.friends = friends;
+			}
+		})
 	}
 
 	public onSubmit() {
