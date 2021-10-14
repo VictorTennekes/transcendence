@@ -240,12 +240,27 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.connectedUsers.push(newSocket);
 		//no reference to a gameID here, cant join the match room
 		Logger.log(`MATCH GATEWAY - USER[${client.id}] - JOINED`);
+		
+		console.log("connecting: ", this.connectedUsers);
+		console.log(user);
 		//TODO: if pending friend request, send friend request
 		for (let requestIndex = 0; requestIndex < this.pendingFriendRequests.length; requestIndex++) {
 			if (this.pendingFriendRequests[requestIndex].receive === user.intra_name) {
 				client.emit('receive-friend-request', this.pendingFriendRequests[requestIndex].submit);
 				this.pendingFriendRequests.splice(requestIndex, 1);
 				console.log(this.pendingFriendRequests);
+			}
+		}
+		let friends: UserDTO[] = await this.userService.getFriends(user.intra_name);
+		for (let friend of friends) {
+			console.log("friend of connected user: ", friend)
+			let usr = this.isOnline(friend.intra_name);
+			if (usr) {
+				console.log("emit connected msg");
+				console.log("emitting to: ", usr);
+				console.log("emit user: ", user);
+				usr.socket.emit('friend_connected', user);
+				console.log("emitted");
 			}
 		}
 	}
@@ -255,17 +270,29 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 		Logger.log(`MATCH GATEWAY - USER[${client.id}] - LEFT`);
 		Logger.log(`MATCH GATEWAY - CLIENT[${client.id}] - LEFT`);
+		//TODO: send disconenct to all connected users with this.connectedUsers[index].user.intra_name
 		const index = this.connectedUsers.findIndex(x => x.socket.id === client.id);
+		let user: UserDTO = this.connectedUsers[index].user;
 		this.connectedUsers.splice(index, 1);
-		let user = await getUserFromSocket(client, this.userService);
-		user.friends = await this.userService.getFriends(user.intra_name);  		
-		for (let friend of user.friends) {
-			for (let connectedUser of this.connectedUsers) {
-				if (friend.intra_name === connectedUser.user.intra_name) {
-					connectedUser.socket.emit('friend_disconnected', user);
-				}
-			}
+		console.log("disconnecting: ", this.connectedUsers);
+		for (let friend of this.connectedUsers) {
+			console.log("emitting a thing");
+			friend.socket.emit('friend_disconnected', user);
 		}
+		console.log("aaaa");
+		// let user = await getUserFromSocket(client, this.userService);
+		// console.log("DISCONNECTING USER");
+		// console.log(user);
+		// //TODO: cant query here!
+		// user.friends = await this.userService.getFriends(user.intra_name);
+		// for (let friend of user.friends) {
+		// 	console.log("disconnect stuff friend: ", friend);
+		// 	for (let connectedUser of this.connectedUsers) {
+		// 		if (friend.intra_name === connectedUser.user.intra_name) {
+		// 			connectedUser.socket.emit('friend_disconnected', user);
+		// 		}
+		// 	}
+		// }
 	}
 
 	@SubscribeMessage('send-friend-request')

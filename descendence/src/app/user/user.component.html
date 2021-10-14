@@ -1,6 +1,6 @@
 <h1>Friends:</h1>
 <br>
-<mat-list *ngIf="loggedInUser && loggedInUser.friends">
+<mat-list *ngIf="friends.length !== 0">
     <div mat-subheader>Online</div>  
     <mat-list-item *ngFor="let friend of onlineFriends; let last = last;">  
         <div matListAvatar class="avatar" style="{{getUserAvatar(friend.avatar_url)}}"></div>
@@ -8,7 +8,7 @@
         <mat-divider *ngIf="!last"></mat-divider>
     </mat-list-item>
 </mat-list>
-<mat-list *ngIf="loggedInUser && loggedInUser.friends">
+<mat-list *ngIf="friends.length !== 0">
     <div mat-subheader>Offline</div>  
     <mat-list-item *ngFor="let friend of offlineFriends; let last = last;">  
         <div matListAvatar class="avatar" style="{{getUserAvatar(friend.avatar_url)}}"></div>
@@ -16,4 +16,4 @@
         <mat-divider *ngIf="!last"></mat-divider>
     </mat-list-item>
 </mat-list>
-<p *ngIf="loggedInUser && loggedInUser.friends && loggedInUser.friends.length === 0">You have no friends :(</p>
+<p *ngIf="friends.length === 0">You have no friends :(</p>

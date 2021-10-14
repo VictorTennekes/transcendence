@@ -35,32 +35,51 @@ export class UserComponent implements OnInit {
 	}
 
 	trackFriendStatus() {
+		for (let friend of this.friends) {
+			this.offlineFriends.push(friend);
+		}
 		this.matchService.friendConnected().subscribe((onlineFriend: userModel) => {
-			const index = this.offlineFriends.findIndex(x => x.intra_name === onlineFriend.intra_name);
-			this.offlineFriends.splice(index, 1);
-			this.onlineFriends.push(onlineFriend);
+			console.log("CONNECT: ", onlineFriend)
+			let index = this.offlineFriends.findIndex(x => x.intra_name === onlineFriend.intra_name);
+			console.log("index, ", index);
+			if (index !== -1) {
+				this.offlineFriends.splice(index, 1);
+			}
+			index = this.onlineFriends.findIndex(x => x.intra_name === onlineFriend.intra_name);
+			if (index === -1) {
+				this.onlineFriends.push(onlineFriend);
+			}
 		});
 		this.matchService.friendDisconnected().subscribe((offlineFriend: userModel) => {
-			const index = this.offlineFriends.findIndex(x => x.intra_name === offlineFriend.intra_name);
-			this.onlineFriends.splice(index, 1);
-			this.offlineFriends.push(offlineFriend);
+			if (this.friends.findIndex(x => x.intra_name === offlineFriend.intra_name) !== -1) {
+				console.log("DISCONNECT: ", offlineFriend);
+				let index = this.onlineFriends.findIndex(x => x.intra_name === offlineFriend.intra_name);
+				//TODO: if friend, then do all this. Maybe i should do the same with connections
+				console.log("index ", index);
+				if (index !== -1) {
+					this.onlineFriends.splice(index, 1);
+				}
+				index = this.offlineFriends.findIndex(x => x.intra_name === offlineFriend.intra_name);
+				if (index === -1) {
+					this.offlineFriends.push(offlineFriend);
+				}
+				console.log("res:")
+				console.log("online: ", this.onlineFriends);
+				console.log("offline: ", this.offlineFriends);
+			}
 		})
+			
 		this.matchService.requestOnlineFriends();
 	}
 
 	async ngOnInit(): Promise<void> {
 		this.userService.getCurrentUser().subscribe((data: any) => {
 			this.loggedInUser = data;
-			data.friends = [];
 			console.log(this.loggedInUser)
 			this.userService.getFriends(this.loggedInUser.intra_name).subscribe((res: userModel[]) => {
 				console.log(res);
-				if (res) {
-					this.loggedInUser.friends = res;
-					this.trackFriendStatus();
-				} else {
-					this.loggedInUser.friends = [];
-				}
+				this.friends = res;
+				this.trackFriendStatus();
 			})
 		});
 	}
