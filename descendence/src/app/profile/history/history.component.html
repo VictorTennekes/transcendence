@@ -1,10 +1,21 @@
-<div class="container">
-	<ul>
-		<li>
-			"test"
-		</li>
-		<li>
-			"test2"
-		</li>
-	</ul>
-</div>
+
+<!-- {{login}} -->
+<ul class="history-list">
+	<li *ngFor="let game of games" [ngClass]="{'history-win': isWinner(game.winner), 'history-loss': !isWinner(game.winner) }">
+		<div class="extra-info">
+			{{formatDateAndTime(game.date, game.duration)}}
+		</div>
+		<div class="result">
+			{{isWinner(game.winner) ? "WIN" : "LOSS"}}
+		</div>
+		<div class="winner">
+			{{game.winner}}
+		</div>
+		<div class="score">
+			{{game.score[game.winner]}} - {{game.score[game.opponent]}}
+		</div>
+		<div class="loser">
+			{{game.opponent}}
+		</div>
+	</li>
+</ul>
