@@ -1,0 +1,17 @@
+<div class="container">
+	<p class="welcome">
+		Welcome {{login}}!
+	</p>
+	<p class="description">
+		Enter a valid display name to continue
+	</p>
+	<form [formGroup]="form" (ngSubmit)="submitForm()" autocomplete="off" spellcheck="false">
+		<input formControlName="name" type="text" class="name" autocomplete="off" [ngClass]="{
+			'valid' : form.controls['name'].valid && form.controls['name'].dirty,
+			'invalid' :  !form.controls['name'].valid && form.controls['name'].dirty
+		}">
+		<button type="submit" class="continue" [disabled]="!buttonEnabled">
+			CONTINUE
+		</button>
+	</form>
+</div>

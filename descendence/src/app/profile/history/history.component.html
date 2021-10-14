@@ -1,21 +1,21 @@
 
 <!-- {{login}} -->
 <ul *ngIf="games.length >= 1" class="history-list">
-	<li *ngFor="let game of games" [ngClass]="{'history-win': isWinner(game.winner), 'history-loss': !isWinner(game.winner) }">
+	<li *ngFor="let game of games" [ngClass]="{'history-win': isWinner(game.winner.intra_name), 'history-loss': !isWinner(game.winner.intra_name) }">
 		<div class="extra-info">
 			{{formatDateAndTime(game.date, game.duration)}}
 		</div>
 		<div class="result">
-			{{isWinner(game.winner) ? "WIN" : "LOSS"}}
+			{{isWinner(game.winner.intra_name) ? "WIN" : "LOSS"}}
 		</div>
 		<div class="winner">
-			{{game.winner}}
+			{{game.winner.display_name}}
 		</div>
 		<div class="score">
-			{{game.score[game.winner]}} - {{game.score[game.opponent]}}
+			{{game.score[game.winner.intra_name]}} - {{game.score[game.opponent.intra_name]}}
 		</div>
 		<div class="loser">
-			{{game.opponent}}
+			{{game.opponent.display_name}}
 		</div>
 	</li>
 </ul>

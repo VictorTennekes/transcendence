@@ -1,6 +1,7 @@
 import { Logger } from "@nestjs/common";
 import { match } from "assert";
-import { Match } from "src/match/match.class";
+import { EndCondition, EndConditionTypes, Match, SpeedMode } from "src/match/match.class";
+import { Socket } from 'socket.io';
 
 const PADDLE_WIDTH = 25;
 const PADDLE_HEIGHT = 150;
@@ -29,7 +30,7 @@ interface Canvas {
 export interface User {
 	login: string;
 	display_name: string;
-	id: string; //socket.id
+	socket: Socket;
 }
 
 interface GameData {
@@ -38,7 +39,8 @@ interface GameData {
 	users: {
 		one: User,
 		two: User
-	}
+	},
+	secondsPassed: number
 }
 
 export class Game {
@@ -53,7 +55,7 @@ export class Game {
 	private players: {[id: string] : Player} = {};
 	private ball: Ball;
 
-	private scoreGoal: number;
+	private goal: EndCondition;
 	setKeyPressed(player: string, keyString: string, state: boolean) {
 		if (keyString !== 'ArrowUp' && keyString !== 'ArrowDown') {
 			return ;
@@ -70,12 +72,12 @@ export class Game {
 			one: match.creator,
 			two: match.opponent
 		};
-		this.scoreGoal = match.settings.scoreGoal;
+		this.goal = match.settings.endCondition;
 		this.startTime = new Date();
 		//initializing objects
-		this.players[match.creator.id] = new Player(WALL_OFFSET,Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
-		this.players[match.opponent.id] = new Player(Game.canvas.width - (WALL_OFFSET + PADDLE_WIDTH), Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
-		this.ball = new Ball(Game.canvas.width / 2 - BALL_SIZE / 2, Game.canvas.height / 2 - BALL_SIZE / 2);
+		this.players[match.creator.socket.id] = new Player(WALL_OFFSET,Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
+		this.players[match.opponent.socket.id] = new Player(Game.canvas.width - (WALL_OFFSET + PADDLE_WIDTH), Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
+		this.ball = new Ball(match.settings.ballSpeed, Game.canvas.width / 2 - BALL_SIZE / 2, Game.canvas.height / 2 - BALL_SIZE / 2);
 	}
 
 	get users() {
@@ -88,13 +90,13 @@ export class Game {
 	get winner() {
 		if (!this.goalReached)
 			return (null);
-		return this.players[this._users.one.id].score > this.players[this._users.two.id].score ? this._users.one.login : this._users.two.login;
+		return this.players[this._users.one.socket.id].score > this.players[this._users.two.socket.id].score ? this._users.one.login : this._users.two.login;
 	}
 
 	get scores(): {[key: string] : number} {
 		let scores: {[key: string] : number} = {};
-		scores[this._users.one.login] = this.players[this._users.one.id].score;
-		scores[this._users.two.login] = this.players[this._users.two.id].score;
+		scores[this._users.one.login] = this.players[this._users.one.socket.id].score;
+		scores[this._users.two.login] = this.players[this._users.two.socket.id].score;
 		return (scores);
 	}
 	get timeElapsed() {
@@ -102,23 +104,46 @@ export class Game {
 		const duration = now.valueOf() - this.startTime.valueOf();
 		return duration;
 	}
-	get data(): GameData {
+	get data() {
+		const users = {
+			one: {
+				display_name: this._users.one.display_name,
+				login: this._users.one.login,
+				id: this._users.one.socket.id,
+			},
+			two: {
+				display_name: this._users.two.display_name,
+				login: this._users.two.login,
+				id: this._users.two.socket.id,
+			}
+		}
 		return {
 			ball: this.ball,
 			players: this.players,
-			users: this._users,
+			users: users,
+			secondsPassed: this.timeElapsed / 1000,
 		};
 	}
 
 	get goalReached() {
-		return this.players[this._users.one.id].score === this.scoreGoal || this.players[this._users.two.id].score === this.scoreGoal;
+		if (this.goal.type == EndConditionTypes.POINT) {
+			// Logger.log("REACHED");
+			return this.players[this._users.one.socket.id].score == this.goal.value || this.players[this._users.two.socket.id].score == this.goal.value;
+		}
+		else {
+			const scoreTied: boolean = (this.players[this._users.one.socket.id].score == this.players[this._users.two.socket.id].score);
+			if (scoreTied)
+				return (false);
+			const duration = this.timeElapsed;
+			return (duration && (duration / 1000) / 60 >= this.goal.value);
+		}
 	}
 
 	update() {
 		for (const player in this.players) {
 			this.players[player].update(Game.canvas);
 		}
-		this.ball.update(this.players[this.users.one.id], this.players[this.users.two.id], Game.canvas);
+		this.ball.update(this.players[this.users.one.socket.id], this.players[this.users.two.socket.id], Game.canvas);
 	}
 }
 
@@ -188,9 +213,24 @@ class Ball extends Entity {
 	
 	private speed:number = BALL_SPEED;
 	
-	constructor(x:number,y:number) {
-		super(BALL_SIZE,BALL_SIZE,x,y);
+	modifier(mode: SpeedMode) {
+		switch (mode) {
+			case SpeedMode.NORMAL: {
+				return 1;
+			}
+			case SpeedMode.FAST: {
+				return 1.5;
+			}
+			case SpeedMode.SANIC: {
+				return 2;
+			}
+		}
+	}
 
+	constructor(mode: SpeedMode, x:number,y:number) {
+		super(BALL_SIZE,BALL_SIZE,x,y);
+	
+		this.speed *= this.modifier(mode);	
 		var randomDirection = Math.floor(Math.random() * 2) + 1;
 		if (randomDirection % 2) {
 			this.velocity.x = 1;

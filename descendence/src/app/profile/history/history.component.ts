@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { UserService } from 'src/app/user.service';
+import { UserEntity, UserService } from 'src/app/user.service';
 
 export interface GameHistory {
-	winner: string;
-	opponent: string;
+	winner: UserEntity;
+	opponent: UserEntity;
 	duration: number,
 	date: Date,
 	score: {[key: string] : number};
@@ -35,19 +35,19 @@ export class HistoryComponent implements OnInit {
 	}
 	
 	games: GameHistory[] = [];
-	display_name: string;
+	intra_name: string;
 	constructor(
 		private readonly userService: UserService,
 		private readonly route: ActivatedRoute,
 		) { }
 		
 		isWinner(winner: string) {
-			return this.display_name === winner;
+			return this.intra_name === winner;
 		}
 		
 		ngOnInit(): void {
-			this.userService.getCurrentUser().subscribe((user: any) => {
-				this.display_name = user.display_name;
+			this.userService.getUserByLogin(this.route.parent?.snapshot.params['id']).subscribe((user: any) => {
+				this.intra_name = user.intra_name;
 			});
 			this.games = this.route.snapshot.data.history;
 			// const elem1: GameHistory = {

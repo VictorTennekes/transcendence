@@ -4,6 +4,7 @@ import { getUserFromSocket } from '@shared/socket-utils';
 import { UserEntity } from '@user/entities/user.entity';
 import { UserService } from '@user/user.service';
 import { match } from 'assert';
+import { lookupService } from 'dns';
 import { getDefaultSettings } from 'http2';
 import { Match } from 'src/match/match.class';
 import { Repository } from 'typeorm';
@@ -12,8 +13,8 @@ import { GameGateway } from './game.gateway';
 import { Game, User } from './game.script';
 
 export interface HistoryObject {
-	winner: string,
-	opponent: string,
+	winner: UserEntity,
+	opponent: UserEntity,
 	score: {[key: string] : number},
 	date: Date,
 	duration: number
@@ -39,7 +40,7 @@ export class GameService {
 
 	async gameFinished(id: string): Promise<boolean> {
 		const game = await this.gameRepository.findOne({where: {id: id}});
-		Logger.log(`GAME OBJECT = ${game}`);
+		Logger.log(`GAME[${id}] - FINISHED`);
 		if (game === undefined)
 			return false;
 		return true;
@@ -47,9 +48,11 @@ export class GameService {
 
 	getGameID(clientID: string) {
 		for (const key in this.games) {
+			if (this.games[key] === undefined)
+				continue ;
 			const players = this.games[key].users;
 			// Logger.log(`players: ${JSON.stringify(players)}`);
-			if (players.one.id == clientID || players.two.id == clientID)
+			if (players.one.socket.id == clientID || players.two.socket.id == clientID)
 				return key;
 		}
 		return null;
@@ -59,7 +62,7 @@ export class GameService {
 		const gameID = this.getGameID(id);
 		if (!gameID)
 			return ;
-		Logger.log(`PLAYER ID: ${id} -> GAME ${gameID}`);
+		// Logger.log(`PLAYER ID: ${id} -> GAME ${gameID}`);
 		this.games[gameID].setKeyPressed(id, arrow, state);
 	}
 
@@ -84,10 +87,13 @@ export class GameService {
 		await this.gameRepository.save(entry);
 	}
 	//the service needs to interact with the gateway to send updates to the users
-	private gameLoop(id: string) {
+	private async gameLoop(id: string) {
 		if (this.games[id].goalReached) {
+			Logger.log(`GAME[${id}] - GOAL REACHED`);
 			this.gameGateway.sendFinished(id);
-			this.saveGameInDatabase(id);
+			await this.saveGameInDatabase(id);
+			delete(this.games[id]);
+			this.games[id] = undefined;
 			clearInterval(this.gameIntervals[id]);
 			return ;
 		}
@@ -115,9 +121,19 @@ export class GameService {
 		let items: HistoryObject[] = [];
 		for (const game of games) {
 			if (game.data.scores.hasOwnProperty(user)) {
+				let winner: UserEntity;
+				let loser: UserEntity;
+				if (game.players[0].intra_name === game.data.winner) {
+					winner = game.players[0];
+					loser = game.players[1];
+				}
+				else {
+					loser = game.players[0];
+					winner = game.players[1];
+				}
 				const item: HistoryObject = {
-					winner: game.data.winner,
-					opponent: game.players[0].intra_name === game.data.winner ? game.players[1].intra_name : game.players[0].intra_name,
+					winner: winner,
+					opponent: loser,
 					score: game.data.scores,
 					duration: Math.floor(game.duration / 1000),
 					date: game.start

@@ -33,6 +33,8 @@ export class ProfileComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+		
+
 		this.route.params.subscribe(params => {
 			this.id = params['id'];
 			this.userService.getUserByLogin(this.id!).subscribe((user: any) => {

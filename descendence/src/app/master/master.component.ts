@@ -10,12 +10,13 @@ import { AcceptComponent } from '../accept/accept.component';
 // import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 // import {DialogData}
 // import {Component, Inject} from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatDialog, MatDialogRef, MatDialogContainer, MAT_DIALOG_DATA, MatDialogConfig} from '@angular/material/dialog';
 
 @Component({
 	selector: 'app-master',
 	templateUrl: './master.component.html',
-	styleUrls: ['./master.component.scss']
+	styleUrls: ['./master.component.scss',
+				'./invite.scss']
 })
 export class MasterComponent implements OnInit {
 	
@@ -55,24 +56,23 @@ export class MasterComponent implements OnInit {
 		})
 	}
 
-	openDialog(user: any) {
-		const dialogRef = this.dialog.open(DialogContentExampleDialog, {
-			data: {username: user}
+	openDialog(settings: MatchSettings) {
+		const dialogConfig: MatDialogConfig = new MatDialogConfig();
+
+		const dialogRef = this.dialog.open(InviteComponent, {
+			data: settings,
+			panelClass: 'invite-dialog'
 		});
 		dialogRef.afterClosed().subscribe(result => {
 			console.log(`Dialog result: ${result}`);
 			if (result) {
 				console.log("navigating to game");
-				// let settings: MatchSettings = {
-					// opponent_username: user
-				// }
-				// this.matchService.findMatch(settings);
-				this.router.navigate(['play', user])
-				//navigate to play tag with username
+				this.router.navigate(['play', settings.opponent_username])
 			} else {
-				console.log("declining invite: ", user);
-				this.matchService.inviteDeclined(user);
-				//emit error
+				console.log("declining invite: ", settings);
+				if (settings.opponent_username) {
+					this.matchService.inviteDeclined(settings.opponent_username);
+				}
 			}
 		});
 	}
@@ -99,17 +99,18 @@ export class MasterComponent implements OnInit {
 
 
 @Component({
-	selector: 'dialog-content-example-dialog',
+	selector: 'invite-component',
 	templateUrl: './invite.html',
-	styleUrls: ['./invite.scss']
+	styleUrls: ['./invite.scss'],
+	providers: [MatDialogContainer, MatDialogConfig]
   })
-  export class DialogContentExampleDialog {
+  export class InviteComponent {
 	//   @Input()
 	//   username: string = "";
 
 	constructor(
-		public dialogRef: MatDialogRef<DialogContentExampleDialog>,
-		@Inject(MAT_DIALOG_DATA) public data: any) {}
+		public dialogRef: MatDialogRef<InviteComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: MatchSettings) {}
 
 	  public accept() {
 		  this.dialogRef.close(true);

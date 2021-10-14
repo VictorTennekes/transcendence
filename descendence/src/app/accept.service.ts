@@ -53,7 +53,9 @@ export class AcceptService {
 	}
 
 	close() {
+		console.log("why doesnt this happen");
 		this.dialogRef.close();
+		console.log("this should have happened");
 	}
 
 	detachments() {
@@ -69,9 +71,9 @@ export class AcceptService {
 		const focusOverlayPortal = new ComponentPortal(AcceptComponent);
 		this.dialogRef = new FocusOverlayRef(overlayRef);
 		overlayRef.attach(focusOverlayPortal);
-		// overlayRef.backdropClick().subscribe((_) => {
-		// 	this.dialogRef.close();
-		// });
+		console.log("opened accept service ref?");
+
+		
 		
 		return this.dialogRef;
 	}

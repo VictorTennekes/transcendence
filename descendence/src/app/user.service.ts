@@ -1,13 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { first, switchMap, take } from 'rxjs/operators';
+import { first, map, switchMap, take } from 'rxjs/operators';
 
 // interface User {
 // 	intraName: string;
 // 	displayName: string;
 // 	avatarUrl: string | null;
 // }
+
+export interface UserEntity {
+	display_name: string;
+	intra_name: string
+};
 
 @Injectable({
 	providedIn: 'root'
@@ -27,8 +32,8 @@ export class UserService {
 		return this.http.post('api/user/check_display_name', {display_name: newDisplayName});
 	}
 
-	updateDisplayName(newDisplayName: string): void {
-		this.http.post('api/user/update_display_name', {display_name: newDisplayName}).subscribe(() => {this.userSource.next('');});
+	updateDisplayName(newDisplayName: string) {
+		return this.http.post('api/user/update_display_name', {display_name: newDisplayName}).pipe(map(() => {this.userSource.next('');}));
 	}
 
 	updateTwoFactor(newState: boolean): void {
@@ -39,8 +44,12 @@ export class UserService {
 		return this.http.get('api/user/fetch_current').pipe(take(1));
 	}
 
-	getUserByLogin(login: string) {
-		return this.http.post('api/user/get', {login});
+	getUserByLogin(login: string): Observable<UserEntity> {
+		return this.http.post<UserEntity>('api/user/get', {login});
+	}
+
+	getUsersByLogins(logins: string[]): Observable<UserEntity[]> {
+		return this.http.post<UserEntity[]>('api/user/get_multiple', {logins});
 	}
 
 	logout(): any {
@@ -48,6 +57,7 @@ export class UserService {
 	}
 
 	userExists(username: string) {
+		// console.log(`USEREXISTS - ${username}`);
 		return this.http.get('api/user/user_exists/' + username);
 	}
 
