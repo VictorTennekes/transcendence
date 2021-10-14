@@ -59,8 +59,10 @@ export class MasterComponent implements OnInit {
 
 
 	openFriendRequest(user: any) {
+		const dialogConfig: MatDialogConfig = new MatDialogConfig();
 		const dialogRef = this.dialog.open(friendRequestDialog, {
-			data: {username: user}
+			data: {username: user.display_name},
+			panelClass: 'invite-dialog'
 		});
 		dialogRef.afterClosed().subscribe((accepted: boolean) => {
 			console.log(`Dialog result: ${accepted}`);
@@ -146,7 +148,8 @@ export class MasterComponent implements OnInit {
 @Component({
 	selector: 'friend-request-dialog',
 	templateUrl: './friend-request.html',
-	styleUrls: ['./invite.scss']
+	styleUrls: ['./invite.scss'],
+	providers: [MatDialogContainer, MatDialogConfig]
   })
   export class friendRequestDialog {
 	//   @Input()

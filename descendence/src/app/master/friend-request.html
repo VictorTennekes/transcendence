@@ -1,7 +1,4 @@
-<div class="container">
-	<h1>{{data.username}} wants to be your friend</h1>
-	<div class="selection-container">
-		<button mat-stroked-button class="button" color="primary" (click)="accept()">Accept</button>
-		<button mat-stroked-button class="button" color="primary" (click)="close()">Decline</button>
-	</div>
-</div>
+<p class="invite-opponent-name">{{data.username}}</p>
+<p>&nbsp; wants to be your friend</p>
+<button mat-stroked-button class="button" (click)="accept()">Accept</button>
+<button mat-stroked-button class="button" (click)="close()">Decline</button>
