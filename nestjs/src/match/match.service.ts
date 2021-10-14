@@ -1,10 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Socket } from 'socket.io';
 import { nanoid } from 'nanoid';
 import { Observable } from 'rxjs';
 import { User } from 'src/game/game.script';
 import { GameService } from 'src/game/game.service';
 import { Match, MatchSettings } from './match.class';
 import { MatchGateway } from './match.gateway';
+import e from 'express';
 
 //Keep an array of matches internally, with a unique id
 
@@ -16,6 +18,11 @@ export class MatchService {
 
 	matches: {[key: string] : Match} = {};
 
+	deleteMatch(id: string) {
+		delete(this.matches[id]);
+		this.matches[id] = undefined;
+	}
+
 	createMatch(creator: User, settings: MatchSettings, privateFlag = false): string {
 		let id = nanoid();
 		this.matches[id] = new Match(id, creator, settings, privateFlag);
@@ -24,19 +31,34 @@ export class MatchService {
 
 	getMatchID(clientID: string) {
 		for (const key in this.matches) {
-			if (this.matches[key] !== undefined && (this.matches[key].creator.id === clientID || this.matches[key].opponent.id === clientID))
+			if (this.matches[key] !== undefined &&
+				(this.matches[key].creator !== undefined && this.matches[key].creator.socket.id === clientID ||
+				(this.matches[key].opponent !== undefined && this.matches[key].opponent.socket.id === clientID)))
 				return key;
 		}
 		return null;
 	}
 
-	cancelMatch(clientID: string) {
-		const id = this.getMatchID(clientID);
+	cancelMatch(client: Socket) {
+		const id = this.getMatchID(client.id);
 		if (!id) { //error
+			Logger.log("GAME[] - NOT FOUND - USER[${client.id}]");
 			return ;
 		}
+		Logger.log(`GAME[${id}] - CANCEL - USER[${client.id}]`);
 		delete this.matches[id];
 		this.matches[id] = undefined;
+		client.leave(id);
+	}
+
+	decline(client: Socket) {
+		const id = this.getMatchID(client.id);
+		if (!id) { //error
+			Logger.log("GAME[] - NOT FOUND - USER[${client.id}]");
+			return ;
+		}
+		Logger.log(`GAME[${id}] - DECLINE - USER[${client.id}]`);
+		client.leave(id);
 	}
 
 	createGame(id: string) {
@@ -44,6 +66,16 @@ export class MatchService {
 		this.gameService.createGame(match);
 	}
 
+	excludedFromSearch(key: string) {
+		const match = this.matches[key];
+		if (match === undefined)
+			return true;
+		if (match.ready === true)
+			return true;
+		if (match.private === true)
+			return true;
+		return false;
+	}
 	//return the match (either found or created)
 	// findExistingMatch(user: User, settings: MatchSettings): Match | null {
 	// 	for (const matchKey in this.matches) {
@@ -55,21 +87,15 @@ export class MatchService {
 	matchExists(user: User, settings: MatchSettings) {
 		//BUG: subsequent requests from the same user will make the creator and opponent the same user
 		
-		console.log("findMatch");
-		console.log("all existing matches:")
-		console.log(this.matches);
 		for (const key in this.matches) {
-			// console.log("findMatch");
 			//TODO: handle condition for opponent_username differently
-			//loop through all matches, trying to find a compatible match (based on 'settings')
-			if (this.matches[key] === undefined || this.matches[key].ready || this.matches[key].private)
+			if (this.excludedFromSearch(key))
 				continue ;
-			if (this.matches[key].settingCompare(settings, user)) {
+			if (this.matches[key].settingCompare(settings)) {
 				this.matches[key].setOpponent(user);
 				return (key);
 			}
 		}
-		//no compatible match found, create one instead
 		return null;
 	}	
 
@@ -81,9 +107,9 @@ export class MatchService {
 		for (const key in this.matches) {
 			//TODO: handle condition for opponent_username differently
 			//loop through all matches, trying to find a compatible match (based on 'settings')
-			if (this.matches[key] === undefined || this.matches[key].ready || this.matches[key].private)
+			if (this.excludedFromSearch(key))
 				continue ;
-			if (this.matches[key].settingCompare(settings, user)) {
+			if (this.matches[key].settingCompare(settings)) {
 				this.matches[key].setOpponent(user);
 				return (key);
 			}
@@ -92,6 +118,16 @@ export class MatchService {
 		return (this.createMatch(user, settings));
 	}
 
+	listenMatch(user: string) {
+		const id = this.getMatchID(user);
+		if (!id || !this.matches[id]) {
+			Logger.log(`MATCH[] - LISTEN - USER[${user}]`);
+			return ;
+		}
+		Logger.log(`MATCH[${id}] - LISTEN - USER[${user}]`);
+		this.matches[id].setReady(user);
+	}
+	
 	findConnectedSocket(user: User, settings: MatchSettings) {
 		//BUG: subsequent requests from the same user will make the creator and opponent the same user
 		for (const key in this.matches) {
@@ -99,7 +135,7 @@ export class MatchService {
 			//loop through all matches, trying to find a compatible match (based on 'settings')
 			if (this.matches[key] === undefined || this.matches[key].ready || this.matches[key].private)
 				continue ;
-			if (this.matches[key].settingCompare(settings, user)) {
+			if (this.matches[key].settingCompare(settings)) {
 				this.matches[key].setOpponent(user);
 				return (key);
 			}
@@ -115,7 +151,7 @@ export class MatchService {
 		this.matches[id].setAccepted(user);
 	}
 
-	isReady(id: string) {
+	areListening(id: string) {
 		return this.matches[id]?.ready;
 	}
 

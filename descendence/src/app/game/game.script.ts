@@ -31,6 +31,7 @@ export class Game {
 	private gameContext: CanvasRenderingContext2D;
 	private scoreContext: CanvasRenderingContext2D;
 	private players: {[id: string] : Player} = {};
+	private timePassed: number = 0;
 	private ball: Ball;
 
 	// static setKeyPressed(playerString: string, keyString: string, state: boolean) {
@@ -57,6 +58,17 @@ export class Game {
 		this.ball = new Ball(this.gameCanvas.width / 2 - BALL_SIZE / 2, this.gameCanvas.height / 2 - BALL_SIZE / 2);
 	}
 	
+	drawTime() {
+		this.gameContext.strokeStyle = "#89AFBB";
+		this.gameContext.lineWidth = 10;
+		this.gameContext.fillStyle = "#89AFBB";
+		//		this.gameContext.strokeRect(10,10,this.gameCanvas.width - 20 ,this.gameCanvas.height - 20);
+		
+		this.gameContext.font = "2rem Poppins, bold";
+		const timeString = new Date(this.timePassed * 1000).toISOString().substr(11, 8);
+		this.gameContext.fillText(timeString, this.gameCanvas.width / 2, this.gameCanvas.height - 30);
+	}
+
 	drawScore() {
 		this.scoreContext.clearRect(0, 0, this.scoreCanvas.width, this.scoreCanvas.height);
 		this.scoreContext.strokeStyle = "#fff";
@@ -100,12 +112,14 @@ export class Game {
 		//update player two
 		this.players[this._users.two.id].updateFromData(data.players[this._users.two.id]);
 		this.ball.position = data.ball.position;
+		this.timePassed = data.secondsPassed;
 	}
 
 	draw() {
 		this.gameContext.fillStyle = "#D2E4E9";
 		this.gameContext.fillRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
 		
+		this.drawTime();
 //		this.drawBoardDetails();
 		this.drawScore();
 		for (const key in this.players) {
