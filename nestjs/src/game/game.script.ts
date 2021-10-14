@@ -1,6 +1,6 @@
 import { Logger } from "@nestjs/common";
 import { match } from "assert";
-import { EndCondition, EndConditionTypes, Match } from "src/match/match.class";
+import { EndCondition, EndConditionTypes, Match, SpeedMode } from "src/match/match.class";
 import { Socket } from 'socket.io';
 
 const PADDLE_WIDTH = 25;
@@ -81,7 +81,7 @@ export class Game {
 		//initializing objects
 		this.players[match.creator.socket.id] = new Player(WALL_OFFSET,Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
 		this.players[match.opponent.socket.id] = new Player(Game.canvas.width - (WALL_OFFSET + PADDLE_WIDTH), Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
-		this.ball = new Ball(Game.canvas.width / 2 - BALL_SIZE / 2, Game.canvas.height / 2 - BALL_SIZE / 2);
+		this.ball = new Ball(match.settings.ballSpeed, Game.canvas.width / 2 - BALL_SIZE / 2, Game.canvas.height / 2 - BALL_SIZE / 2);
 	}
 
 	get users() {
@@ -216,10 +216,25 @@ class Ball extends Entity {
 	
 	private speed:number = BALL_SPEED;
 	private lastContact: boolean;
+	
+	modifier(mode: SpeedMode) {
+		switch (mode) {
+			case SpeedMode.NORMAL: {
+				return 1;
+			}
+			case SpeedMode.FAST: {
+				return 1.5;
+			}
+			case SpeedMode.SANIC: {
+				return 2;
+			}
+		}
+	}
 
-	constructor(x:number,y:number) {
+	constructor(mode: SpeedMode, x:number,y:number) {
 		super(BALL_SIZE,BALL_SIZE,x,y);
-
+	
+		this.speed *= this.modifier(mode);	
 		var randomDirection = Math.floor(Math.random() * 2) + 1;
 		if (randomDirection % 2) {
 			this.velocity.x = 1;
