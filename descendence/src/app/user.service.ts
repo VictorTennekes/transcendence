@@ -9,6 +9,11 @@ import { first, map, switchMap, take } from 'rxjs/operators';
 // 	avatarUrl: string | null;
 // }
 
+export interface UserEntity {
+	display_name: string;
+	login: string
+};
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -39,8 +44,12 @@ export class UserService {
 		return this.http.get('api/user/fetch_current').pipe(take(1));
 	}
 
-	getUserByLogin(login: string) {
-		return this.http.post('api/user/get', {login});
+	getUserByLogin(login: string): Observable<UserEntity> {
+		return this.http.post<UserEntity>('api/user/get', {login});
+	}
+
+	getUsersByLogins(logins: string[]): Observable<UserEntity[]> {
+		return this.http.post<UserEntity[]>('api/user/get_multiple', {logins});
 	}
 
 	logout(): any {
