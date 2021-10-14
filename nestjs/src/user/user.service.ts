@@ -133,6 +133,30 @@ export class UserService {
 		}
 	}
 
+	async unfriend(username: string, friendUsername: string) {
+		let user: UserEntity = await this.userRepository.findOne({
+			where: {intra_name: username},
+			relations: ["friends"]
+		});
+		if (username === friendUsername) {
+			return ;
+		}
+		let friend: UserEntity = await this.userRepository.findOne({
+			where: {intra_name: friendUsername},
+			relations: ["friends"]
+		})
+		let index = user.friends.findIndex(x => x.intra_name === friendUsername);
+		if (index !== -1) {
+			user.friends.splice(index, 1);
+			this.userRepository.save(user)
+		}
+		index = friend.friends.findIndex(x => x.intra_name === username);
+		if (index !== -1) {
+			friend.friends.splice(index, 1);
+			this.userRepository.save(friend)
+		}
+	}
+
 	async create(login: string) {
 		const intra_name = login;
 		const display_name = null;

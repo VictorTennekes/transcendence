@@ -69,4 +69,8 @@ export class UserService {
 	getFriends(username: string): Observable<userModel[]> {
 		return this.http.get<userModel[]>('api/user/get_friends/' + username);
 	}
+
+	removeFriend(username: string) {
+		this.http.post('api/user/unfriend/', {username: username}).subscribe(() => {this.userSource.next('');});
+	}
 }

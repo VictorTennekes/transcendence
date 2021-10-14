@@ -153,6 +153,15 @@ import { MatchService } from 'src/app/match.service';
 		this.matchService.sendFriendRequest(username);
 	}
 
+	public isFriend(username: string) {
+		//TODO: implement
+		return true;
+	}
+
+	public removeFriend(username: string) {
+		this.userService.removeFriend(username);
+	}
+
 	public onSubmit() {
 		this.errorMessage = "";
 		const newMessage: newMessage = {
