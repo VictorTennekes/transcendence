@@ -7,6 +7,8 @@ import { MatchSocket } from './match/match.socket';
 import { QueueScheduler } from 'rxjs/internal/scheduler/QueueScheduler';
 import { QueueService } from './queue.service';
 import { AcceptService } from './accept.service';
+import { userModel } from './chat/chat-client/message.model'
+import { timeStamp } from 'console';
 // import { Socket } from 'ngx-socket-io';
 
 export enum SpeedMode {
@@ -109,4 +111,39 @@ export class MatchService {
 		this.matchSocket.emit('invite_declined', username);
 	}
 
+	requestOnlineFriends() {
+		this.matchSocket.emit('connected_friends');
+	}
+
+	friendDisconnected(): Observable<userModel> {
+		return this.matchSocket.fromEvent('friend_disconnected');
+	}
+
+	friendConnected(): Observable<userModel> {
+		return this.matchSocket.fromEvent('friend_connected');
+	}
+
+	receiveFriendRequest(): Observable<userModel> {
+		return this.matchSocket.fromEvent('receive-friend-request');
+	}
+
+	friendAcceptedNotification() {
+		this.matchSocket.fromEvent('friend-accepted');
+	}
+
+	friendRemovedNotification() {
+		this.matchSocket.fromEvent('friend-removed');
+	}
+
+	acceptFriendRequest(user: any): void {
+		this.matchSocket.emit('accept-friend-request', user);
+	}
+
+	sendFriendRequest(username: string): void {
+		this.matchSocket.emit('send-friend-request', username);
+	}
+
+	friendRemoved(username: string): void {
+		this.matchSocket.emit('remove-friend', username);
+	}
 }

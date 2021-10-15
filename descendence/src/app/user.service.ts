@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { userModel } from './chat/chat-client/message.model';
 import { first, map, switchMap, take } from 'rxjs/operators';
+import { MatchService } from './match.service';
 
 // interface User {
 // 	intraName: string;
@@ -38,7 +40,8 @@ export class UserService {
 	userSource = new BehaviorSubject<any>('');
 	userSubject: Observable<any>;
 	constructor(
-		private readonly http: HttpClient
+		private readonly http: HttpClient,
+		private readonly matchService: MatchService
 	) {
 		this.userSubject = this.userSource.pipe(switchMap(() => {
 			return this.http.get('/api/user/fetch_current');
@@ -47,6 +50,10 @@ export class UserService {
 
 	isBlocked(user: string): Observable<boolean> {
 		return this.http.get<boolean>('/api/user/blocked/' + user);
+	}
+
+	isFriend(user: string): Observable<boolean> {
+		return this.http.get<boolean>('/api/user/friend/' + user);
 	}
 
 	checkDisplayNameAvailability(newDisplayName: string) {
@@ -92,5 +99,23 @@ export class UserService {
 
 	unblockedUser(username: string) {
 		return this.http.post('api/user/unblock_user/', {username: username}).subscribe(() => {this.userSource.next('');});
+	}
+
+	addFriend(username: string) {
+		console.log("service??");
+		return this.http.post('api/user/add_friend/', {username: username});
+	}
+
+	getFriends(username: string): Observable<userModel[]> {
+		return this.http.get<userModel[]>('api/user/get_friends/' + username);
+	}
+
+	removeFriend(username: string) {
+		this.http.post('api/user/unfriend/', {username: username}).subscribe(() => {this.userSource.next('');});
+		this.matchService.friendRemoved(username);
+	}
+
+	getBlockedByUser(): Observable<userModel[]> {
+		return this.http.get<userModel[]>('api/user/get_blocked_by_users');
 	}
 }

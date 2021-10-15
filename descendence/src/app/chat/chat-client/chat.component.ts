@@ -5,6 +5,8 @@ import { SearchService } from '../search/search.service';
 import { ChatService } from './chat.service';
 import { retMessage, newMessage, chatModel, userModel } from './message.model';
 import { UserService } from 'src/app/user.service';
+import { MatchComponent } from 'src/app/match/match.component';
+import { MatchService } from 'src/app/match.service';
 @Component({
 	selector: 'app-chat',
 	templateUrl: './chat.component.html',
@@ -27,7 +29,16 @@ import { UserService } from 'src/app/user.service';
 		  private userService: UserService,
 		  private router: Router,
 		  private route: ActivatedRoute,
-	  ) { }
+		  private matchService: MatchService
+	  ) { 
+		this.loggedInUser = {
+			intra_name: "",
+			display_name: "",
+			avatar_url: "",
+			friends: [],
+			blockedByUsers: []
+		}
+	  }
 
 	public chat: chatModel = {
 		id: "",
@@ -43,7 +54,13 @@ import { UserService } from 'src/app/user.service';
 	public default_avatar_url = "";
 	public errorMessage: string = "";
 	public userIsAdmin: boolean = false;
-	public loggedInUser: string = "";
+	public loggedInUser: userModel = {
+		intra_name: "",
+		display_name: "",
+		avatar_url: "",
+		friends: [],
+		blockedByUsers: []
+	}
 
 	ngOnInit(): void {
 		
@@ -54,16 +71,21 @@ import { UserService } from 'src/app/user.service';
 
 
 		this.userService.getCurrentUser().subscribe((data: any) => {
-			this.loggedInUser = data.display_name;
+			this.loggedInUser = data;
+			this.userService.getFriends(this.loggedInUser.intra_name).subscribe((friends: userModel[]) => {
+				if (friends) {
+					this.loggedInUser.friends = friends;
+				}
+			})
+			this.userService.getBlockedByUser().subscribe((blocks: userModel[]) => {
+				if (blocks) {
+					this.loggedInUser.blockedByUsers = blocks;
+				}
+			})
 		});
-		console.log("logged in user is: ", this.loggedInUser)
-		console.log(this.chat);
 		this.route.params.subscribe(params => {
 			this.searchService.findChatById(params['id']).subscribe((response) => {
-				console.log("found chat by id");
-				// console.log(response);
 				this.chat = response;
-				console.log(this.chat);
 				this.searchService.userInChat(this.chat.id).subscribe((isTrue: boolean) => {
 					if (isTrue === false) {
 						this.searchService.addUserToChat(this.chat.id).subscribe((updatedChat: chatModel) => {
@@ -74,10 +96,7 @@ import { UserService } from 'src/app/user.service';
 				this.searchService.userIsAdmin(this.chat.id).subscribe((result) => {
 					this.userIsAdmin = result;
 				});
-				console.log("here?");
 				this.chatService.receiveMessages().subscribe((msg) => {
-						console.log("chat is");
-						console.log(this.chat);
 					if (msg.chat.id === this.chat.id) {
 						this.chat.messages.push(msg);
 					}
@@ -93,9 +112,25 @@ import { UserService } from 'src/app/user.service';
 	}
 
 	public isLoggedInUser(username: string): boolean {
-		// return (username === this.loggedInUser.display_name);
-		return (username === this.loggedInUser);
+		return (username === this.loggedInUser.intra_name);
+	}
 
+	public isBlocked(username: string): boolean {
+		if (this.loggedInUser && this.loggedInUser.blockedByUsers) {
+			for (let block of this.loggedInUser.blockedByUsers) {
+				if (block.intra_name === username) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public canInvite(username: string): boolean {
+		if (username === this.loggedInUser.intra_name) {
+			return false;
+		}
+		return (!this.isBlocked(username))
 	}
 
 	public back() {
@@ -143,6 +178,29 @@ import { UserService } from 'src/app/user.service';
 		});
 	}
 
+	public addFriend(username: string) {
+		this.matchService.sendFriendRequest(username);
+	}
+
+	public isFriend(username: string): boolean {
+		if (this.loggedInUser && this.loggedInUser.friends) {
+			for (let friend of this.loggedInUser.friends) {
+				if (friend.intra_name === username) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public removeFriend(username: string) {
+		this.userService.removeFriend(username);
+		this.userService.getFriends(this.loggedInUser.intra_name).subscribe((friends: userModel[]) => {
+			if (friends) {
+				this.loggedInUser.friends = friends;
+			}
+		})
+	}
 
 	public onSubmit() {
 		this.errorMessage = "";

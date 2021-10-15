@@ -1,9 +1,11 @@
 import { Identifiers } from "@angular/compiler";
 
 export interface userModel {
+	blockedByUsers: userModel[];
 	intra_name: string;
 	display_name: string;
 	avatar_url: string;
+	friends: userModel[];
 }
 
 export interface retMessage {

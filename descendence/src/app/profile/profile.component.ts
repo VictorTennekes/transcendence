@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserEntity, UserService } from '../user.service';
 import { ActivatedRoute } from '@angular/router';
 import { secondsToDhms } from '../game/post/post.component';
+import { MatchService } from '../match.service';
 
 @Component({
 	selector: 'app-profile',
@@ -13,6 +14,7 @@ export class ProfileComponent implements OnInit {
 	constructor(
 		private userService: UserService,
 		private route: ActivatedRoute,
+		private matchService: MatchService
 	) { }
 	
 	displayName: string = "";
@@ -25,9 +27,12 @@ export class ProfileComponent implements OnInit {
 
 	addFriend() {
 		console.log(`FRIEND ADDED`);
+		this.matchService.sendFriendRequest(this.loginId);
 	}
+
 	removeFriend() {
 		console.log(`FRIEND REMOVED`);
+		this.userService.removeFriend(this.loginId);
 	}
 
 	addBlock() {
@@ -76,6 +81,10 @@ export class ProfileComponent implements OnInit {
 			this.userService.isBlocked(this.loginId).subscribe((state: boolean) => {
 				console.log(`RECEIVED BLOCKED STATE: ${state}`);
 				this.isBlocked = state;
+			});
+			this.userService.isFriend(this.loginId).subscribe((state: boolean) => {
+				console.log(`RECEIVED FRIEND STATE: ${state}`);
+				this.isFriend = state;
 			});
 		});
 	}

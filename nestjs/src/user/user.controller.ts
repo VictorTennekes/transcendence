@@ -110,6 +110,13 @@ export class UserController {
 		return this.userService.isBlockedByUser(request.session.passport.user.login, user);
 	}
 
+	@Get('friend/:id')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async isFriendedByUser(@Req() request, @Param('id') user: string) {
+		return this.userService.isFriendedByUser(request.session.passport.user.login, user);
+	}
+
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	@Get('image_delete')
@@ -165,6 +172,39 @@ export class UserController {
 		if (request.user.login === username.username)
 			return ;
 		await this.userService.blockUser(request.session.passport.user.login, username.username);
+	}
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	@Post('add_friend')
+	async addFriend(@Req() request, @Body() username: any) {
+		if (request.user.login === username.username)
+			return ;
+		await this.userService.addFriend(request.session.passport.user.login, username.username);
+	}
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	@Post('unfriend')
+	async unfriend(@Req() request, @Body() username: any) {
+		if (request.user.login === username.username)
+			return ;
+		await this.userService.unfriend(request.session.passport.user.login, username.username);
+	}
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	@Get('get_friends/:username')
+	async getFriends(@Param("username") username: string, @Req() request): Promise<UserDTO[]> {
+		console.log(request.session.passport);
+		return await this.userService.getFriends(request.session.passport.user.login);
+	}
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	@Get('get_blocked_by_users')
+	async getBlockedByUsers(@Req() request): Promise<UserDTO[]> {
+		return await this.userService.getBlockedByUsers(request.session.passport.user.login);
 	}
 
 	@UseGuards(AuthenticatedGuard)

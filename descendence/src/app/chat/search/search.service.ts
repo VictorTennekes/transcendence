@@ -90,12 +90,6 @@ export class SearchService {
 		return this.http.get<boolean>(this.url + 'is-logged-in-user/' + username).subscribe((res) => {
 			console.log(res);
 		})
-		// .pipe(map((res) => {
-		// 	console.log("result");
-		// 	console.log(res)
-		// 	return res;
-		// }));
-		return false;
 	}
 
 	async leaveChat(id: string) {
@@ -105,4 +99,5 @@ export class SearchService {
 	userIsOwner(id: string): Observable<boolean> {
 		return this.http.get<boolean>(this.url + 'user-is-owner/' + id);
 	}
+
 }
