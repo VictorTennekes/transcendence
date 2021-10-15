@@ -103,6 +103,13 @@ export class UserController {
 		return response;
 	}
 
+	@Get('blocked/:id')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async isBlockedByUser(@Req() request, @Param('id') user: string) {
+		return this.userService.isBlockedByUser(request.session.passport.user.login, user);
+	}
+
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	@Get('image_delete')
@@ -154,6 +161,7 @@ export class UserController {
 	@UseFilters(UnauthorizedFilter)
 	@Post('block_user')
 	async blockUser(@Req() request, @Body() username: any) {
+		Logger.log(`BLOCK USER - ${username.username}`);
 		if (request.user.login === username.username)
 			return ;
 		await this.userService.blockUser(request.session.passport.user.login, username.username);

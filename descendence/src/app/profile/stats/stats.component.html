@@ -33,7 +33,15 @@
 		<p class="item-title">
 			Winrate
 		</p>
-		<div class="temp-circle"></div>
+		<!-- <div class="temp-circle"></div> -->
+		<div class="winrate">
+			<svg>
+				<circle id="winrate-visual" cx="180" cy="180" r="0" />
+			</svg>
+			<div class="percentage">
+				{{roundedPercentage}}%
+			</div>
+		</div>
 		<div class="data-container" style="place-self: center;">
 			<p class="data-title" style="width: auto;">Wins:</p>
 			<p class="data-value">{{wins}}</p>

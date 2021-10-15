@@ -45,6 +45,10 @@ export class UserService {
 		}));
 	}
 
+	isBlocked(user: string): Observable<boolean> {
+		return this.http.get<boolean>('/api/user/blocked/' + user);
+	}
+
 	checkDisplayNameAvailability(newDisplayName: string) {
 		return this.http.post('api/user/check_display_name', {display_name: newDisplayName});
 	}

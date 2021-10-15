@@ -76,3 +76,37 @@
 	place-self: center;
 	margin-bottom: 1rem;
 }
+
+.winrate {
+	display: flex;
+	flex-direction: column;
+	place-content: center;
+	place-items: center;
+	position: relative;
+	
+	.percentage {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-right: -50%;
+		transform: translate(-50%, -50%);
+		color: #6DE897;
+		font-family: 'Poppins';
+		font-weight: bold;
+		font-size: 3.5rem;
+	}
+}
+
+svg {
+	display: inline-block;
+	margin: 2px;
+}
+  
+svg {
+	width: 360px;
+	height: 360px;
+	stroke: #6DE897;
+	stroke-width: 1.5rem;
+	fill: transparent;
+	margin: auto;
+}

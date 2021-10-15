@@ -19,6 +19,12 @@ export class UserService {
 		private readonly userRepository: Repository<UserEntity>
 	) {}
 
+	userExists(username: string, users: UserDTO[]) {
+		return users.some(function(el) {
+			return el.intra_name === username;
+		});
+	}
+
 	async findOrCreateByLogin(login: string) {
 		let user = await this.findOne(login);
 		if (!user) {
@@ -29,6 +35,17 @@ export class UserService {
 			console.log(`FOUND EXISTING USER ${login}`);
 		}
 		return (user);
+	}
+
+	async isBlockedByUser(user: string, other: string) {
+		const entity: UserDTO = await this.userRepository.findOne({
+			where: {intra_name: user},
+			relations: ["blockedUsers"]
+		});
+		if (this.userExists(other, entity.blockedUsers)) {
+			return true;
+		}
+		return false;
 	}
 
 	async save(user: UserEntity) {

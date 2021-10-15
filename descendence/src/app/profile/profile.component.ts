@@ -15,13 +15,43 @@ export class ProfileComponent implements OnInit {
 		private route: ActivatedRoute,
 	) { }
 	
-	id: string | null = "";
 	displayName: string = "";
 	avatarUrl: string = "";
-	loginId: string ="";
+	loginId: string = "";
 	user: any;
-	
-	
+	isFriend: boolean = true;
+	isBlocked: boolean = true;
+	currentUser: string;
+
+	addFriend() {
+		console.log(`FRIEND ADDED`);
+	}
+	removeFriend() {
+		console.log(`FRIEND REMOVED`);
+	}
+
+	addBlock() {
+		this.userService.addBlockedUser(this.loginId).subscribe(() =>  {
+			// this.isBlocked = true;
+			this.userService.userSource.next('');
+		});
+		console.log(`USER BLOCKED`);
+	}
+	removeBlock() {
+		console.log(`USER UNBLOCKED`);
+		this.userService.unblockedUser(this.loginId);
+		// this.isBlocked = false;
+	}
+
+	sendMessage() {
+		console.log(`MESSAGE SENT`);
+	}
+
+	get profileOfCurrentUser() {
+		// console.log(`CURRENT USER: ${this.currentUser} - PROFILE: ${this.loginId}`);
+		return this.currentUser === this.loginId;
+	}
+
 	get avatar() {
 		let style = "background-image: ";
 		
@@ -35,10 +65,18 @@ export class ProfileComponent implements OnInit {
 	}
 	
 	ngOnInit(): void {
+		this.currentUser = this.userService.userSource.value.intra_name;
 		this.route.data.subscribe((data: any) => {
 			this.displayName = data.user.display_name;
 			this.loginId = data.user.intra_name;
 			this.avatarUrl = data.user.avatar_url;
+		});
+		this.userService.userSubject.subscribe((user) => {
+			this.currentUser = user.intra_name;
+			this.userService.isBlocked(this.loginId).subscribe((state: boolean) => {
+				console.log(`RECEIVED BLOCKED STATE: ${state}`);
+				this.isBlocked = state;
+			});
 		});
 	}
 }

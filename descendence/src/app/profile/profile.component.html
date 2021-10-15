@@ -2,10 +2,12 @@
 	<div class="profileOptions">
 		<div class="avatar" style="{{avatar}}"></div>
 		<p class="userName">{{ displayName }}</p>
-		<div class="button-container">
-			<button class="profileButtons" style="background-color: #42D674">ADD FRIEND</button>
-			<button class="profileButtons" style="background-color: #42BBD6">MESSAGE</button>
-			<button class="profileButtons" style="background-color: #DA5F5F">BLOCK</button>
+		<div *ngIf="!profileOfCurrentUser" class="button-container">
+			<button *ngIf="!isFriend" class="profileButtons" (click)="addFriend()" style="background-color: #42D674">ADD FRIEND</button>
+			<button *ngIf="isFriend" class="profileButtons" (click)="removeFriend()" style="background-color: #6e8074">REMOVE FRIEND</button>
+			<button class="profileButtons" (click)="sendMessage()" style="background-color: #42BBD6">MESSAGE</button>
+			<button *ngIf="!isBlocked" class="profileButtons" (click)="addBlock()" style="background-color: #DA5F5F">BLOCK</button>
+			<button *ngIf="isBlocked" class="profileButtons" (click)="removeBlock()" style="background-color: #a57171">UNBLOCK</button>
 		</div>
 	</div>
 	
