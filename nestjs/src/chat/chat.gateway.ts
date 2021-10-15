@@ -51,7 +51,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.connectedSockets.splice(index, 1);
 	}
 
-
 	@SubscribeMessage('send_message')
 	async sendMessage(@ConnectedSocket() client: Socket, @MessageBody() message: newMessageDTO) {
 		const user = await getUserFromSocket(client, this.userService);

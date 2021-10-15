@@ -67,19 +67,29 @@ export class UserService {
 	async blockUser(username: string, blockedUsername: string) {
 		let user: UserEntity = await this.userRepository.findOne({
 			where: {intra_name: username},
-			relations: ["blockedUsers"]
+			relations: ["blockedUsers", "friends"]
 		});
 		if (username == blockedUsername)
 			return ;
 		let blockedUser: UserEntity = await this.userRepository.findOne({
 			where: {intra_name: blockedUsername},
-			relations: ["blockedByUsers"]
+			relations: ["blockedByUsers", "friends"]
 		});
-		const index = user.blockedUsers.findIndex(x => x.intra_name === username);
+		let index = user.blockedUsers.findIndex(x => x.intra_name === username);
 		if (index === -1) {
 			user.blockedUsers.push(blockedUser);
 			blockedUser.blockedByUsers.push(user);
 			this.userRepository.save(user);
+			this.userRepository.save(blockedUser);
+		}
+		index = user.friends.findIndex(x => x.intra_name === blockedUsername);
+		if (index !== -1) {
+			user.friends.splice(index, 1);
+			this.userRepository.save(user);
+		}
+		index = blockedUser.friends.findIndex(x => x.intra_name === username);
+		if (index !== -1) {
+			blockedUser.friends.splice(index, 1);
 			this.userRepository.save(blockedUser);
 		}
 	}
@@ -104,6 +114,51 @@ export class UserService {
 		if (index !== -1) {
 			blockedUser.blockedByUsers.splice(index, 1);
 			this.userRepository.save(blockedUser);
+		}
+	}
+
+	async addFriend(username: string, friendUsername: string) {
+		let user: UserEntity = await this.userRepository.findOne({
+			where: {intra_name: username},
+			relations: ["friends"]
+		});
+		if (username === friendUsername) {
+			return ;
+		}
+		let friend: UserEntity = await this.userRepository.findOne({
+			where: {intra_name: friendUsername},
+			relations: ["friends"]
+		})
+		let index = user.friends.findIndex(x => x.intra_name === friendUsername);
+		if (index === -1) {
+			user.friends.push(friend);
+			friend.friends.push(user);
+			this.userRepository.save(user)
+			this.userRepository.save(friend)
+		}
+	}
+
+	async unfriend(username: string, friendUsername: string) {
+		let user: UserEntity = await this.userRepository.findOne({
+			where: {intra_name: username},
+			relations: ["friends"]
+		});
+		if (username === friendUsername) {
+			return ;
+		}
+		let friend: UserEntity = await this.userRepository.findOne({
+			where: {intra_name: friendUsername},
+			relations: ["friends"]
+		})
+		let index = user.friends.findIndex(x => x.intra_name === friendUsername);
+		if (index !== -1) {
+			user.friends.splice(index, 1);
+			this.userRepository.save(user)
+		}
+		index = friend.friends.findIndex(x => x.intra_name === username);
+		if (index !== -1) {
+			friend.friends.splice(index, 1);
+			this.userRepository.save(friend)
 		}
 	}
 
@@ -145,6 +200,24 @@ export class UserService {
 			where: { intra_name: login },
 			relations: ["blockedUsers", "blockedByUsers"]
 		});
+	}
+
+	async getFriends(username: string): Promise<UserDTO[]> {
+		const user = await this.userRepository.findOne({
+			where: {intra_name: username},
+			relations: ["friends"]
+		})
+		console.log(user);
+		return user.friends;
+	}
+
+	async getBlockedByUsers(username: string): Promise<UserDTO[]> {
+		const user = await this.userRepository.findOne({
+			where: {intra_name: username},
+			relations: ["blockedByUsers"]
+		})
+		console.log(user);
+		return user.blockedByUsers;
 	}
 
 	async login(loginInformation: LoginUserDto): Promise<LoginStatus> {

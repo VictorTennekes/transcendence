@@ -71,4 +71,8 @@ export class UserEntity {
 	@ManyToMany((type) => UserEntity, UserEntity => UserEntity.blockedUsers)
 	blockedByUsers: UserEntity[];
 
+	@ManyToMany((type) => UserEntity, UserEntity => UserEntity.friends)
+	@JoinTable()
+	friends: UserEntity[];
+
 }

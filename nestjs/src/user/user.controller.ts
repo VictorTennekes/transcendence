@@ -154,6 +154,39 @@ export class UserController {
 
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
+	@Post('add_friend')
+	async addFriend(@Req() request, @Body() username: any) {
+		if (request.user.login === username.username)
+			return ;
+		await this.userService.addFriend(request.session.passport.user.login, username.username);
+	}
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	@Post('unfriend')
+	async unfriend(@Req() request, @Body() username: any) {
+		if (request.user.login === username.username)
+			return ;
+		await this.userService.unfriend(request.session.passport.user.login, username.username);
+	}
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	@Get('get_friends/:username')
+	async getFriends(@Param("username") username: string, @Req() request): Promise<UserDTO[]> {
+		console.log(request.session.passport);
+		return await this.userService.getFriends(request.session.passport.user.login);
+	}
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	@Get('get_blocked_by_users')
+	async getBlockedByUsers(@Req() request): Promise<UserDTO[]> {
+		return await this.userService.getBlockedByUsers(request.session.passport.user.login);
+	}
+
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
 	@Post('unblock_user')
 	async unblockUser(@Req() request, @Body() username: any) {
 		if (request.user.login === username.username)

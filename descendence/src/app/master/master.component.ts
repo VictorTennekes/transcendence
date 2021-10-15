@@ -52,6 +52,24 @@ export class MasterComponent implements OnInit {
 			this.openDialog(res);
 			// this.router.navigate(['play', res]);
 		})
+		this.matchService.receiveFriendRequest().subscribe((res: any) => {
+			this.openFriendRequest(res);
+		})
+	}
+
+
+	openFriendRequest(user: any) {
+		const dialogConfig: MatDialogConfig = new MatDialogConfig();
+		const dialogRef = this.dialog.open(friendRequestDialog, {
+			data: {username: user.display_name},
+			panelClass: 'invite-dialog'
+		});
+		dialogRef.afterClosed().subscribe((accepted: boolean) => {
+			console.log(`Dialog result: ${accepted}`);
+			if (accepted) {
+				this.matchService.acceptFriendRequest(user);
+			}
+		});
 	}
 
 	openDialog(settings: MatchSettings) {
@@ -109,6 +127,37 @@ export class MasterComponent implements OnInit {
 	constructor(
 		public dialogRef: MatDialogRef<InviteComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: MatchSettings) {}
+
+	  public accept() {
+		  this.dialogRef.close(true);
+		  //create game and navigate to game
+
+
+		// this.router.navigate(['game']);
+		  //emit events in both these cases
+
+	  }
+
+	  public close() {
+		  //emit not accepted event
+			this.dialogRef.close(false);
+
+	  }
+  }
+
+@Component({
+	selector: 'friend-request-dialog',
+	templateUrl: './friend-request.html',
+	styleUrls: ['./invite.scss'],
+	providers: [MatDialogContainer, MatDialogConfig]
+  })
+  export class friendRequestDialog {
+	//   @Input()
+	//   username: string = "";
+
+	constructor(
+		public dialogRef: MatDialogRef<friendRequestDialog>,
+		@Inject(MAT_DIALOG_DATA) public data: any) {}
 
 	  public accept() {
 		  this.dialogRef.close(true);

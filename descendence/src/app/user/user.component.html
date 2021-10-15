@@ -1,5 +1,19 @@
-<p>{{ displayName }}</p>
-<form #form="ngForm" (ngSubmit)="onSubmit(form)" novalidate>
-<input name="new" ngModel required>
-<button>Submit</button>
-</form>
+<h1>Friends:</h1>
+<br>
+<mat-list *ngIf="friends.length !== 0">
+    <div mat-subheader>Online</div>  
+    <mat-list-item *ngFor="let friend of onlineFriends; let last = last;">  
+        <div matListAvatar class="avatar" style="{{getUserAvatar(friend.avatar_url)}}"></div>
+        <p matLine class="center">{{friend.display_name}}</p>
+        <mat-divider *ngIf="!last"></mat-divider>
+    </mat-list-item>
+</mat-list>
+<mat-list *ngIf="friends.length !== 0">
+    <div mat-subheader>Offline</div>  
+    <mat-list-item *ngFor="let friend of offlineFriends; let last = last;">  
+        <div matListAvatar class="avatar" style="{{getUserAvatar(friend.avatar_url)}}"></div>
+        <p matLine class="center">{{friend.display_name}}</p>
+        <mat-divider *ngIf="!last"></mat-divider>
+    </mat-list-item>
+</mat-list>
+<p *ngIf="friends.length === 0">You have no friends :(</p>

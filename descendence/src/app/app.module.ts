@@ -4,7 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { HttpClientModule } from '@angular/common/http';
-import { InviteComponent, MasterComponent } from './master/master.component';
+import { InviteComponent, MasterComponent, friendRequestDialog } from './master/master.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FailComponent } from './fail/fail.component';
 import { CookieModule } from 'ngx-cookie';
@@ -49,6 +49,7 @@ import { GameSocket } from './game/game.socket';
 import { ChatSocket } from './chat/chat.socket';
 import { MatchSocket } from './match/match.socket';
 import { SettingsComponent } from './chat/settings/settings.component';
+import { MatBadgeModule } from '@angular/material/badge';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { MatMenuModule } from '@angular/material/menu';
 import { PostComponent } from './game/post/post.component';
@@ -86,6 +87,7 @@ import { AccountSetupComponent } from './account-setup/account-setup.component';
 		ChatContainerComponent,
 		SettingsComponent,
 		InviteComponent,
+		friendRequestDialog,
   		PostComponent,
 		MatchComponent,
   		LoadcircleComponent,
@@ -112,6 +114,7 @@ import { AccountSetupComponent } from './account-setup/account-setup.component';
 		MatDatepickerModule,
 		MatNativeDateModule,
 		MatMenuModule,
+		MatBadgeModule,
 		NgxMatNativeDateModule,
 		NgxMatTimepickerModule,
 		NgxMatDatetimePickerModule,
