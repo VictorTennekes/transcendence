@@ -14,7 +14,8 @@ export class ProfileComponent implements OnInit {
 	constructor(
 		private userService: UserService,
 		private route: ActivatedRoute,
-		private matchService: MatchService
+		private matchService: MatchService,
+		// private ref: ChangeDetectorRef
 	) { }
 	
 	displayName: string = "";
@@ -38,7 +39,7 @@ export class ProfileComponent implements OnInit {
 	addBlock() {
 		this.userService.addBlockedUser(this.loginId).subscribe(() =>  {
 			// this.isBlocked = true;
-			this.userService.userSource.next('');
+			this.userService.updateUserSource();
 		});
 		console.log(`USER BLOCKED`);
 	}
@@ -70,11 +71,15 @@ export class ProfileComponent implements OnInit {
 	}
 	
 	ngOnInit(): void {
-		this.currentUser = this.userService.userSource.value.intra_name;
+		this.userService.userSubject.subscribe((user) => {
+			this.currentUser = user.intra_name;
+		});
+		// this.currentUser = this.userService.userSource.value.intra_name;
 		this.route.data.subscribe((data: any) => {
 			this.displayName = data.user.display_name;
 			this.loginId = data.user.intra_name;
 			this.avatarUrl = data.user.avatar_url;
+			this.isFriend = data.friend;
 		});
 		this.userService.userSubject.subscribe((user) => {
 			this.currentUser = user.intra_name;
@@ -86,6 +91,22 @@ export class ProfileComponent implements OnInit {
 				console.log(`RECEIVED FRIEND STATE: ${state}`);
 				this.isFriend = state;
 			});
+			this.matchService.removeNotifier.subscribe(() => {
+				this.userService.isFriend(this.loginId).subscribe((state: boolean) => {
+					this.isFriend = state;
+				});
+			})
+			this.userService.friendSubject.subscribe((friends) => {
+				const result = friends.some(user => user.intra_name === this.loginId);
+				console.log(`FRIENDSUBJECT - ISFRIEND - ${result}`);
+				this.isFriend = result;
+				// this.ref.detectChanges();
+			});
+			this.matchService.acceptNotifier.subscribe(() => {
+				this.userService.isFriend(this.loginId).subscribe((state: boolean) => {
+					this.isFriend = state;
+				});
+			})
 		});
 	}
 }

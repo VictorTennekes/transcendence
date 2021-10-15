@@ -70,6 +70,7 @@ export class MasterComponent implements OnInit {
 			console.log(`Dialog result: ${accepted}`);
 			if (accepted) {
 				this.matchService.acceptFriendRequest(user);
+				this.userService.updateFriendSource();
 			}
 		});
 	}

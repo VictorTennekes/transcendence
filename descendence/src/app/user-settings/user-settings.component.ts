@@ -151,12 +151,12 @@ export class UserSettingsComponent implements OnInit {
 			formValues[field] = this.settingsForm.controls[field].value;
 		}
 		if (this.avatarReset) {
-			this.imageService.delete().subscribe(() => { this.userService.userSource.next(''); });
+			this.imageService.delete().subscribe(() => { this.userService.updateUserSource(); });
 		}
 		else if (formValues['avatar']) {
 			this.imageService.upload(this.selectedAvatarFile as File).subscribe(
 				(res: any) => {
-					this.userService.userSource.next('');
+					this.userService.updateUserSource();
 				},
 				(err: any) => {
 					console.log(err);

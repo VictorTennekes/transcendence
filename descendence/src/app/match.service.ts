@@ -51,6 +51,8 @@ export const defaultMatchSettings: MatchSettings = {
 export class MatchService {
 
 	acceptListener: Observable<any>;
+	acceptNotifier: Observable<any>;
+	removeNotifier: Observable<any>;
 	constructor(
 		private readonly matchSocket: MatchSocket,
 		private readonly http: HttpClient,
@@ -59,8 +61,10 @@ export class MatchService {
 		private readonly acceptService: AcceptService
 	) {
 		this.acceptListener = this.matchSocket.fromEvent('accepted');
+		this.acceptNotifier = this.matchSocket.fromEvent('friend-accepted');
+		this.removeNotifier = this.matchSocket.fromEvent('friend-removed');
 	}
-	
+
 	//emit the find request with these settings
 	findMatch(settings: MatchSettings) {
 		this.matchSocket.emit('find', settings);
@@ -125,14 +129,6 @@ export class MatchService {
 
 	receiveFriendRequest(): Observable<userModel> {
 		return this.matchSocket.fromEvent('receive-friend-request');
-	}
-
-	friendAcceptedNotification() {
-		this.matchSocket.fromEvent('friend-accepted');
-	}
-
-	friendRemovedNotification() {
-		this.matchSocket.fromEvent('friend-removed');
 	}
 
 	acceptFriendRequest(user: any): void {

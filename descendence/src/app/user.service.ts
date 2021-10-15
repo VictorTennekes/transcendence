@@ -37,8 +37,10 @@ export interface UserEntity {
 	providedIn: 'root'
 })
 export class UserService {
-	userSource = new BehaviorSubject<any>('');
+	private userSource: BehaviorSubject<any> = new BehaviorSubject<any>('');
+	private friendSource: BehaviorSubject<any> = new BehaviorSubject<any>('');
 	userSubject: Observable<any>;
+	friendSubject: Observable<UserEntity[]>;
 	constructor(
 		private readonly http: HttpClient,
 		private readonly matchService: MatchService
@@ -46,6 +48,18 @@ export class UserService {
 		this.userSubject = this.userSource.pipe(switchMap(() => {
 			return this.http.get('/api/user/fetch_current');
 		}));
+		this.friendSubject = this.friendSource.pipe(switchMap(() => {
+			return this.http.get<UserEntity[]>('/api/user/friends');
+		}));
+	}
+	get userSourceValue() {
+		return this.userSource.value;
+	}
+	updateUserSource() {
+		this.userSource.next('');
+	}
+	updateFriendSource() {
+		this.friendSource.next('');
 	}
 
 	isBlocked(user: string): Observable<boolean> {

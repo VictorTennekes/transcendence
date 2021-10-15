@@ -294,6 +294,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		await this.userService.addFriend(user.intra_name, friend.intra_name);
 		const target = this.isOnline(friend.intra_name);
 		if (target !== null) {
+			client.emit('friend-accepted');
 			target.socket.emit('friend-accepted');
 		}
 	}

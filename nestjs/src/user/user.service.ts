@@ -161,8 +161,8 @@ export class UserService {
 		if (index === -1) {
 			user.friends.push(friend);
 			friend.friends.push(user);
-			this.userRepository.save(user)
-			this.userRepository.save(friend)
+			await this.userRepository.save(user)
+			await this.userRepository.save(friend)
 		}
 	}
 

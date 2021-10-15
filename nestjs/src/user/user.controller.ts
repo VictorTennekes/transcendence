@@ -117,6 +117,13 @@ export class UserController {
 		return this.userService.isFriendedByUser(request.session.passport.user.login, user);
 	}
 
+	@Get('friends')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async friendsOfUser(@Req() request, @Param('id') user: string) {
+		return await this.userService.getFriends(request.session.passport.user.login);
+	}
+
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	@Get('image_delete')
