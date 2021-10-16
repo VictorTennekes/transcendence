@@ -127,28 +127,15 @@ export class ChatService {
 		return toPromise(chat);
 	}
 
-	private getMatchingUsers(items: ChatEntity[], users: UserDTO[]) {
-		let item;
-		for (let i = 0; i < items.length; i++) {
-			let count = 0;
-			for (let j = 0; j < users.length; j++) {
-				if (users.length === 1) {
-					if (items[i].users.length === 1
-						&& users.length === 1
-						&& items[i].users[0].intra_name === users[0].intra_name) {
-						item = items[i];
-						return item;
-					}
-				} else {
-					if (this.userExists(users[j].intra_name, items[i].users)) {
-						count++;
-					}
-					if (count == users.length) {
-						item = items[i];
-						return item;
-					}
+	private getMatchingUsers(chats: ChatEntity[], users: UserDTO[]) {
+		for (const chat of chats) {
+			if (users.length === 1 && chat.users.length === 1 && chat.users[0].intra_name === users[0].intra_name) {
+				return chat;
+			}
+			for (const user of users) {
+				if (chat.users.filter((el) => el.intra_name === user.intra_name).length === users.length) {
+					return chat;
 				}
-
 			}
 		}
 		return null;

@@ -52,6 +52,11 @@ export class UserService {
 			return this.http.get<UserEntity[]>('/api/user/friends');
 		}));
 	}
+
+	isOnline(user: string) {
+		return this.http.get<boolean>('/api/match/online/' + user);
+	}
+
 	get userSourceValue() {
 		return this.userSource.value;
 	}

@@ -6,12 +6,14 @@ import { MatchService } from './match.service';
 import { MatchSettings } from './match.class';
 import { GameService } from 'src/game/game.service';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
+import { MatchGateway } from './match.gateway';
 
 @Controller('match')
 export class MatchController {
 	constructor(
 		private readonly matchService: MatchService,
-		private readonly gameService: GameService
+		private readonly gameService: GameService,
+		private readonly matchGateway: MatchGateway
 	) {
 
 	}
@@ -48,6 +50,13 @@ export class MatchController {
 	@UseFilters(UnauthorizedFilter)
 	getMatch(@Req() request, @Param('id') id: string) {
 		return this.gameService.get(id);
+	}
+
+	@Get('online/:id')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	getOnlineStatus(@Req() request, @Param('id') user: string) {
+		return !!this.matchGateway.isOnline(user);
 	}
 
 	@Get('ongoing/:id')

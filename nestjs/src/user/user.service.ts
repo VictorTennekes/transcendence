@@ -16,7 +16,7 @@ import { LoginStatus } from './interfaces/login-status.interface';
 export class UserService {
 	constructor(
 		@InjectRepository(UserEntity)
-		private readonly userRepository: Repository<UserEntity>
+		private readonly userRepository: Repository<UserEntity>,
 	) {}
 
 	userExists(username: string, users: UserDTO[]) {
@@ -181,12 +181,12 @@ export class UserService {
 		let index = user.friends.findIndex(x => x.intra_name === friendUsername);
 		if (index !== -1) {
 			user.friends.splice(index, 1);
-			this.userRepository.save(user)
+			await this.userRepository.save(user)
 		}
 		index = friend.friends.findIndex(x => x.intra_name === username);
 		if (index !== -1) {
 			friend.friends.splice(index, 1);
-			this.userRepository.save(friend)
+			await this.userRepository.save(friend)
 		}
 	}
 

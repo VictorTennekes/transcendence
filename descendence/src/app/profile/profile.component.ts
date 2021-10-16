@@ -24,7 +24,9 @@ export class ProfileComponent implements OnInit {
 	user: any;
 	isFriend: boolean = true;
 	isBlocked: boolean = true;
+	isOnline: boolean;
 	currentUser: string;
+	profileOfCurrentUser: boolean = true;
 
 	addFriend() {
 		console.log(`FRIEND ADDED`);
@@ -53,11 +55,6 @@ export class ProfileComponent implements OnInit {
 		console.log(`MESSAGE SENT`);
 	}
 
-	get profileOfCurrentUser() {
-		// console.log(`CURRENT USER: ${this.currentUser} - PROFILE: ${this.loginId}`);
-		return this.currentUser === this.loginId;
-	}
-
 	get avatar() {
 		let style = "background-image: ";
 		
@@ -71,18 +68,17 @@ export class ProfileComponent implements OnInit {
 	}
 	
 	ngOnInit(): void {
-		this.userService.userSubject.subscribe((user) => {
-			this.currentUser = user.intra_name;
-		});
-		// this.currentUser = this.userService.userSource.value.intra_name;
 		this.route.data.subscribe((data: any) => {
+			this.currentUser = data.currentUser.intra_name;
 			this.displayName = data.user.display_name;
 			this.loginId = data.user.intra_name;
 			this.avatarUrl = data.user.avatar_url;
 			this.isFriend = data.friend;
+			this.profileOfCurrentUser = (this.currentUser === this.loginId);
+			this.isOnline = data.online;
+			console.log(`USER ONLINE: ${this.isOnline}`);
 		});
 		this.userService.userSubject.subscribe((user) => {
-			this.currentUser = user.intra_name;
 			this.userService.isBlocked(this.loginId).subscribe((state: boolean) => {
 				console.log(`RECEIVED BLOCKED STATE: ${state}`);
 				this.isBlocked = state;

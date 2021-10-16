@@ -34,6 +34,8 @@ import { AccountSetupComponent } from './account-setup/account-setup.component';
 import { ProfileResolver } from './profile/profile.resolver';
 import { StatsResolver } from './profile/stats.resolver';
 import { FriendResolver } from './profile/friend.resolver';
+import { CurrentUserResolver } from './profile/current-user.resolver';
+import { OnlineResolver } from './profile/online.resolver';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -61,7 +63,9 @@ const routes: Routes = [
 				canActivate: [ ProfileGuard ],
 				resolve: {
 					user: ProfileResolver,
-					friend: FriendResolver
+					friend: FriendResolver,
+					currentUser: CurrentUserResolver,
+					online: OnlineResolver
 				},
 				runGuardsAndResolvers: "always",
 				component: ProfileComponent,
@@ -170,7 +174,9 @@ const routes: Routes = [
 		PostgameResolver,
 		ProfileResolver,
 		StatsResolver,
-		FriendResolver
+		FriendResolver,
+		CurrentUserResolver,
+		OnlineResolver
 	]
 })
 export class AppRoutingModule { }

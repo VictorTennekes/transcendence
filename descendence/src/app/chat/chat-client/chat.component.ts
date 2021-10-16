@@ -175,6 +175,7 @@ import { MatchService } from 'src/app/match.service';
 					console.log(this.chat);
 				});
 			});
+			this.userService.updateUserSource();
 		});
 	}
 

@@ -8,8 +8,8 @@ import { GameModule } from 'src/game/game.module';
 import { GameService } from 'src/game/game.service';
 
 @Module({
-  providers: [MatchGateway, MatchService],
-  imports: [UserModule, GameModule],
-  controllers: [MatchController]
+	providers: [MatchGateway, MatchService],
+	imports: [UserModule, GameModule],
+	controllers: [MatchController],
 })
 export class MatchModule {}
