@@ -57,6 +57,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatchComponent } from './match/match.component';
 import { LoadcircleComponent } from './accept/loadcircle/loadcircle.component';
 import { AccountSetupComponent } from './account-setup/account-setup.component';
+import { UrlService } from './url.service';
 
 // const config: SocketIoConfig = {
 // 	url: 'http://localhost:3000',
@@ -136,7 +137,8 @@ import { AccountSetupComponent } from './account-setup/account-setup.component';
 		{
 			provide: MATERIAL_SANITY_CHECKS,//am i really doing this?
 			useValue: false
-		}
+		},
+		UrlService
 	],
 	bootstrap: [AppComponent]
 })

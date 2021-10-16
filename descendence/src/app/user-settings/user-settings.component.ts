@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ValidationError } from 'ajv';
 import { Observable, of, timer } from 'rxjs';
 import { delay, filter, first, map, switchMap } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { FocusOverlayRef } from '../focus-overlay/focus-overlay.ref';
 import { FocusOverlayService } from '../focus-overlay/focus-overlay.service';
 import { SharedValidatorService } from '../focus-overlay/shared-validator.service';
 import { ImageService} from '../services/image-service.service';
+import { UrlService } from '../url.service';
 import { UserService } from '../user.service';
 
 @Component({
@@ -35,6 +36,8 @@ export class UserSettingsComponent implements OnInit {
 		private readonly userService: UserService,
 		private readonly imageService: ImageService,
 		private readonly route: ActivatedRoute,
+		private readonly router: Router,
+		private readonly urlService: UrlService,
 	) {
 	}
 	
@@ -176,6 +179,11 @@ export class UserSettingsComponent implements OnInit {
 			this.userService.unblockedUser(this.settingsForm.controls['unblock'].value);
 			this.settingsForm.controls['unblock'].reset();
 		}
+	}
+
+	goBack() {
+		console.log(`PREVIOUS ROUTE: ${this.urlService.previousUrl}`);
+		this.router.navigateByUrl(this.urlService.previousUrl as string);
 	}
 
 	ngOnInit(): void {
