@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ValidationError } from 'ajv';
 import { Observable, of, timer } from 'rxjs';
 import { delay, filter, first, map, switchMap } from 'rxjs/operators';
@@ -32,7 +33,8 @@ export class UserSettingsComponent implements OnInit {
 		private overlay: FocusOverlayService,
 		private valid: SharedValidatorService,
 		private readonly userService: UserService,
-		private readonly imageService: ImageService
+		private readonly imageService: ImageService,
+		private readonly route: ActivatedRoute,
 	) {
 	}
 	
@@ -177,22 +179,15 @@ export class UserSettingsComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+		this.currentUserIntra = this.route.snapshot.data.user.intra_name;
+		this.currentAvatarUrl = this.route.snapshot.data.user.avatar_url;
+		this.initialTwoFactorState = this.route.snapshot.data.user.two_factor_enabled;
 		this.settingsForm = new FormGroup({
 			displayName: new FormControl(""),
-			twoFactorEnabled: new FormControl(false),
+			twoFactorEnabled: new FormControl(this.initialTwoFactorState),
 			avatar: new FormControl(""),
 			unblock: new FormControl("")
 		});
 		this.addValidators();
-		//remove me
-		this.settingsForm.controls['twoFactorEnabled'].valueChanges.subscribe((value) => {
-			console.log(value);
-		});
-		this.userService.userSubject.subscribe((user:any) => {
-			this.currentUserIntra = user.intra_name;
-			this.currentAvatarUrl = user.avatar_url;
-			this.initialTwoFactorState = user.two_factor_enabled;
-			this.settingsForm.patchValue({'twoFactorEnabled': this.initialTwoFactorState});
-		});
 	}
 }
