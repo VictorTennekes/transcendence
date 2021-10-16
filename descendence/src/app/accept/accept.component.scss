@@ -22,15 +22,22 @@
 	font-family: 'Poppins';
 	font-weight: bold;
 	font-size: 1.8rem;
-	padding-right: 2rem;
-	padding-left: 2rem;
+	// padding-right: 2rem;
+	// padding-left: 2rem;
 	margin-bottom: 2rem;
+	text-align: center;
+	width: 12rem;
 }
 
 .accept {
 	background-color: white;
 	color: #EFAF50;
 	margin-right: 6rem;
+
+	&:disabled {
+		background-color: #F9753C;
+		color: white;
+	}
 }
 
 .decline {
