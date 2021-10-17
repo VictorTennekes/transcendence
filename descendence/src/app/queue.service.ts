@@ -30,6 +30,11 @@ export class QueueService {
 		private readonly matchService: MatchService,
 		private readonly acceptService: AcceptService
 	) {
+		this.matchService.readyListener.subscribe(() => {
+			console.log("RECEIVED READY SIGNAL");
+			this.close();
+			this.acceptService.open();
+		});
 	}
 
 	private getOverlayConfig(config: FilePreviewDialogConfig): OverlayConfig {
@@ -78,11 +83,6 @@ export class QueueService {
 			...DEFAULT_CONFIG,
 			...config,
 		}
-		this.matchService.readyListener.subscribe(() => {
-			console.log("RECEIVED READY SIGNAL");
-			this.close();
-			this.acceptService.open();
-		});
 		this.interval = setInterval(() => {this.timePassed++}, 1000);
 		this.findDisabled = true;
 		const overlayRef = this.createOverlay(dialogConfig);

@@ -14,6 +14,7 @@ import {MatDialog, MatDialogRef, MatDialogContainer, MAT_DIALOG_DATA, MatDialogC
 import { MatchSocket } from '../match/match.socket';
 import { MatchComponent } from '../match/match.component';
 import { AcceptService } from '../accept.service';
+import { QueueService } from '../queue.service';
 
 @Component({
 	selector: 'app-master',
@@ -33,7 +34,7 @@ export class MasterComponent implements OnInit {
 		private matchService: MatchService,
 		public dialog: MatDialog,
 		private readonly matchSocket: MatchSocket,
-		private readonly acceptService: AcceptService,
+		private readonly queueService: QueueService,
 	) { }
 
 	updateAvatar(url: string | null) {
@@ -87,11 +88,9 @@ export class MasterComponent implements OnInit {
 		dialogRef.afterClosed().subscribe(result => {
 			console.log(`Dialog result: ${result}`);
 			if (result) {
-				// console.log("navigating to game");
-				this.router.navigate(['play', settings.host])
-				this.matchService.readyListener.subscribe(() => {
-					this.acceptService.open();
-				})
+				// this.matchService.readyListener.subscribe(() => {
+				// 	this.acceptService.open();
+				// })
 				this.matchSocket.emit('invite_accepted', settings.id);
 			} else {
 				console.log("declining invite: ", settings);
