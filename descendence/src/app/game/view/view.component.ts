@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { request } from 'http';
 import { Socket } from 'ngx-socket-io';
 import { runInThisContext } from 'vm';
 import { ClientService } from '../client.service';
