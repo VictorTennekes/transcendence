@@ -17,6 +17,8 @@ const DEFAULT_CONFIG: FilePreviewDialogConfig = {
 	panelClass: 'tm-file-preview-dialog-panel'
 }
 
+//TODO: replace 'SharedValidatorService' by switching from Overlay to Dialog and passing/returnin data from the dialog
+
 @Injectable()
 export class FocusOverlayService {
 	dialogRef: FocusOverlayRef;
@@ -24,11 +26,6 @@ export class FocusOverlayService {
 		private readonly overlay: Overlay,
 		private valid: SharedValidatorService
 	) { }
-	// createInjector(data: any): PortalInjector {
-	// 	const injectorTokens = new WeakMap();
-	// 	injectorTokens.set(INIT_DATA, data);
-	// 	return new PortalInjector(this.injector, injectorTokens);
-	// }
 
 	private getOverlayConfig(config: FilePreviewDialogConfig): OverlayConfig {
 		const positionStrategy = this.overlay.position()

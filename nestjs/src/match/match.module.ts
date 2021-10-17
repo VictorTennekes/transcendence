@@ -6,10 +6,11 @@ import { UserService } from '@user/user.service';
 import { UserModule } from '@user/user.module';
 import { GameModule } from 'src/game/game.module';
 import { GameService } from 'src/game/game.service';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   providers: [MatchGateway, MatchService],
-  imports: [UserModule, GameModule],
+  imports: [UserModule, GameModule, AuthModule],
   controllers: [MatchController]
 })
 export class MatchModule {}

@@ -14,7 +14,7 @@ import { TwoFactorAuthenticationService } from './two-factor-authentication.serv
 @Module({
 	imports: [
 		UserModule,
-		ConfigModule
+		ConfigModule,
 	],
 	controllers: [
 		AuthController,
@@ -26,7 +26,10 @@ import { TwoFactorAuthenticationService } from './two-factor-authentication.serv
 		AuthService,
 		FortyTwoStrategy,
 		ConfigService,
-		LoginGuard
+		LoginGuard,
 	],
+	exports: [
+		AuthService
+	]
 })
 export class AuthModule { }

@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getUserFromSocket } from '@shared/socket-utils';
+// import { getUserFromSocket } from '@shared/socket-utils';
 import { UserEntity } from '@user/entities/user.entity';
 import { UserService } from '@user/user.service';
 import { match } from 'assert';

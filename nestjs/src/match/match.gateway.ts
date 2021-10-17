@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common';
 import { ConnectedSocket, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { SocketAddress } from 'net';
-import { getUserFromSocket } from '@shared/socket-utils';
+// import { getUserFromSocket } from '@shared/socket-utils';
 import { UserService } from '@user/user.service';
 import { MatchService } from './match.service';
 import { User } from 'src/game/game.script';
@@ -11,6 +11,7 @@ import { socketData } from '@chat/chat.gateway';
 import { UserDTO } from '@user/dto/user.dto';
 import { GameService } from 'src/game/game.service';
 import { Match, MatchSettings } from './match.class';
+import { AuthService } from 'src/auth/auth.service';
 
 class FriendRequest {
 	receive: string;
@@ -67,7 +68,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	async findMatch(client: Socket, settings: MatchSettings): Promise<string> {
 		console.log("in find match. maybe it'll send the response?")
-		const userItem = await getUserFromSocket(client, this.userService);
+		const userItem = await this.userService.getUserFromSocket(client);
 		const user: User = {
 			login: userItem.intra_name,
 			display_name: userItem.display_name,
@@ -136,7 +137,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	//called by both the inviter and the invited player
 	@SubscribeMessage('invite_user')
 	async inviteUser(client: Socket, settings: MatchSettings) {
-		const usr = await getUserFromSocket(client, this.userService);
+		const usr = await this.userService.getUserFromSocket(client);
 		const user: User = {
 			login: usr.intra_name,
 			display_name: usr.display_name,
@@ -168,7 +169,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('invite_accepted')
 	async acceptInvite(client: Socket, id: string) {
-		const usr = await getUserFromSocket(client, this.userService);
+		const usr = await this.userService.getUserFromSocket(client);
 		const user: User = {
 			login: usr.intra_name,
 			display_name: usr.display_name,
@@ -205,7 +206,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('connected_friends')
 	async getConnectedFriends(@ConnectedSocket() client: Socket) {
-		let user = await getUserFromSocket(client, this.userService);
+		let user = await this.userService.getUserFromSocket(client);
 		user.friends = await this.userService.getFriends(user.intra_name);
 
 		for (let friend of user.friends) {
@@ -218,10 +219,13 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	async handleConnection(@ConnectedSocket() client: Socket) {
-		let user: UserDTO = await getUserFromSocket(client, this.userService);
+		let user: UserDTO = await this.userService.getUserFromSocket(client);
 		if (!user) {
 			Logger.log("something's wrong, can't find user")
 			return;
+		}
+		else {
+			Logger.log(`MATCH GATEWAY - NEW CONNECTION - USER ${user.intra_name}`);
 		}
 		let newSocket: socketData = {
 			user: user,
@@ -261,7 +265,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('send-friend-request')
 	async handleFriendRequest(client: Socket, username: string) {
-		let user: UserDTO = await getUserFromSocket(client, this.userService);
+		let user: UserDTO = await this.userService.getUserFromSocket(client);
 		let sender: socketData = {
 			user: user,
 			socket: client
@@ -294,7 +298,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('accept-friend-request')
 	async acceptFriendRequest(client: Socket, friend: UserDTO) {
-		const user: UserDTO = await getUserFromSocket(client, this.userService);
+		const user: UserDTO = await this.userService.getUserFromSocket(client);
 		await this.userService.addFriend(user.intra_name, friend.intra_name);
 	}
 }
