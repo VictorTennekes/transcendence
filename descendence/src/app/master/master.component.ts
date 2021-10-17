@@ -11,6 +11,9 @@ import { AcceptComponent } from '../accept/accept.component';
 // import {DialogData}
 // import {Component, Inject} from '@angular/core';
 import {MatDialog, MatDialogRef, MatDialogContainer, MAT_DIALOG_DATA, MatDialogConfig} from '@angular/material/dialog';
+import { MatchSocket } from '../match/match.socket';
+import { MatchComponent } from '../match/match.component';
+import { AcceptService } from '../accept.service';
 
 @Component({
 	selector: 'app-master',
@@ -28,7 +31,9 @@ export class MasterComponent implements OnInit {
 		private userService: UserService,
 		private cookies: CookieService,
 		private matchService: MatchService,
-		public dialog: MatDialog
+		public dialog: MatDialog,
+		private readonly matchSocket: MatchSocket,
+		private readonly acceptService: AcceptService,
 	) { }
 
 	updateAvatar(url: string | null) {
@@ -48,7 +53,7 @@ export class MasterComponent implements OnInit {
 			this.avatarStyle = this.updateAvatar(user.avatar_url);
 		});
 
-		this.matchService.receiveGameInvite().subscribe((res: any) => {
+		this.matchService.matchInviteListener.subscribe((res: any) => {
 			this.openDialog(res);
 			// this.router.navigate(['play', res]);
 		})
@@ -72,7 +77,7 @@ export class MasterComponent implements OnInit {
 		});
 	}
 
-	openDialog(settings: MatchSettings) {
+	openDialog(settings: {host: string, id: string}) {
 		const dialogConfig: MatDialogConfig = new MatDialogConfig();
 
 		const dialogRef = this.dialog.open(InviteComponent, {
@@ -82,12 +87,16 @@ export class MasterComponent implements OnInit {
 		dialogRef.afterClosed().subscribe(result => {
 			console.log(`Dialog result: ${result}`);
 			if (result) {
-				console.log("navigating to game");
-				this.router.navigate(['play', settings.opponent_username])
+				// console.log("navigating to game");
+				this.router.navigate(['play', settings.host])
+				this.matchService.readyListener.subscribe(() => {
+					this.acceptService.open();
+				})
+				this.matchSocket.emit('invite_accepted', settings.id);
 			} else {
 				console.log("declining invite: ", settings);
-				if (settings.opponent_username) {
-					this.matchService.inviteDeclined(settings.opponent_username);
+				if (settings.host) {
+					this.matchService.inviteDeclined(settings.host);
 				}
 			}
 		});
@@ -126,7 +135,7 @@ export class MasterComponent implements OnInit {
 
 	constructor(
 		public dialogRef: MatDialogRef<InviteComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: MatchSettings) {}
+		@Inject(MAT_DIALOG_DATA) public data: {host: string, id: string}) {}
 
 	  public accept() {
 		  this.dialogRef.close(true);

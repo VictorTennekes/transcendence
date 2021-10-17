@@ -54,7 +54,6 @@ const routes: Routes = [
 				outlet: "chat"
 			},
 			{
-				
 				canActivate: [GameGuard],
 				path: 'game/:id',
 				component: ViewComponent

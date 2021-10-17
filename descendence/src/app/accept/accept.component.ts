@@ -64,8 +64,4 @@ export class AcceptComponent implements OnInit {
 			this.accepted = false;
 		});
 	}
-
-	// ngOnDestroy(): void {
-	// 	this.matchService.cancelAccept();
-	// }
 }

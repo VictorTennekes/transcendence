@@ -50,6 +50,9 @@ export const defaultMatchSettings: MatchSettings = {
 export class MatchService {
 
 	acceptListener: Observable<any>;
+	errorListener: Observable<any>
+	matchInviteListener: Observable<any>
+	readyListener: Observable<any>
 	constructor(
 		private readonly matchSocket: MatchSocket,
 		private readonly http: HttpClient,
@@ -58,6 +61,9 @@ export class MatchService {
 		private readonly acceptService: AcceptService
 	) {
 		this.acceptListener = this.matchSocket.fromEvent('accepted');
+		this.errorListener = this.matchSocket.fromEvent('game_invite_failure');
+		this.matchInviteListener = this.matchSocket.fromEvent('receive_game_invite');
+		this.readyListener = this.matchSocket.fromEvent('ready');
 	}
 	
 	//emit the find request with these settings
@@ -70,18 +76,12 @@ export class MatchService {
 	}
 
 	inviteUser(settings: MatchSettings) {
+		console.log(`INVITING ${settings.opponent_username} FOR A MATCH`);
 		this.matchSocket.emit('invite_user', settings);
 	}
 
 	cancelMatch() {
 		this.matchSocket.emit('cancel');
-	}
-
-	matchReady() {
-		return this.matchSocket.fromEvent('ready');
-	}
-	cancelReady() {
-		this.matchSocket.removeAllListeners('ready');
 	}
 	// cancelAccept() {
 	// 	this.matchSocket.removeAllListeners('accepted');
@@ -96,14 +96,6 @@ export class MatchService {
 
 	acceptMatch() {
 		this.matchSocket.emit('accept');
-	}
-
-	receiveGameInvite() {
-		return this.matchSocket.fromEvent('receive_game_invite');
-	}
-
-	receiveGameInviteError() {
-		return this.matchSocket.fromEvent('game_invite_failure');
 	}
 
 	inviteDeclined(username: string) {

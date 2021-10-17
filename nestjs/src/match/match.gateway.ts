@@ -78,9 +78,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		return match;
 	}
 
-	async initiateMatch(client: Socket, match: string) {
-		client.join(match); //add user to the room identified by the matchID
-		const id = match;
+	async initiateMatch(client: Socket, id: string) {
+		client.join(id); //add user to the room identified by the matchID
 		// Logger.log(`MATCH[${id}] - FINDMATCH`);
 		if (this.matchService.matches[id].ready) {
 			Logger.log(`MATCH ${id} - BOTH ARE LISTENING`);
@@ -112,7 +111,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		else {
 			Logger.log(`MATCH[${id}] - LISTENING - ${this.matchService.matches[id].ready}`);
 		}
-		Logger.log(`GAME[${match}] - FOUND - USER[${client.id}]`);
+		Logger.log(`GAME[${id}] - FOUND - USER[${client.id}]`);
 
 	}
 
@@ -134,6 +133,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.initiateMatch(client, match);
 	}
 
+	//called by both the inviter and the invited player
 	@SubscribeMessage('invite_user')
 	async inviteUser(client: Socket, settings: MatchSettings) {
 		const usr = await getUserFromSocket(client, this.userService);
@@ -143,6 +143,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			socket: client
 		}
 		let match = this.matchService.matchExists(user, settings);
+		//if called by the inviter <- match === null
+		//if called by the invited <- match !== null
 		if (match === null) {
 			let inviteSent: boolean = false;
 			console.log("connected users: ", this.connectedUsers);
@@ -150,19 +152,36 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				if (connectedUser.user.intra_name === settings.opponent_username) {
 					let sentSettings: MatchSettings = Object.assign({}, settings);
 					sentSettings.opponent_username = usr.intra_name;
-					connectedUser.socket.emit('receive_game_invite', sentSettings);
+					match = await this.findMatch(client, settings);
+					this.initiateMatch(client, match);
+					connectedUser.socket.emit('receive_game_invite', {host: user.login, id: match});
 					inviteSent = true;
 				}
 			}
 			if (inviteSent === false) {
 				client.emit('game_invite_failure', 'user not online');
 			}
-			match = await this.findMatch(client, settings);
-			this.initiateMatch(client, match);
 		} else {
 			this.initiateMatch(client, match);
 		}
+	}
 
+	@SubscribeMessage('invite_accepted')
+	async acceptInvite(client: Socket, id: string) {
+		const usr = await getUserFromSocket(client, this.userService);
+		const user: User = {
+			login: usr.intra_name,
+			display_name: usr.display_name,
+			socket: client
+		};
+		const match = this.matchService.matches[id];
+		if (match === undefined || match.settings?.opponent_username !== user.login) {
+			//not invited
+			return ;
+		}
+		Logger.log(`USER ${user.login} - ACCEPTED INVITE TO ${id}`);
+		this.matchService.matches[id].setOpponent(user);
+		this.initiateMatch(client, id);
 	}
 
 	@SubscribeMessage('invite_declined')
