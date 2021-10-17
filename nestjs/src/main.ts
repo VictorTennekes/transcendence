@@ -21,6 +21,11 @@ const postgresConnection =
 
 const postgresSession = require('connect-pg-simple')(session);
 
+export const knex = require('knex')({
+	client: 'pg',
+	connection: postgresConnection,
+}); 
+
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
@@ -37,11 +42,6 @@ async function bootstrap() {
 	const path = require('path');
 	
 	await runDbMigrations();
-	
-	const knex = require('knex')({
-		client: 'pg',
-		connection: postgresConnection,
-	});
 	
 	//create the 'session' table if it doesn't exist
 	const sessionStore = await knex.schema.hasTable('session').then(exists => {
