@@ -96,12 +96,19 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 						this.matchService.deleteMatch(id);
 					}
 					else {
-						this.leaveMatchRooms(match);
-						if (this.matchService.matches[id].bothDidntAccept()) {
+						if (match.settings.opponent_username) {
+							match.creator.socket.leave(match.id);
+							match.opponent.socket.leave(match.id);
 							this.matchService.deleteMatch(id);
 						}
 						else {
-							this.matchService.matches[id].resetMatchData();
+							this.leaveMatchRooms(match);
+							if (this.matchService.matches[id].bothDidntAccept()) {
+								this.matchService.deleteMatch(id);
+							}
+							else {
+								this.matchService.matches[id].resetMatchData();
+							}
 						}
 					}
 				}
