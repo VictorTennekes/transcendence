@@ -20,6 +20,8 @@
 .two-factor-panel > mat-dialog-container {
 	background-color: transparent;
 	box-shadow: none;
+	overflow-y: hidden;
+	height: auto;
 }
 
 html, body { height: 100%; }

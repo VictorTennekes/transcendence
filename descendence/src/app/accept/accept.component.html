@@ -5,8 +5,8 @@
 		</p>
 	</div>
 	<div class="selection-container">
-		<button class="button accept" [disabled]="accepted" (click)="accept()">
-			{{accepted ? 'ACCEPTED' : 'ACCEPT'}}
+		<button class="button accept" [disabled]="res.self" (click)="accept()">
+			{{res.self ? 'ACCEPTED' : 'ACCEPT'}}
 		</button>
 		<button class="button decline" (click)="decline()">
 			DECLINE

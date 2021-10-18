@@ -6,7 +6,6 @@ import { GameSocket } from './game/game.socket';
 import { MatchSocket } from './match/match.socket';
 import { QueueScheduler } from 'rxjs/internal/scheduler/QueueScheduler';
 import { QueueService } from './queue.service';
-import { AcceptService } from './accept.service';
 import { userModel } from './chat/chat-client/message.model'
 // import { Socket } from 'ngx-socket-io';
 
@@ -58,7 +57,6 @@ export class MatchService {
 		private readonly http: HttpClient,
 		private readonly gameSocket: GameSocket,
 		// private readonly queueService: QueueService,
-		private readonly acceptService: AcceptService
 	) {
 		this.acceptListener = this.matchSocket.fromEvent('accepted');
 		this.errorListener = this.matchSocket.fromEvent('game_invite_failure');

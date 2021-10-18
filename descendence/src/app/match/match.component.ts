@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { defaultMatchSettings, EndCondition, EndConditionTypes, MatchService, MatchSettings, SpeedMode } from '../match.service';
 import { QueueService } from '../queue.service';
-import { AcceptService } from '../accept.service';
 import { MatchSocket } from './match.socket';
 import { FormControl, FormGroup } from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router'
@@ -36,7 +35,6 @@ export class MatchComponent implements OnInit {
 	constructor(
 		private readonly matchService: MatchService,
 		private readonly queueService: QueueService,
-		private readonly acceptService: AcceptService,
 		private router: Router,
 		private route: ActivatedRoute
 	) { }

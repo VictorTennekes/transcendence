@@ -13,7 +13,6 @@ import { AcceptComponent } from '../accept/accept.component';
 import {MatDialog, MatDialogRef, MatDialogContainer, MAT_DIALOG_DATA, MatDialogConfig} from '@angular/material/dialog';
 import { MatchSocket } from '../match/match.socket';
 import { MatchComponent } from '../match/match.component';
-import { AcceptService } from '../accept.service';
 import { QueueService } from '../queue.service';
 
 @Component({
@@ -88,9 +87,6 @@ export class MasterComponent implements OnInit {
 		dialogRef.afterClosed().subscribe(result => {
 			console.log(`Dialog result: ${result}`);
 			if (result) {
-				// this.matchService.readyListener.subscribe(() => {
-				// 	this.acceptService.open();
-				// })
 				this.matchSocket.emit('invite_accepted', settings.id);
 			} else {
 				console.log("declining invite: ", settings);

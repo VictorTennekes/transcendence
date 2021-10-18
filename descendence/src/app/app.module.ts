@@ -37,7 +37,6 @@ import { ViewComponent } from './game/view/view.component';
 import { QueueComponent } from './queue/queue.component';
 import { QueueService } from './queue.service';
 import { AcceptComponent } from './accept/accept.component';
-import { AcceptService } from './accept.service';
 import { CountdownModule } from 'ngx-countdown';
 import { MATERIAL_SANITY_CHECKS } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -128,7 +127,6 @@ import { AccountSetupComponent } from './account-setup/account-setup.component';
 		ChatSocket,
 		GameSocket,
 		QueueService,
-		AcceptService,
 		{
 			provide: MATERIAL_SANITY_CHECKS,//am i really doing this?
 			useValue: false
