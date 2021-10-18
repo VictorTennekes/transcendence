@@ -39,23 +39,47 @@ export class AccountSetupComponent implements OnInit {
 		}
   }
 
-  displayNameIsUnique(): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      let err: ValidationErrors = {
-        'notUnique': true
-      }
-      return of(control.value).pipe(delay(500),switchMap(() => {
-        return this.userService.checkDisplayNameAvailability(control.value).pipe(map((available) => {
-          if (!available) {
-            console.log("INVALID");
-            return err;
-          }
-          console.log("VALID");
-          return null;
-        }));
-      }));
-    }
-  }
+  displayNameIsValid(str: string) : boolean {
+		var code, i, len;
+
+    len = str.length;
+    if (len < 6 || len > 24)
+      return false;
+		for (i = 0; i < len; i++) {
+			code = str.charCodeAt(i);
+			if (!(code > 47 && code < 58) && // numeric (0-9)
+				!(code > 64 && code < 91) && // upper alpha (A-Z)
+				!(code > 96 && code < 123)) { // lower alpha (a-z)
+				return false;
+			}
+		}
+		return true;
+	}
+
+	displayNameIsUnique(): AsyncValidatorFn {
+		return (control: AbstractControl): Observable<ValidationErrors | null> => {
+			let err: ValidationErrors = {
+				'notUnique': false,
+				'notValid': false
+			}
+			return of(control.value).pipe(delay(500),switchMap(() => {
+				return this.userService.checkDisplayNameAvailability(control.value).pipe(map((available) => {
+					if (!this.displayNameIsValid(control.value)) {
+						console.log("INVALID");
+						err['notValid'] = true;
+						return err;
+					}
+					if (!available) {
+						console.log("INVALID");
+						err['notUnique'] = true;
+						return err;
+					}
+					console.log("VALID");
+					return null;
+				}));
+			}));
+		}
+	}
 
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe((user: any) => {
