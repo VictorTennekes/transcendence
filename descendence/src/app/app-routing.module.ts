@@ -106,6 +106,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'settings',
+				resolve: { user: CurrentUserResolver },
 				component: UserSettingsComponent
 			},
 			{

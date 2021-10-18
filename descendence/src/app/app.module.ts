@@ -17,7 +17,6 @@ import { ImageService } from './services/image-service.service';
 import { FocusOverlayComponent } from './focus-overlay/focus-overlay.component';
 import { FullscreenOverlayContainer, OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 import { FocusOverlayService } from './focus-overlay/focus-overlay.service';
-import { NgxKjuaModule } from 'ngx-kjua';
 import { QrCodeDirective } from './focus-overlay/qrcode.directive';
 import { OnlyNumber } from './focus-overlay/only-numbers.directive';
 import { SharedValidatorService } from './focus-overlay/shared-validator.service';
@@ -60,6 +59,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatchComponent } from './match/match.component';
 import { LoadcircleComponent } from './accept/loadcircle/loadcircle.component';
 import { AccountSetupComponent } from './account-setup/account-setup.component';
+import { UrlService } from './url.service';
 
 // const config: SocketIoConfig = {
 // 	url: 'http://localhost:3000',
@@ -110,7 +110,6 @@ import { AccountSetupComponent } from './account-setup/account-setup.component';
 		FormsModule,
 		FontAwesomeModule,
 		OverlayModule,
-		NgxKjuaModule,
 		BrowserAnimationsModule,
 		MatInputModule,
 		MatListModule,
@@ -143,7 +142,8 @@ import { AccountSetupComponent } from './account-setup/account-setup.component';
 		{
 			provide: MATERIAL_SANITY_CHECKS,//am i really doing this?
 			useValue: false
-		}
+		},
+		UrlService
 	],
 	bootstrap: [AppComponent]
 })

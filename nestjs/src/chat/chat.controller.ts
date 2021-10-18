@@ -49,6 +49,7 @@ export class ChatController {
 		if (user) {
 			let users: UserDTO[] = [];
 			users.push(user);
+			//add the calling user to Users array
 			if (name !== req.session.passport.user.login) {
 				users.push(await this.userService.findOne(req.session.passport.user.login));
 			}
@@ -56,6 +57,7 @@ export class ChatController {
 				//
 				return ;
 			}
+			//find the dm;
 			let dm = await this.service.getChatByUsers(users);
 			if (!dm) {
 				let chatdto: NewChatDTO = {

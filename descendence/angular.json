@@ -23,7 +23,7 @@
 				"build": {
 					"builder": "@angular-devkit/build-angular:browser",
 					"options": {
-						"allowedCommonJsDependencies": ["crypto"],
+						"allowedCommonJsDependencies": ["crypto", "qrcode"],
 						"outputPath": "dist/descendence",
 						"index": "src/index.html",
 						"main": "src/main.ts",

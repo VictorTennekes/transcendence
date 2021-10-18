@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { UserEntity, UserService } from '../user.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { secondsToDhms } from '../game/post/post.component';
 import { MatchService } from '../match.service';
+import { ChatService } from '../chat/chat-client/chat.service';
+import { chatModel } from '../chat/chat-client/message.model';
+import { SearchService } from '../chat/search/search.service';
 
 @Component({
 	selector: 'app-profile',
 	templateUrl: './profile.component.html',
-	styleUrls: ['./profile.component.scss']
+	styleUrls: ['./profile.component.scss'],
+	providers: [SearchService]
 })
 export class ProfileComponent implements OnInit {
 	
@@ -15,6 +19,8 @@ export class ProfileComponent implements OnInit {
 		private userService: UserService,
 		private route: ActivatedRoute,
 		private matchService: MatchService,
+		private readonly searchService: SearchService,
+		private readonly router: Router,
 		// private ref: ChangeDetectorRef
 	) { }
 	
@@ -52,7 +58,13 @@ export class ProfileComponent implements OnInit {
 	}
 
 	sendMessage() {
-		console.log(`MESSAGE SENT`);
+		this.searchService.findMatchingChats(this.loginId).subscribe((chats: chatModel[]) => {
+			console.log(`RETURNED CHAT(S) - ${JSON.stringify(chats)}`);
+			const dm = chats.filter((chat) => chat.visibility === 'direct');
+			if (dm.length !== 1)
+				return ;
+			this.router.navigate(['', {outlets: {chat: ['get-chat', dm[0].id]}}]);;
+		});
 	}
 
 	get avatar() {
