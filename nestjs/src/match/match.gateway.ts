@@ -251,6 +251,11 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		if (connectedUser) {
 			this.sendFriendRequest(sender, connectedUser);
 		} else {
+			for (let req of this.pendingFriendRequests) {
+				if (req.receive === username && req.submit.intra_name === user.intra_name) {
+					return;
+				}
+			}
 			const newRequest: FriendRequest = {
 				submit: user,
 				receive: username
