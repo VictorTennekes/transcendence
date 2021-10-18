@@ -17,7 +17,6 @@ import { ImageService } from './services/image-service.service';
 import { FocusOverlayComponent } from './focus-overlay/focus-overlay.component';
 import { FullscreenOverlayContainer, OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 import { FocusOverlayService } from './focus-overlay/focus-overlay.service';
-import { NgxKjuaModule } from 'ngx-kjua';
 import { QrCodeDirective } from './focus-overlay/qrcode.directive';
 import { OnlyNumber } from './focus-overlay/only-numbers.directive';
 import { SharedValidatorService } from './focus-overlay/shared-validator.service';
@@ -103,7 +102,6 @@ import { AccountSetupComponent } from './account-setup/account-setup.component';
 		FormsModule,
 		FontAwesomeModule,
 		OverlayModule,
-		NgxKjuaModule,
 		BrowserAnimationsModule,
 		MatInputModule,
 		MatListModule,
