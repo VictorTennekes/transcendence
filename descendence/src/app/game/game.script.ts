@@ -1,5 +1,4 @@
 import { ClientService } from "./client.service";
-import { SequenceEqualOperator } from 'rxjs/internal/operators/sequenceEqual';
 
 const PADDLE_WIDTH = 22;
 const PADDLE_HEIGHT = 160;
