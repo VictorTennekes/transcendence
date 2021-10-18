@@ -1,7 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
-import { ValidationError } from 'ajv';
 import { Observable, of, timer } from 'rxjs';
 import { delay, filter, first, map, switchMap } from 'rxjs/operators';
 import { FocusOverlayRef } from '../focus-overlay/focus-overlay.ref';
