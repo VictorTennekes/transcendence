@@ -13,6 +13,15 @@
 	}
 }
 
+// ::ng-deep .custom-dialog > mat-dialog-container {
+// 	background-color: var(--background);
+// }
+
+.two-factor-panel > mat-dialog-container {
+	background-color: transparent;
+	box-shadow: none;
+}
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 

@@ -1,12 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ValidationError } from 'ajv';
 import { Observable, of, timer } from 'rxjs';
 import { delay, filter, first, map, switchMap } from 'rxjs/operators';
-import { FocusOverlayRef } from '../focus-overlay/focus-overlay.ref';
-import { FocusOverlayService } from '../focus-overlay/focus-overlay.service';
-import { SharedValidatorService } from '../focus-overlay/shared-validator.service';
+import { FocusOverlayComponent } from '../focus-overlay/focus-overlay.component';
 import { ImageService} from '../services/image-service.service';
 import { UserService } from '../user.service';
 
@@ -29,8 +28,7 @@ export class UserSettingsComponent implements OnInit {
 	currentUserIntra: string;
 	
 	constructor(
-		private overlay: FocusOverlayService,
-		private valid: SharedValidatorService,
+		private dialog: MatDialog,
 		private readonly userService: UserService,
 		private readonly imageService: ImageService
 	) {
@@ -75,26 +73,15 @@ export class UserSettingsComponent implements OnInit {
 		return style;
 	}
 	
-	openOverlay() {
-		if (!!this.settingsForm.controls['twoFactorEnabled'].value)
-			return ;
-		let dialogRef: FocusOverlayRef = this.overlay.open();
-		return dialogRef;
-	}
-	
 	toggleSwitch(event: Event) {
 		const twoFactorForm = this.settingsForm.controls['twoFactorEnabled'];
 		if (!twoFactorForm.value) {
-			
-			const overlay = this.openOverlay();
-			overlay?.detachment().subscribe((e) => {
-				if (this.valid.valid === true) {
-					twoFactorForm.setValue(true);
-				}
-			},
-			(err) => {
-				console.log(err);
-			})
+			let twoFactorDialog = this.dialog.open(FocusOverlayComponent, {
+				panelClass: 'two-factor-panel'
+			});
+			twoFactorDialog.afterClosed().pipe(filter((res) => res !== undefined)).subscribe((res) => {
+				twoFactorForm.setValue(true);
+			});
 			event.preventDefault();
 		}
 	}
@@ -184,10 +171,6 @@ export class UserSettingsComponent implements OnInit {
 			unblock: new FormControl("")
 		});
 		this.addValidators();
-		//remove me
-		this.settingsForm.controls['twoFactorEnabled'].valueChanges.subscribe((value) => {
-			console.log(value);
-		});
 		this.userService.userSubject.subscribe((user:any) => {
 			this.currentUserIntra = user.intra_name;
 			this.currentAvatarUrl = user.avatar_url;
