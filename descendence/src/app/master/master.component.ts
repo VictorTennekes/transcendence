@@ -11,6 +11,7 @@ import { AcceptComponent } from '../accept/accept.component';
 // import {DialogData}
 // import {Component, Inject} from '@angular/core';
 import {MatDialog, MatDialogRef, MatDialogContainer, MAT_DIALOG_DATA, MatDialogConfig} from '@angular/material/dialog';
+import { UrlService } from '../url.service';
 
 @Component({
 	selector: 'app-master',
@@ -28,7 +29,8 @@ export class MasterComponent implements OnInit {
 		private userService: UserService,
 		private cookies: CookieService,
 		private matchService: MatchService,
-		public dialog: MatDialog
+		public dialog: MatDialog,
+		private readonly urlService: UrlService, //required to start the service
 	) { }
 
 	updateAvatar(url: string | null) {

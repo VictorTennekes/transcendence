@@ -26,6 +26,7 @@ import { AcceptComponent } from './accept/accept.component';
 import { LoadcircleComponent } from './accept/loadcircle/loadcircle.component';
 import { SetupGuard } from './setup.guard';
 import { AccountSetupComponent } from './account-setup/account-setup.component';
+import { CurrentUserResolver } from './user-settings/current-user.resolver';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -65,6 +66,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'settings',
+				resolve: { user: CurrentUserResolver },
 				component: UserSettingsComponent
 			},
 			{
@@ -121,6 +123,6 @@ const routes: Routes = [
 @NgModule({
 	imports: [RouterModule.forRoot(routes)],
 	exports: [RouterModule],
-	providers: [ LoginGuard, GameGuard, PostGameGuard, chatGuardService, SearchService, chatAdminGuard, PostgameResolver ]
+	providers: [ LoginGuard, GameGuard, PostGameGuard, chatGuardService, SearchService, chatAdminGuard, PostgameResolver, CurrentUserResolver ]
 })
 export class AppRoutingModule { }
