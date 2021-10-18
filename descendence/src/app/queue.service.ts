@@ -3,8 +3,8 @@ import { Overlay, OverlayConfig } from '@angular/cdk/overlay';
 import { QueueComponent } from "./queue/queue.component";
 import { ComponentPortal } from '@angular/cdk/portal';
 import { FocusOverlayRef } from "./focus-overlay/focus-overlay.ref";
-import { MatchService } from './match.service';
-import { MatDialog } from "@angular/material/dialog";
+// import { MatchService } from './match.service';
+// import { MatDialog } from "@angular/material/dialog";
 import { AcceptComponent } from "./accept/accept.component";
 import { Router } from "@angular/router";
 
@@ -29,25 +29,11 @@ export class QueueService {
 
 	constructor(
 		private readonly overlay: Overlay,
-		private readonly matchService: MatchService,
-		private readonly dialog: MatDialog,
+		// private readonly matchService: MatchService,
+		// private readonly dialog: MatDialog,
 		private readonly router: Router,
 	) {
-		this.matchService.readyListener.subscribe(() => {
-			console.log("RECEIVED READY SIGNAL");
-			let acceptDialog = this.dialog.open(AcceptComponent, {panelClass: 'two-factor-panel', disableClose: true, height: 'auto'});
-			acceptDialog.afterClosed().subscribe((res: {result: boolean, self: boolean, id: string}) => {
-				if (res.result) {
-					this.close();
-					this.router.navigate(['game/' + res.id]);
-				}
-				else {
-					if (!res.self) {
-						this.close();
-					}
-				}
-			})
-		});
+
 	}
 
 	private getOverlayConfig(config: FilePreviewDialogConfig): OverlayConfig {

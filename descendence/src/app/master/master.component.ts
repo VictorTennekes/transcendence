@@ -19,13 +19,13 @@ import { QueueService } from '../queue.service';
 	selector: 'app-master',
 	templateUrl: './master.component.html',
 	styleUrls: ['./master.component.scss',
-				'./invite.scss']
+	'./invite.scss']
 })
 export class MasterComponent implements OnInit {
 	
 	displayName: string = "";
 	avatarStyle: string = "";
-
+	
 	constructor(
 		private readonly router: Router,
 		private userService: UserService,
@@ -35,24 +35,25 @@ export class MasterComponent implements OnInit {
 		private readonly matchSocket: MatchSocket,
 		private readonly queueService: QueueService,
 	) { }
-
+	
 	updateAvatar(url: string | null) {
 		let style = "background-image: ";
-
+		
 		if (url)
-			style += `url(cdn/assets/${url});`
+		style += `url(cdn/assets/${url});`
 		else
-			style += 'linear-gradient(135.2deg, #C4377B -6.4%, #6839B5 49.35%, #0D6EFF 104.83%, #0D6EFF 104.84%, #0D6EFF 104.85%);'
+		style += 'linear-gradient(135.2deg, #C4377B -6.4%, #6839B5 49.35%, #0D6EFF 104.83%, #0D6EFF 104.84%, #0D6EFF 104.85%);'
 		return style;
 	}
-
+	
 	ngOnInit(): void {
+		// this.matchService.inviteReadyListen
 		this.userService.userSubject.subscribe((user: any) => {
-//			console.log(`NG_ON_INIT user: ${JSON.stringify(user)}`);
+			//			console.log(`NG_ON_INIT user: ${JSON.stringify(user)}`);
 			this.displayName = user.display_name;
 			this.avatarStyle = this.updateAvatar(user.avatar_url);
 		});
-
+		
 		this.matchService.matchInviteListener.subscribe((res: any) => {
 			this.openDialog(res);
 			// this.router.navigate(['play', res]);
@@ -61,8 +62,8 @@ export class MasterComponent implements OnInit {
 			this.openFriendRequest(res);
 		})
 	}
-
-
+	
+	
 	openFriendRequest(user: any) {
 		const dialogConfig: MatDialogConfig = new MatDialogConfig();
 		const dialogRef = this.dialog.open(friendRequestDialog, {
@@ -76,10 +77,10 @@ export class MasterComponent implements OnInit {
 			}
 		});
 	}
-
+	
 	openDialog(settings: {host: string, id: string}) {
 		const dialogConfig: MatDialogConfig = new MatDialogConfig();
-
+		
 		const dialogRef = this.dialog.open(InviteComponent, {
 			data: settings,
 			panelClass: 'invite-dialog'
@@ -88,6 +89,7 @@ export class MasterComponent implements OnInit {
 			console.log(`Dialog result: ${result}`);
 			if (result) {
 				this.matchSocket.emit('invite_accepted', settings.id);
+				this.matchService.inviteReadyListen();
 			} else {
 				console.log("declining invite: ", settings);
 				if (settings.host) {
@@ -95,8 +97,15 @@ export class MasterComponent implements OnInit {
 				}
 			}
 		});
+		// if (this.matchService.acceptDialog != null) {
+		// 	this.matchService.acceptDialog.afterClosed().subscribe((res: {result: boolean, self: boolean, id: string}) => {
+		// 		if (res.result) {
+		// 			this.router.navigate(['game/' + res.id]);
+		// 		}
+		// 	});
+		// }
 	}
-
+	
 	logOut(): void {
 		console.log('is the error here?')
 		this.userService.logout().subscribe((error: any) => {
@@ -113,8 +122,8 @@ export class MasterComponent implements OnInit {
 }
 
 // , {
-	// width: '250px',
-	// data: {name: this.name, animal: this.animal}
+// width: '250px',
+// data: {name: this.name, animal: this.animal}
 //   }
 
 
@@ -123,59 +132,59 @@ export class MasterComponent implements OnInit {
 	templateUrl: './invite.html',
 	styleUrls: ['./invite.scss'],
 	providers: [MatDialogContainer, MatDialogConfig]
-  })
-  export class InviteComponent {
+})
+export class InviteComponent {
 	//   @Input()
 	//   username: string = "";
-
+	
 	constructor(
 		public dialogRef: MatDialogRef<InviteComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: {host: string, id: string}) {}
-
-	  public accept() {
-		  this.dialogRef.close(true);
-		  //create game and navigate to game
-
-
+		
+	public accept() {
+		this.dialogRef.close(true);
+		//create game and navigate to game
+		
+		
 		// this.router.navigate(['game']);
-		  //emit events in both these cases
-
-	  }
-
-	  public close() {
-		  //emit not accepted event
-			this.dialogRef.close(false);
-
-	  }
-  }
+		//emit events in both these cases
+		
+	}
+	
+	public close() {
+		//emit not accepted event
+		this.dialogRef.close(false);
+		
+	}
+}
 
 @Component({
 	selector: 'friend-request-dialog',
 	templateUrl: './friend-request.html',
 	styleUrls: ['./invite.scss'],
 	providers: [MatDialogContainer, MatDialogConfig]
-  })
-  export class friendRequestDialog {
+})
+export class friendRequestDialog {
 	//   @Input()
 	//   username: string = "";
-
+	
 	constructor(
 		public dialogRef: MatDialogRef<friendRequestDialog>,
-		@Inject(MAT_DIALOG_DATA) public data: any) {}
-
-	  public accept() {
-		  this.dialogRef.close(true);
-		  //create game and navigate to game
-
-
+	@Inject(MAT_DIALOG_DATA) public data: any) {}
+	
+	public accept() {
+		this.dialogRef.close(true);
+		//create game and navigate to game
+		
+		
 		// this.router.navigate(['game']);
-		  //emit events in both these cases
-
-	  }
-
-	  public close() {
-		  //emit not accepted event
-			this.dialogRef.close(false);
-
-	  }
-  }
+		//emit events in both these cases
+		
+	}
+	
+	public close() {
+		//emit not accepted event
+		this.dialogRef.close(false);
+		
+	}
+}

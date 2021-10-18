@@ -5,6 +5,8 @@ import { MatchSocket } from './match.socket';
 import { FormControl, FormGroup } from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router'
 import { MatIcon } from '@angular/material/icon';
+import { AcceptComponent } from '../accept/accept.component';
+import { MatDialog } from '@angular/material/dialog';
 
 const timebased = true;
 const pointbased = false;
@@ -26,7 +28,7 @@ const BallSpeedLabelMapping: Record<BallSpeed, string> = {
 	templateUrl: './match.component.html',
 	styleUrls: ['./match.component.scss']
 })
-export class MatchComponent implements OnInit {
+export class MatchComponent implements OnInit, OnDestroy{
 	
 	findgame: FormGroup;
 	public speedMappings = BallSpeedLabelMapping;
@@ -36,12 +38,14 @@ export class MatchComponent implements OnInit {
 		private readonly matchService: MatchService,
 		private readonly queueService: QueueService,
 		private router: Router,
-		private route: ActivatedRoute
+		private route: ActivatedRoute,
+		public readonly dialog: MatDialog,
 	) { }
 	
 	overlay: any;
 	private: boolean = false;
 	invitedPlayer: string | undefined = undefined;
+	acceptDialog: any = null;
 
 	get disabled() {
 		return this.queueService.findDisabled;
@@ -83,9 +87,25 @@ export class MatchComponent implements OnInit {
 			matchSettings.opponent_username = username.toLowerCase();
 		}
 		console.log("FINDMATCH SENT");
-		this.queueService.open({hasBackdrop: false});
+		// if (this.matchService.acceptDialog != null) {
+		// 	this.matchService.acceptDialog.afterClosed().subscribe((res: {result: boolean, self: boolean, id: string}) => {
+		// 		if (res.result) {
+		// 			if (username === undefined) {
+		// 				this.queueService.close();
+		// 			}
+		// 			this.router.navigate(['game/' + res.id]);
+		// 		}
+		// 		else {
+		// 			if (!res.self && username === undefined) {
+		// 				this.queueService.close();
+		// 			}
+		// 		}
+		// 	});
+		// }
+		this.matchService.matchReadyListen(username === undefined ? null : username);
 		console.log(matchSettings);
 		if (username === undefined) {
+			this.queueService.open({hasBackdrop: false});
 			this.matchService.findMatch(matchSettings);
 		} else {
 			this.matchService.inviteUser(matchSettings);
@@ -124,5 +144,9 @@ export class MatchComponent implements OnInit {
 			// 	this.findMatch(params['intra_name']);
 			// }
 		})
+	}
+
+	ngOnDestroy(): void {
+		this.matchService.unsetReadyListen();
 	}
 }

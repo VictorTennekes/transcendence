@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of, BehaviorSubject, Observable } from 'rxjs';
+import { of, BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GameSocket } from './game/game.socket';
 import { MatchSocket } from './match/match.socket';
 import { QueueScheduler } from 'rxjs/internal/scheduler/QueueScheduler';
 import { QueueService } from './queue.service';
 import { userModel } from './chat/chat-client/message.model'
+import { AcceptComponent } from './accept/accept.component';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 // import { Socket } from 'ngx-socket-io';
 
 export enum SpeedMode {
@@ -52,18 +55,25 @@ export class MatchService {
 	errorListener: Observable<any>
 	matchInviteListener: Observable<any>
 	readyListener: Observable<any>
+	public acceptDialog: any = null;
+	private readySubscription: Subscription | null = null;
+
 	constructor(
 		private readonly matchSocket: MatchSocket,
 		private readonly http: HttpClient,
 		private readonly gameSocket: GameSocket,
-		// private readonly queueService: QueueService,
+		private readonly dialog: MatDialog,
+		private readonly router: Router,
+		private readonly queueService: QueueService,
 	) {
 		this.acceptListener = this.matchSocket.fromEvent('accepted');
 		this.errorListener = this.matchSocket.fromEvent('game_invite_failure');
 		this.matchInviteListener = this.matchSocket.fromEvent('receive_game_invite');
 		this.readyListener = this.matchSocket.fromEvent('ready');
+
+		// this.inviteReadyListen();
 	}
-	
+
 	//emit the find request with these settings
 	findMatch(settings: MatchSettings) {
 		this.matchSocket.emit('find', settings);
@@ -90,6 +100,61 @@ export class MatchService {
 	}
 	matchAccepted() {
 		return this.acceptListener;
+	}
+
+	inviteReadyListen() {
+		if (this.readySubscription != null) {
+			this.readySubscription.unsubscribe();
+		};
+		this.readySubscription = this.readyListener.subscribe(() => {
+			let acceptDialog = this.dialog.open(AcceptComponent, {
+				panelClass: 'two-factor-panel',
+				disableClose: true,
+				height: 'auto'
+			});
+			acceptDialog.afterClosed().subscribe((res: {result: boolean, self: boolean, id: string}) => {
+				console.log("SUBSCRIPTION INSIDE INVITE READY LISTEN");
+				console.log(res.result);
+				if (res.result) {
+					this.router.navigate(['game/' + res.id]);
+				}
+			});
+		});
+	}
+
+	matchReadyListen(user: string | null) {
+		if (this.readySubscription != null) {
+			this.readySubscription.unsubscribe();
+		};
+		this.readySubscription = this.readyListener.subscribe(() => {
+			let acceptDialog = this.dialog.open(AcceptComponent, {
+				panelClass: 'two-factor-panel',
+				disableClose: true,
+				height: 'auto'
+			});
+			acceptDialog.afterClosed().subscribe((res: {result: boolean, self: boolean, id: string}) => {
+				console.log("SUBSCRIPTION INSIDE MATCH READY LISTEN");
+				console.log(res.result);
+				if (res.result) {
+					if (user === null) {
+						this.queueService.close();
+					}
+					this.router.navigate(['game/' + res.id]);
+				}
+				else {
+					if (!res.self && user === null) {
+						this.queueService.close();
+					}
+				}
+			});
+		});
+	}
+
+	unsetReadyListen() {
+		if (this.readySubscription != null) {
+			this.readySubscription.unsubscribe();
+		};
+		this.readySubscription = null;
 	}
 
 	acceptMatch() {
