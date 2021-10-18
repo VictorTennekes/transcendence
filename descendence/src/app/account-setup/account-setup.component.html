@@ -6,7 +6,7 @@
 		Enter a valid display name to continue
 	</p>
 	<form [formGroup]="form" (ngSubmit)="submitForm()" autocomplete="off" spellcheck="false">
-		<input formControlName="name" type="text" class="name" autocomplete="off" placeholder="letters A-Z, numbers 0-9" [ngClass]="{
+		<input formControlName="name" type="text" class="name" autocomplete="off" placeholder="letters A-Z, numbers 0-9, 6-24 chars" [ngClass]="{
 			'valid' : form.controls['name'].valid && form.controls['name'].dirty,
 			'invalid' :  !form.controls['name'].valid && form.controls['name'].dirty
 		}">
