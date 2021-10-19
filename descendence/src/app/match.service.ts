@@ -135,6 +135,10 @@ export class MatchService {
 		this.matchSocket.emit('accept-friend-request', user);
 	}
 
+	declineFriendRequest(user: any): void {
+		this.matchSocket.emit('decline-friend-request', user);
+	}
+
 	sendFriendRequest(username: string): void {
 		this.matchSocket.emit('send-friend-request', username);
 	}

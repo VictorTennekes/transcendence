@@ -73,6 +73,8 @@ export class MasterComponent implements OnInit {
 			if (accepted) {
 				this.matchService.acceptFriendRequest(user);
 				this.userService.updateFriendSource();
+			} else {
+				this.matchService.declineFriendRequest(user);
 			}
 		});
 	}
