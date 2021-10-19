@@ -48,7 +48,6 @@ export class UserComponent implements OnInit {
 		for (const friend of this.friends) {
 			this.friendStats.push([friend, "offline"]);
 		}
-		console.log("friendStats else: ", this.friendStats);
 		this.matchService.friendConnected().subscribe((onlineFriend: userModel) => {
 			for (const friendStatus of this.friendStats) {
 				if (friendStatus[0].intra_name === onlineFriend.intra_name) {
@@ -75,7 +74,6 @@ export class UserComponent implements OnInit {
 		})
 		this.matchService.requestOnlineFriends();
 		this.reSortArrays();
-		console.log("friendStats end: ", this.friendStats);
 	}
 
 	async ngOnInit(): Promise<void> {
@@ -87,9 +85,10 @@ export class UserComponent implements OnInit {
 			})
 		});
 		this.clientService.gameFinishedGlobal().subscribe(() => {
-			this.matchService.requestOnlineFriends();
-			console.log("friend stats: game finished: ", this.friendStats);
-			this.reSortArrays();
+			setTimeout(() => {
+				this.matchService.requestOnlineFriends();
+				this.reSortArrays()
+			}, 3000);
 		})
 	}
 }
