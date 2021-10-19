@@ -110,6 +110,8 @@ export class MatchService {
 			if (this.excludedFromSearch(key))
 				continue ;
 			if (this.matches[key].settingCompare(settings)) {
+				if (this.matches[key].creator.login == user.login)
+					continue ;
 				this.matches[key].setOpponent(user);
 				return (key);
 			}
