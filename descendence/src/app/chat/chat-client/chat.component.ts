@@ -154,6 +154,10 @@ import { MatchService } from 'src/app/match.service';
 		return style;
 	}
 
+	public openProfile(login: string) {
+		this.router.navigate(['profile', login])
+	}
+
 	public inviteToGame(username: string) {
 		this.router.navigate(['play', username])
 	}
@@ -171,6 +175,7 @@ import { MatchService } from 'src/app/match.service';
 					console.log(this.chat);
 				});
 			});
+			this.userService.updateUserSource();
 		});
 	}
 

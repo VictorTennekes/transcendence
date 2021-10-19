@@ -118,6 +118,18 @@ a.NavItem {
 	margin-left: 0.6rem;
 	position: relative;
 
+	&#profile {
+		background-color: white;
+		
+		& svg {
+			fill: rgb(233, 174, 71);
+			font-size: 3rem;
+			position: absolute;
+			top: -4px;
+			left: -4px;
+		}
+	}
+
 	&#users {
 		background-color: white;
 

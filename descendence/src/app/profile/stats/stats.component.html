@@ -1,0 +1,54 @@
+<div class="stats-container">
+	<div class="stat-item game-time">
+		<p class="item-title">
+			Game Time
+		</p>
+		<div class="data-container">
+			<p class="data-title">Total:</p>
+			<p class="data-value">{{timeFormattedString(durations.total)}}</p>
+		</div>
+		<div class="data-container">
+			<p class="data-title">Shortest:</p>
+			<p class="data-value">{{timeFormattedString(durations.shortest)}}</p>
+		</div>
+		<div class="data-container">
+			<p class="data-title">Longest:</p>
+			<p class="data-value">{{timeFormattedString(durations.longest)}}</p>
+		</div>
+	</div>
+	<div class="stat-item misc">
+		<p class="item-title">
+			Miscellaneous
+		</p>
+		<div class="data-container">
+			<p class="data-title" style="width: 20rem;">Ball hits:</p>
+			<p class="data-value">{{ballHits}}</p>
+		</div>
+		<div class="data-container">
+			<p class="data-title" style="width: 20rem;">Points scored:</p>
+			<p class="data-value">{{pointsScored}}</p>
+		</div>
+	</div>
+	<div class="stat-item winrate">
+		<p class="item-title">
+			Winrate
+		</p>
+		<!-- <div class="temp-circle"></div> -->
+		<div class="winrate">
+			<svg>
+				<circle id="winrate-visual" cx="180" cy="180" r="0" />
+			</svg>
+			<div class="percentage">
+				{{roundedPercentage}}%
+			</div>
+		</div>
+		<div class="data-container" style="place-self: center;">
+			<p class="data-title" style="width: auto;">Wins:</p>
+			<p class="data-value">{{wins}}</p>
+		</div>
+		<div class="data-container" style="place-self: center;">
+			<p class="data-title" style="width: auto;">Losses:</p>
+			<p class="data-value">{{losses}}</p>
+		</div>
+	</div>
+</div>

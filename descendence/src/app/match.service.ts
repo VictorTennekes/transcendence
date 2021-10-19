@@ -8,6 +8,7 @@ import { QueueScheduler } from 'rxjs/internal/scheduler/QueueScheduler';
 import { QueueService } from './queue.service';
 import { AcceptService } from './accept.service';
 import { userModel } from './chat/chat-client/message.model'
+import { timeStamp } from 'console';
 // import { Socket } from 'ngx-socket-io';
 
 export enum SpeedMode {
@@ -50,6 +51,8 @@ export const defaultMatchSettings: MatchSettings = {
 export class MatchService {
 
 	acceptListener: Observable<any>;
+	acceptNotifier: Observable<any>;
+	removeNotifier: Observable<any>;
 	constructor(
 		private readonly matchSocket: MatchSocket,
 		private readonly http: HttpClient,
@@ -58,8 +61,10 @@ export class MatchService {
 		private readonly acceptService: AcceptService
 	) {
 		this.acceptListener = this.matchSocket.fromEvent('accepted');
+		this.acceptNotifier = this.matchSocket.fromEvent('friend-accepted');
+		this.removeNotifier = this.matchSocket.fromEvent('friend-removed');
 	}
-	
+
 	//emit the find request with these settings
 	findMatch(settings: MatchSettings) {
 		this.matchSocket.emit('find', settings);
@@ -134,8 +139,15 @@ export class MatchService {
 		this.matchSocket.emit('accept-friend-request', user);
 	}
 
+	declineFriendRequest(user: any): void {
+		this.matchSocket.emit('decline-friend-request', user);
+	}
+
 	sendFriendRequest(username: string): void {
 		this.matchSocket.emit('send-friend-request', username);
 	}
 
+	friendRemoved(username: string): void {
+		this.matchSocket.emit('remove-friend', username);
+	}
 }

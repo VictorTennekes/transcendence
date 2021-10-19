@@ -1,0 +1,25 @@
+<div class="viewBox">
+	<div class="profileOptions">
+		<div class="avatar" style="{{avatar}}"></div>
+		<p class="userName">{{ displayName }}</p>
+		<div *ngIf="!profileOfCurrentUser" class="button-container">
+			<button *ngIf="!isFriend" class="profileButtons" (click)="addFriend()" [disabled]="!isOnline" style="background-color: {{isOnline? '#42D674' : '#a1aeb5'}}">ADD FRIEND</button>
+			<button *ngIf="isFriend" class="profileButtons" (click)="removeFriend()" style="background-color: #6e8074">UNFRIEND</button>
+			<button class="profileButtons" (click)="sendMessage()" style="background-color: #42BBD6">MESSAGE</button>
+			<button *ngIf="!isBlocked" class="profileButtons" (click)="addBlock()" style="background-color: #DA5F5F">BLOCK</button>
+			<button *ngIf="isBlocked" class="profileButtons" (click)="removeBlock()" style="background-color: #a57171">UNBLOCK</button>
+		</div>
+	</div>
+	
+	<div class="navigationBar">
+		<a [routerLink]="['stats']" [routerLinkActive]="['active']" class="navigationItem">
+			STATS
+		</a>
+		<a [routerLink]="['history']" [routerLinkActive]="['active']" class="navigationItem">
+			HISTORY
+		</a>
+	</div>
+	<div style="height: 40rem; width: 92rem; padding: 2.5rem">
+		<router-outlet></router-outlet>
+	</div>
+</div>

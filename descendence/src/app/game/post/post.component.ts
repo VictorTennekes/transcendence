@@ -5,7 +5,7 @@ import { GameService } from 'src/app/game.service';
 import { Player, PostGameData, ResolvedPostGame } from 'src/app/postgame.resolver';
 import { UserService } from 'src/app/user.service';
 
-function secondsToDhms(seconds: number) {
+export function secondsToDhms(seconds: number) {
 	seconds = Number(seconds);
 	var d = Math.floor(seconds / (3600*24));
 	var h = Math.floor(seconds % (3600*24) / 3600);
@@ -20,48 +20,39 @@ function secondsToDhms(seconds: number) {
 }
 
 @Component({
-  selector: 'app-post',
-  templateUrl: './post.component.html',
-  styleUrls: ['./post.component.scss']
+	selector: 'app-post',
+	templateUrl: './post.component.html',
+	styleUrls: ['./post.component.scss']
 })
 export class PostComponent implements OnInit {
-
+	
 	duration: number;
 	players: Player[] = [];
 	winner: string;
-
+	
 	getWinningPlayer() {
 		return this.players[0].score > this.players[1].score ? this.players[0].display_name : this.players[1].display_name;
 	}
-
+	
 	get timeAsString() {
 		return secondsToDhms(this.duration);
 	}
-
+	
 	back() {
 		this.router.navigate(['play']);
 	}
+	
+	constructor(
+		private readonly route: ActivatedRoute,
+		private readonly router: Router
+	) {
+	}
 
-  constructor(
-	  private readonly userService: UserService,
-	  private readonly gameService: GameService,
-	  private readonly route: ActivatedRoute,
-	  private readonly router: Router
-  ) {
-  }
-
-  ngOnInit(): void {
-	  document.clear();
-	//   let postgameData = this.route.snapshot.data;
-	//   console.log(`RESOLVED DATA: ${JSON.stringify(postgameData)}`);
-	//   this.route.data.subscribe((data: any) => {
-	// 	  console.log(`RESOLVED DATA - ${JSON.stringify(data)}`);
-	//   });
-		// console.log(`RESOLVED DATA DOUBLE CHECKING: ${JSON.stringify(this.route.snapshot.data.data)}`);
+	ngOnInit(): void {
 		const data = this.route.snapshot.data.data;
 		this.winner = data.winner;
 		this.players = data.players;
 		this.winner = this.getWinningPlayer();
 		this.duration = data.duration;
-  }
+	}
 }

@@ -46,6 +46,13 @@ export class UserController {
 		return user;
 	}
 
+	@Get('stats/:id')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async getStatsOfUser(@Req() request, @Param('id') user: string) {
+		return this.userService.getStatsOfUser(user);
+	}
+
 	@Post('get')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
@@ -94,6 +101,27 @@ export class UserController {
 			unlinkAsync(filepath);
 		}
 		return response;
+	}
+
+	@Get('blocked/:id')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async isBlockedByUser(@Req() request, @Param('id') user: string) {
+		return this.userService.isBlockedByUser(request.session.passport.user.login, user);
+	}
+
+	@Get('friend/:id')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async isFriendedByUser(@Req() request, @Param('id') user: string) {
+		return this.userService.isFriendedByUser(request.session.passport.user.login, user);
+	}
+
+	@Get('friends')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	async friendsOfUser(@Req() request, @Param('id') user: string) {
+		return await this.userService.getFriends(request.session.passport.user.login);
 	}
 
 	@UseGuards(AuthenticatedGuard)
@@ -147,6 +175,7 @@ export class UserController {
 	@UseFilters(UnauthorizedFilter)
 	@Post('block_user')
 	async blockUser(@Req() request, @Body() username: any) {
+		Logger.log(`BLOCK USER - ${username.username}`);
 		if (request.user.login === username.username)
 			return ;
 		await this.userService.blockUser(request.session.passport.user.login, username.username);

@@ -4,12 +4,21 @@ import { getUserFromSocket } from '@shared/socket-utils';
 import { UserEntity } from '@user/entities/user.entity';
 import { UserService } from '@user/user.service';
 import { match } from 'assert';
+import { lookupService } from 'dns';
 import { getDefaultSettings } from 'http2';
 import { Match } from 'src/match/match.class';
 import { Repository } from 'typeorm';
 import { GameEntity } from './entity/game.entity';
 import { GameGateway } from './game.gateway';
 import { Game, User } from './game.script';
+
+export interface HistoryObject {
+	winner: UserEntity,
+	opponent: UserEntity,
+	score: {[key: string] : number},
+	date: Date,
+	duration: number
+};
 
 @Injectable()
 export class GameService {
@@ -118,10 +127,10 @@ export class GameService {
 		if (this.games[id].goalReached) {
 			Logger.log(`GAME[${id}] - GOAL REACHED`);
 			this.gameGateway.sendFinished(id);
+			clearInterval(this.gameIntervals[id]);
 			await this.saveGameInDatabase(id);
 			delete(this.games[id]);
 			this.games[id] = undefined;
-			clearInterval(this.gameIntervals[id]);
 			return ;
 		}
 		this.games[id].update();
@@ -133,5 +142,42 @@ export class GameService {
 		this.games[match.id] = new Game(match);
 		this.gameIntervals[match.id] = setInterval(() => {this.gameLoop(match.id);}, 1000/60);
 		//create a Game for this id, and start a game update interval
+	}
+
+
+	async getHistoryOfUser(user: string) {
+
+		const games = await this.gameRepository
+		.createQueryBuilder("game")
+		.innerJoinAndSelect("game.players", "players")
+		// .where("players.intra_name = :id", {id: user})
+		.getMany();
+
+		Logger.log(`RAW HISTORY RESULTS: ${JSON.stringify(games)}`);
+		let items: HistoryObject[] = [];
+		for (const game of games) {
+			if (game.data.scores.hasOwnProperty(user)) {
+				let winner: UserEntity;
+				let loser: UserEntity;
+				if (game.players[0].intra_name === game.data.winner) {
+					winner = game.players[0];
+					loser = game.players[1];
+				}
+				else {
+					loser = game.players[0];
+					winner = game.players[1];
+				}
+				const item: HistoryObject = {
+					winner: winner,
+					opponent: loser,
+					score: game.data.scores,
+					duration: Math.floor(game.duration / 1000),
+					date: game.start
+				};
+				items.push(item);
+			}
+		}
+		Logger.log(`HISTORY OF USER: ${JSON.stringify(items)}`);
+		return items;
 	}
 }
