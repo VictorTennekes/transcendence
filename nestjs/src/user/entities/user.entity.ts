@@ -3,7 +3,7 @@ import { IsNotEmpty, MaxLength } from "class-validator";
 import { GameEntity } from "src/game/entity/game.entity";
 import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn, Unique } from "typeorm";
 
-interface PlayerData {
+export interface PlayerData {
 	ballHits: number,
 	games: {
 		won: number,

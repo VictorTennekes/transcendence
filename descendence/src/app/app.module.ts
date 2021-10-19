@@ -16,7 +16,6 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { ImageService } from './services/image-service.service';
 import { FocusOverlayComponent } from './focus-overlay/focus-overlay.component';
 import { FullscreenOverlayContainer, OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
-import { NgxKjuaModule } from 'ngx-kjua';
 import { QrCodeDirective } from './focus-overlay/qrcode.directive';
 import { OnlyNumber } from './focus-overlay/only-numbers.directive';
 import { TwoFactorComponent } from './two-factor/two-factor.component';
@@ -50,10 +49,14 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { MatMenuModule } from '@angular/material/menu';
 import { PostComponent } from './game/post/post.component';
+import { ProfileComponent } from './profile/profile.component';
+import { StatsComponent } from './profile/stats/stats.component';
+import { HistoryComponent } from './profile/history/history.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatchComponent } from './match/match.component';
 import { LoadcircleComponent } from './accept/loadcircle/loadcircle.component';
 import { AccountSetupComponent } from './account-setup/account-setup.component';
+import { UrlService } from './url.service';
 
 // const config: SocketIoConfig = {
 // 	url: 'http://localhost:3000',
@@ -83,6 +86,10 @@ import { AccountSetupComponent } from './account-setup/account-setup.component';
 		AcceptComponent,
 		ChatContainerComponent,
 		SettingsComponent,
+		PostComponent,
+		ProfileComponent,
+		StatsComponent,
+		HistoryComponent,
 		InviteComponent,
 		friendRequestDialog,
   		PostComponent,
@@ -100,7 +107,6 @@ import { AccountSetupComponent } from './account-setup/account-setup.component';
 		FormsModule,
 		FontAwesomeModule,
 		OverlayModule,
-		NgxKjuaModule,
 		BrowserAnimationsModule,
 		MatInputModule,
 		MatListModule,
@@ -130,7 +136,8 @@ import { AccountSetupComponent } from './account-setup/account-setup.component';
 		{
 			provide: MATERIAL_SANITY_CHECKS,//am i really doing this?
 			useValue: false
-		}
+		},
+		UrlService
 	],
 	bootstrap: [AppComponent]
 })

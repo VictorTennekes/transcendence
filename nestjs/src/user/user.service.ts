@@ -38,6 +38,12 @@ export class UserService {
 		return user;
 	}
 
+	userExists(username: string, users: UserDTO[]) {
+		return users.some(function(el) {
+			return el.intra_name === username;
+		});
+	}
+
 	async findOrCreateByLogin(login: string) {
 		let user = await this.findOne(login);
 		if (!user) {
@@ -48,6 +54,28 @@ export class UserService {
 			console.log(`FOUND EXISTING USER ${login}`);
 		}
 		return (user);
+	}
+
+	async isFriendedByUser(user: string, other: string) {
+		const entity: UserDTO = await this.userRepository.findOne({
+			where: {intra_name: user},
+			relations: ["friends"]
+		});
+		if (this.userExists(other, entity.friends)) {
+			return true;
+		}
+		return false;
+	}
+	
+	async isBlockedByUser(user: string, other: string) {
+		const entity: UserDTO = await this.userRepository.findOne({
+			where: {intra_name: user},
+			relations: ["blockedUsers"]
+		});
+		if (this.userExists(other, entity.blockedUsers)) {
+			return true;
+		}
+		return false;
 	}
 
 	async save(user: UserEntity) {
@@ -152,8 +180,8 @@ export class UserService {
 		if (index === -1) {
 			user.friends.push(friend);
 			friend.friends.push(user);
-			this.userRepository.save(user)
-			this.userRepository.save(friend)
+			await this.userRepository.save(user)
+			await this.userRepository.save(friend)
 		}
 	}
 
@@ -172,12 +200,12 @@ export class UserService {
 		let index = user.friends.findIndex(x => x.intra_name === friendUsername);
 		if (index !== -1) {
 			user.friends.splice(index, 1);
-			this.userRepository.save(user)
+			await this.userRepository.save(user)
 		}
 		index = friend.friends.findIndex(x => x.intra_name === username);
 		if (index !== -1) {
 			friend.friends.splice(index, 1);
-			this.userRepository.save(friend)
+			await this.userRepository.save(friend)
 		}
 	}
 
@@ -219,6 +247,12 @@ export class UserService {
 			where: { intra_name: login },
 			relations: ["blockedUsers", "blockedByUsers"]
 		});
+	}
+
+	async getStatsOfUser(login: string) {
+		const user = await this.userRepository.findOne({
+			where: { intra_name: login}});
+		return user.gameData;
 	}
 
 	async getFriends(username: string): Promise<UserDTO[]> {

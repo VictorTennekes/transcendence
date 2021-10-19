@@ -10,6 +10,7 @@ import { userModel } from './chat/chat-client/message.model'
 import { AcceptComponent } from './accept/accept.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { timeStamp } from 'console';
 // import { Socket } from 'ngx-socket-io';
 
 export enum SpeedMode {
@@ -58,6 +59,8 @@ export class MatchService {
 	public acceptDialog: any = null;
 	private readySubscription: Subscription | null = null;
 
+	acceptNotifier: Observable<any>;
+	removeNotifier: Observable<any>;
 	constructor(
 		private readonly matchSocket: MatchSocket,
 		private readonly http: HttpClient,
@@ -72,6 +75,8 @@ export class MatchService {
 		this.readyListener = this.matchSocket.fromEvent('ready');
 
 		// this.inviteReadyListen();
+		this.acceptNotifier = this.matchSocket.fromEvent('friend-accepted');
+		this.removeNotifier = this.matchSocket.fromEvent('friend-removed');
 	}
 
 	//emit the find request with these settings
@@ -185,7 +190,15 @@ export class MatchService {
 		this.matchSocket.emit('accept-friend-request', user);
 	}
 
+	declineFriendRequest(user: any): void {
+		this.matchSocket.emit('decline-friend-request', user);
+	}
+
 	sendFriendRequest(username: string): void {
 		this.matchSocket.emit('send-friend-request', username);
+	}
+
+	friendRemoved(username: string): void {
+		this.matchSocket.emit('remove-friend', username);
 	}
 }

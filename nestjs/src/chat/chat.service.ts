@@ -84,6 +84,9 @@ export class ChatService {
 	}
 
 	private stringToDate(d: string): Date {
+		if (!d || d === "") {
+			throw "invalid date";
+		}
 		let dateObj: Date = new Date(d);
 		if (this.isValidDate(dateObj)) {
 			return dateObj;
@@ -127,28 +130,24 @@ export class ChatService {
 		return toPromise(chat);
 	}
 
-	private getMatchingUsers(items: ChatEntity[], users: UserDTO[]) {
-		let item;
-		for (let i = 0; i < items.length; i++) {
-			let count = 0;
-			for (let j = 0; j < users.length; j++) {
-				if (users.length === 1) {
-					if (items[i].users.length === 1
-						&& users.length === 1
-						&& items[i].users[0].intra_name === users[0].intra_name) {
-						item = items[i];
-						return item;
+	private getMatchingUsers(chats: ChatEntity[], users: UserDTO[]) {
+		for (const chat of chats) {
+			if (users.length === 1 && chat.users.length === 1 && chat.users[0].intra_name === users[0].intra_name) {
+				return chat;
+			}
+			if (users.length !== 1) {
+				let amtMatching = 0;
+				for (const user of users) {
+					for (let chatUser of chat.users) {
+						if (chatUser.intra_name === user.intra_name) {
+							amtMatching++;
+						}
+						if (amtMatching === users.length) {
+							return chat;
+						}
 					}
-				} else {
-					if (this.userExists(users[j].intra_name, items[i].users)) {
-						count++;
-					}
-					if (count == users.length) {
-						item = items[i];
-						return item;
-					}
+					
 				}
-
 			}
 		}
 		return null;
@@ -182,7 +181,6 @@ export class ChatService {
 				.where({visibility: "direct"})
 				.getMany();
 		let item = this.getMatchingUsers(items, users);
-
 		if (!item) {
 			return null;
 		}
@@ -506,31 +504,32 @@ export class ChatService {
 			where: {id: chatId},
 			relations: ["users", "admins", "owner"]
 		})
-		for (let idx = 0; idx < chat.users.length; idx++) {
-			if (chat.users[idx].intra_name === username) {
-				chat.users.splice(idx, 1);
-				break;
+		if (chat.visibility !== "direct") {
+			for (let idx = 0; idx < chat.users.length; idx++) {
+				if (chat.users[idx].intra_name === username) {
+					chat.users.splice(idx, 1);
+					break;
+				}
 			}
-		}
-		for (let idx = 0; idx < chat.admins.length; idx++) {
-			if (chat.admins[idx].intra_name === username) {
-				chat.admins.splice(idx, 1);
-				break;
+			for (let idx = 0; idx < chat.admins.length; idx++) {
+				if (chat.admins[idx].intra_name === username) {
+					chat.admins.splice(idx, 1);
+					break;
+				}
 			}
+			await this.repo.save(chat);
+			if (chat.owner.intra_name === username) {
+				await this.repo
+				.createQueryBuilder()
+				.relation(ChatEntity, "owner")
+				.of(chat)
+				.set(null);
+			}		
 		}
-		await this.repo.save(chat);
-		if (chat.owner.intra_name === username) {
-			await this.repo
-			.createQueryBuilder()
-			.relation(ChatEntity, "owner")
-			.of(chat)
-			.set(null);
-		}		
 		return true;
   }
 
 	async userIsOwner(id: string, username: string): Promise<boolean> {
-		console.log("emm hi?")
 		const chat = await this.repo.findOne({
 			where: {id: id},
 			relations: ["owner"]

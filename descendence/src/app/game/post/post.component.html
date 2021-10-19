@@ -12,17 +12,17 @@
 	</p>
 	<div class="overview">
 		<div class="player-container" [ngClass]="{'win': winner === players[0].display_name}">
-			<div class="name">
+			<a [routerLink]="['/profile', players[0].intra_name]" class="name">
 				{{players[0].display_name}}
-			</div>
+			</a>
 			<div class="score-container">
 				{{players[0].score}}
 			</div>
 		</div>
 		<div class="player-container" [ngClass]="{'win': winner === players[1].display_name}">
-			<div class="name">
+			<a [routerLink]="['/profile', players[1].intra_name]" class="name">
 				{{players[1].display_name}}
-			</div>
+			</a>
 			<div class="score-container">
 				{{players[1].score}}
 			</div>

@@ -9,8 +9,8 @@ import { GameService } from 'src/game/game.service';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  providers: [MatchGateway, MatchService],
-  imports: [UserModule, GameModule, AuthModule],
-  controllers: [MatchController]
+	providers: [MatchGateway, MatchService],
+	imports: [UserModule, GameModule],
+	controllers: [MatchController],
 })
 export class MatchModule {}

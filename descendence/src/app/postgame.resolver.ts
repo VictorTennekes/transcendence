@@ -11,6 +11,7 @@ import { GameService } from './game.service';
 import { UserEntity, UserService } from './user.service';
 
 export interface Player {
+  intra_name: string,
 	display_name: string,
 	score: number
 };
@@ -62,6 +63,7 @@ export class PostgameResolver implements Resolve<any> {
       return this.userService.getUsersByLogins(playerNames).pipe(map((users: UserEntity[]) => {
         users.forEach((_, index) => {
           postgameData.players.push({
+            intra_name: users[index].intra_name,
             display_name: users[index].display_name,
             score: data.data.scores[playerNames[index]]
           });

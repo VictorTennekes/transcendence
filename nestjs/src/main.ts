@@ -20,6 +20,11 @@ const postgresConnection =
 
 const postgresSession = require('connect-pg-simple')(session);
 
+export const knex = require('knex')({
+	client: 'pg',
+	connection: postgresConnection,
+}); 
+
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule);
 	
