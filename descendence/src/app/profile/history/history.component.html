@@ -1,0 +1,24 @@
+
+<!-- {{login}} -->
+<ul *ngIf="games.length >= 1" class="history-list">
+	<li *ngFor="let game of games" [ngClass]="{'history-win': isWinner(game.winner.intra_name), 'history-loss': !isWinner(game.winner.intra_name) }">
+		<div class="extra-info">
+			{{formatDateAndTime(game.date, game.duration)}}
+		</div>
+		<div class="result">
+			{{isWinner(game.winner.intra_name) ? "WIN" : "LOSS"}}
+		</div>
+		<a [routerLink]="['/profile', game.winner.intra_name]" class="winner">
+			{{game.winner.display_name}}
+		</a>
+		<div class="score">
+			{{game.score[game.winner.intra_name]}} - {{game.score[game.opponent.intra_name]}}
+		</div>
+		<a [routerLink]="['/profile', game.opponent.intra_name]" class="loser">
+			{{game.opponent.display_name}}
+		</a>
+	</li>
+</ul>
+<div *ngIf="games.length === 0" class="no-matches">
+	This user hasn't played any games yet.
+</div>

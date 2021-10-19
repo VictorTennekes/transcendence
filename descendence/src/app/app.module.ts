@@ -52,6 +52,9 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { MatMenuModule } from '@angular/material/menu';
 import { PostComponent } from './game/post/post.component';
+import { ProfileComponent } from './profile/profile.component';
+import { StatsComponent } from './profile/stats/stats.component';
+import { HistoryComponent } from './profile/history/history.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatchComponent } from './match/match.component';
 import { LoadcircleComponent } from './accept/loadcircle/loadcircle.component';
@@ -86,6 +89,10 @@ import { UrlService } from './url.service';
 		AcceptComponent,
 		ChatContainerComponent,
 		SettingsComponent,
+		PostComponent,
+		ProfileComponent,
+		StatsComponent,
+		HistoryComponent,
 		InviteComponent,
 		friendRequestDialog,
   		PostComponent,

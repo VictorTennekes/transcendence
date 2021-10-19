@@ -21,12 +21,21 @@ import { chatAdminGuard } from './chat/chat-client/chatAdminGuard.service';
 import { GameGuard } from './game.guard';
 import { PostComponent } from './game/post/post.component';
 import { PostGameGuard } from './post-game.guard';
+import { ProfileComponent } from './profile/profile.component';
+import { StatsComponent } from './profile/stats/stats.component';
+import { HistoryComponent } from './profile/history/history.component';
+import { HistoryResolver } from './profile/history.resolver';
+import { ProfileGuard } from './profile/profile.guard';
 import { PostgameResolver } from './postgame.resolver';
 import { AcceptComponent } from './accept/accept.component';
 import { LoadcircleComponent } from './accept/loadcircle/loadcircle.component';
 import { SetupGuard } from './setup.guard';
 import { AccountSetupComponent } from './account-setup/account-setup.component';
-import { CurrentUserResolver } from './user-settings/current-user.resolver';
+import { ProfileResolver } from './profile/profile.resolver';
+import { StatsResolver } from './profile/stats.resolver';
+import { FriendResolver } from './profile/friend.resolver';
+import { CurrentUserResolver } from './profile/current-user.resolver';
+import { OnlineResolver } from './profile/online.resolver';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -48,6 +57,37 @@ const routes: Routes = [
 			{
 				path: 'play/:intra_name',
 				component: MatchComponent
+			},
+			{
+				path: 'profile/:id',
+				canActivate: [ ProfileGuard ],
+				resolve: {
+					user: ProfileResolver,
+					friend: FriendResolver,
+					currentUser: CurrentUserResolver,
+					online: OnlineResolver
+				},
+				runGuardsAndResolvers: "always",
+				component: ProfileComponent,
+				children: [
+					{
+						path: 'stats',
+						resolve: { stats: StatsResolver },
+						component: StatsComponent
+					},
+					{
+						path: 'history',
+						resolve: {
+							history: HistoryResolver,
+						},
+						component: HistoryComponent
+					},
+					{
+						path: '',
+						redirectTo: 'stats',
+						pathMatch: 'full'
+					}
+				]
 			},
 			{
 				path: 'pass-chat/:id',
@@ -123,6 +163,21 @@ const routes: Routes = [
 @NgModule({
 	imports: [RouterModule.forRoot(routes)],
 	exports: [RouterModule],
-	providers: [ LoginGuard, GameGuard, PostGameGuard, chatGuardService, SearchService, chatAdminGuard, PostgameResolver, CurrentUserResolver ]
+	providers: [
+		LoginGuard,
+		GameGuard,
+		PostGameGuard,
+		chatGuardService,
+		SearchService,
+		chatAdminGuard,
+		HistoryResolver,
+		ProfileGuard,
+		PostgameResolver,
+		ProfileResolver,
+		StatsResolver,
+		FriendResolver,
+		CurrentUserResolver,
+		OnlineResolver
+	]
 })
 export class AppRoutingModule { }

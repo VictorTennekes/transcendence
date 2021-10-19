@@ -78,7 +78,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		return match;
 	}
 
-	async initiateMatch(client: Socket, match: string) {
+	initiateMatch(client: Socket, match: string) {
 		client.join(match); //add user to the room identified by the matchID
 		const id = match;
 		// Logger.log(`MATCH[${id}] - FINDMATCH`);
@@ -215,7 +215,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		for (let requestIndex = 0; requestIndex < this.pendingFriendRequests.length; requestIndex++) {
 			if (this.pendingFriendRequests[requestIndex].receive === user.intra_name) {
 				client.emit('receive-friend-request', this.pendingFriendRequests[requestIndex].submit);
-				this.pendingFriendRequests.splice(requestIndex, 1);
 			}
 		}
 		let friends: UserDTO[] = await this.userService.getFriends(user.intra_name);
@@ -247,16 +246,34 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			user: user,
 			socket: client
 		};
+		for (let req of this.pendingFriendRequests) {
+			if (req.receive === username && req.submit.intra_name === user.intra_name) {
+				return;
+			}
+		}
+		const newRequest: FriendRequest = {
+			submit: user,
+			receive: username
+		}
+		this.pendingFriendRequests.push(newRequest);
 		let connectedUser: socketData = this.isOnline(username);
 		if (connectedUser) {
 			this.sendFriendRequest(sender, connectedUser);
-		} else {
-			const newRequest: FriendRequest = {
-				submit: user,
-				receive: username
-			}
-			this.pendingFriendRequests.push(newRequest);
-			console.log(this.pendingFriendRequests);
+		}
+	}
+
+	@SubscribeMessage('remove-friend')
+	async removeFriend(client: Socket, username: string) {
+		const user = await getUserFromSocket(client, this.userService);
+		//confirm that the user and the target are friends
+		if (!this.userService.isFriendedByUser(user.intra_name, username)) {
+			return ;
+		}
+		//find the socket of the target
+		const target = this.isOnline(username);
+		if (target !== null) {
+			//send 'friend-removed' event notifying the target that they are no longer friends
+			target.socket.emit('friend-removed');
 		}
 	}
 
@@ -273,9 +290,32 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		target.socket.emit('receive-friend-request', client.user);
 	}
 
+	removePendingFriendRequest(submit: string, receive: string) {
+		for (let index = 0; index <  this.pendingFriendRequests.length; index++) {
+			if (this.pendingFriendRequests[index].submit.intra_name === submit
+				&& this.pendingFriendRequests[index].receive === receive) {
+					this.pendingFriendRequests.splice(index, 1);
+			}
+		}
+		console.log("after");
+		console.log(this.pendingFriendRequests);
+	}
+
 	@SubscribeMessage('accept-friend-request')
 	async acceptFriendRequest(client: Socket, friend: UserDTO) {
 		const user: UserDTO = await getUserFromSocket(client, this.userService);
 		await this.userService.addFriend(user.intra_name, friend.intra_name);
+		this.removePendingFriendRequest(friend.intra_name, user.intra_name);
+		const target = this.isOnline(friend.intra_name);
+		if (target !== null) {
+			client.emit('friend-accepted');
+			target.socket.emit('friend-accepted');
+		}
+	}
+
+	@SubscribeMessage('decline-friend-request')
+	async declineFriendRequest(client: Socket, friend: UserDTO) {
+		const user: UserDTO = await getUserFromSocket(client, this.userService);
+		this.removePendingFriendRequest(friend.intra_name, user.intra_name);
 	}
 }

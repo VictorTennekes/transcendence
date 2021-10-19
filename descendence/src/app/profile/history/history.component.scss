@@ -1,0 +1,143 @@
+.history-list {
+	height: 35rem;
+	overflow-y: scroll;
+	padding: 0;
+	margin: auto;
+	// background-color: rgb(25, 49, 71);
+	display: inline-block;
+	scroll-behavior: smooth;
+	scrollbar-track-color: rgb(25, 49, 71);
+	
+	&::-webkit-scrollbar {
+		width: 1.5rem;
+	}
+	
+	&::-webkit-scrollbar-thumb {
+		background-color: #6EB1CE;
+		outline: 1px solid slategrey;
+	}
+}
+
+.win {
+	background-color: green;
+}
+
+.loss {
+	background-color: red;
+}
+
+@mixin history-item {
+	width: 86rem;
+	// height: 5rem;
+	padding: 1.5rem;
+	margin: 1.8rem 1rem 0 0;
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	border-radius: 1rem;
+
+	&:last-of-type {
+		margin-top: 1.8rem;
+		margin-bottom: 0;
+	}
+	&:first-of-type {
+		margin-top: 0;
+		margin-bottom: 1.8rem;
+	}
+
+	.extra-info {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 10rem;
+		padding-left: 0.5rem;
+		background-color: rgba(0, 0, 0, 0.1);
+		border-radius: 0 1rem 0 2rem;
+		color: rgba(255, 255, 255, 0.3);
+		font-weight: bold;
+		font-family: 'Poppins';
+		text-align: center;
+	}
+}
+
+@mixin history-data-base {
+	padding: 0.8rem 1.5rem;
+	background-color:rgba(0, 0, 0, 0.1);
+	border-radius: 0.8rem;
+	font-family: 'Poppins';
+	font-weight: bold;
+	font-size: 1.5rem;
+	margin-right: 3rem;
+	color: #D3E5EF;
+}
+
+@mixin history-user {
+	@include history-data-base();
+	width: 18rem;
+	text-align: center;
+	white-space: nowrap;
+}
+
+@mixin history-score {
+	@include history-data-base();
+	width: auto;
+	text-align: center;
+	white-space: nowrap;
+	
+}
+
+@mixin history-result-base {
+	@include history-data-base();
+	padding: 0.8rem 2.5rem;
+	width: 12rem;
+	text-align: center;
+	margin-right: 10rem;
+}
+
+.history-win {
+	@include history-item();
+	background-color: #22D56F;
+	
+	.result {
+		@include history-result-base();
+		color: #14FF00;
+	}
+	.winner {
+		@include history-user();
+	}
+	.score {
+		@include history-score();
+	}
+	.loser {
+		@include history-user();
+		margin: 0;
+	}
+}
+
+.history-loss {
+	@include history-item();
+	background-color: #E14D44;
+	
+	.result {
+		@include history-result-base();
+		color: #881616;
+	}
+	.winner {
+		@include history-user();
+	}
+	.score {
+		@include history-score();
+	}
+	.loser {
+		@include history-user();
+	}
+}
+
+.no-matches {
+	text-align: center;
+	padding: 3rem;
+	color: #D3E5EF;
+	font-family: 'Poppins';
+	font-weight: bold;
+	font-size: 3rem;
+}

@@ -60,14 +60,6 @@ import {HttpErrorResponse} from '@angular/common/http';
 
 	public submitUser() {
 		if (this.userForm.value.username) {
-			const newChat: createChatModel = {
-				name: '',
-				users: [],
-				admins: [],
-				visibility: 'direct',
-				password: ""
-			}
-			newChat.users.push(this.userForm.value.username);
 			this.searchService.findMatchingChats(this.userForm.value.username).subscribe(
 				(response: chatModel[]) => {
 					this.errorMessage = "";
@@ -80,5 +72,4 @@ import {HttpErrorResponse} from '@angular/common/http';
 			)
 		}
 	}
-
 }
