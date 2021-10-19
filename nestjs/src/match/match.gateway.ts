@@ -77,6 +77,25 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		return match;
 	}
 
+	async emitInGame(opponent: string, creator: string) {
+		let friends: UserDTO[] = await this.userService.getFriends(opponent);
+		let user: UserDTO = await this.userService.findOne(opponent);
+		for (let friend of friends) {
+			let usr = this.isOnline(friend.intra_name);
+			if (usr) {
+				usr.socket.emit('friend_in_game', user);
+			}
+		}
+		friends = await this.userService.getFriends(opponent);
+		user = await this.userService.findOne(opponent);
+		for (let friend of friends) {
+			let usr = this.isOnline(friend.intra_name);
+			if (usr) {
+				usr.socket.emit('friend_in_game', user);
+			}
+		}
+	}
+
 	async initiateMatch(client: Socket, match: string) {
 		client.join(match); //add user to the room identified by the matchID
 		const id = match;
@@ -92,6 +111,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					if (accepted) {
 						Logger.log(`MATCH ${id} - BOTH ACCEPTED`);
 						this.matchService.createGame(id);
+						this.emitInGame(match.opponent.login, match.creator.login);
 						this.matchService.deleteMatch(id);
 					}
 					else {
