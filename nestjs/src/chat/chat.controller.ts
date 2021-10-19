@@ -154,7 +154,6 @@ export class ChatController {
 	@Post('add-mute')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
-
 	async addMute(@Body() data: updateChatDTO, @Req() req) {
 		return this.service.addMutedUser(data, req.user.intra_name);
 	}

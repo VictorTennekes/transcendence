@@ -84,6 +84,9 @@ export class ChatService {
 	}
 
 	private stringToDate(d: string): Date {
+		if (!d || d === "") {
+			throw "invalid date";
+		}
 		let dateObj: Date = new Date(d);
 		if (this.isValidDate(dateObj)) {
 			return dateObj;
@@ -173,16 +176,12 @@ export class ChatService {
 	}
 
 	async getChatByUsers(users: UserDTO[]): Promise<ChatDTO> {
-		console.log("getChatByUserss");
 		const items = await this.repo
 				.createQueryBuilder("chat")
 				.innerJoinAndSelect("chat.users", "users")
 				.where({visibility: "direct"})
 				.getMany();
-				console.log(items);
 		let item = this.getMatchingUsers(items, users);
-		console.log(item);
-		console.log("returning null");
 		if (!item) {
 			return null;
 		}
@@ -532,7 +531,6 @@ export class ChatService {
   }
 
 	async userIsOwner(id: string, username: string): Promise<boolean> {
-		console.log("emm hi?")
 		const chat = await this.repo.findOne({
 			where: {id: id},
 			relations: ["owner"]
