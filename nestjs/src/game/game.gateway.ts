@@ -1,8 +1,9 @@
 import { forwardRef, Inject, Logger } from "@nestjs/common";
 import { OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody } from "@nestjs/websockets";
 import { ConnectedSocket } from "@nestjs/websockets";
+import { UserService } from "@user/user.service";
 import { Socket } from "socket.io";
-import { Game } from "./game.script";
+import { Game, User } from "./game.script";
 import { GameService } from "./game.service";
 
 @WebSocketGateway({ namespace: '/match'})
@@ -11,7 +12,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	constructor(
 		@Inject(forwardRef(() => GameService))
-		private readonly gameService: GameService
+		private readonly gameService: GameService,
+		private readonly userService: UserService,
 	) {
 	}
 
@@ -61,8 +63,30 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.gameService.setKeyPressed(client.id, 'ArrowDown', false);
 	}
 	
-	handleConnection(@ConnectedSocket() client: Socket) {
+	async handleConnection(@ConnectedSocket() client: Socket) {
 		Logger.log(`GAME GATEWAY - CONNECT - USER[${client.id}]`);
+
+		const usr = await this.userService.getUserFromSocket(client);
+		const user: User = {
+			display_name: usr.display_name,
+			login: usr.intra_name,
+			socket: client
+		};
+		
+		for (const id in this.gameService.games) {
+			if (this.gameService.games[id] === undefined)
+				continue ;
+			if (this.gameService.games[id].users.one.login === user.login) {
+				this.gameService.games[id].replaceActiveSocket('one', user);
+				Logger.log(`GAME[${id}] - CLIENT IDENTIFIED BY USER ${user.login} REPLACING USERS.ONE`);
+				break ;
+			}
+			else if (this.gameService.games[id].users.two.login === user.login) {
+				this.gameService.games[id].replaceActiveSocket('two', user);
+				Logger.log(`GAME[${id}] - CLIENT IDENTIFIED BY USER ${user.login} REPLACING USERS.TWO`);
+				break ;
+			}
+		}
 		// this.interval[client.id] = setInterval(() => this.gameLoop(), 1000/60);
 	}
 }

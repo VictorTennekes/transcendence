@@ -91,6 +91,21 @@ export class Game {
 		});
 	}
 
+	replaceActiveSocket(player: string, user: User) {
+		if (player === 'one') {
+			const playerData = this.players[this._users.one.socket.id];
+			this.players[this._users.one.socket.id] = undefined;
+			this.players[user.socket.id] = playerData;
+			this._users.one = user;
+		}
+		else if (player === 'two') {
+			const playerData = this.players[this._users.two.socket.id];
+			this.players[this._users.two.socket.id] = undefined;
+			this.players[user.socket.id] = playerData;
+			this._users.two = user;
+		}
+	}
+
 	get winner() {
 		if (!this.goalReached)
 			return (null);
@@ -145,6 +160,8 @@ export class Game {
 
 	update() {
 		for (const player in this.players) {
+			if (this.players[player] === undefined)
+				break ;
 			this.players[player].update(Game.canvas);
 		}
 		this.ball.update(this.players[this.users.one.socket.id], this.players[this.users.two.socket.id], Game.canvas);

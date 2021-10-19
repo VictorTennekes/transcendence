@@ -96,7 +96,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 						this.matchService.deleteMatch(id);
 					}
 					else {
-						if (match.settings.opponent_username) {
+						console.log(`MATCH NOT ACCEPTED - OPPONENT - ${match.settings.opponent_username}`);
+						if (match.settings.opponent_username !== undefined) {
 							match.creator.socket.leave(match.id);
 							match.opponent.socket.leave(match.id);
 							this.matchService.deleteMatch(id);
@@ -150,27 +151,21 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			display_name: usr.display_name,
 			socket: client
 		}
-		let match = this.matchService.matchExists(user, settings);
-		//if called by the inviter <- match === null
-		//if called by the invited <- match !== null
-		if (match === null) {
-			let inviteSent: boolean = false;
-			console.log("connected users: ", this.connectedUsers);
-			for (let connectedUser of this.connectedUsers) {
-				if (connectedUser.user.intra_name === settings.opponent_username) {
-					let sentSettings: MatchSettings = Object.assign({}, settings);
-					sentSettings.opponent_username = usr.intra_name;
-					match = await this.findMatch(client, settings);
-					this.initiateMatch(client, match);
-					connectedUser.socket.emit('receive_game_invite', {host: user.login, id: match});
-					inviteSent = true;
-				}
+		Logger.log(`INVITE USER CALLED`);
+		let inviteSent: boolean = false;
+		console.log("connected users: ", this.connectedUsers);
+		for (let connectedUser of this.connectedUsers) {
+			if (connectedUser.user.intra_name === settings.opponent_username) {
+				let sentSettings: MatchSettings = Object.assign({}, settings);
+				sentSettings.opponent_username = usr.intra_name;
+				const match = await this.findMatch(client, settings);
+				this.initiateMatch(client, match);
+				connectedUser.socket.emit('receive_game_invite', {host: user.login, id: match});
+				inviteSent = true;
 			}
-			if (inviteSent === false) {
-				client.emit('game_invite_failure', 'user not online');
-			}
-		} else {
-			this.initiateMatch(client, match);
+		}
+		if (inviteSent === false) {
+			client.emit('game_invite_failure', 'user not online');
 		}
 	}
 
@@ -239,7 +234,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			socket: client
 		};
 		this.connectedUsers.push(newSocket);
-		//no reference to a gameID here, cant join the match room
 		Logger.log(`MATCH GATEWAY - USER[${client.id}] - JOINED`);
 		
 		for (let requestIndex = 0; requestIndex < this.pendingFriendRequests.length; requestIndex++) {

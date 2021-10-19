@@ -88,6 +88,8 @@ export class MasterComponent implements OnInit {
 		dialogRef.afterClosed().subscribe(result => {
 			console.log(`Dialog result: ${result}`);
 			if (result) {
+				this.queueService.close();
+				this.matchService.cancelMatch();
 				this.matchSocket.emit('invite_accepted', settings.id);
 				this.matchService.inviteReadyListen();
 			} else {
@@ -97,15 +99,8 @@ export class MasterComponent implements OnInit {
 				}
 			}
 		});
-		// if (this.matchService.acceptDialog != null) {
-		// 	this.matchService.acceptDialog.afterClosed().subscribe((res: {result: boolean, self: boolean, id: string}) => {
-		// 		if (res.result) {
-		// 			this.router.navigate(['game/' + res.id]);
-		// 		}
-		// 	});
-		// }
 	}
-	
+
 	logOut(): void {
 		console.log('is the error here?')
 		this.userService.logout().subscribe((error: any) => {
@@ -143,18 +138,10 @@ export class InviteComponent {
 		
 	public accept() {
 		this.dialogRef.close(true);
-		//create game and navigate to game
-		
-		
-		// this.router.navigate(['game']);
-		//emit events in both these cases
-		
 	}
 	
 	public close() {
-		//emit not accepted event
 		this.dialogRef.close(false);
-		
 	}
 }
 

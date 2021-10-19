@@ -44,7 +44,7 @@ export class MatchComponent implements OnInit, OnDestroy{
 	
 	overlay: any;
 	private: boolean = false;
-	invitedPlayer: string | undefined = undefined;
+	invitedPlayer: string | null = null;
 	acceptDialog: any = null;
 
 	get disabled() {
@@ -80,31 +80,16 @@ export class MatchComponent implements OnInit, OnDestroy{
 		return settings;
 	}
 
-	async findMatch(username: string | undefined) {
+	async findMatch(username: string | null) {
 		//create the match on the server side
 		let matchSettings: MatchSettings = this.createMatchSettings()
-		if (username !== undefined) {
+		if (username !== null) {
 			matchSettings.opponent_username = username.toLowerCase();
 		}
 		console.log("FINDMATCH SENT");
-		// if (this.matchService.acceptDialog != null) {
-		// 	this.matchService.acceptDialog.afterClosed().subscribe((res: {result: boolean, self: boolean, id: string}) => {
-		// 		if (res.result) {
-		// 			if (username === undefined) {
-		// 				this.queueService.close();
-		// 			}
-		// 			this.router.navigate(['game/' + res.id]);
-		// 		}
-		// 		else {
-		// 			if (!res.self && username === undefined) {
-		// 				this.queueService.close();
-		// 			}
-		// 		}
-		// 	});
-		// }
-		this.matchService.matchReadyListen(username === undefined ? null : username);
+		this.matchService.matchReadyListen(username);
 		console.log(matchSettings);
-		if (username === undefined) {
+		if (username === null) {
 			this.queueService.open({hasBackdrop: false});
 			this.matchService.findMatch(matchSettings);
 		} else {
@@ -122,6 +107,7 @@ export class MatchComponent implements OnInit, OnDestroy{
 		}); //TODO: this can exist regardless. Maybe run the person through chat settings anyway?
 
 		this.route.params.subscribe(params => {
+			console.log("PARAMS CHANGED");
 			this.matchService.errorListener.subscribe((res) => {
 				console.log("invite failed");
 				console.log(res);
@@ -136,7 +122,7 @@ export class MatchComponent implements OnInit, OnDestroy{
 				this.invitedPlayer = (this.route.snapshot.params['intra_name'] as string).toUpperCase();
 			}
 			else {
-				this.invitedPlayer = undefined;
+				this.invitedPlayer = null;
 			}
 			console.log("params in match: ", params);
 			console.log(params['intra_name']);

@@ -97,7 +97,7 @@ export class MatchService {
 			}
 		}
 		return null;
-	}	
+	}
 
 	findMatch(user: User, settings: MatchSettings) {
 		// console.log("findMatch");
