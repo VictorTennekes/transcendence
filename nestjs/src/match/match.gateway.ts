@@ -66,7 +66,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	async findMatch(client: Socket, settings: MatchSettings): Promise<string> {
-		console.log("in find match. maybe it'll send the response?")
 		const userItem = await getUserFromSocket(client, this.userService);
 		const user: User = {
 			login: userItem.intra_name,
@@ -145,7 +144,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		let match = this.matchService.matchExists(user, settings);
 		if (match === null) {
 			let inviteSent: boolean = false;
-			console.log("connected users: ", this.connectedUsers);
 			for (let connectedUser of this.connectedUsers) {
 				if (connectedUser.user.intra_name === settings.opponent_username) {
 					let sentSettings: MatchSettings = Object.assign({}, settings);
@@ -167,10 +165,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('invite_declined')
 	inviteDeclined(client: Socket, username: string) {
-		console.log("invite declined sending to ", username);
 		for (let user of this.connectedUsers) {
 			if (user.user.intra_name === username) {
-				console.log("found user, sending error: ", user.user.intra_name);
 				user.socket.emit('game_invite_failure', "invite declined");
 			}
 		}
@@ -184,15 +180,30 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.server.emit('ready', state);
 	}
 
+	public userExists(username: string, users: string[]) {
+		return users.some(function(intra_name) {
+			return intra_name === username;
+		});
+	}
+
 	@SubscribeMessage('connected_friends')
 	async getConnectedFriends(@ConnectedSocket() client: Socket) {
 		let user = await getUserFromSocket(client, this.userService);
 		user.friends = await this.userService.getFriends(user.intra_name);
-
+		let players: string[] = [];
+		for (let key in this.gameService.games) {
+			let lol = this.gameService.games[key].data.users;
+			players.push(lol.one.login);
+			players.push(lol.two.login);
+		}	
 		for (let friend of user.friends) {
 			for (let connectedUser of this.connectedUsers) {
 				if (friend.intra_name === connectedUser.user.intra_name) {
-					client.emit('friend_connected', friend);
+					if (this.userExists(friend.intra_name, players)) {
+						client.emit('friend_in_game', friend);
+					} else {
+						client.emit('friend_connected', friend);
+					}
 				}
 			}
 		}
@@ -201,7 +212,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async handleConnection(@ConnectedSocket() client: Socket) {
 		let user: UserDTO = await getUserFromSocket(client, this.userService);
 		if (!user) {
-			Logger.log("something's wrong, can't find user")
 			return;
 		}
 		let newSocket: socketData = {
@@ -256,7 +266,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				receive: username
 			}
 			this.pendingFriendRequests.push(newRequest);
-			console.log(this.pendingFriendRequests);
 		}
 	}
 
