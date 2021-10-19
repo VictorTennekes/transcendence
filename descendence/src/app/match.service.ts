@@ -122,6 +122,10 @@ export class MatchService {
 		return this.matchSocket.fromEvent('friend_connected');
 	}
 
+	friendInGame(): Observable<userModel> {
+		return this.matchSocket.fromEvent('friend_in_game');
+	}
+
 	receiveFriendRequest(): Observable<userModel> {
 		return this.matchSocket.fromEvent('receive-friend-request');
 	}
