@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Param, Post, UseGuards, Req, HttpException, HttpStatus, UseFilters } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards, Req, HttpException, HttpStatus, UseFilters } from '@nestjs/common';
 import { ChatService } from '@chat/chat.service';
 import { ChatDTO } from '@chat/dto/chat.dto';
 import { NewChatDTO, ReceiveNewChatDTO } from '@chat/dto/newChat.dto';
@@ -52,14 +52,10 @@ export class ChatController {
 			if (name !== req.session.passport.user.login) {
 				users.push(await this.userService.findOne(req.session.passport.user.login));
 			}
-			else {
-				//
-				return ;
-			}
 			let dm = await this.service.getChatByUsers(users);
 			if (!dm) {
 				let chatdto: NewChatDTO = {
-					name: `${users[0].intra_name}`,
+					name: `DM ${users[0].intra_name}`,
 					visibility: "direct",
 					owner: null,
 					admins: [],
@@ -74,11 +70,8 @@ export class ChatController {
 			chats.push(dm);
 		}
 		if (!chats || chats.length < 1) {
-			console.log('no chats');
 			throw new HttpException("No chat by name " + name, HttpStatus.NOT_FOUND);
 		}
-		console.log("returning these chats");
-		console.log(chats);
 		return chats;
 	}
 
@@ -126,7 +119,6 @@ export class ChatController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async validatePassword(@Body() body: validatePassDTO): Promise<boolean> {
-		Logger.log("validate password");
 		return this.service.validatePassword(body.pass, body.chatId);
 	}
 
