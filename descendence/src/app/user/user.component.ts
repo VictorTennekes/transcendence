@@ -76,7 +76,6 @@ export class UserComponent implements OnInit {
 	}
 
 	async ngOnInit(): Promise<void> {
-		console.log("oninit");
 		this.userService.getCurrentUser().subscribe((data: any) => {
 			this.loggedInUser = data;
 			this.userService.getFriends(this.loggedInUser.intra_name).subscribe((res: userModel[]) => {
