@@ -25,6 +25,7 @@ export class MasterComponent implements OnInit {
 	
 	displayName: string = "";
 	avatarStyle: string = "";
+	loginId: string = "";
 	
 	constructor(
 		private readonly router: Router,
@@ -52,6 +53,7 @@ export class MasterComponent implements OnInit {
 			//			console.log(`NG_ON_INIT user: ${JSON.stringify(user)}`);
 			this.displayName = user.display_name;
 			this.avatarStyle = this.updateAvatar(user.avatar_url);
+			this.loginId = user.intra_name;
 		});
 		
 		this.matchService.matchInviteListener.subscribe((res: any) => {
@@ -74,6 +76,9 @@ export class MasterComponent implements OnInit {
 			console.log(`Dialog result: ${accepted}`);
 			if (accepted) {
 				this.matchService.acceptFriendRequest(user);
+				this.userService.updateFriendSource();
+			} else {
+				this.matchService.declineFriendRequest(user);
 			}
 		});
 	}

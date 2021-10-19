@@ -7,6 +7,7 @@ import {ActivatedRoute, Router} from '@angular/router'
 import { MatIcon } from '@angular/material/icon';
 import { AcceptComponent } from '../accept/accept.component';
 import { MatDialog } from '@angular/material/dialog';
+import { threadId } from 'worker_threads';
 
 const timebased = true;
 const pointbased = false;
@@ -40,7 +41,10 @@ export class MatchComponent implements OnInit, OnDestroy{
 		private router: Router,
 		private route: ActivatedRoute,
 		public readonly dialog: MatDialog,
-	) { }
+		// private readonly routeReuseStrategy: RouteReuseStrategy,
+	) {
+		// this.routeReuseStrategy.shouldReuseRoute = () => false;
+	}
 	
 	overlay: any;
 	private: boolean = false;
@@ -80,16 +84,22 @@ export class MatchComponent implements OnInit, OnDestroy{
 		return settings;
 	}
 
-	async findMatch(username: string | null) {
+	async findMatch() {
 		//create the match on the server side
-		let matchSettings: MatchSettings = this.createMatchSettings()
-		if (username !== null) {
-			matchSettings.opponent_username = username.toLowerCase();
+		let matchSettings: MatchSettings = this.createMatchSettings();
+		const invited_user = this.route.snapshot.params['intra_name'];
+		console.log(`FINDMATCH - INVITED USER = ${invited_user}`);
+		console.log(`INVITED_USER === '' = ${invited_user === ''}`);
+		if (invited_user !== '') {
+			matchSettings.opponent_username = invited_user;
+		}
+		else {
+			matchSettings.opponent_username = undefined;
 		}
 		console.log("FINDMATCH SENT");
-		this.matchService.matchReadyListen(username);
+		this.matchService.matchReadyListen(invited_user !== '' ? invited_user : null);
 		console.log(matchSettings);
-		if (username === null) {
+		if (invited_user === '') {
 			this.queueService.open({hasBackdrop: false});
 			this.matchService.findMatch(matchSettings);
 		} else {
@@ -118,6 +128,7 @@ export class MatchComponent implements OnInit, OnDestroy{
 				//TODO: report error
 			});
 			this.private = params['intra_name'] !== '';
+			console.log(`PRIVATE VARIABLE = ${this.private}`);
 			if (this.private) {
 				this.invitedPlayer = (this.route.snapshot.params['intra_name'] as string).toUpperCase();
 			}

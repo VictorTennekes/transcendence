@@ -24,7 +24,7 @@ const DEFAULT_CONFIG: FilePreviewDialogConfig = {
 export class QueueService {
 	timePassed: number = 0;
 	findDisabled = false;
-	dialogRef: FocusOverlayRef;
+	dialogRef: FocusOverlayRef | undefined = undefined;
 	interval: NodeJS.Timeout;
 
 	constructor(
@@ -69,12 +69,15 @@ export class QueueService {
 	close() {
 		// this.matchService.cancelMatch();
 		this.findDisabled = false;
-		this.dialogRef.close();
+		if (this.dialogRef != undefined) {
+			this.dialogRef.close();
+			this.dialogRef = undefined;
+		}
 		clearInterval(this.interval);
 	}
 
 	detachments() {
-		return this.dialogRef.detachment();
+		return this.dialogRef?.detachment();
 	}
 
 	open(config: FilePreviewDialogConfig = {}) {

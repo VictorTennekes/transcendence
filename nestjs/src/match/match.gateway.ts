@@ -147,7 +147,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 		Logger.log(`INVITE USER CALLED`);
 		let inviteSent: boolean = false;
-		console.log("connected users: ", this.connectedUsers);
+		// console.log("connected users: ", this.connectedUsers);
 		for (let connectedUser of this.connectedUsers) {
 			if (connectedUser.user.intra_name === settings.opponent_username) {
 				let sentSettings: MatchSettings = Object.assign({}, settings);
@@ -156,6 +156,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				this.initiateMatch(client, match);
 				connectedUser.socket.emit('receive_game_invite', {host: user.login, id: match});
 				inviteSent = true;
+				break ;
 			}
 		}
 		if (inviteSent === false) {

@@ -148,6 +148,7 @@ export class MatchService {
 		const id = this.getMatchID(user);
 		if (!id || !this.matches[id])
 			return ;
+		Logger.log(`ACCEPTING MATCH[${id}] AS USER = ${user}`);
 		this.matches[id].setAccepted(user);
 	}
 
