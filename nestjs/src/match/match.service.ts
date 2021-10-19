@@ -158,4 +158,8 @@ export class MatchService {
 	isAccepted(id: string) {
 		return (this.matches[id]?.accepted);
 	}
+
+	public sendGameFinished(two: string, one: string) {
+
+	}
 }

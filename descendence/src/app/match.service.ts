@@ -137,4 +137,5 @@ export class MatchService {
 	sendFriendRequest(username: string): void {
 		this.matchSocket.emit('send-friend-request', username);
 	}
+
 }

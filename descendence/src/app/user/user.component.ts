@@ -3,6 +3,8 @@ import { NgForm } from '@angular/forms';
 import { UserService } from '../user.service';
 import { userModel } from '../chat/chat-client/message.model';
 import { MatchService } from '../match.service';
+import { GameService } from '../game.service';
+import { ClientService } from '../game/client.service';
 
 
 @Component({
@@ -22,7 +24,8 @@ export class UserComponent implements OnInit {
 //	form: NgForm;
 
 	constructor(private readonly userService: UserService,
-				private matchService: MatchService) { }
+				private matchService: MatchService,
+				private clientService: ClientService) { }
 
 	public getUserAvatar(avatar_url: string | null) {
 		let style = "background-image: ";
@@ -73,6 +76,7 @@ export class UserComponent implements OnInit {
 	}
 
 	async ngOnInit(): Promise<void> {
+		console.log("oninit");
 		this.userService.getCurrentUser().subscribe((data: any) => {
 			this.loggedInUser = data;
 			this.userService.getFriends(this.loggedInUser.intra_name).subscribe((res: userModel[]) => {
@@ -80,5 +84,8 @@ export class UserComponent implements OnInit {
 				this.trackFriendStatus();
 			})
 		});
+		this.clientService.gameFinishedGlobal().subscribe(() => {
+			this.matchService.requestOnlineFriends();
+		})
 	}
 }

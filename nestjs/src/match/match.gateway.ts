@@ -86,8 +86,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				usr.socket.emit('friend_in_game', user);
 			}
 		}
-		friends = await this.userService.getFriends(opponent);
-		user = await this.userService.findOne(opponent);
+		friends = await this.userService.getFriends(creator);
+		user = await this.userService.findOne(creator);
 		for (let friend of friends) {
 			let usr = this.isOnline(friend.intra_name);
 			if (usr) {
@@ -212,9 +212,11 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		user.friends = await this.userService.getFriends(user.intra_name);
 		let players: string[] = [];
 		for (let key in this.gameService.games) {
-			let lol = this.gameService.games[key].data.users;
-			players.push(lol.one.login);
-			players.push(lol.two.login);
+			if (this.gameService.games[key] && this.gameService.games[key].data) {
+				let lol = this.gameService.games[key].data.users;
+				players.push(lol.one.login);
+				players.push(lol.two.login);
+			}
 		}	
 		for (let friend of user.friends) {
 			for (let connectedUser of this.connectedUsers) {
