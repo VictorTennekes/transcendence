@@ -24,7 +24,7 @@
 					<span>Display Name</span>
 				</div>
 			</label>
-			<input type="text" id="name" formControlName="displayName" class="displayname" spellcheck="false" [ngClass]="{
+			<input type="text" id="name" formControlName="displayName" class="displayname" spellcheck="false" placeholder="letters A-Z, numbers 0-9, 6-24 chars" [ngClass]="{
 				'available' : settingsForm.controls['displayName'].valid && settingsForm.controls['displayName'].dirty,
 				'taken' :  !settingsForm.controls['displayName'].valid && settingsForm.controls['displayName'].dirty
 			}">

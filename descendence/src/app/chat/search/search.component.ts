@@ -28,12 +28,10 @@ import {HttpErrorResponse} from '@angular/common/http';
 
 	private getChats(): chatModel[] {
 		this.route.params.subscribe(params => {
-			console.log(params);
 			this.errorMessage = params['error'];
 		})
 		this.searchService.getChats().subscribe(response => {
 			this.chats = response;
-			console.log(response);
 			return response
 		});
 		return [];
@@ -52,7 +50,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 	}
 
 	public redirectCreate() {
-		this.router.navigate(['', {outlets: {chat: 'new-chat'}}], {skipLocationChange: true});
+		this.router.navigate(['', {outlets: {chat: 'new-chat'}}]);
 	}
 
 	public back() {

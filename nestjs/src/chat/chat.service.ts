@@ -132,9 +132,18 @@ export class ChatService {
 			if (users.length === 1 && chat.users.length === 1 && chat.users[0].intra_name === users[0].intra_name) {
 				return chat;
 			}
-			for (const user of users) {
-				if (chat.users.filter((el) => el.intra_name === user.intra_name).length === users.length) {
-					return chat;
+			if (users.length !== 1) {
+				let amtMatching = 0;
+				for (const user of users) {
+					for (let chatUser of chat.users) {
+						if (chatUser.intra_name === user.intra_name) {
+							amtMatching++;
+						}
+						if (amtMatching === users.length) {
+							return chat;
+						}
+					}
+					
 				}
 			}
 		}
@@ -163,13 +172,16 @@ export class ChatService {
 	}
 
 	async getChatByUsers(users: UserDTO[]): Promise<ChatDTO> {
+		console.log("getChatByUserss");
 		const items = await this.repo
 				.createQueryBuilder("chat")
 				.innerJoinAndSelect("chat.users", "users")
 				.where({visibility: "direct"})
 				.getMany();
+				console.log(items);
 		let item = this.getMatchingUsers(items, users);
-
+		console.log(item);
+		console.log("returning null");
 		if (!item) {
 			return null;
 		}
