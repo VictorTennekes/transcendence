@@ -112,7 +112,6 @@ export class SettingsComponent implements OnInit {
 	}
 
 	public encryptPassword(value: string): string {
-		console.log("encrypting", value);
 		if (value && value != "") {
 			return bcrypt.hashSync(value, bcrypt.genSaltSync());
 		}
@@ -130,16 +129,10 @@ export class SettingsComponent implements OnInit {
 			visibility: "",
 			password: ""
 		}
-		console.log(this.addAdminForm.controls['username'].value);
-		console.log(this.addAdminForm);
-		console.log("submitAdmin");
-		console.log(data);
 		this.searchService.updateAdmins(data).subscribe((result) => {
-			console.log(result);
 			this.error = "";
 		},
 		(error) => {
-			console.log(error);
 			// this.error = "lol";
 			this.error = error.error.message;
 		})
@@ -148,8 +141,6 @@ export class SettingsComponent implements OnInit {
 
 
 	public submitVisibility() {
-		console.log(this.editVisibilityForm.value);
-		console.log(this.editVisibilityForm.controls['password'].value);
 		let data: editChatModel = {
 			id: this.chat.id,
 			admin: "",
@@ -159,20 +150,12 @@ export class SettingsComponent implements OnInit {
 			visibility: this.editVisibilityForm.controls['visibility'].value,
 			password: this.encryptPassword(this.editVisibilityForm.controls['password'].value)
 		}
-		console.log(data);
 		this.searchService.editVisibility(data).subscribe((result) => {
-			console.log(result);
 			this.error = "";
 		},
 		(error) => {
-			console.log("error");
-			console.log(error);
 			this.error = error.error.message;
 		})
-			// this.editVisibilityForm.controls['password'].reset();
-			// this.error = "";
-			// this.error = "lol";
-			// this.error = error.error.message;
 	}
 
 	public submitMute() {
@@ -185,16 +168,10 @@ export class SettingsComponent implements OnInit {
 			visibility: "",
 			password: ""
 		}
-		console.log(this.addMuteForm.value);
 		this.searchService.addMute(data).subscribe((result) => {
-			console.log("submit mute response");
-			console.log(result);
 			this.error = "";
 		},
 		(error) => {
-			console.log("error in submitting ban");
-			console.log(error);
-			// this.error = "lol";
 			this.error = error.error.message;
 		})
 		this.addMuteForm.reset();
@@ -210,19 +187,10 @@ export class SettingsComponent implements OnInit {
 			visibility: "",
 			password: ""
 		}
-		console.log("adding ban for:");
-		console.log(data);
-		console.log(typeof data.bannedTime);
-		console.log("is data object?")
-		console.log(typeof data.bannedTime.getTime === 'function');
 		this.searchService.addBan(data).subscribe((result) => {
-			console.log("submit ban response");
-			console.log(result);
 			this.error = "";
 		},
 		(error) => {
-			console.log("error in submitting ban");
-			console.log(error);
 			this.error = error.error.message;
 		})
 
