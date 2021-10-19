@@ -34,6 +34,11 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.server.to(room).emit('gamedata', data);
 	}
 
+	@SubscribeMessage('join')
+	joinMatch(client: Socket, id: string) {
+		client.join(id);
+	}
+
 	//TODO: validate client IDs first
 
 	//the gateway needs the service to interact with the running Game
@@ -43,6 +48,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage('press_up')
 	press_up(@ConnectedSocket() client) {
 		Logger.log(`USER[${client.id}] - PRESS UP`);
+		
 		this.gameService.setKeyPressed(client.id, 'ArrowUp', true);
 	}
 	

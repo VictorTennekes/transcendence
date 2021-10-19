@@ -51,8 +51,10 @@ export class GameService {
 
 	setKeyPressed(id: string, arrow: string, state: boolean) {
 		const gameID = this.getGameID(id);
-		if (!gameID)
+		if (!gameID) {
+			Logger.log(`CLIENT[${id}] - NOT PART OF ANY GAME`);
 			return ;
+		}
 		// Logger.log(`PLAYER ID: ${id} -> GAME ${gameID}`);
 		this.games[gameID].setKeyPressed(id, arrow, state);
 	}

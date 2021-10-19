@@ -61,11 +61,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.matchService.decline(client);
 	}
 
-	@SubscribeMessage('join')
-	joinMatch(client: Socket, id: string) {
-		client.join(id);
-	}
-
 	async findMatch(client: Socket, settings: MatchSettings): Promise<string> {
 		console.log("in find match. maybe it'll send the response?")
 		const userItem = await this.userService.getUserFromSocket(client);

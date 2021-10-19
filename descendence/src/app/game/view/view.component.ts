@@ -63,17 +63,17 @@ export class ViewComponent implements OnInit, AfterViewInit {
 		const scoreCanvas = <HTMLCanvasElement>document.getElementById('score-canvas');
 		this.game = new Game(gameCanvas, scoreCanvas, this.client);
 		const gameID = this.route.snapshot.params.id;
-		this.client.join(gameID);
-		this.client.gameFinished().subscribe(() => {
-			console.log("GAME FINISHED");
-			//NAVIGATE ONLY WHEN THE GAME IS SAVED TO THE DATABASE
-			this.router.navigate(['post/' + gameID]);
-		});
 		this.client.receiveGameData().subscribe((data) => {
 			console.log(JSON.stringify(data));
 			this.game.updateFromData(data);
 			this.game.draw();
 //			requestAnimationFrame(() => {return ;});
+		});
+		this.client.join(gameID);
+		this.client.gameFinished().subscribe(() => {
+			console.log("GAME FINISHED");
+			//NAVIGATE ONLY WHEN THE GAME IS SAVED TO THE DATABASE
+			this.router.navigate(['post/' + gameID]);
 		});
 	}
 }
