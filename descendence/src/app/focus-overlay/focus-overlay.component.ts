@@ -1,8 +1,7 @@
 import { AfterViewInit, Component, Injector, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from '../services/auth.service';
-import { FocusOverlayService } from './focus-overlay.service';
-import { SharedValidatorService } from './shared-validator.service';
 
 const otp_length = 6;
 
@@ -17,8 +16,7 @@ export class FocusOverlayComponent implements OnInit, AfterViewInit {
 	codeForm: FormGroup;
 	constructor(
 		private readonly authService: AuthService,
-		private valid: SharedValidatorService,
-		private service: FocusOverlayService
+		public dialogRef: MatDialogRef<FocusOverlayComponent>,
 	) {
 		this.codeForm = new FormGroup({
 			code1: new FormControl(''),
@@ -110,8 +108,9 @@ export class FocusOverlayComponent implements OnInit, AfterViewInit {
 		console.log(code);
 		this.authService.validateQRCode(code).subscribe((result: any) => {
 			console.log("succes");
-			this.valid.valid = true;
-			this.service.close();
+			// this.valid.valid = true;
+			// this.service.close();
+			this.dialogRef.close(true);
 			this.setWrong(false);
 		},
 		(err) => {

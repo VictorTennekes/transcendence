@@ -3,8 +3,10 @@ import { Overlay, OverlayConfig } from '@angular/cdk/overlay';
 import { QueueComponent } from "./queue/queue.component";
 import { ComponentPortal } from '@angular/cdk/portal';
 import { FocusOverlayRef } from "./focus-overlay/focus-overlay.ref";
-import { MatchService } from './match.service';
-import { AcceptService } from "./accept.service";
+// import { MatchService } from './match.service';
+// import { MatDialog } from "@angular/material/dialog";
+import { AcceptComponent } from "./accept/accept.component";
+import { Router } from "@angular/router";
 
 interface FilePreviewDialogConfig {
 	panelClass?: string;
@@ -22,19 +24,16 @@ const DEFAULT_CONFIG: FilePreviewDialogConfig = {
 export class QueueService {
 	timePassed: number = 0;
 	findDisabled = false;
-	dialogRef: FocusOverlayRef;
+	dialogRef: FocusOverlayRef | undefined = undefined;
 	interval: NodeJS.Timeout;
 
 	constructor(
 		private readonly overlay: Overlay,
-		private readonly matchService: MatchService,
-		private readonly acceptService: AcceptService
+		// private readonly matchService: MatchService,
+		// private readonly dialog: MatDialog,
+		private readonly router: Router,
 	) {
-		this.matchService.matchReady().subscribe(() => {
-			console.log("RECEIVED READY SIGNAL");
-			this.close();
-			this.acceptService.open();
-		});
+
 	}
 
 	private getOverlayConfig(config: FilePreviewDialogConfig): OverlayConfig {
@@ -70,12 +69,15 @@ export class QueueService {
 	close() {
 		// this.matchService.cancelMatch();
 		this.findDisabled = false;
-		this.dialogRef.close();
+		if (this.dialogRef != undefined) {
+			this.dialogRef.close();
+			this.dialogRef = undefined;
+		}
 		clearInterval(this.interval);
 	}
 
 	detachments() {
-		return this.dialogRef.detachment();
+		return this.dialogRef?.detachment();
 	}
 
 	open(config: FilePreviewDialogConfig = {}) {

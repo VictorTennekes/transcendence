@@ -1,5 +1,7 @@
-import { HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from '@user/user.service';
+import { Repository } from 'typeorm';
 
 //Anything that relates to authentication goes here
 @Injectable()

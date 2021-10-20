@@ -15,7 +15,7 @@
 <ul #scrollMe id="chatList" class="chatList">
 	<li id="chatItem" [matMenuTriggerFor]="beforeMenu" class="chatItem" *ngFor="let msg of chat.messages">
 		<mat-menu #beforeMenu="matMenu" xPosition="before">
-			<button mat-menu-item>Profile</button>
+			<button mat-menu-item (click)="navToUserProfile(msg.owner.intra_name)">Profile</button>
 			<button mat-menu-item *ngIf="canInvite(msg.owner.intra_name)" (click)="inviteToGame(msg.owner.intra_name)">Invite to game</button>
 			<button mat-menu-item *ngIf="canInvite(msg.owner.intra_name) && !isFriend(msg.owner.intra_name)" (click)="addFriend(msg.owner.intra_name)" >Add friend</button>
 			<button mat-menu-item *ngIf="isFriend(msg.owner.intra_name)" (click)="removeFriend(msg.owner.intra_name)" >Remove friend</button>

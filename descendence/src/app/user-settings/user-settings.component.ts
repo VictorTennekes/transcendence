@@ -4,12 +4,11 @@ import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationEr
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of, timer } from 'rxjs';
 import { delay, filter, first, map, switchMap } from 'rxjs/operators';
-import { FocusOverlayRef } from '../focus-overlay/focus-overlay.ref';
-import { FocusOverlayService } from '../focus-overlay/focus-overlay.service';
-import { SharedValidatorService } from '../focus-overlay/shared-validator.service';
+import { FocusOverlayComponent } from '../focus-overlay/focus-overlay.component';
 import { ImageService} from '../services/image-service.service';
 import { UrlService } from '../url.service';
 import { UserService } from '../user.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
 	selector: 'app-user-settings',
@@ -30,8 +29,7 @@ export class UserSettingsComponent implements OnInit {
 	currentUserIntra: string;
 	
 	constructor(
-		private overlay: FocusOverlayService,
-		private valid: SharedValidatorService,
+		private dialog: MatDialog,
 		private readonly userService: UserService,
 		private readonly imageService: ImageService,
 		private readonly route: ActivatedRoute,
@@ -79,26 +77,15 @@ export class UserSettingsComponent implements OnInit {
 		return style;
 	}
 	
-	openOverlay() {
-		if (!!this.settingsForm.controls['twoFactorEnabled'].value)
-			return ;
-		let dialogRef: FocusOverlayRef = this.overlay.open();
-		return dialogRef;
-	}
-	
 	toggleSwitch(event: Event) {
 		const twoFactorForm = this.settingsForm.controls['twoFactorEnabled'];
 		if (!twoFactorForm.value) {
-			
-			const overlay = this.openOverlay();
-			overlay?.detachment().subscribe((e) => {
-				if (this.valid.valid === true) {
-					twoFactorForm.setValue(true);
-				}
-			},
-			(err) => {
-				console.log(err);
-			})
+			let twoFactorDialog = this.dialog.open(FocusOverlayComponent, {
+				panelClass: 'two-factor-panel'
+			});
+			twoFactorDialog.afterClosed().pipe(filter((res) => res !== undefined)).subscribe((res) => {
+				twoFactorForm.setValue(true);
+			});
 			event.preventDefault();
 		}
 	}
@@ -107,7 +94,7 @@ export class UserSettingsComponent implements OnInit {
 		var code, i, len;
 
 		len = str.length;
-		if (len < 6 || len > 24)
+		if (len < 5 || len > 24)
 			return false;
 		for (i = 0; i < len; i++) {
 			code = str.charCodeAt(i);

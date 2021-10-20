@@ -9,6 +9,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDTO } from './dto/user.dto';
 import { UserEntity } from './entities/user.entity';
 import { LoginStatus } from './interfaces/login-status.interface';
+import { Socket } from "socket.io";
+import { parse } from "cookie";
+import { SessionEntity } from './entities/session.entity';
 
 //everything related to getting/modifying/updating entries in the 'user_entity' table is done by this.
 
@@ -17,7 +20,23 @@ export class UserService {
 	constructor(
 		@InjectRepository(UserEntity)
 		private readonly userRepository: Repository<UserEntity>,
+		@InjectRepository(SessionEntity)
+		private readonly sessionRepo: Repository<SessionEntity>
 	) {}
+
+	async getUserFromSocket(socket: Socket) {
+		const cookie = socket.handshake.headers.cookie;
+		if (!cookie) return null;
+		const parsedCookie = parse(cookie);
+		const cookieData = parsedCookie['connect.sid'];
+	
+		let sid = cookieData.substr(2, cookieData.indexOf(".") - 2);
+	
+		const session = await this.sessionRepo.findOne({where: {sid: sid}});
+		const parsedSession: any = session.sess;
+		const user = await this.findUserWithBlocks(parsedSession.passport.user.login);
+		return user;
+	}
 
 	userExists(username: string, users: UserDTO[]) {
 		return users.some(function(el) {
