@@ -94,7 +94,7 @@ export class UserSettingsComponent implements OnInit {
 		var code, i, len;
 
 		len = str.length;
-		if (len < 6 || len > 24)
+		if (len < 5 || len > 24)
 			return false;
 		for (i = 0; i < len; i++) {
 			code = str.charCodeAt(i);
