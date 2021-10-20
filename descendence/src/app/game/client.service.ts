@@ -47,4 +47,8 @@ export class ClientService {
 	releaseDown() {
 		this.socket.emit('release_down', {});
 	}
+
+	gameFinishedGlobal() {
+		return this.socket.fromEvent('game-finished');
+	}
 }
