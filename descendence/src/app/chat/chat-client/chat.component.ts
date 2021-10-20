@@ -68,12 +68,24 @@ import { MatchService } from 'src/app/match.service';
 			this.errorMessage = err.error;
 		})
 		this.matchService.receiveFriendRequestError().subscribe((err: any) => {
-			console.log("FRUEND REQ ERR");
 			this.errorMessage = err.error;
 		})
 		this.chatService.listenForError().subscribe((error: string) => {
 			console.log(error);
 			this.errorMessage = error;
+		})
+		this.matchService.acceptNotifier.subscribe((user: userModel) => {
+			console.log("accepted in chat ", user);
+			this.loggedInUser.friends.push(user);
+
+		})
+		this.matchService.removeNotifier.subscribe((user: userModel) => {
+			console.log("removed in chat ", user);
+			for (let index = 0; index < this.loggedInUser.friends.length; index++) {
+				if (this.loggedInUser.friends[index].intra_name === user.intra_name) {
+					this.loggedInUser.friends.splice(index, 1);
+				}
+			}
 		})
 
 		this.userService.getCurrentUser().subscribe((data: any) => {
@@ -202,11 +214,14 @@ import { MatchService } from 'src/app/match.service';
 
 	public removeFriend(username: string) {
 		this.userService.removeFriend(username);
-		this.userService.getFriends(this.loggedInUser.intra_name).subscribe((friends: userModel[]) => {
-			if (friends) {
-				this.loggedInUser.friends = friends;
-			}
-		})
+		setTimeout(() => {
+			this.userService.getFriends(this.loggedInUser.intra_name).subscribe((friends: userModel[]) => {
+				if (friends) {
+					this.loggedInUser.friends = friends;
+				}
+			})
+		}, 2000);
+		
 	}
 
 	public onSubmit() {

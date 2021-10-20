@@ -252,6 +252,13 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			user: user,
 			socket: client
 		};
+		let friends: UserDTO[] = await this.userService.getFriends(user.intra_name);
+		console.log("friends: ", friends)
+		for (let friend of friends) {
+			if (friend.intra_name === username) {
+				return;
+			}
+		}
 		for (let req of this.pendingFriendRequests) {
 			if (req.receive === username && req.submit.intra_name === user.intra_name) {
 				return;
@@ -286,7 +293,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const target = this.isOnline(username);
 		if (target !== null) {
 			//send 'friend-removed' event notifying the target that they are no longer friends
-			target.socket.emit('friend-removed');
+			target.socket.emit('friend-removed', user);
 		}
 	}
 
@@ -321,8 +328,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.removePendingFriendRequest(friend.intra_name, user.intra_name);
 		const target = this.isOnline(friend.intra_name);
 		if (target !== null) {
-			client.emit('friend-accepted');
-			target.socket.emit('friend-accepted');
+			client.emit('friend-accepted', friend);
+			target.socket.emit('friend-accepted', user);
 		}
 	}
 
