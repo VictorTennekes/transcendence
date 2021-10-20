@@ -147,6 +147,12 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('invite_user')
 	async inviteUser(client: Socket, settings: MatchSettings) {
 		const usr = await this.userService.getUserFromSocket(client);
+		for (let blocker of usr.blockedByUsers) {
+			if (blocker.intra_name === settings.opponent_username) {
+				client.emit('game_invite_failure', {error: "you're blocked creep"});
+				return;
+			}
+		}
 		const user: User = {
 			login: usr.intra_name,
 			display_name: usr.display_name,
@@ -169,7 +175,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			}
 		}
 		if (inviteSent === false) {
-			client.emit('game_invite_failure', 'user not online');
+			client.emit('game_invite_failure', {error: 'user not online'});
 		}
 	}
 
@@ -288,8 +294,22 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			user: user,
 			socket: client
 		};
+		let friends: UserDTO[] = await this.userService.getFriends(user.intra_name);
+		console.log("friends: ", friends)
+		for (let friend of friends) {
+			if (friend.intra_name === username) {
+				return;
+			}
+		}
 		for (let req of this.pendingFriendRequests) {
 			if (req.receive === username && req.submit.intra_name === user.intra_name) {
+				return;
+			}
+		}
+		for (let blocker of user.blockedByUsers) {
+			if (blocker.intra_name === username) {
+				console.log("here??");
+				client.emit("friend_request_failure", {error: "you're blocked creep"});
 				return;
 			}
 		}
@@ -321,7 +341,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const target = this.isOnline(username);
 		if (target !== null) {
 			//send 'friend-removed' event notifying the target that they are no longer friends
-			target.socket.emit('friend-removed');
+			target.socket.emit('friend-removed', user);
 		}
 	}
 
@@ -356,8 +376,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.removePendingFriendRequest(friend.intra_name, user.intra_name);
 		const target = this.isOnline(friend.intra_name);
 		if (target !== null) {
-			client.emit('friend-accepted');
-			target.socket.emit('friend-accepted');
+			client.emit('friend-accepted', friend);
+			target.socket.emit('friend-accepted', user);
 		}
 	}
 
