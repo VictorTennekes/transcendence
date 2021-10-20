@@ -126,6 +126,10 @@ import { MatchService } from 'src/app/match.service';
 		return false;
 	}
 
+	navToUserProfile(username: string) {
+		this.router.navigate(['/profile', username]);
+	}
+
 	public canInvite(username: string): boolean {
 		if (username === this.loggedInUser.intra_name) {
 			return false;
