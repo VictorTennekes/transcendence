@@ -1,17 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { of, BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { GameSocket } from './game/game.socket';
+import { Observable, Subscription } from 'rxjs';
 import { MatchSocket } from './match/match.socket';
-import { QueueScheduler } from 'rxjs/internal/scheduler/QueueScheduler';
 import { QueueService } from './queue.service';
 import { userModel } from './chat/chat-client/message.model'
 import { AcceptComponent } from './accept/accept.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { timeStamp } from 'console';
-// import { Socket } from 'ngx-socket-io';
 
 export enum SpeedMode {
 	NORMAL,
@@ -32,10 +26,6 @@ export interface EndCondition {
 export interface MatchSettings {
 	endCondition: EndCondition,
 	ballSpeed: SpeedMode
-	powerups?: {
-		speed: SpeedMode,
-		//things
-	}
 	opponent_username?: string
 };
 
@@ -63,8 +53,6 @@ export class MatchService {
 	removeNotifier: Observable<any>;
 	constructor(
 		private readonly matchSocket: MatchSocket,
-		private readonly http: HttpClient,
-		private readonly gameSocket: GameSocket,
 		private readonly dialog: MatDialog,
 		private readonly router: Router,
 		private readonly queueService: QueueService,
@@ -79,7 +67,6 @@ export class MatchService {
 		this.removeNotifier = this.matchSocket.fromEvent('friend-removed');
 	}
 
-	//emit the find request with these settings
 	findMatch(settings: MatchSettings) {
 		this.matchSocket.emit('find', settings);
 	}
@@ -96,13 +83,7 @@ export class MatchService {
 	cancelMatch() {
 		this.matchSocket.emit('cancel');
 	}
-	// cancelAccept() {
-	// 	this.matchSocket.removeAllListeners('accepted');
-	// }
 
-	sendListen() {
-		this.matchSocket.emit('listen');
-	}
 	matchAccepted() {
 		return this.acceptListener;
 	}

@@ -1,16 +1,12 @@
 import { Logger } from '@nestjs/common';
 import { ConnectedSocket, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
-import { SocketAddress } from 'net';
 import { UserService } from '@user/user.service';
 import { MatchService } from './match.service';
 import { User } from 'src/game/game.script';
-// import { MatchSettings } from './match.class';
 import { socketData } from '@chat/chat.gateway';
 import { UserDTO } from '@user/dto/user.dto';
-import { GameService } from 'src/game/game.service';
 import { Match, MatchSettings } from './match.class';
-import { AuthService } from 'src/auth/auth.service';
 
 class FriendRequest {
 	receive: string;
@@ -22,8 +18,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	constructor(
 		private readonly userService: UserService,
-		private readonly matchService: MatchService, //circular dependency :(
-		private readonly gameService: GameService,
+		private readonly matchService: MatchService,
 	) {}
 
 	@WebSocketServer()
@@ -33,14 +28,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	cancelMatch(client: Socket) {
 		this.matchService.cancelMatch(client);
 	}
-
-	@SubscribeMessage('listen')
-	listenMatch(client: Socket) {
-		//set this client to ready
-		this.matchService.listenMatch(client.id);
-	}
-
-		//check if both are ready
 
 	connectedUsers: socketData[] = []
 	pendingFriendRequests: FriendRequest[] = [];
@@ -128,9 +115,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage('find')
-	//listen for 'find' event
-	//find/create a match
-	//send 'ready' to both players once a match is found
 	async queueForMatch(client: Socket, settings: any) {
 		const match = await this.findMatch(client, settings);
 		this.initiateMatch(client, match);
