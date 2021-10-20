@@ -68,8 +68,11 @@
 			</div>
 		</div>
 		<div class="find-container">
-			<button class="find" [disabled]="disabled" type="submit">
+			<button *ngIf="currentGame === null" class="find" [disabled]="disabled" type="submit">
 				{{private ? 'INVITE ' + invitedPlayer : 'FIND MATCH'}}
+			</button>
+			<button *ngIf="currentGame !== null" class="find" (click)="reconnectToGame(currentGame)" type="button">
+				RECONNECT
 			</button>
 		</div>
 	</form>

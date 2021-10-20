@@ -37,6 +37,13 @@ export class MatchController {
 		return result;
 	}
 
+	@Get('ingame')
+	@UseGuards(AuthenticatedGuard)
+	@UseFilters(UnauthorizedFilter)
+	currentUserInGame(@Req() request) {
+		return {id: this.gameService.isIngame(request.session.passport.user.login)};
+	}
+
 	@Get('/:id')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)

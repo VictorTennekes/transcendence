@@ -70,16 +70,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.gameService.setKeyPressed(client.id, 'ArrowDown', false);
 	}
 	
-	async handleConnection(@ConnectedSocket() client: Socket) {
-		Logger.log(`GAME GATEWAY - CONNECT - USER[${client.id}]`);
-
+	@SubscribeMessage('refresh_connection')
+	async refreshConnection(@ConnectedSocket() client) {
 		const usr = await this.userService.getUserFromSocket(client);
 		const user: User = {
 			display_name: usr.display_name,
 			login: usr.intra_name,
 			socket: client
 		};
-		
 		for (const id in this.gameService.games) {
 			if (this.gameService.games[id] === undefined)
 				continue ;
@@ -94,6 +92,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				break ;
 			}
 		}
+	}
+
+	async handleConnection(@ConnectedSocket() client: Socket) {
+		Logger.log(`GAME GATEWAY - CONNECT - USER[${client.id}]`);
+
+		this.refreshConnection(client);
 		// this.interval[client.id] = setInterval(() => this.gameLoop(), 1000/60);
 	}
 }

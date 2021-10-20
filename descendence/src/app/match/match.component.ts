@@ -8,6 +8,7 @@ import { MatIcon } from '@angular/material/icon';
 import { AcceptComponent } from '../accept/accept.component';
 import { MatDialog } from '@angular/material/dialog';
 import { threadId } from 'worker_threads';
+import { UserService } from '../user.service';
 
 const timebased = true;
 const pointbased = false;
@@ -34,10 +35,12 @@ export class MatchComponent implements OnInit, OnDestroy{
 	findgame: FormGroup;
 	public speedMappings = BallSpeedLabelMapping;
 	public speeds = Object.values(BallSpeed);
+	currentGame: string | null = null;
 
 	constructor(
 		private readonly matchService: MatchService,
 		private readonly queueService: QueueService,
+		private readonly userService: UserService,
 		private router: Router,
 		private route: ActivatedRoute,
 		public readonly dialog: MatDialog,
@@ -107,7 +110,17 @@ export class MatchComponent implements OnInit, OnDestroy{
 		}
 	}
 
+	reconnectToGame(gameId: string) {
+		this.matchService.refreshConnection();
+		this.router.navigate(['/game', gameId]);
+	}
+
 	ngOnInit(): void {
+
+		this.route.data.subscribe((data) => {
+			this.currentGame = data.currentGame;
+			console.log(this.currentGame);
+		})
 
 		this.findgame = new FormGroup({
 			condition: new FormControl(pointbased),
@@ -115,6 +128,7 @@ export class MatchComponent implements OnInit, OnDestroy{
 			minutes: new FormControl("3"),
 			ball_speed: new FormControl(BallSpeedLabelMapping["NORMAL"]),
 		}); //TODO: this can exist regardless. Maybe run the person through chat settings anyway?
+
 
 		this.route.params.subscribe(params => {
 			console.log("PARAMS CHANGED");
