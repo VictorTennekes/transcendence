@@ -12,7 +12,7 @@ import { GameService } from './game.service';
 	],
 	imports: [
 		TypeOrmModule.forFeature([GameEntity]),
-		UserModule
+		UserModule,
 	],
 	exports: [GameService]
 })

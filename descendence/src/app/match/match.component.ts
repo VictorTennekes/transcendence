@@ -130,6 +130,10 @@ export class MatchComponent implements OnInit, OnDestroy{
 		}); //TODO: this can exist regardless. Maybe run the person through chat settings anyway?
 
 
+		this.matchService.ingameListener.subscribe((id: string | null) => {
+			this.currentGame = id;
+		});
+
 		this.route.params.subscribe(params => {
 			console.log("PARAMS CHANGED");
 			this.matchService.errorListener.subscribe((res) => {

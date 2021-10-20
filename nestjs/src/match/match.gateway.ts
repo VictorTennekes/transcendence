@@ -8,6 +8,7 @@ import { socketData } from '@chat/chat.gateway';
 import { UserDTO } from '@user/dto/user.dto';
 import { Match, MatchSettings } from './match.class';
 import { GameService } from 'src/game/game.service';
+import { connect } from 'http2';
 
 class FriendRequest {
 	receive: string;
@@ -62,9 +63,14 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		return match;
 	}
 
-	async emitInGame(opponent: string, creator: string) {
+	async emitInGame(id: string, opponent: string, creator: string) {
 		let friends: UserDTO[] = await this.userService.getFriends(opponent);
 		let user: UserDTO = await this.userService.findOne(opponent);
+		for (const socket of this.connectedUsers) {
+			if (socket.user.intra_name === creator || opponent) {
+				socket.socket.emit('ingame', id);
+			}
+		}
 		for (let friend of friends) {
 			let usr = this.isOnline(friend.intra_name);
 			if (usr) {
@@ -96,7 +102,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					if (accepted) {
 						Logger.log(`MATCH ${id} - BOTH ACCEPTED`);
 						this.matchService.createGame(id);
-						this.emitInGame(match.opponent.login, match.creator.login);
+						this.emitInGame(id, match.opponent.login, match.creator.login);
 						this.matchService.deleteMatch(id);
 					}
 					else {

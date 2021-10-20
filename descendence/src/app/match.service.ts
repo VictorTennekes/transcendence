@@ -51,6 +51,7 @@ export class MatchService {
 
 	acceptNotifier: Observable<any>;
 	removeNotifier: Observable<any>;
+	ingameListener: Observable<any>;
 	constructor(
 		private readonly matchSocket: MatchSocket,
 		private readonly dialog: MatDialog,
@@ -61,6 +62,7 @@ export class MatchService {
 		this.errorListener = this.matchSocket.fromEvent('game_invite_failure');
 		this.matchInviteListener = this.matchSocket.fromEvent('receive_game_invite');
 		this.readyListener = this.matchSocket.fromEvent('ready');
+		this.ingameListener = this.matchSocket.fromEvent('ingame');
 
 		// this.inviteReadyListen();
 		this.acceptNotifier = this.matchSocket.fromEvent('friend-accepted');
