@@ -1,6 +1,5 @@
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getUserFromSocket } from '@shared/socket-utils';
 import { UserEntity } from '@user/entities/user.entity';
 import { UserService } from '@user/user.service';
 import { match } from 'assert';
@@ -60,8 +59,10 @@ export class GameService {
 
 	setKeyPressed(id: string, arrow: string, state: boolean) {
 		const gameID = this.getGameID(id);
-		if (!gameID)
+		if (!gameID) {
+			Logger.log(`CLIENT[${id}] - NOT PART OF ANY GAME`);
 			return ;
+		}
 		// Logger.log(`PLAYER ID: ${id} -> GAME ${gameID}`);
 		this.games[gameID].setKeyPressed(id, arrow, state);
 	}

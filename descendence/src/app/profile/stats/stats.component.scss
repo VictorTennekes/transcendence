@@ -14,8 +14,8 @@
 	padding: 1rem;
 	display: flex;
 	flex-direction: column;
-	align-items: start;
-	align-content: start;
+	align-items: flex-start;
+	align-content: flex-start;
 }
 
 .game-time {
@@ -45,8 +45,8 @@
 .data-container {
 	display: flex;
 	flex-direction: row;
-	place-content: start;
-	place-items: start;
+	place-content: flex-start;
+	place-items: flex-start;
 }
 
 .data-title {

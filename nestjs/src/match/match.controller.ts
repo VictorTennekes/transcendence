@@ -37,14 +37,6 @@ export class MatchController {
 		return result;
 	}
 
-	@Post('create_private')
-	@UseGuards(AuthenticatedGuard)
-	@UseFilters(UnauthorizedFilter)
-	createPrivateMatch(@Req() request, settings: MatchSettings) {
-		const id = this.matchService.createMatch(request.user.intra_name, settings, true);
-		return (id);
-	}
-
 	@Get('/:id')
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)

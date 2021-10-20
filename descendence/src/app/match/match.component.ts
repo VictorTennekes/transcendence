@@ -1,11 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { defaultMatchSettings, EndCondition, EndConditionTypes, MatchService, MatchSettings, SpeedMode } from '../match.service';
 import { QueueService } from '../queue.service';
-import { AcceptService } from '../accept.service';
 import { MatchSocket } from './match.socket';
 import { FormControl, FormGroup } from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router'
 import { MatIcon } from '@angular/material/icon';
+import { AcceptComponent } from '../accept/accept.component';
+import { MatDialog } from '@angular/material/dialog';
+import { threadId } from 'worker_threads';
 
 const timebased = true;
 const pointbased = false;
@@ -27,7 +29,7 @@ const BallSpeedLabelMapping: Record<BallSpeed, string> = {
 	templateUrl: './match.component.html',
 	styleUrls: ['./match.component.scss']
 })
-export class MatchComponent implements OnInit {
+export class MatchComponent implements OnInit, OnDestroy{
 	
 	findgame: FormGroup;
 	public speedMappings = BallSpeedLabelMapping;
@@ -36,12 +38,18 @@ export class MatchComponent implements OnInit {
 	constructor(
 		private readonly matchService: MatchService,
 		private readonly queueService: QueueService,
-		private readonly acceptService: AcceptService,
 		private router: Router,
-		private route: ActivatedRoute
-	) { }
+		private route: ActivatedRoute,
+		public readonly dialog: MatDialog,
+		// private readonly routeReuseStrategy: RouteReuseStrategy,
+	) {
+		// this.routeReuseStrategy.shouldReuseRoute = () => false;
+	}
 	
 	overlay: any;
+	private: boolean = false;
+	invitedPlayer: string | null = null;
+	acceptDialog: any = null;
 
 	get disabled() {
 		return this.queueService.findDisabled;
@@ -76,16 +84,23 @@ export class MatchComponent implements OnInit {
 		return settings;
 	}
 
-	async findMatch(username?: string) {
+	async findMatch() {
 		//create the match on the server side
-		let matchSettings: MatchSettings = this.createMatchSettings()
-		if (username) {
-			matchSettings.opponent_username = username;
+		let matchSettings: MatchSettings = this.createMatchSettings();
+		const invited_user = this.route.snapshot.params['intra_name'];
+		console.log(`FINDMATCH - INVITED USER = ${invited_user}`);
+		console.log(`INVITED_USER === '' = ${invited_user === ''}`);
+		if (invited_user !== '') {
+			matchSettings.opponent_username = invited_user;
+		}
+		else {
+			matchSettings.opponent_username = undefined;
 		}
 		console.log("FINDMATCH SENT");
-		this.queueService.open({hasBackdrop: false});
+		this.matchService.matchReadyListen(invited_user !== '' ? invited_user : null);
 		console.log(matchSettings);
-		if (!username) {
+		if (invited_user === '') {
+			this.queueService.open({hasBackdrop: false});
 			this.matchService.findMatch(matchSettings);
 		} else {
 			this.matchService.inviteUser(matchSettings);
@@ -101,9 +116,9 @@ export class MatchComponent implements OnInit {
 			ball_speed: new FormControl(BallSpeedLabelMapping["NORMAL"]),
 		}); //TODO: this can exist regardless. Maybe run the person through chat settings anyway?
 
-		
 		this.route.params.subscribe(params => {
-			this.matchService.receiveGameInviteError().subscribe((res) => {
+			console.log("PARAMS CHANGED");
+			this.matchService.errorListener.subscribe((res) => {
 				console.log("invite failed");
 				console.log(res);
 				this.matchService.cancelMatch();
@@ -112,16 +127,23 @@ export class MatchComponent implements OnInit {
 				this.router.navigate(['play']);
 				//TODO: report error
 			});
+			this.private = params['intra_name'] !== '';
+			console.log(`PRIVATE VARIABLE = ${this.private}`);
+			if (this.private) {
+				this.invitedPlayer = (this.route.snapshot.params['intra_name'] as string).toUpperCase();
+			}
+			else {
+				this.invitedPlayer = null;
+			}
 			console.log("params in match: ", params);
 			console.log(params['intra_name']);
-			if (params['intra_name'] !== '') {
-				this.findMatch(params['intra_name']);
-			}
-
+			// if (params['intra_name'] !== '') {
+			// 	this.findMatch(params['intra_name']);
+			// }
 		})
-		
 	}
-	// ngOnDestroy(): void {
-	// 	this.matchService.cancelReady();
-	// }
+
+	ngOnDestroy(): void {
+		this.matchService.unsetReadyListen();
+	}
 }

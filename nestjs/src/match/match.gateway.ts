@@ -1,16 +1,13 @@
 import { Logger } from '@nestjs/common';
 import { ConnectedSocket, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
-import { SocketAddress } from 'net';
-import { getUserFromSocket } from '@shared/socket-utils';
 import { UserService } from '@user/user.service';
 import { MatchService } from './match.service';
 import { User } from 'src/game/game.script';
-// import { MatchSettings } from './match.class';
 import { socketData } from '@chat/chat.gateway';
 import { UserDTO } from '@user/dto/user.dto';
-import { GameService } from 'src/game/game.service';
 import { Match, MatchSettings } from './match.class';
+import { GameService } from 'src/game/game.service';
 
 class FriendRequest {
 	receive: string;
@@ -22,7 +19,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	constructor(
 		private readonly userService: UserService,
-		private readonly matchService: MatchService, //circular dependency :(
+		private readonly matchService: MatchService,
 		private readonly gameService: GameService,
 	) {}
 
@@ -33,14 +30,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	cancelMatch(client: Socket) {
 		this.matchService.cancelMatch(client);
 	}
-
-	@SubscribeMessage('listen')
-	listenMatch(client: Socket) {
-		//set this client to ready
-		this.matchService.listenMatch(client.id);
-	}
-
-		//check if both are ready
 
 	connectedUsers: socketData[] = []
 	pendingFriendRequests: FriendRequest[] = [];
@@ -60,13 +49,9 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.matchService.decline(client);
 	}
 
-	@SubscribeMessage('join')
-	joinMatch(client: Socket, id: string) {
-		client.join(id);
-	}
-
 	async findMatch(client: Socket, settings: MatchSettings): Promise<string> {
-		const userItem = await getUserFromSocket(client, this.userService);
+		console.log("in find match. maybe it'll send the response?")
+		const userItem = await this.userService.getUserFromSocket(client);
 		const user: User = {
 			login: userItem.intra_name,
 			display_name: userItem.display_name,
@@ -115,12 +100,20 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 						this.matchService.deleteMatch(id);
 					}
 					else {
-						this.leaveMatchRooms(match);
-						if (this.matchService.matches[id].bothDidntAccept()) {
+						console.log(`MATCH NOT ACCEPTED - OPPONENT - ${match.settings.opponent_username}`);
+						if (match.settings.opponent_username !== undefined) {
+							match.creator.socket.leave(match.id);
+							match.opponent.socket.leave(match.id);
 							this.matchService.deleteMatch(id);
 						}
 						else {
-							this.matchService.matches[id].resetMatchData();
+							this.leaveMatchRooms(match);
+							if (this.matchService.matches[id].bothDidntAccept()) {
+								this.matchService.deleteMatch(id);
+							}
+							else {
+								this.matchService.matches[id].resetMatchData();
+							}
 						}
 					}
 				}
@@ -131,7 +124,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		else {
 			Logger.log(`MATCH[${id}] - LISTENING - ${this.matchService.matches[id].ready}`);
 		}
-		Logger.log(`GAME[${match}] - FOUND - USER[${client.id}]`);
+		Logger.log(`GAME[${id}] - FOUND - USER[${client.id}]`);
 
 	}
 
@@ -145,42 +138,57 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage('find')
-	//listen for 'find' event
-	//find/create a match
-	//send 'ready' to both players once a match is found
 	async queueForMatch(client: Socket, settings: any) {
 		const match = await this.findMatch(client, settings);
 		this.initiateMatch(client, match);
 	}
 
+	//called by both the inviter and the invited player
 	@SubscribeMessage('invite_user')
 	async inviteUser(client: Socket, settings: MatchSettings) {
-		const usr = await getUserFromSocket(client, this.userService);
+		const usr = await this.userService.getUserFromSocket(client);
 		const user: User = {
 			login: usr.intra_name,
 			display_name: usr.display_name,
 			socket: client
 		}
-		let match = this.matchService.matchExists(user, settings);
-		if (match === null) {
-			let inviteSent: boolean = false;
-			for (let connectedUser of this.connectedUsers) {
-				if (connectedUser.user.intra_name === settings.opponent_username) {
-					let sentSettings: MatchSettings = Object.assign({}, settings);
-					sentSettings.opponent_username = usr.intra_name;
-					connectedUser.socket.emit('receive_game_invite', sentSettings);
-					inviteSent = true;
-				}
+		Logger.log(`INVITE USER CALLED`);
+		let inviteSent: boolean = false;
+		// console.log("connected users: ", this.connectedUsers);
+		for (let connectedUser of this.connectedUsers) {
+			if (connectedUser.user.intra_name === settings.opponent_username) {
+				let sentSettings: MatchSettings = Object.assign({}, settings);
+				sentSettings.opponent_username = usr.intra_name;
+				//this.findMatch is doing a bunch of redundant checks, could just create the match right away tbh
+				const match = this.matchService.createMatch(user, settings);
+				// const match = await this.findMatch(client, settings);
+				this.initiateMatch(client, match);
+				connectedUser.socket.emit('receive_game_invite', {host: user.login, id: match});
+				inviteSent = true;
+				break ;
 			}
-			if (inviteSent === false) {
-				client.emit('game_invite_failure', 'user not online');
-			}
-			match = await this.findMatch(client, settings);
-			this.initiateMatch(client, match);
-		} else {
-			this.initiateMatch(client, match);
 		}
+		if (inviteSent === false) {
+			client.emit('game_invite_failure', 'user not online');
+		}
+	}
 
+	@SubscribeMessage('invite_accepted')
+	async acceptInvite(client: Socket, id: string) {
+		const usr = await this.userService.getUserFromSocket(client);
+		const user: User = {
+			login: usr.intra_name,
+			display_name: usr.display_name,
+			socket: client
+		};
+		const match = this.matchService.matches[id];
+		if (match === undefined || match.settings?.opponent_username !== user.login) {
+			//not invited
+			return ;
+		}
+		Logger.log(`USER ${user.login} - ACCEPTED INVITE TO ${id}`);
+		this.matchService.matches[id].setOpponent(user);
+		this.initiateMatch(client, id);
 	}
 
 	@SubscribeMessage('invite_declined')
@@ -208,7 +216,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('connected_friends')
 	async getConnectedFriends(@ConnectedSocket() client: Socket) {
-		let user = await getUserFromSocket(client, this.userService);
+		let user = await this.userService.getUserFromSocket(client);
 		user.friends = await this.userService.getFriends(user.intra_name);
 		let players: string[] = [];
 		for (let key in this.gameService.games) {
@@ -232,16 +240,18 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	async handleConnection(@ConnectedSocket() client: Socket) {
-		let user: UserDTO = await getUserFromSocket(client, this.userService);
+		let user: UserDTO = await this.userService.getUserFromSocket(client);
 		if (!user) {
 			return;
+		}
+		else {
+			Logger.log(`MATCH GATEWAY - NEW CONNECTION - USER ${user.intra_name}`);
 		}
 		let newSocket: socketData = {
 			user: user,
 			socket: client
 		};
 		this.connectedUsers.push(newSocket);
-		//no reference to a gameID here, cant join the match room
 		Logger.log(`MATCH GATEWAY - USER[${client.id}] - JOINED`);
 		
 		for (let requestIndex = 0; requestIndex < this.pendingFriendRequests.length; requestIndex++) {
@@ -273,7 +283,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('send-friend-request')
 	async handleFriendRequest(client: Socket, username: string) {
-		let user: UserDTO = await getUserFromSocket(client, this.userService);
+		let user: UserDTO = await this.userService.getUserFromSocket(client);
 		let sender: socketData = {
 			user: user,
 			socket: client
@@ -302,7 +312,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('remove-friend')
 	async removeFriend(client: Socket, username: string) {
-		const user = await getUserFromSocket(client, this.userService);
+		const user = await this.userService.getUserFromSocket(client);
 		//confirm that the user and the target are friends
 		if (!this.userService.isFriendedByUser(user.intra_name, username)) {
 			return ;
@@ -341,7 +351,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('accept-friend-request')
 	async acceptFriendRequest(client: Socket, friend: UserDTO) {
-		const user: UserDTO = await getUserFromSocket(client, this.userService);
+		const user: UserDTO = await this.userService.getUserFromSocket(client);
 		await this.userService.addFriend(user.intra_name, friend.intra_name);
 		this.removePendingFriendRequest(friend.intra_name, user.intra_name);
 		const target = this.isOnline(friend.intra_name);
@@ -353,7 +363,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('decline-friend-request')
 	async declineFriendRequest(client: Socket, friend: UserDTO) {
-		const user: UserDTO = await getUserFromSocket(client, this.userService);
+		const user: UserDTO = await this.userService.getUserFromSocket(client);
 		this.removePendingFriendRequest(friend.intra_name, user.intra_name);
 	}
 }

@@ -71,8 +71,8 @@ export class Game {
 		this.gameContext.lineWidth = 10;
 		this.gameContext.fillStyle = "#fff";
 		this.scoreContext.font = "2rem Biryani, bold";
-		this.scoreContext.fillText(this.players[this._users.one.id].hits.toString(), (this.gameCanvas.width / 2) + 40, this.gameCanvas.height - 70);
-		this.scoreContext.fillText(this.players[this._users.two.id].hits.toString(), (this.gameCanvas.width / 2) + 70 ,this.gameCanvas.height - 70);
+		this.scoreContext.fillText(this.players[this._users.one.login].hits.toString(), (this.gameCanvas.width / 2) + 40, this.gameCanvas.height - 70);
+		this.scoreContext.fillText(this.players[this._users.two.login].hits.toString(), (this.gameCanvas.width / 2) + 70 ,this.gameCanvas.height - 70);
 	}
 	drawTime() {
 		this.gameContext.strokeStyle = "#89AFBB";
@@ -97,8 +97,8 @@ export class Game {
 		this.scoreContext.fillText(this._users.two.display_name, (this.scoreCanvas.width / 4) * 3, (this.scoreCanvas.height / 4) * 3);
 		
 		this.scoreContext.font = "3.4rem Biryani, bold";
-		this.scoreContext.fillText(this.players[this._users.two.id].score.toString(), (this.scoreCanvas.width / 2) + 40, (this.scoreCanvas.height / 4) * 3);
-		this.scoreContext.fillText(this.players[this._users.one.id].score.toString(), (this.scoreCanvas.width / 2) - 70, (this.scoreCanvas.height / 4) * 3);
+		this.scoreContext.fillText(this.players[this._users.two.login].score.toString(), (this.scoreCanvas.width / 2) + 40, (this.scoreCanvas.height / 4) * 3);
+		this.scoreContext.fillText(this.players[this._users.one.login].score.toString(), (this.scoreCanvas.width / 2) - 70, (this.scoreCanvas.height / 4) * 3);
 	}
 	drawBoardDetails() {
 		//draw court outline
@@ -118,15 +118,15 @@ export class Game {
 	updateFromData(data: any) {
 		if (!this._users) {
 			this._users = data.users;
-			this.players[this._users.one.id] = new Player(WALL_OFFSET,this.gameCanvas.height / 2 - PADDLE_HEIGHT / 2);
-			this.players[this._users.two.id] = new Player(WALL_OFFSET,this.gameCanvas.height / 2 - PADDLE_HEIGHT / 2);
+			this.players[this._users.one.login] = new Player(WALL_OFFSET,this.gameCanvas.height / 2 - PADDLE_HEIGHT / 2);
+			this.players[this._users.two.login] = new Player(WALL_OFFSET,this.gameCanvas.height / 2 - PADDLE_HEIGHT / 2);
 		}
 		this._users = data.users;
 		//update player one
-		this.players[this._users.one.id].updateFromData(data.players[this._users.one.id]);
+		this.players[this._users.one.login].updateFromData(data.players[data.users.one.id]);
 
 		//update player two
-		this.players[this._users.two.id].updateFromData(data.players[this._users.two.id]);
+		this.players[this._users.two.login].updateFromData(data.players[data.users.two.id]);
 		this.ball.position = data.ball.position;
 		this.timePassed = data.secondsPassed;
 	}

@@ -114,14 +114,15 @@ export class Match {
 		this._accepted[socketid] = true;
 	}
 
+	//needs to return false if setting.opponent_username is set and the opponent doesnt match the creator
 	settingCompare(setting: MatchSettings): boolean {
-		if (setting.opponent_username) {
-			if (setting?.opponent_username !== this._creator.login) {
-				return false;
-			}
-		}
-		return (this.settings.ballSpeed == setting.ballSpeed &&
+		const base_settings_match = setting?.opponent_username !== this._creator.login && this.settings.ballSpeed == setting.ballSpeed &&
 			this.settings.endCondition.type == setting.endCondition.type &&
-			this.settings.endCondition.value == setting.endCondition.value);
+			this.settings.endCondition.value == setting.endCondition.value;
+
+		if (setting.opponent_username) {
+			return (setting.opponent_username === this.creator.login && base_settings_match);
+		}
+		return base_settings_match;
 	}
 }

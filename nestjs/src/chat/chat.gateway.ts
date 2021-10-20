@@ -9,8 +9,6 @@ import { UserDTO } from "@user/dto/user.dto";
 import { AuthenticatedGuard } from "src/auth/authenticated.guard";
 import { UnauthorizedFilter } from "src/auth/unauthorized.filter";
 import { MessageDTO, newMessageDTO } from "./dto/message.dto";
-import { request } from "http";
-import { getUserFromSocket } from "@shared/socket-utils";
 
 export class socketData {
 	user: UserDTO;
@@ -22,7 +20,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@WebSocketServer() server;
 
 	constructor(private chatService: ChatService,
-				private userService: UserService) {}
+				private userService: UserService,
+	) {}
 
 	connectedSockets: socketData[] = []
 
@@ -32,7 +31,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	async handleConnection(@ConnectedSocket() client: Socket) {
 		Logger.log("new connection");
-		const user: UserDTO = await getUserFromSocket(client, this.userService);
+		const user: UserDTO = await this.userService.getUserFromSocket(client);
 		if (!user) {
 			Logger.log("something's wrong, can't find user")
 			return;
@@ -53,7 +52,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage('send_message')
 	async sendMessage(@ConnectedSocket() client: Socket, @MessageBody() message: newMessageDTO) {
-		const user = await getUserFromSocket(client, this.userService);
+		const user = await this.userService.getUserFromSocket(client);
 		const chat = await this.chatService.getChatById(message.chat, user.intra_name);
 		let blockedByNames: string = "";
 		for (let chatUser of chat.users) {

@@ -26,15 +26,27 @@
 	place-content: center;
 }
 
+.find-container {
+	display: flex;
+	flex-direction: row;
+	place-items: center;
+	place-content: center;
+}
+
 .find {
-	width: 18rem;
 	height: 6rem;
 	background-color: white;
+	place-self: center;
+	place-content: center;
+	place-items: center;
+	margin: auto;
 	border-radius: 2rem;
 	font-size: 2.5rem;
 	font-family: 'Poppins';
 	font-weight: bold;
 	color: #32C3E2;
+	padding-left: 1.5rem;
+	padding-right: 1.5rem;
 }
 
 .option-container {
@@ -167,7 +179,7 @@ input:checked + span {
 	position: relative;
 	display: flex;
 	flex-direction: row;
-	place-content: start;
+	place-content: flex-start;
 	margin-bottom: 1.5rem;
 	padding: 1.75rem;
 	margin: auto;

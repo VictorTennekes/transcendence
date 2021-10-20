@@ -9,6 +9,8 @@ import { UserService } from '@user/user.service';
 import { UserEntity } from '@user/entities/user.entity';
 import { ChatGateway } from './chat.gateway';
 import { BanEntity } from './entity/ban.entity';
+import { AuthModule } from 'src/auth/auth.module';
+import { SessionEntity } from '@user/entities/session.entity';
 
 @Module({
 	controllers: [ChatController],
@@ -18,12 +20,14 @@ import { BanEntity } from './entity/ban.entity';
 		ChatGateway,
 	],
 	imports: [
+		AuthModule,
 		ConfigModule,
 		TypeOrmModule.forFeature([
 			ChatEntity,
 			MessageEntity,
 			UserEntity,
-			BanEntity
+			BanEntity,
+			SessionEntity
 		])
 	]
 })

@@ -16,10 +16,8 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { ImageService } from './services/image-service.service';
 import { FocusOverlayComponent } from './focus-overlay/focus-overlay.component';
 import { FullscreenOverlayContainer, OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
-import { FocusOverlayService } from './focus-overlay/focus-overlay.service';
 import { QrCodeDirective } from './focus-overlay/qrcode.directive';
 import { OnlyNumber } from './focus-overlay/only-numbers.directive';
-import { SharedValidatorService } from './focus-overlay/shared-validator.service';
 import { TwoFactorComponent } from './two-factor/two-factor.component';
 import { ChatComponent } from './chat/chat-client/chat.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -38,7 +36,6 @@ import { ViewComponent } from './game/view/view.component';
 import { QueueComponent } from './queue/queue.component';
 import { QueueService } from './queue.service';
 import { AcceptComponent } from './accept/accept.component';
-import { AcceptService } from './accept.service';
 import { CountdownModule } from 'ngx-countdown';
 import { MATERIAL_SANITY_CHECKS } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -131,14 +128,11 @@ import { UrlService } from './url.service';
 	providers: [
 		UserService,
 		ImageService,
-		FocusOverlayService,
-		SharedValidatorService,
 		chatGuardService,
 		MatchSocket,
 		ChatSocket,
 		GameSocket,
 		QueueService,
-		AcceptService,
 		{
 			provide: MATERIAL_SANITY_CHECKS,//am i really doing this?
 			useValue: false

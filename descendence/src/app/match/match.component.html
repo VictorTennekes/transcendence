@@ -67,8 +67,10 @@
 				</select>
 			</div>
 		</div>
-		<button class="find" [disabled]="disabled" type="submit">
-			FIND MATCH
-		</button>
+		<div class="find-container">
+			<button class="find" [disabled]="disabled" type="submit">
+				{{private ? 'INVITE ' + invitedPlayer : 'FIND MATCH'}}
+			</button>
+		</div>
 	</form>
 </div>
