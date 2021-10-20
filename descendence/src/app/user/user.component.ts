@@ -44,10 +44,15 @@ export class UserComponent implements OnInit {
 		this.inGameFriends = this.friendStats.filter((element) => {return (element[1] === "inGame")});
 	}
 
-	trackFriendStatus() {
+	addFriends() {
+		this.friendStats = [];
 		for (const friend of this.friends) {
 			this.friendStats.push([friend, "offline"]);
 		}
+	}
+
+	trackFriendStatus() {
+		this.addFriends();
 		this.matchService.friendConnected().subscribe((onlineFriend: userModel) => {
 			for (const friendStatus of this.friendStats) {
 				if (friendStatus[0].intra_name === onlineFriend.intra_name) {
@@ -77,6 +82,29 @@ export class UserComponent implements OnInit {
 	}
 
 	async ngOnInit(): Promise<void> {
+		this.matchService.removeNotifier.subscribe((user: userModel) => {
+			setTimeout(() => {
+				this.userService.getFriends(this.loggedInUser.intra_name).subscribe((res: userModel[]) => {
+					this.friends = res;
+					this.addFriends();
+					this.matchService.requestOnlineFriends();
+					this.reSortArrays()
+					// this.trackFriendStatus();
+				})
+			}, 3000);
+		})
+		this.matchService.acceptNotifier.subscribe((user: userModel) => {
+			setTimeout(() => {
+				this.userService.getFriends(this.loggedInUser.intra_name).subscribe((res: userModel[]) => {
+					this.friends = res;
+					this.addFriends();
+					this.matchService.requestOnlineFriends();
+					this.reSortArrays()
+					// this.trackFriendStatus();
+				})
+			}, 3000);
+			
+		})
 		this.userService.getCurrentUser().subscribe((data: any) => {
 			this.loggedInUser = data;
 			this.userService.getFriends(this.loggedInUser.intra_name).subscribe((res: userModel[]) => {

@@ -113,7 +113,8 @@ export class UserService {
 	}
 
 	addBlockedUser(username: string) {
-		return this.http.post('api/user/block_user/', {username: username})
+		this.matchService.friendRemoved(username);
+		return this.http.post('api/user/block_user/', {username: username});
 	}
 
 	unblockedUser(username: string) {

@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { secondsToDhms } from '../game/post/post.component';
 import { MatchService } from '../match.service';
 import { ChatService } from '../chat/chat-client/chat.service';
-import { chatModel } from '../chat/chat-client/message.model';
+import { chatModel, userModel } from '../chat/chat-client/message.model';
 import { SearchService } from '../chat/search/search.service';
 
 @Component({
@@ -99,10 +99,13 @@ export class ProfileComponent implements OnInit {
 				console.log(`RECEIVED FRIEND STATE: ${state}`);
 				this.isFriend = state;
 			});
-			this.matchService.removeNotifier.subscribe(() => {
-				this.userService.isFriend(this.loginId).subscribe((state: boolean) => {
-					this.isFriend = state;
-				});
+			this.matchService.removeNotifier.subscribe((user: userModel) => {
+				setTimeout(() => {
+					this.userService.isFriend(this.loginId).subscribe((state: boolean) => {
+						this.isFriend = state;
+					});
+				}, 2000)
+
 			})
 			this.userService.friendSubject.subscribe((friends) => {
 				const result = friends.some(user => user.intra_name === this.loginId);
@@ -110,10 +113,12 @@ export class ProfileComponent implements OnInit {
 				this.isFriend = result;
 				// this.ref.detectChanges();
 			});
-			this.matchService.acceptNotifier.subscribe(() => {
-				this.userService.isFriend(this.loginId).subscribe((state: boolean) => {
-					this.isFriend = state;
-				});
+			this.matchService.acceptNotifier.subscribe((user: userModel) => {
+				setTimeout(() => {
+					this.userService.isFriend(this.loginId).subscribe((state: boolean) => {
+						this.isFriend = state;
+					});
+				}, 1000)
 			})
 		});
 	}
