@@ -93,6 +93,8 @@ export class MatchService {
 		// console.log("all existing matches:")
 		// console.log(this.matches);
 		//BUG: subsequent requests from the same user will make the creator and opponent the same user
+		if (this.gameService.isIngame(user.login))
+		 return ;
 		for (const key in this.matches) {
 			//TODO: handle condition for opponent_username differently
 			//loop through all matches, trying to find a compatible match (based on 'settings')

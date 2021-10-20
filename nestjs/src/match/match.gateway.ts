@@ -158,6 +158,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			display_name: usr.display_name,
 			socket: client
 		}
+		if (this.gameService.isIngame(user.login))
+			return ;
 		Logger.log(`INVITE USER CALLED`);
 		let inviteSent: boolean = false;
 		// console.log("connected users: ", this.connectedUsers);
