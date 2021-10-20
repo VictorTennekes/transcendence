@@ -71,6 +71,10 @@ export class MatchService {
 		this.matchSocket.emit('find', settings);
 	}
 
+	refreshConnection() {
+		this.matchSocket.emit('refresh_connection');
+	}
+
 	decline() {
 		this.matchSocket.emit('decline');
 	}

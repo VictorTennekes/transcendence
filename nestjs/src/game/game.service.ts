@@ -45,6 +45,17 @@ export class GameService {
 		return true;
 	}
 
+	isIngame(user: string) {
+		for (const id in this.games) {
+			if (this.games[id] === undefined)
+				continue ;
+			const players = this.games[id].users;
+			if (players.one.login === user || players.two.login === user)
+				return id;
+		}
+		return null;
+	}
+
 	getGameID(clientID: string) {
 		for (const key in this.games) {
 			if (this.games[key] === undefined)

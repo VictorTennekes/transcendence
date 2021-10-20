@@ -36,6 +36,7 @@ import { StatsResolver } from './profile/stats.resolver';
 import { FriendResolver } from './profile/friend.resolver';
 import { CurrentUserResolver } from './profile/current-user.resolver';
 import { OnlineResolver } from './profile/online.resolver';
+import { IngameResolver } from './ingame.resolver';
 
 const routes: Routes = [
 	//guard the main page by LoginGuard
@@ -56,6 +57,9 @@ const routes: Routes = [
 			},
 			{
 				path: 'play/:intra_name',
+				resolve: {
+					currentGame: IngameResolver
+				},
 				component: MatchComponent
 			},
 			{
@@ -176,7 +180,8 @@ const routes: Routes = [
 		StatsResolver,
 		FriendResolver,
 		CurrentUserResolver,
-		OnlineResolver
+		OnlineResolver,
+		IngameResolver,
 	]
 })
 export class AppRoutingModule { }

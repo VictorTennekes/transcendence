@@ -57,6 +57,10 @@ export class UserService {
 		return this.http.get<boolean>('/api/match/online/' + user);
 	}
 
+	inGame() {
+		return this.http.get('/api/match/ingame');
+	}
+
 	get userSourceValue() {
 		return this.userSource.value;
 	}
