@@ -1,4 +1,0 @@
-.map method
-
-collection.map(callback)
-run the callback function on each item of the collection, producing another collection
