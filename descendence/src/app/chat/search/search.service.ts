@@ -56,17 +56,10 @@ export class SearchService {
 	}
 
 	updateAdmins(data: editChatModel): Observable<any> {
-		console.log(data);
-		console.log(this.url + "update-admins");
 		return this.http.post(this.url + "update-admins", data)
 	}
 
 	addBan(data: editChatModel): Observable<any> {
-		console.log("SERVICE")
-		console.log(typeof data.bannedTime);
-		console.log("is data object?")
-		console.log(typeof data.bannedTime.getTime === 'function');
-
 		return this.http.post(this.url + 'add-ban', data);
 	}
 
@@ -88,7 +81,6 @@ export class SearchService {
 
 	isLoggedInUser(username: string): any {
 		return this.http.get<boolean>(this.url + 'is-logged-in-user/' + username).subscribe((res) => {
-			console.log(res);
 		})
 	}
 

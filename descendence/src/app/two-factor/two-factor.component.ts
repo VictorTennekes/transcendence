@@ -93,20 +93,16 @@ export class TwoFactorComponent implements OnInit, AfterViewInit {
 		const inputFields = this.codeForm.controls;
 		let code = "";
 		for (let field in inputFields) {
-			console.log(`INPUTFIELD[${field}] = ${inputFields[field].value}`);
 			if (inputFields[field].value === '') {
 				return ;
 			}
 			code += inputFields[field].value;
 		}
-		console.log(code);
 		this.authService.authenticate(code).subscribe((result: any) => {
 			this.router.navigate(['']);
-			console.log("succes");
 			this.setWrong(false);
 		},
 		(err) => {
-			console.log("CODE IS NOT VALID");
 			this.clearField();
 			this.setWrong(true);
 		})

@@ -26,17 +26,13 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	connectedSockets: socketData[] = []
 
 	async afterInit() {
-		Logger.log("yo");
 	}
 
 	async handleConnection(@ConnectedSocket() client: Socket) {
-		Logger.log("new connection");
 		const user: UserDTO = await this.userService.getUserFromSocket(client);
 		if (!user) {
-			Logger.log("something's wrong, can't find user")
 			return;
 		}
-		console.log("Logging in ", user.intra_name);
 		let newSocket: socketData = {
 			user: user,
 			socket: client
@@ -45,7 +41,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	async handleDisconnect(@ConnectedSocket() client: Socket) {
-		Logger.log('disconnecting socket');
 		const index = this.connectedSockets.findIndex(x => x.socket.id === client.id);
 		this.connectedSockets.splice(index, 1);
 	}

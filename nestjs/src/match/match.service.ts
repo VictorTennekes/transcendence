@@ -38,10 +38,8 @@ export class MatchService {
 	cancelMatch(client: Socket) {
 		const id = this.getMatchID(client.id);
 		if (!id) {
-			Logger.log("GAME[] - NOT FOUND - USER[${client.id}]");
 			return ;
 		}
-		Logger.log(`GAME[${id}] - CANCEL - USER[${client.id}]`);
 		delete this.matches[id];
 		this.matches[id] = undefined;
 		client.leave(id);
@@ -50,10 +48,8 @@ export class MatchService {
 	decline(client: Socket) {
 		const id = this.getMatchID(client.id);
 		if (!id) { //error
-			Logger.log("GAME[] - NOT FOUND - USER[${client.id}]");
 			return ;
 		}
-		Logger.log(`GAME[${id}] - DECLINE - USER[${client.id}]`);
 		client.leave(id);
 	}
 
@@ -115,7 +111,6 @@ export class MatchService {
 		const id = this.getMatchID(user);
 		if (!id || !this.matches[id])
 			return ;
-		Logger.log(`ACCEPTING MATCH[${id}] AS USER = ${user}`);
 		this.matches[id].setAccepted(user);
 	}
 

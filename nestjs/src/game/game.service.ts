@@ -39,7 +39,6 @@ export class GameService {
 
 	async gameFinished(id: string): Promise<boolean> {
 		const game = await this.gameRepository.findOne({where: {id: id}});
-		Logger.log(`GAME[${id}] - FINISHED`);
 		if (game === undefined)
 			return false;
 		return true;
@@ -71,7 +70,6 @@ export class GameService {
 	setKeyPressed(id: string, arrow: string, state: boolean) {
 		const gameID = this.getGameID(id);
 		if (!gameID) {
-			Logger.log(`CLIENT[${id}] - NOT PART OF ANY GAME`);
 			return ;
 		}
 		// Logger.log(`PLAYER ID: ${id} -> GAME ${gameID}`);
@@ -137,7 +135,6 @@ export class GameService {
 	//the service needs to interact with the gateway to send updates to the users
 	private async gameLoop(id: string) {
 		if (this.games[id].goalReached) {
-			Logger.log(`GAME[${id}] - GOAL REACHED`);
 			this.gameGateway.sendFinished(id);
 			clearInterval(this.gameIntervals[id]);
 			await this.saveGameInDatabase(id);
@@ -165,7 +162,6 @@ export class GameService {
 		// .where("players.intra_name = :id", {id: user})
 		.getMany();
 
-		Logger.log(`RAW HISTORY RESULTS: ${JSON.stringify(games)}`);
 		let items: HistoryObject[] = [];
 		for (const game of games) {
 			if (game.data.scores.hasOwnProperty(user)) {
@@ -189,7 +185,6 @@ export class GameService {
 				items.push(item);
 			}
 		}
-		Logger.log(`HISTORY OF USER: ${JSON.stringify(items)}`);
 		return items;
 	}
 }

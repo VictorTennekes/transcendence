@@ -95,7 +95,6 @@ export class FocusOverlayComponent implements OnInit, AfterViewInit {
 		const inputFields = this.codeForm.controls;
 		let code = "";
 		for (let field in inputFields) {
-			console.log(`INPUTFIELD[${field}] = ${inputFields[field].value}`);
 			if (inputFields[field].value === '') {
 				break ;
 			}
@@ -105,16 +104,13 @@ export class FocusOverlayComponent implements OnInit, AfterViewInit {
 			this.clearField();
 			return ;
 		}
-		console.log(code);
 		this.authService.validateQRCode(code).subscribe((result: any) => {
-			console.log("succes");
 			// this.valid.valid = true;
 			// this.service.close();
 			this.dialogRef.close(true);
 			this.setWrong(false);
 		},
 		(err) => {
-			console.log("CODE IS NOT VALID");
 			this.clearField();
 			this.setWrong(true);
 		})
@@ -122,7 +118,6 @@ export class FocusOverlayComponent implements OnInit, AfterViewInit {
 
 	async ngOnInit() {
 		(await this.authService.getQRCode()).subscribe((code) => {
-			console.log(`QRCODE: ${code}`);
 			this.qrcode = code;
 		})
 	}

@@ -30,7 +30,6 @@ export class AuthController {
 	@UseGuards(No2FAGuard)
 	@UseFilters(UnauthorizedFilter)
 	session(@Req() req) {
-		Logger.log(JSON.stringify(req.user));
 		return {
 			user: req.user.intra_name,
 			two_factor_enabled: req.user.two_factor_enabled,
@@ -42,7 +41,6 @@ export class AuthController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	logout(@Req() req) {
-		console.log('uhh');
 		req.session.destroy();
 	}
 }

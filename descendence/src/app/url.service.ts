@@ -12,7 +12,6 @@ export class UrlService {
 		private readonly router: Router
 	) {
 		this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event: any) => {
-			console.log(`UPDATING URLSERVICE - ${event.url}`);
 			this._previousUrl = this._currentUrl;
 			this._currentUrl = event.url;
 		});

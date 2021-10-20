@@ -75,7 +75,6 @@ export class HistoryComponent implements OnInit {
 			// 	},
 			// };
 			// this.games.push(elem1);
-			console.log(`RESOLVED HISTORY: ${JSON.stringify(this.route.snapshot.data.history)}`);
 			// this.games.push(elem1);
 			// this.games.push(elem1);
 			// this.games.push(elem1);

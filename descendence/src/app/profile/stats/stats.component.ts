@@ -72,7 +72,6 @@ export class StatsComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.circle = document.getElementById('winrate-visual');
-		console.log(`RESOLVED USER STATS: ${JSON.stringify(this.route.snapshot.data.stats)}`);
 		this.route.data.subscribe((data: any) => {
 			const stats: UserStats = data.stats;
 			this.ballHits = stats.ballHits;
@@ -88,7 +87,6 @@ export class StatsComponent implements OnInit {
 		else {
 			const total = this.wins + this.losses;
 			this.percentage = this.wins / total;
-			console.log(`PERCENTAGE = ${this.percentage}`);
 			this.run(this.percentage * 360);
 			this.percentage *= 100;
 		}
