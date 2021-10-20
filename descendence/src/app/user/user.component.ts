@@ -82,8 +82,6 @@ export class UserComponent implements OnInit {
 	}
 
 	async ngOnInit(): Promise<void> {
-		//TODO: block should send an unfriend event
-		//TODO: unfriend should send an unfriend event to both users
 		this.matchService.removeNotifier.subscribe((user: userModel) => {
 			setTimeout(() => {
 				this.userService.getFriends(this.loggedInUser.intra_name).subscribe((res: userModel[]) => {

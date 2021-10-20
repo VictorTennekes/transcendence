@@ -63,7 +63,6 @@ import { MatchService } from 'src/app/match.service';
 	}
 
 	ngOnInit(): void {
-	
 		this.matchService.errorListener.subscribe((err: any) => {
 			this.errorMessage = err.error;
 		})
@@ -86,6 +85,11 @@ import { MatchService } from 'src/app/match.service';
 					this.loggedInUser.friends.splice(index, 1);
 				}
 			}
+			this.route.params.subscribe(params => {
+				this.searchService.findChatById(params['id']).subscribe((response) => {
+					this.chat = response;
+				});
+			});
 		})
 
 		this.userService.getCurrentUser().subscribe((data: any) => {
