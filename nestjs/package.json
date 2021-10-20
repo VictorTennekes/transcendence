@@ -44,7 +44,7 @@
     "cookie-parser": "^1.4.5",
     "create-nestjs-middleware-module": "0.2.1",
     "express-session": "^1.17.2",
-    "knex": "^0.21.21",
+    "knex": "0.95.11",
     "mongoose-morgan": "^1.0.17",
     "morgan": "^1.10.0",
     "nanoid": "^3.1.25",
