@@ -12,7 +12,6 @@ export class AuthService {
 
 	async validateUser (login: string): Promise<any> {
 		try {
-			console.log(`validateUser - login: ${login}`);
 			if (!login)
 				throw new UnauthorizedException("Missing login");
 			let user = await this.userService.findOrCreateByLogin(login);
@@ -21,7 +20,6 @@ export class AuthService {
 			return (user);
 		}
 		catch (err) {
-			console.log(err.message);
 			return (null);
 		}
 	}

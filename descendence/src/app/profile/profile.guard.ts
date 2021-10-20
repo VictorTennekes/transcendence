@@ -16,7 +16,6 @@ export class ProfileGuard implements CanActivate {
 	canActivate(
 		route: ActivatedRouteSnapshot,
 		state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-			console.log(route.params['id']);
 			return this.userService.getUserByLogin(route.params['id']).pipe(map((user) => {
 				if (!user) {
 					this.router.navigate(['play']);

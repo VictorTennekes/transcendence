@@ -12,8 +12,6 @@ export class chatAdminGuard implements CanActivate {
 		private searchService: SearchService) {}
 
 	canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> {
-		console.log("can activate");
-		console.log(next.params);
 		const id: string = next.params['id'];
 		return this.searchService.userIsAdmin(id).pipe(map((response)=>{
 			return response;

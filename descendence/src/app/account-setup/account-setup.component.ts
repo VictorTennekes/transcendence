@@ -27,7 +27,6 @@ export class AccountSetupComponent implements OnInit {
     }
 
   submitForm() {
-    console.log("SUBMIT");
 		let formValues: {[key: string]: any} = {};
 		for (const field in this.form.controls) {
 			formValues[field] = this.form.controls[field].value;
@@ -65,16 +64,13 @@ export class AccountSetupComponent implements OnInit {
 			return of(control.value).pipe(delay(500),switchMap(() => {
 				return this.userService.checkDisplayNameAvailability(control.value).pipe(map((available) => {
 					if (!this.displayNameIsValid(control.value)) {
-						console.log("INVALID");
 						err['notValid'] = true;
 						return err;
 					}
 					if (!available) {
-						console.log("INVALID");
 						err['notUnique'] = true;
 						return err;
 					}
-					console.log("VALID");
 					return null;
 				}));
 			}));

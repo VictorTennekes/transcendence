@@ -17,7 +17,6 @@ export class TwoFactorAuthenticationService {
 	}
 	
 	public isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: UserEntity) {
-		Logger.log(`2FA-CODE: ${twoFactorAuthenticationCode} | ${JSON.stringify(user)}`);
 		return authenticator.verify({
 			token: twoFactorAuthenticationCode,
 			secret: user.two_factor_secret,
@@ -26,7 +25,6 @@ export class TwoFactorAuthenticationService {
 
 	public async generateTwoFactorAuthenticationSecret(user: UserEntity) {
 		const secret = authenticator.generateSecret();
-		Logger.log(`SECRET: ${secret}`);
 		await this.userService.setTwoFactorAuthenticationSecret(secret, user.intra_name);
 
 		return (secret);

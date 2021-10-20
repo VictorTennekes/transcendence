@@ -12,12 +12,8 @@ export class chatGuardService implements CanActivate {
 		private searchService: SearchService) {}
 
 	canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> {
-		console.log("can activate");
-		console.log(next.params);
 		const id: string = next.params['id'];
 		return this.searchService.canAccessChat(id).pipe(map((response)=>{
-			console.log("doing stuf, response:")
-			console.log(response);
 			return response;
 		},
 		// (error: any) => {
@@ -25,12 +21,10 @@ export class chatGuardService implements CanActivate {
 		// }
 		),
 		catchError((err: HttpErrorResponse, caught: Observable<boolean>) => {
-			console.log("caught error in guard")
 			if (err.status === 403) {
 				this.router.navigate(['', {outlets: {chat: ['pass-chat', id]}}])
 				return of(false);
 			}
-			console.log(err);
 			this.router.navigate(['', {outlets: {chat: ['search', err.error.message]}}])
 			// throw err;
 			return of(false);

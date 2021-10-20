@@ -40,9 +40,7 @@ export class UserController {
 	@UseFilters(UnauthorizedFilter)
 	async fetch_current(@Req() request)
 	{
-		Logger.log(`USER: ${request.session.passport.user.login}`);
 		const user = await this.userService.findOne(request.session.passport.user.login);
-		Logger.log(`FETCH_CURRENT - USER: ${user}`);
 		return user;
 	}
 
@@ -57,7 +55,6 @@ export class UserController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async getUser(@Req() request, @Body() body: any) {
-		Logger.log(`GET USER - ${JSON.stringify(body)}`);
 		return this.userService.findOne(body.login);
 	}
 
@@ -65,7 +62,6 @@ export class UserController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async getUsers(@Req() request, @Body() body: any) {
-		Logger.log(`GET USERS - ${JSON.stringify(body)}`);
 		let users: UserEntity[] = [];
 		for (const login of body.logins) {
 			users.push(await this.userService.findOne(login));
@@ -164,7 +160,6 @@ export class UserController {
 	@Get('user_exists/:username')
 	async userExists(@Param("username") username: string) {
 		if (await this.userService.findOne(username)) {
-			Logger.log(`USER EXISTS`);
 			return true;
 		} else {
 			return false;
@@ -175,7 +170,6 @@ export class UserController {
 	@UseFilters(UnauthorizedFilter)
 	@Post('block_user')
 	async blockUser(@Req() request, @Body() username: any) {
-		Logger.log(`BLOCK USER - ${username.username}`);
 		if (request.user.login === username.username)
 			return ;
 		await this.userService.blockUser(request.session.passport.user.login, username.username);
@@ -203,7 +197,6 @@ export class UserController {
 	@UseFilters(UnauthorizedFilter)
 	@Get('get_friends/:username')
 	async getFriends(@Param("username") username: string, @Req() request): Promise<UserDTO[]> {
-		console.log(request.session.passport);
 		return await this.userService.getFriends(request.session.passport.user.login);
 	}
 
@@ -232,8 +225,6 @@ export class UserController {
 
 	@Get()
 	async getCurrentUser(@Req() req): Promise<UserDTO> {
-		Logger.log("user is:");
-		Logger.log(JSON.stringify(req.session.passport.user));
 		return (req.session.passport.user);
 	}
 }

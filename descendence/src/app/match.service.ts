@@ -80,7 +80,6 @@ export class MatchService {
 	}
 
 	inviteUser(settings: MatchSettings) {
-		console.log(`INVITING ${settings.opponent_username} FOR A MATCH`);
 		this.matchSocket.emit('invite_user', settings);
 	}
 
@@ -103,8 +102,6 @@ export class MatchService {
 				height: 'auto'
 			});
 			acceptDialog.afterClosed().subscribe((res: {result: boolean, self: boolean, id: string}) => {
-				console.log("SUBSCRIPTION INSIDE INVITE READY LISTEN");
-				console.log(res.result);
 				if (res.result) {
 					this.router.navigate(['game/' + res.id]);
 				}
@@ -123,8 +120,6 @@ export class MatchService {
 				height: 'auto'
 			});
 			acceptDialog.afterClosed().subscribe((res: {result: boolean, self: boolean, id: string}) => {
-				console.log("SUBSCRIPTION INSIDE MATCH READY LISTEN");
-				console.log(res.result);
 				if (res.result) {
 					if (user === null) {
 						this.queueService.close();

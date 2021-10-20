@@ -16,7 +16,6 @@ export class StatsResolver implements Resolve<UserStats> {
 		private readonly userService: UserService
 	) {}
 	resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<UserStats> {
-		console.log(`PARENT ID PARAM: ${route.parent?.params['id']}`);
 		return this.userService.getStatsOfUser(route.parent?.params['id']);
 	}
 }

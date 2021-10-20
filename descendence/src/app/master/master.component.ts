@@ -73,7 +73,6 @@ export class MasterComponent implements OnInit {
 			panelClass: 'invite-dialog'
 		});
 		dialogRef.afterClosed().subscribe((accepted: boolean) => {
-			console.log(`Dialog result: ${accepted}`);
 			if (accepted) {
 				this.matchService.acceptFriendRequest(user);
 				this.userService.updateFriendSource();
@@ -91,14 +90,12 @@ export class MasterComponent implements OnInit {
 			panelClass: 'invite-dialog'
 		});
 		dialogRef.afterClosed().subscribe(result => {
-			console.log(`Dialog result: ${result}`);
 			if (result) {
 				this.queueService.close();
 				this.matchService.cancelMatch();
 				this.matchSocket.emit('invite_accepted', settings.id);
 				this.matchService.inviteReadyListen();
 			} else {
-				console.log("declining invite: ", settings);
 				if (settings.host) {
 					this.matchService.inviteDeclined(settings.host);
 				}
@@ -107,16 +104,11 @@ export class MasterComponent implements OnInit {
 	}
 
 	logOut(): void {
-		console.log('is the error here?')
 		this.userService.logout().subscribe((error: any) => {
-			console.log('response');
-			console.log(error);
 		});
 		this.cookies.remove('connect.sid');
 		// this.router.navigate(['home']);
-		console.log('where is the error');
 		location.reload();
-		console.log('is error here');
 		// this.router.navigate([{outlets: {primary: 'home'}}]);
 	}
 }

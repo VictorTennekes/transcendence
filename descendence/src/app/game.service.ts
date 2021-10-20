@@ -15,7 +15,6 @@ export class GameService {
 	) { }
 
 	getHistoryOfUser(user: string): Observable<GameHistory[]> {
-		console.log(`GET HISTORY OF USER`);
 		return this.http.get<GameHistory[]>('api/match/history/' + user);
 	}
 	matchOngoing(id: string) {

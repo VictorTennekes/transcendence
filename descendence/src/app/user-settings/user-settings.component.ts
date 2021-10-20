@@ -116,16 +116,13 @@ export class UserSettingsComponent implements OnInit {
 			return of(control.value).pipe(delay(500),switchMap(() => {
 				return this.userService.checkDisplayNameAvailability(control.value).pipe(map((available) => {
 					if (!this.displayNameIsValid(control.value)) {
-						console.log("INVALID");
 						err['notValid'] = true;
 						return err;
 					}
 					if (!available) {
-						console.log("INVALID");
 						err['notUnique'] = true;
 						return err;
 					}
-					console.log("VALID");
 					return null;
 				}));
 			}));
@@ -174,7 +171,6 @@ export class UserSettingsComponent implements OnInit {
 					this.userService.updateUserSource();
 				},
 				(err: any) => {
-					console.log(err);
 				}
 				);
 		}
@@ -192,7 +188,6 @@ export class UserSettingsComponent implements OnInit {
 	}
 
 	goBack() {
-		console.log(`PREVIOUS ROUTE: ${this.urlService.previousUrl}`);
 		this.router.navigateByUrl(this.urlService.previousUrl as string);
 	}
 

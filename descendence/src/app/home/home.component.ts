@@ -12,7 +12,6 @@ export class HomeComponent implements OnInit {
 	constructor() { }
 
 	ngOnInit(): void {
-		console.log("HOME");
 	}
 	onClick() : void {
 		document.location.href = "api/auth/redirect";

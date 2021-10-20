@@ -15,7 +15,6 @@ export class SessionSerializer extends PassportSerializer
 
 	async serializeUser(user: any, done: (err: any, id?: any) => void){
 		//store only the intra_name;
-		console.log(`Serializing: ${JSON.stringify(user)}`);
 		const sessionData = {
 			login: user.intra_name,
 		};

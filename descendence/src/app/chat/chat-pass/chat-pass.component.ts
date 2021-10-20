@@ -34,13 +34,11 @@ export class ChatPassComponent implements OnInit {
 			let id: string = params['id'];
 			this.searchService.validatePassword(this.chatPassForm.controls['password'].value, params['id']).subscribe(
 			(response) => {
-				console.log(response);
 				if (response === true) {
 					this.searchService.addUserToChat(id).subscribe((response) => {
 						this.router.navigate(['', {outlets: {chat: ['get-chat', id]}}]);
 					});
 				} else {
-					console.log("wrong pass");
 					this.wrongPass = true;
 
 				}

@@ -50,7 +50,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	async findMatch(client: Socket, settings: MatchSettings): Promise<string> {
-		console.log("in find match. maybe it'll send the response?")
 		const userItem = await this.userService.getUserFromSocket(client);
 		const user: User = {
 			login: userItem.intra_name,
@@ -100,7 +99,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 						this.matchService.deleteMatch(id);
 					}
 					else {
-						console.log(`MATCH NOT ACCEPTED - OPPONENT - ${match.settings.opponent_username}`);
 						if (match.settings.opponent_username !== undefined) {
 							match.creator.socket.leave(match.id);
 							match.opponent.socket.leave(match.id);
@@ -295,7 +293,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			socket: client
 		};
 		let friends: UserDTO[] = await this.userService.getFriends(user.intra_name);
-		console.log("friends: ", friends)
 		for (let friend of friends) {
 			if (friend.intra_name === username) {
 				return;
@@ -308,7 +305,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 		for (let blocker of user.blockedByUsers) {
 			if (blocker.intra_name === username) {
-				console.log("here??");
 				client.emit("friend_request_failure", {error: "you're blocked creep"});
 				return;
 			}
@@ -366,8 +362,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					this.pendingFriendRequests.splice(index, 1);
 			}
 		}
-		console.log("after");
-		console.log(this.pendingFriendRequests);
 	}
 
 	@SubscribeMessage('accept-friend-request')

@@ -33,13 +33,11 @@ export class AcceptComponent implements OnInit {
 	}
 
 	decline() {
-		console.log("decline");
 		this.matchService.decline();
 		this.dialogRef.close(false);
 	}
 
 	ngOnInit(): void {
-		console.log("accept component up")
 
 		this.matchService.matchAccepted().subscribe((match: any) => {
 			this.res.result = match.accepted;

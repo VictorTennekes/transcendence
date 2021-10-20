@@ -18,7 +18,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	afterInit() {
-		console.log("Initialized game gateway");
 	}
 
 	//notify the watchers (players + spectators) of the game that the game is finished
@@ -28,7 +27,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	handleDisconnect(@ConnectedSocket() client) {
-		console.log(`GAME GATEWAY - USER[${client.id} - LEFT]`);
 	}
 
 	sendGameUpdate(room: string, data: any) {
@@ -48,25 +46,21 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage('press_up')
 	press_up(@ConnectedSocket() client) {
-		Logger.log(`USER[${client.id}] - PRESS UP`);
 		
 		this.gameService.setKeyPressed(client.id, 'ArrowUp', true);
 	}
 	
 	@SubscribeMessage('release_up')
 	release_up(@ConnectedSocket() client) {
-		Logger.log(`USER[${client.id}] - RELEASE UP`);
 		this.gameService.setKeyPressed(client.id, 'ArrowUp', false);
 	}
 	@SubscribeMessage('press_down')
 	press_down(@ConnectedSocket() client) {
-		Logger.log(`USER[${client.id}] - PRESS DOWN`);
 		this.gameService.setKeyPressed(client.id, 'ArrowDown', true);
 	}
 	
 	@SubscribeMessage('release_down')
 	release_down(@ConnectedSocket() client) {
-		Logger.log(`USER[${client.id}] - RELEASE DOWN`);
 		this.gameService.setKeyPressed(client.id, 'ArrowDown', false);
 	}
 	
@@ -83,19 +77,16 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				continue ;
 			if (this.gameService.games[id].users.one.login === user.login) {
 				this.gameService.games[id].replaceActiveSocket('one', user);
-				Logger.log(`GAME[${id}] - CLIENT IDENTIFIED BY USER ${user.login} REPLACING USERS.ONE`);
 				break ;
 			}
 			else if (this.gameService.games[id].users.two.login === user.login) {
 				this.gameService.games[id].replaceActiveSocket('two', user);
-				Logger.log(`GAME[${id}] - CLIENT IDENTIFIED BY USER ${user.login} REPLACING USERS.TWO`);
 				break ;
 			}
 		}
 	}
 
 	async handleConnection(@ConnectedSocket() client: Socket) {
-		Logger.log(`GAME GATEWAY - CONNECT - USER[${client.id}]`);
 
 		this.refreshConnection(client);
 		// this.interval[client.id] = setInterval(() => this.gameLoop(), 1000/60);

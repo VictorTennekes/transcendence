@@ -70,16 +70,13 @@ import { MatchService } from 'src/app/match.service';
 			this.errorMessage = err.error;
 		})
 		this.chatService.listenForError().subscribe((error: string) => {
-			console.log(error);
 			this.errorMessage = error;
 		})
 		this.matchService.acceptNotifier.subscribe((user: userModel) => {
-			console.log("accepted in chat ", user);
 			this.loggedInUser.friends.push(user);
 
 		})
 		this.matchService.removeNotifier.subscribe((user: userModel) => {
-			console.log("removed in chat ", user);
 			for (let index = 0; index < this.loggedInUser.friends.length; index++) {
 				if (this.loggedInUser.friends[index].intra_name === user.intra_name) {
 					this.loggedInUser.friends.splice(index, 1);
@@ -198,7 +195,6 @@ import { MatchService } from 'src/app/match.service';
 			this.route.params.subscribe(params => {
 				this.searchService.findChatById(params['id']).subscribe((response) => {
 					this.chat = response;
-					console.log(this.chat);
 				});
 			});
 			this.userService.updateUserSource();

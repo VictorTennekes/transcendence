@@ -22,7 +22,6 @@ export class MatchController {
 	@UseGuards(AuthenticatedGuard)
 	@UseFilters(UnauthorizedFilter)
 	async historyOfUser(@Req() request, @Param('id') id: string) {
-		Logger.log(`MATCH CONTROLLER - HISTORY OF USER ${id}`);
 		return this.gameService.getHistoryOfUser(id);
 		// const result = await this.gameService.gameFinished(id);
 		// Logger.log(result);

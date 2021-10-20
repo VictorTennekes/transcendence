@@ -35,12 +35,10 @@ export class ProfileComponent implements OnInit {
 	profileOfCurrentUser: boolean = true;
 
 	addFriend() {
-		console.log(`FRIEND ADDED`);
 		this.matchService.sendFriendRequest(this.loginId);
 	}
 
 	removeFriend() {
-		console.log(`FRIEND REMOVED`);
 		this.userService.removeFriend(this.loginId);
 	}
 
@@ -49,17 +47,14 @@ export class ProfileComponent implements OnInit {
 			// this.isBlocked = true;
 			this.userService.updateUserSource();
 		});
-		console.log(`USER BLOCKED`);
 	}
 	removeBlock() {
-		console.log(`USER UNBLOCKED`);
 		this.userService.unblockedUser(this.loginId);
 		// this.isBlocked = false;
 	}
 
 	sendMessage() {
 		this.searchService.findMatchingChats(this.loginId).subscribe((chats: chatModel[]) => {
-			console.log(`RETURNED CHAT(S) - ${JSON.stringify(chats)}`);
 			const dm = chats.filter((chat) => chat.visibility === 'direct');
 			if (dm.length !== 1)
 				return ;
@@ -88,15 +83,12 @@ export class ProfileComponent implements OnInit {
 			this.isFriend = data.friend;
 			this.profileOfCurrentUser = (this.currentUser === this.loginId);
 			this.isOnline = data.online;
-			console.log(`USER ONLINE: ${this.isOnline}`);
 		});
 		this.userService.userSubject.subscribe((user) => {
 			this.userService.isBlocked(this.loginId).subscribe((state: boolean) => {
-				console.log(`RECEIVED BLOCKED STATE: ${state}`);
 				this.isBlocked = state;
 			});
 			this.userService.isFriend(this.loginId).subscribe((state: boolean) => {
-				console.log(`RECEIVED FRIEND STATE: ${state}`);
 				this.isFriend = state;
 			});
 			this.matchService.removeNotifier.subscribe((user: userModel) => {
@@ -109,7 +101,6 @@ export class ProfileComponent implements OnInit {
 			})
 			this.userService.friendSubject.subscribe((friends) => {
 				const result = friends.some(user => user.intra_name === this.loginId);
-				console.log(`FRIENDSUBJECT - ISFRIEND - ${result}`);
 				this.isFriend = result;
 				// this.ref.detectChanges();
 			});

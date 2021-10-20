@@ -31,7 +31,6 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy) {
 		profile = profile ?? request.user;
 		if (!profile)
 			return null;
-		console.log("FortyTwoStrategy::validate()");
 		const user = await this.authService.validateUser(profile.intraName);
 		// console.log(`USER ITEM: ${JSON.stringify(user)}`);
 		// const sessionItem = request.sessionStore.get(request.sessionID, (err, session) => {

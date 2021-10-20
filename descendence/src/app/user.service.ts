@@ -126,7 +126,6 @@ export class UserService {
 	}
 
 	addFriend(username: string) {
-		console.log("service??");
 		return this.http.post('api/user/add_friend/', {username: username});
 	}
 

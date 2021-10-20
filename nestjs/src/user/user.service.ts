@@ -48,10 +48,8 @@ export class UserService {
 		let user = await this.findOne(login);
 		if (!user) {
 			user = await this.create(login)
-			console.log(`CREATED USER ${login}`);
 		}
 		else {
-			console.log(`FOUND EXISTING USER ${login}`);
 		}
 		return (user);
 	}
@@ -99,7 +97,6 @@ export class UserService {
 	}
 
 	async update(login: string, changedData: any) {
-		console.log(`data: ${changedData}`);
 		let user = await this.findOne(login);
 		//validate that displayName is unique (?)
 		user = await this.userRepository.save({
@@ -107,7 +104,6 @@ export class UserService {
 			...changedData
 		});
 		//handle errors thrown by 'save' for possible uniqueness issues.
-		console.log(`updated user: ${JSON.stringify(user)}`);
 	}
 
 
@@ -238,7 +234,6 @@ export class UserService {
 	
 	async findOne(login: string) {
 		const user =  await this.userRepository.findOne({where: { intra_name: login }});
-		Logger.log(`FINDONE - LOGIN: ${login} - ${JSON.stringify(user)}`);
 		return user;
 	}
 
@@ -260,7 +255,6 @@ export class UserService {
 			where: {intra_name: username},
 			relations: ["friends"]
 		})
-		console.log(user);
 		return user.friends;
 	}
 
@@ -269,7 +263,6 @@ export class UserService {
 			where: {intra_name: username},
 			relations: ["blockedByUsers"]
 		})
-		console.log(user);
 		return user.blockedByUsers;
 	}
 
