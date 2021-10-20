@@ -7,6 +7,7 @@ import { User } from 'src/game/game.script';
 import { socketData } from '@chat/chat.gateway';
 import { UserDTO } from '@user/dto/user.dto';
 import { Match, MatchSettings } from './match.class';
+import { GameService } from 'src/game/game.service';
 
 class FriendRequest {
 	receive: string;
@@ -19,6 +20,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor(
 		private readonly userService: UserService,
 		private readonly matchService: MatchService,
+		private readonly gameService: GameService,
 	) {}
 
 	@WebSocketServer()
@@ -60,8 +62,28 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		return match;
 	}
 
-	initiateMatch(client: Socket, id: string) {
-		client.join(id); //add user to the room identified by the matchID
+	async emitInGame(opponent: string, creator: string) {
+		let friends: UserDTO[] = await this.userService.getFriends(opponent);
+		let user: UserDTO = await this.userService.findOne(opponent);
+		for (let friend of friends) {
+			let usr = this.isOnline(friend.intra_name);
+			if (usr) {
+				usr.socket.emit('friend_in_game', user);
+			}
+		}
+		friends = await this.userService.getFriends(creator);
+		user = await this.userService.findOne(creator);
+		for (let friend of friends) {
+			let usr = this.isOnline(friend.intra_name);
+			if (usr) {
+				usr.socket.emit('friend_in_game', user);
+			}
+		}
+	}
+
+	initiateMatch(client: Socket, match: string) {
+		client.join(match); //add user to the room identified by the matchID
+		const id = match;
 		// Logger.log(`MATCH[${id}] - FINDMATCH`);
 		if (this.matchService.matches[id].ready) {
 			Logger.log(`MATCH ${id} - BOTH ARE LISTENING`);
@@ -74,6 +96,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					if (accepted) {
 						Logger.log(`MATCH ${id} - BOTH ACCEPTED`);
 						this.matchService.createGame(id);
+						this.emitInGame(match.opponent.login, match.creator.login);
 						this.matchService.deleteMatch(id);
 					}
 					else {
@@ -136,7 +159,9 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			if (connectedUser.user.intra_name === settings.opponent_username) {
 				let sentSettings: MatchSettings = Object.assign({}, settings);
 				sentSettings.opponent_username = usr.intra_name;
-				const match = await this.findMatch(client, settings);
+				//this.findMatch is doing a bunch of redundant checks, could just create the match right away tbh
+				const match = this.matchService.createMatch(user, settings);
+				// const match = await this.findMatch(client, settings);
 				this.initiateMatch(client, match);
 				connectedUser.socket.emit('receive_game_invite', {host: user.login, id: match});
 				inviteSent = true;
@@ -168,10 +193,8 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('invite_declined')
 	inviteDeclined(client: Socket, username: string) {
-		console.log("invite declined sending to ", username);
 		for (let user of this.connectedUsers) {
 			if (user.user.intra_name === username) {
-				console.log("found user, sending error: ", user.user.intra_name);
 				user.socket.emit('game_invite_failure', "invite declined");
 			}
 		}
@@ -185,15 +208,32 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.server.emit('ready', state);
 	}
 
+	public userExists(username: string, users: string[]) {
+		return users.some(function(intra_name) {
+			return intra_name === username;
+		});
+	}
+
 	@SubscribeMessage('connected_friends')
 	async getConnectedFriends(@ConnectedSocket() client: Socket) {
 		let user = await this.userService.getUserFromSocket(client);
 		user.friends = await this.userService.getFriends(user.intra_name);
-
+		let players: string[] = [];
+		for (let key in this.gameService.games) {
+			if (this.gameService.games[key] && this.gameService.games[key].data) {
+				let lol = this.gameService.games[key].data.users;
+				players.push(lol.one.login);
+				players.push(lol.two.login);
+			}
+		}	
 		for (let friend of user.friends) {
 			for (let connectedUser of this.connectedUsers) {
 				if (friend.intra_name === connectedUser.user.intra_name) {
-					client.emit('friend_connected', friend);
+					if (this.userExists(friend.intra_name, players)) {
+						client.emit('friend_in_game', friend);
+					} else {
+						client.emit('friend_connected', friend);
+					}
 				}
 			}
 		}
@@ -202,7 +242,6 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async handleConnection(@ConnectedSocket() client: Socket) {
 		let user: UserDTO = await this.userService.getUserFromSocket(client);
 		if (!user) {
-			Logger.log("something's wrong, can't find user")
 			return;
 		}
 		else {
@@ -262,6 +301,12 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		let connectedUser: socketData = this.isOnline(username);
 		if (connectedUser) {
 			this.sendFriendRequest(sender, connectedUser);
+		} else {
+			const newRequest: FriendRequest = {
+				submit: user,
+				receive: username
+			}
+			this.pendingFriendRequests.push(newRequest);
 		}
 	}
 

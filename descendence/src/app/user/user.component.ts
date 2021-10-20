@@ -3,6 +3,8 @@ import { NgForm } from '@angular/forms';
 import { UserService } from '../user.service';
 import { userModel } from '../chat/chat-client/message.model';
 import { MatchService } from '../match.service';
+import { GameService } from '../game.service';
+import { ClientService } from '../game/client.service';
 
 
 @Component({
@@ -13,15 +15,17 @@ import { MatchService } from '../match.service';
 
 export class UserComponent implements OnInit {
 	loggedInUser: userModel;
-	onlineFriends: userModel[] = [];
-	offlineFriends: userModel[] = [];
+	onlineFriends: [userModel, string][] = [];
+	offlineFriends: [userModel, string][] = [];
+	inGameFriends: [userModel, string][] = [];
 	friends: userModel[] = [];
+	friendStats: [userModel, string][] = [];
 
 //	form: NgForm;
 
-	constructor( private readonly userService: UserService,
-				private matchService: MatchService) {
-	}
+	constructor(private readonly userService: UserService,
+				private matchService: MatchService,
+				private clientService: ClientService) { }
 
 	public getUserAvatar(avatar_url: string | null) {
 		let style = "background-image: ";
@@ -34,45 +38,57 @@ export class UserComponent implements OnInit {
 		return style;
 	}
 
+	private reSortArrays() {
+		this.offlineFriends = this.friendStats.filter((element) => {return (element[1] === "offline")});
+		this.onlineFriends = this.friendStats.filter((element) => {return (element[1] === "online")});
+		this.inGameFriends = this.friendStats.filter((element) => {return (element[1] === "inGame")});
+	}
+
 	trackFriendStatus() {
-		for (let friend of this.friends) {
-			this.offlineFriends.push(friend);
+		for (const friend of this.friends) {
+			this.friendStats.push([friend, "offline"]);
 		}
 		this.matchService.friendConnected().subscribe((onlineFriend: userModel) => {
-			let index = this.offlineFriends.findIndex(x => x.intra_name === onlineFriend.intra_name);
-			if (index !== -1) {
-				this.offlineFriends.splice(index, 1);
+			for (const friendStatus of this.friendStats) {
+				if (friendStatus[0].intra_name === onlineFriend.intra_name) {
+					friendStatus[1] = "online";
+				}
 			}
-			index = this.onlineFriends.findIndex(x => x.intra_name === onlineFriend.intra_name);
-			if (index === -1) {
-				this.onlineFriends.push(onlineFriend);
-			}
+			this.reSortArrays();
 		});
 		this.matchService.friendDisconnected().subscribe((offlineFriend: userModel) => {
-			if (this.friends.findIndex(x => x.intra_name === offlineFriend.intra_name) !== -1) {
-				let index = this.onlineFriends.findIndex(x => x.intra_name === offlineFriend.intra_name);
-				if (index !== -1) {
-					this.onlineFriends.splice(index, 1);
-				}
-				index = this.offlineFriends.findIndex(x => x.intra_name === offlineFriend.intra_name);
-				if (index === -1) {
-					this.offlineFriends.push(offlineFriend);
+			for (const friendStatus of this.friendStats) {
+				if (friendStatus[0].intra_name === offlineFriend.intra_name) {
+					friendStatus[1] = "offline";
 				}
 			}
+			this.reSortArrays();
 		})
-			
+		this.matchService.friendInGame().subscribe((inGameFriend: userModel) => {
+			for (const friendStatus of this.friendStats) {
+				if (friendStatus[0].intra_name === inGameFriend.intra_name) {
+					friendStatus[1] = "inGame";
+				}
+			}
+			this.reSortArrays();
+		})
 		this.matchService.requestOnlineFriends();
+		this.reSortArrays();
 	}
 
 	async ngOnInit(): Promise<void> {
 		this.userService.getCurrentUser().subscribe((data: any) => {
 			this.loggedInUser = data;
-			console.log(this.loggedInUser)
 			this.userService.getFriends(this.loggedInUser.intra_name).subscribe((res: userModel[]) => {
-				console.log(res);
 				this.friends = res;
 				this.trackFriendStatus();
 			})
 		});
+		this.clientService.gameFinishedGlobal().subscribe(() => {
+			setTimeout(() => {
+				this.matchService.requestOnlineFriends();
+				this.reSortArrays()
+			}, 3000);
+		})
 	}
 }

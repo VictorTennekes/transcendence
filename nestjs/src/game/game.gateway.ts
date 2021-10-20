@@ -24,6 +24,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	//notify the watchers (players + spectators) of the game that the game is finished
 	sendFinished(room: string) {
 		this.server.to(room).emit('finished');
+		this.server.emit('game-finished');
 	}
 
 	handleDisconnect(@ConnectedSocket() client) {
