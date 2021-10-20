@@ -63,12 +63,18 @@ import { MatchService } from 'src/app/match.service';
 	}
 
 	ngOnInit(): void {
-		
+	
+		this.matchService.receiveGameInviteError().subscribe((err: any) => {
+			this.errorMessage = err.error;
+		})
+		this.matchService.receiveFriendRequestError().subscribe((err: any) => {
+			console.log("FRUEND REQ ERR");
+			this.errorMessage = err.error;
+		})
 		this.chatService.listenForError().subscribe((error: string) => {
 			console.log(error);
 			this.errorMessage = error;
 		})
-
 
 		this.userService.getCurrentUser().subscribe((data: any) => {
 			this.loggedInUser = data;

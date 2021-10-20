@@ -111,6 +111,10 @@ export class MatchService {
 		return this.matchSocket.fromEvent('game_invite_failure');
 	}
 
+	receiveFriendRequestError() {
+		return this.matchSocket.fromEvent('friend_request_failure');
+	}
+
 	inviteDeclined(username: string) {
 		this.matchSocket.emit('invite_declined', username);
 	}

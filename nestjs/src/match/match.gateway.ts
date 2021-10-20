@@ -137,6 +137,12 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('invite_user')
 	async inviteUser(client: Socket, settings: MatchSettings) {
 		const usr = await getUserFromSocket(client, this.userService);
+		for (let blocker of usr.blockedByUsers) {
+			if (blocker.intra_name === settings.opponent_username) {
+				client.emit('game_invite_failure', {error: "you're blocked creep"});
+				return;
+			}
+		}
 		const user: User = {
 			login: usr.intra_name,
 			display_name: usr.display_name,
@@ -155,7 +161,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				}
 			}
 			if (inviteSent === false) {
-				client.emit('game_invite_failure', 'user not online');
+				client.emit('game_invite_failure', {error: "user not online"});
 			}
 			match = await this.findMatch(client, settings);
 			this.initiateMatch(client, match);
@@ -248,6 +254,13 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		};
 		for (let req of this.pendingFriendRequests) {
 			if (req.receive === username && req.submit.intra_name === user.intra_name) {
+				return;
+			}
+		}
+		for (let blocker of user.blockedByUsers) {
+			if (blocker.intra_name === username) {
+				console.log("here??");
+				client.emit("friend_request_failure", {error: "you're blocked creep"});
 				return;
 			}
 		}
