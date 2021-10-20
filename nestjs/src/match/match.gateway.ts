@@ -342,6 +342,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		if (target !== null) {
 			//send 'friend-removed' event notifying the target that they are no longer friends
 			target.socket.emit('friend-removed', user);
+			client.emit('friend-removed', target.user);
 		}
 	}
 

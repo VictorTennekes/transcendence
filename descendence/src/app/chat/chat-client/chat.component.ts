@@ -64,7 +64,7 @@ import { MatchService } from 'src/app/match.service';
 
 	ngOnInit(): void {
 	
-		this.matchService.receiveGameInviteError().subscribe((err: any) => {
+		this.matchService.errorListener.subscribe((err: any) => {
 			this.errorMessage = err.error;
 		})
 		this.matchService.receiveFriendRequestError().subscribe((err: any) => {
