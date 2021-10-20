@@ -79,8 +79,8 @@ export class Game {
 		this.goal = match.settings.endCondition;
 		this.startTime = new Date();
 		//initializing objects
-		this.players[match.creator.socket.id] = new Player(WALL_OFFSET,Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
-		this.players[match.opponent.socket.id] = new Player(Game.canvas.width - (WALL_OFFSET + PADDLE_WIDTH), Game.canvas.height / 2 - PADDLE_HEIGHT / 2);
+		this.players[match.creator.socket.id] = new Player(WALL_OFFSET,Game.canvas.height / 2 - PADDLE_HEIGHT);
+		this.players[match.opponent.socket.id] = new Player(Game.canvas.width - (WALL_OFFSET + PADDLE_WIDTH), Game.canvas.height / 2 - PADDLE_HEIGHT);
 		this.ball = new Ball(match.settings.ballSpeed, Game.canvas.width / 2 - BALL_SIZE / 2, Game.canvas.height / 2 - BALL_SIZE / 2);
 	}
 
@@ -203,19 +203,19 @@ class Paddle extends Entity {
 	private speed:number = 10;
 	
 	constructor(x:number,y:number) {
-		super(PADDLE_WIDTH,PADDLE_HEIGHT,x,y);
+		super(PADDLE_WIDTH,PADDLE_HEIGHT + PADDLE_WIDTH,x,y - PADDLE_WIDTH);
 	}
 	
 	update(canvas: Canvas, keysPressed: boolean[]) {
 		if ( keysPressed[KeyBindings.UP] ) {
 			this.velocity.y = -1;
-			if (this.position.y <= BALL_SIZE) {
+			if (this.position.y - (PADDLE_WIDTH / 2) <= 0) {
 				this.velocity.y = 0
 			}
 		}
 		else if (keysPressed[KeyBindings.DOWN]) {
 			this.velocity.y = 1;
-			if (this.position.y + this.height >= canvas.height - this.width) {
+			if (this.position.y + this.height >= canvas.height) {
 				this.velocity.y = 0;
 			}
 		}

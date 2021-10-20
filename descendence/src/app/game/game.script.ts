@@ -1,7 +1,7 @@
 import { ClientService } from "./client.service";
 
 const PADDLE_WIDTH = 22;
-const PADDLE_HEIGHT = 160;
+const PADDLE_HEIGHT = 150;
 const BALL_SIZE = 15;
 const BALL_SPEED = 10;
 const WALL_OFFSET = 40;
